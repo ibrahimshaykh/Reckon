@@ -23,7 +23,10 @@ export default async function GroupPage({
         <ul className="flex flex-col gap-1">
           {group.members.map((m) => (
             <li key={m.id} className="text-sm">
-              {m.displayName} ({m.email})
+              <Link href={`/friends/${m.id}`} className="hover:underline">
+                {m.displayName}
+              </Link>{" "}
+              ({m.email})
             </li>
           ))}
         </ul>
