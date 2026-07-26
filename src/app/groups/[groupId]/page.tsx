@@ -54,6 +54,14 @@ export default async function GroupPage({
         >
           Proposals
         </Button>
+        <Button
+          render={<Link href={`/groups/${group.id}/ask`} />}
+          nativeButton={false}
+          variant="outline"
+          size="sm"
+        >
+          Ask AI
+        </Button>
       </nav>
       <section className="flex flex-col gap-2">
         <div className="flex items-center justify-between">

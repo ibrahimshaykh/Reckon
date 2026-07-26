@@ -55,6 +55,39 @@ export async function parseReceiptImage(
   return JSON.parse(response.text ?? "{}") as ParsedReceipt;
 }
 
+const CAPABILITY_PRIMER = `You can ask things like:
+- "How much have we spent this month?"
+- "Who paid the most for groceries?"
+- "What chores does Sam have this week?"
+- "Are there any dietary conflicts on the pizza proposal?"`;
+
+export function getCapabilityPrimer(): string {
+  return CAPABILITY_PRIMER;
+}
+
+export async function answerGroupQuestion(
+  question: string,
+  context: {
+    today: string;
+    expenses: { title: string; totalAmount: number; paidByName: string; createdAt: string }[];
+    chores: { name: string; currentAssignee: string | null; periodEnd: string | null }[];
+  },
+): Promise<string> {
+  const response = await ai.models.generateContent({
+    model: "gemini-3.5-flash",
+    contents: createUserContent([
+      `Today's date is ${context.today}.`,
+      `Group expenses: ${JSON.stringify(context.expenses)}.`,
+      `Group chores: ${JSON.stringify(context.chores)}.`,
+      `Answer this question about the group in 1-3 short sentences, using ` +
+        `only the data given. If the data doesn't cover it, say so plainly ` +
+        `instead of guessing: "${question}"`,
+    ]),
+  });
+
+  return response.text ?? "I couldn't come up with an answer for that.";
+}
+
 export async function correctReceiptParse(
   base64: string,
   mimeType: string,
