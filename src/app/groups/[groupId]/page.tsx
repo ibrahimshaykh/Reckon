@@ -1,5 +1,8 @@
+import Link from "next/link";
 import { getGroup } from "@/lib/actions/groups";
+import { listGroupExpenses } from "@/lib/actions/expenses";
 import { AddMemberForm } from "@/components/groups/add-member-form";
+import { Button } from "@/components/ui/button";
 
 export default async function GroupPage({
   params,
@@ -7,7 +10,10 @@ export default async function GroupPage({
   params: Promise<{ groupId: string }>;
 }) {
   const { groupId } = await params;
-  const group = await getGroup(groupId);
+  const [group, expenses] = await Promise.all([
+    getGroup(groupId),
+    listGroupExpenses(groupId),
+  ]);
 
   return (
     <div className="mx-auto flex w-full max-w-2xl flex-col gap-6 p-6">
@@ -22,6 +28,39 @@ export default async function GroupPage({
           ))}
         </ul>
         <AddMemberForm groupId={group.id} />
+      </section>
+      <section className="flex flex-col gap-2">
+        <div className="flex items-center justify-between">
+          <h2 className="text-sm font-medium text-muted-foreground">Expenses</h2>
+          <div className="flex gap-2">
+            <Button
+              render={<Link href={`/groups/${group.id}/expenses/new`} />}
+              nativeButton={false}
+              size="sm"
+            >
+              Add expense
+            </Button>
+            <Button
+              render={<Link href={`/groups/${group.id}/settle`} />}
+              nativeButton={false}
+              variant="outline"
+              size="sm"
+            >
+              Who owes who
+            </Button>
+          </div>
+        </div>
+        {expenses.length === 0 && (
+          <p className="text-sm text-muted-foreground">No expenses yet.</p>
+        )}
+        <ul className="flex flex-col gap-1">
+          {expenses.map((e) => (
+            <li key={e.id} className="rounded-lg border p-3 text-sm">
+              <strong>{e.title}</strong> — ${e.totalAmount.toFixed(2)}, paid by{" "}
+              {e.paidByName}
+            </li>
+          ))}
+        </ul>
       </section>
     </div>
   );
