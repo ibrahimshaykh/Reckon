@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { markPaid, confirmReceived } from "@/lib/actions/settlements";
 import { Button } from "@/components/ui/button";
+import { CopyRow } from "@/components/copy-row";
 import { buildPayLink, type PayProvider } from "@/lib/pay-links";
 
 type Settlement = {
@@ -17,6 +18,10 @@ type Settlement = {
   toVenmoHandle: string | null;
   toPaypalHandle: string | null;
   toCashappHandle: string | null;
+  toEasypaisaNumber: string | null;
+  toJazzcashNumber: string | null;
+  toNayapayHandle: string | null;
+  toBankDetails: string | null;
   explanation: { steps: string[] };
 };
 
@@ -84,6 +89,15 @@ function SettlementRow({
     router.refresh();
   }
 
+  const hasAnyPaymentMethod =
+    settlement.toVenmoHandle ||
+    settlement.toPaypalHandle ||
+    settlement.toCashappHandle ||
+    settlement.toEasypaisaNumber ||
+    settlement.toJazzcashNumber ||
+    settlement.toNayapayHandle ||
+    settlement.toBankDetails;
+
   return (
     <li className="rounded-lg border p-3">
       <div className="flex items-center justify-between">
@@ -107,23 +121,35 @@ function SettlementRow({
       ) : (
         <>
           {isPayer && (
-            <div className="mt-2 flex items-center gap-2">
-              {settlement.toVenmoHandle && (
-                <Button size="sm" onClick={() => pay("venmo")}>Venmo</Button>
-              )}
-              {settlement.toPaypalHandle && (
-                <Button size="sm" onClick={() => pay("paypal")}>PayPal</Button>
-              )}
-              {settlement.toCashappHandle && (
-                <Button size="sm" onClick={() => pay("cashapp")}>Cash App</Button>
-              )}
-              {!settlement.toVenmoHandle &&
-                !settlement.toPaypalHandle &&
-                !settlement.toCashappHandle && (
-                  <p className="text-xs text-muted-foreground">
-                    {settlement.toName} hasn&apos;t added a payment handle yet.
-                  </p>
+            <div className="mt-2 flex flex-col gap-2">
+              <div className="flex items-center gap-2">
+                {settlement.toVenmoHandle && (
+                  <Button size="sm" onClick={() => pay("venmo")}>Venmo</Button>
                 )}
+                {settlement.toPaypalHandle && (
+                  <Button size="sm" onClick={() => pay("paypal")}>PayPal</Button>
+                )}
+                {settlement.toCashappHandle && (
+                  <Button size="sm" onClick={() => pay("cashapp")}>Cash App</Button>
+                )}
+              </div>
+              {settlement.toEasypaisaNumber && (
+                <CopyRow label="EasyPaisa" value={settlement.toEasypaisaNumber} />
+              )}
+              {settlement.toJazzcashNumber && (
+                <CopyRow label="JazzCash" value={settlement.toJazzcashNumber} />
+              )}
+              {settlement.toNayapayHandle && (
+                <CopyRow label="NayaPay" value={settlement.toNayapayHandle} />
+              )}
+              {settlement.toBankDetails && (
+                <CopyRow label="Bank transfer" value={settlement.toBankDetails} />
+              )}
+              {!hasAnyPaymentMethod && (
+                <p className="text-xs text-muted-foreground">
+                  {settlement.toName} hasn&apos;t added a payment method yet.
+                </p>
+              )}
             </div>
           )}
           <div className="mt-2 flex gap-2">

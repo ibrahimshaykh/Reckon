@@ -116,6 +116,10 @@ export async function getGroupSettlements(groupId: string) {
       toVenmoHandle: toUser?.venmoHandle ?? null,
       toPaypalHandle: toUser?.paypalHandle ?? null,
       toCashappHandle: toUser?.cashappHandle ?? null,
+      toEasypaisaNumber: toUser?.easypaisaNumber ?? null,
+      toJazzcashNumber: toUser?.jazzcashNumber ?? null,
+      toNayapayHandle: toUser?.nayapayHandle ?? null,
+      toBankDetails: toUser?.bankDetails ?? null,
       explanation: {
         steps: explanation.steps.map((step) =>
           step.replace(s.fromUserId, nameOf(s.fromUserId)).replace(s.toUserId, nameOf(s.toUserId)),

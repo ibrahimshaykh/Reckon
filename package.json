@@ -17,6 +17,7 @@
     "@hookform/resolvers": "^5.5.3",
     "@prisma/adapter-pg": "^7.9.0",
     "@prisma/client": "^7.9.0",
+    "@sfpy/node-sdk": "^3.0.2",
     "@upstash/ratelimit": "^2.0.8",
     "@upstash/redis": "^1.38.0",
     "@vercel/blob": "^2.6.1",

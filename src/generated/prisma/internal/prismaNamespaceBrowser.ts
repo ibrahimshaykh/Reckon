@@ -98,6 +98,10 @@ export const UserScalarFieldEnum = {
   venmoHandle: 'venmoHandle',
   paypalHandle: 'paypalHandle',
   cashappHandle: 'cashappHandle',
+  easypaisaNumber: 'easypaisaNumber',
+  jazzcashNumber: 'jazzcashNumber',
+  nayapayHandle: 'nayapayHandle',
+  bankDetails: 'bankDetails',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

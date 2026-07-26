@@ -14,6 +14,10 @@ export function ProfileForm({
   initialVenmoHandle,
   initialPaypalHandle,
   initialCashappHandle,
+  initialEasypaisaNumber,
+  initialJazzcashNumber,
+  initialNayapayHandle,
+  initialBankDetails,
 }: {
   initialBudgetLimit: number | null;
   initialDietaryRestrictions: string[];
@@ -22,6 +26,10 @@ export function ProfileForm({
   initialVenmoHandle: string;
   initialPaypalHandle: string;
   initialCashappHandle: string;
+  initialEasypaisaNumber: string;
+  initialJazzcashNumber: string;
+  initialNayapayHandle: string;
+  initialBankDetails: string;
 }) {
   const [budget, setBudget] = useState(
     initialBudgetLimit === null ? "" : String(fromCents(initialBudgetLimit)),
@@ -38,6 +46,10 @@ export function ProfileForm({
   const [venmoHandle, setVenmoHandle] = useState(initialVenmoHandle);
   const [paypalHandle, setPaypalHandle] = useState(initialPaypalHandle);
   const [cashappHandle, setCashappHandle] = useState(initialCashappHandle);
+  const [easypaisaNumber, setEasypaisaNumber] = useState(initialEasypaisaNumber);
+  const [jazzcashNumber, setJazzcashNumber] = useState(initialJazzcashNumber);
+  const [nayapayHandle, setNayapayHandle] = useState(initialNayapayHandle);
+  const [bankDetails, setBankDetails] = useState(initialBankDetails);
   const [pending, setPending] = useState(false);
   const [saved, setSaved] = useState(false);
 
@@ -56,6 +68,10 @@ export function ProfileForm({
       venmoHandle,
       paypalHandle,
       cashappHandle,
+      easypaisaNumber,
+      jazzcashNumber,
+      nayapayHandle,
+      bankDetails,
     });
     setPending(false);
     setSaved(true);
@@ -118,6 +134,29 @@ export function ProfileForm({
         value={cashappHandle}
         onChange={(e) => setCashappHandle(e.target.value)}
         placeholder="Cash App $cashtag"
+      />
+      <label className="text-sm text-muted-foreground">
+        Pakistani payment methods (optional)
+      </label>
+      <Input
+        value={easypaisaNumber}
+        onChange={(e) => setEasypaisaNumber(e.target.value)}
+        placeholder="EasyPaisa number"
+      />
+      <Input
+        value={jazzcashNumber}
+        onChange={(e) => setJazzcashNumber(e.target.value)}
+        placeholder="JazzCash number"
+      />
+      <Input
+        value={nayapayHandle}
+        onChange={(e) => setNayapayHandle(e.target.value)}
+        placeholder="NayaPay handle"
+      />
+      <Input
+        value={bankDetails}
+        onChange={(e) => setBankDetails(e.target.value)}
+        placeholder="Bank name, account title, IBAN"
       />
       <Button type="submit" disabled={pending}>
         {pending ? "Saving…" : "Save"}

@@ -50,6 +50,10 @@ export type UserMinAggregateOutputType = {
   venmoHandle: string | null
   paypalHandle: string | null
   cashappHandle: string | null
+  easypaisaNumber: string | null
+  jazzcashNumber: string | null
+  nayapayHandle: string | null
+  bankDetails: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -66,6 +70,10 @@ export type UserMaxAggregateOutputType = {
   venmoHandle: string | null
   paypalHandle: string | null
   cashappHandle: string | null
+  easypaisaNumber: string | null
+  jazzcashNumber: string | null
+  nayapayHandle: string | null
+  bankDetails: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -83,6 +91,10 @@ export type UserCountAggregateOutputType = {
   venmoHandle: number
   paypalHandle: number
   cashappHandle: number
+  easypaisaNumber: number
+  jazzcashNumber: number
+  nayapayHandle: number
+  bankDetails: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -113,6 +125,10 @@ export type UserMinAggregateInputType = {
   venmoHandle?: true
   paypalHandle?: true
   cashappHandle?: true
+  easypaisaNumber?: true
+  jazzcashNumber?: true
+  nayapayHandle?: true
+  bankDetails?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -129,6 +145,10 @@ export type UserMaxAggregateInputType = {
   venmoHandle?: true
   paypalHandle?: true
   cashappHandle?: true
+  easypaisaNumber?: true
+  jazzcashNumber?: true
+  nayapayHandle?: true
+  bankDetails?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -146,6 +166,10 @@ export type UserCountAggregateInputType = {
   venmoHandle?: true
   paypalHandle?: true
   cashappHandle?: true
+  easypaisaNumber?: true
+  jazzcashNumber?: true
+  nayapayHandle?: true
+  bankDetails?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -250,6 +274,10 @@ export type UserGroupByOutputType = {
   venmoHandle: string | null
   paypalHandle: string | null
   cashappHandle: string | null
+  easypaisaNumber: string | null
+  jazzcashNumber: string | null
+  nayapayHandle: string | null
+  bankDetails: string | null
   createdAt: Date
   updatedAt: Date
   _count: UserCountAggregateOutputType | null
@@ -290,6 +318,10 @@ export type UserWhereInput = {
   venmoHandle?: Prisma.StringNullableFilter<"User"> | string | null
   paypalHandle?: Prisma.StringNullableFilter<"User"> | string | null
   cashappHandle?: Prisma.StringNullableFilter<"User"> | string | null
+  easypaisaNumber?: Prisma.StringNullableFilter<"User"> | string | null
+  jazzcashNumber?: Prisma.StringNullableFilter<"User"> | string | null
+  nayapayHandle?: Prisma.StringNullableFilter<"User"> | string | null
+  bankDetails?: Prisma.StringNullableFilter<"User"> | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   groupMemberships?: Prisma.GroupMemberListRelationFilter
@@ -319,6 +351,10 @@ export type UserOrderByWithRelationInput = {
   venmoHandle?: Prisma.SortOrderInput | Prisma.SortOrder
   paypalHandle?: Prisma.SortOrderInput | Prisma.SortOrder
   cashappHandle?: Prisma.SortOrderInput | Prisma.SortOrder
+  easypaisaNumber?: Prisma.SortOrderInput | Prisma.SortOrder
+  jazzcashNumber?: Prisma.SortOrderInput | Prisma.SortOrder
+  nayapayHandle?: Prisma.SortOrderInput | Prisma.SortOrder
+  bankDetails?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   groupMemberships?: Prisma.GroupMemberOrderByRelationAggregateInput
@@ -351,6 +387,10 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   venmoHandle?: Prisma.StringNullableFilter<"User"> | string | null
   paypalHandle?: Prisma.StringNullableFilter<"User"> | string | null
   cashappHandle?: Prisma.StringNullableFilter<"User"> | string | null
+  easypaisaNumber?: Prisma.StringNullableFilter<"User"> | string | null
+  jazzcashNumber?: Prisma.StringNullableFilter<"User"> | string | null
+  nayapayHandle?: Prisma.StringNullableFilter<"User"> | string | null
+  bankDetails?: Prisma.StringNullableFilter<"User"> | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   groupMemberships?: Prisma.GroupMemberListRelationFilter
@@ -380,6 +420,10 @@ export type UserOrderByWithAggregationInput = {
   venmoHandle?: Prisma.SortOrderInput | Prisma.SortOrder
   paypalHandle?: Prisma.SortOrderInput | Prisma.SortOrder
   cashappHandle?: Prisma.SortOrderInput | Prisma.SortOrder
+  easypaisaNumber?: Prisma.SortOrderInput | Prisma.SortOrder
+  jazzcashNumber?: Prisma.SortOrderInput | Prisma.SortOrder
+  nayapayHandle?: Prisma.SortOrderInput | Prisma.SortOrder
+  bankDetails?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
@@ -405,6 +449,10 @@ export type UserScalarWhereWithAggregatesInput = {
   venmoHandle?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   paypalHandle?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   cashappHandle?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  easypaisaNumber?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  jazzcashNumber?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  nayapayHandle?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  bankDetails?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
 }
@@ -422,6 +470,10 @@ export type UserCreateInput = {
   venmoHandle?: string | null
   paypalHandle?: string | null
   cashappHandle?: string | null
+  easypaisaNumber?: string | null
+  jazzcashNumber?: string | null
+  nayapayHandle?: string | null
+  bankDetails?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   groupMemberships?: Prisma.GroupMemberCreateNestedManyWithoutUserInput
@@ -451,6 +503,10 @@ export type UserUncheckedCreateInput = {
   venmoHandle?: string | null
   paypalHandle?: string | null
   cashappHandle?: string | null
+  easypaisaNumber?: string | null
+  jazzcashNumber?: string | null
+  nayapayHandle?: string | null
+  bankDetails?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   groupMemberships?: Prisma.GroupMemberUncheckedCreateNestedManyWithoutUserInput
@@ -480,6 +536,10 @@ export type UserUpdateInput = {
   venmoHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   paypalHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cashappHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  easypaisaNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jazzcashNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nayapayHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   groupMemberships?: Prisma.GroupMemberUpdateManyWithoutUserNestedInput
@@ -509,6 +569,10 @@ export type UserUncheckedUpdateInput = {
   venmoHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   paypalHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cashappHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  easypaisaNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jazzcashNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nayapayHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   groupMemberships?: Prisma.GroupMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -538,6 +602,10 @@ export type UserCreateManyInput = {
   venmoHandle?: string | null
   paypalHandle?: string | null
   cashappHandle?: string | null
+  easypaisaNumber?: string | null
+  jazzcashNumber?: string | null
+  nayapayHandle?: string | null
+  bankDetails?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -555,6 +623,10 @@ export type UserUpdateManyMutationInput = {
   venmoHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   paypalHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cashappHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  easypaisaNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jazzcashNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nayapayHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -572,6 +644,10 @@ export type UserUncheckedUpdateManyInput = {
   venmoHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   paypalHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cashappHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  easypaisaNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jazzcashNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nayapayHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -597,6 +673,10 @@ export type UserCountOrderByAggregateInput = {
   venmoHandle?: Prisma.SortOrder
   paypalHandle?: Prisma.SortOrder
   cashappHandle?: Prisma.SortOrder
+  easypaisaNumber?: Prisma.SortOrder
+  jazzcashNumber?: Prisma.SortOrder
+  nayapayHandle?: Prisma.SortOrder
+  bankDetails?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -619,6 +699,10 @@ export type UserMaxOrderByAggregateInput = {
   venmoHandle?: Prisma.SortOrder
   paypalHandle?: Prisma.SortOrder
   cashappHandle?: Prisma.SortOrder
+  easypaisaNumber?: Prisma.SortOrder
+  jazzcashNumber?: Prisma.SortOrder
+  nayapayHandle?: Prisma.SortOrder
+  bankDetails?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -635,6 +719,10 @@ export type UserMinOrderByAggregateInput = {
   venmoHandle?: Prisma.SortOrder
   paypalHandle?: Prisma.SortOrder
   cashappHandle?: Prisma.SortOrder
+  easypaisaNumber?: Prisma.SortOrder
+  jazzcashNumber?: Prisma.SortOrder
+  nayapayHandle?: Prisma.SortOrder
+  bankDetails?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -868,6 +956,10 @@ export type UserCreateWithoutCreatedGroupsInput = {
   venmoHandle?: string | null
   paypalHandle?: string | null
   cashappHandle?: string | null
+  easypaisaNumber?: string | null
+  jazzcashNumber?: string | null
+  nayapayHandle?: string | null
+  bankDetails?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   groupMemberships?: Prisma.GroupMemberCreateNestedManyWithoutUserInput
@@ -896,6 +988,10 @@ export type UserUncheckedCreateWithoutCreatedGroupsInput = {
   venmoHandle?: string | null
   paypalHandle?: string | null
   cashappHandle?: string | null
+  easypaisaNumber?: string | null
+  jazzcashNumber?: string | null
+  nayapayHandle?: string | null
+  bankDetails?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   groupMemberships?: Prisma.GroupMemberUncheckedCreateNestedManyWithoutUserInput
@@ -940,6 +1036,10 @@ export type UserUpdateWithoutCreatedGroupsInput = {
   venmoHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   paypalHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cashappHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  easypaisaNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jazzcashNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nayapayHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   groupMemberships?: Prisma.GroupMemberUpdateManyWithoutUserNestedInput
@@ -968,6 +1068,10 @@ export type UserUncheckedUpdateWithoutCreatedGroupsInput = {
   venmoHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   paypalHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cashappHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  easypaisaNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jazzcashNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nayapayHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   groupMemberships?: Prisma.GroupMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -996,6 +1100,10 @@ export type UserCreateWithoutGroupMembershipsInput = {
   venmoHandle?: string | null
   paypalHandle?: string | null
   cashappHandle?: string | null
+  easypaisaNumber?: string | null
+  jazzcashNumber?: string | null
+  nayapayHandle?: string | null
+  bankDetails?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   createdGroups?: Prisma.GroupCreateNestedManyWithoutCreatedByInput
@@ -1024,6 +1132,10 @@ export type UserUncheckedCreateWithoutGroupMembershipsInput = {
   venmoHandle?: string | null
   paypalHandle?: string | null
   cashappHandle?: string | null
+  easypaisaNumber?: string | null
+  jazzcashNumber?: string | null
+  nayapayHandle?: string | null
+  bankDetails?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   createdGroups?: Prisma.GroupUncheckedCreateNestedManyWithoutCreatedByInput
@@ -1068,6 +1180,10 @@ export type UserUpdateWithoutGroupMembershipsInput = {
   venmoHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   paypalHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cashappHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  easypaisaNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jazzcashNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nayapayHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdGroups?: Prisma.GroupUpdateManyWithoutCreatedByNestedInput
@@ -1096,6 +1212,10 @@ export type UserUncheckedUpdateWithoutGroupMembershipsInput = {
   venmoHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   paypalHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cashappHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  easypaisaNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jazzcashNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nayapayHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdGroups?: Prisma.GroupUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -1124,6 +1244,10 @@ export type UserCreateWithoutPaidExpensesInput = {
   venmoHandle?: string | null
   paypalHandle?: string | null
   cashappHandle?: string | null
+  easypaisaNumber?: string | null
+  jazzcashNumber?: string | null
+  nayapayHandle?: string | null
+  bankDetails?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   groupMemberships?: Prisma.GroupMemberCreateNestedManyWithoutUserInput
@@ -1152,6 +1276,10 @@ export type UserUncheckedCreateWithoutPaidExpensesInput = {
   venmoHandle?: string | null
   paypalHandle?: string | null
   cashappHandle?: string | null
+  easypaisaNumber?: string | null
+  jazzcashNumber?: string | null
+  nayapayHandle?: string | null
+  bankDetails?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   groupMemberships?: Prisma.GroupMemberUncheckedCreateNestedManyWithoutUserInput
@@ -1196,6 +1324,10 @@ export type UserUpdateWithoutPaidExpensesInput = {
   venmoHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   paypalHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cashappHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  easypaisaNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jazzcashNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nayapayHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   groupMemberships?: Prisma.GroupMemberUpdateManyWithoutUserNestedInput
@@ -1224,6 +1356,10 @@ export type UserUncheckedUpdateWithoutPaidExpensesInput = {
   venmoHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   paypalHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cashappHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  easypaisaNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jazzcashNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nayapayHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   groupMemberships?: Prisma.GroupMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -1252,6 +1388,10 @@ export type UserCreateWithoutExpenseParticipationsInput = {
   venmoHandle?: string | null
   paypalHandle?: string | null
   cashappHandle?: string | null
+  easypaisaNumber?: string | null
+  jazzcashNumber?: string | null
+  nayapayHandle?: string | null
+  bankDetails?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   groupMemberships?: Prisma.GroupMemberCreateNestedManyWithoutUserInput
@@ -1280,6 +1420,10 @@ export type UserUncheckedCreateWithoutExpenseParticipationsInput = {
   venmoHandle?: string | null
   paypalHandle?: string | null
   cashappHandle?: string | null
+  easypaisaNumber?: string | null
+  jazzcashNumber?: string | null
+  nayapayHandle?: string | null
+  bankDetails?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   groupMemberships?: Prisma.GroupMemberUncheckedCreateNestedManyWithoutUserInput
@@ -1324,6 +1468,10 @@ export type UserUpdateWithoutExpenseParticipationsInput = {
   venmoHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   paypalHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cashappHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  easypaisaNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jazzcashNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nayapayHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   groupMemberships?: Prisma.GroupMemberUpdateManyWithoutUserNestedInput
@@ -1352,6 +1500,10 @@ export type UserUncheckedUpdateWithoutExpenseParticipationsInput = {
   venmoHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   paypalHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cashappHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  easypaisaNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jazzcashNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nayapayHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   groupMemberships?: Prisma.GroupMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -1380,6 +1532,10 @@ export type UserCreateWithoutSettlementsOwedInput = {
   venmoHandle?: string | null
   paypalHandle?: string | null
   cashappHandle?: string | null
+  easypaisaNumber?: string | null
+  jazzcashNumber?: string | null
+  nayapayHandle?: string | null
+  bankDetails?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   groupMemberships?: Prisma.GroupMemberCreateNestedManyWithoutUserInput
@@ -1408,6 +1564,10 @@ export type UserUncheckedCreateWithoutSettlementsOwedInput = {
   venmoHandle?: string | null
   paypalHandle?: string | null
   cashappHandle?: string | null
+  easypaisaNumber?: string | null
+  jazzcashNumber?: string | null
+  nayapayHandle?: string | null
+  bankDetails?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   groupMemberships?: Prisma.GroupMemberUncheckedCreateNestedManyWithoutUserInput
@@ -1441,6 +1601,10 @@ export type UserCreateWithoutSettlementsReceivedInput = {
   venmoHandle?: string | null
   paypalHandle?: string | null
   cashappHandle?: string | null
+  easypaisaNumber?: string | null
+  jazzcashNumber?: string | null
+  nayapayHandle?: string | null
+  bankDetails?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   groupMemberships?: Prisma.GroupMemberCreateNestedManyWithoutUserInput
@@ -1469,6 +1633,10 @@ export type UserUncheckedCreateWithoutSettlementsReceivedInput = {
   venmoHandle?: string | null
   paypalHandle?: string | null
   cashappHandle?: string | null
+  easypaisaNumber?: string | null
+  jazzcashNumber?: string | null
+  nayapayHandle?: string | null
+  bankDetails?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   groupMemberships?: Prisma.GroupMemberUncheckedCreateNestedManyWithoutUserInput
@@ -1513,6 +1681,10 @@ export type UserUpdateWithoutSettlementsOwedInput = {
   venmoHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   paypalHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cashappHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  easypaisaNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jazzcashNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nayapayHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   groupMemberships?: Prisma.GroupMemberUpdateManyWithoutUserNestedInput
@@ -1541,6 +1713,10 @@ export type UserUncheckedUpdateWithoutSettlementsOwedInput = {
   venmoHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   paypalHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cashappHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  easypaisaNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jazzcashNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nayapayHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   groupMemberships?: Prisma.GroupMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -1580,6 +1756,10 @@ export type UserUpdateWithoutSettlementsReceivedInput = {
   venmoHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   paypalHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cashappHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  easypaisaNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jazzcashNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nayapayHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   groupMemberships?: Prisma.GroupMemberUpdateManyWithoutUserNestedInput
@@ -1608,6 +1788,10 @@ export type UserUncheckedUpdateWithoutSettlementsReceivedInput = {
   venmoHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   paypalHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cashappHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  easypaisaNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jazzcashNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nayapayHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   groupMemberships?: Prisma.GroupMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -1636,6 +1820,10 @@ export type UserCreateWithoutIousOwedInput = {
   venmoHandle?: string | null
   paypalHandle?: string | null
   cashappHandle?: string | null
+  easypaisaNumber?: string | null
+  jazzcashNumber?: string | null
+  nayapayHandle?: string | null
+  bankDetails?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   groupMemberships?: Prisma.GroupMemberCreateNestedManyWithoutUserInput
@@ -1664,6 +1852,10 @@ export type UserUncheckedCreateWithoutIousOwedInput = {
   venmoHandle?: string | null
   paypalHandle?: string | null
   cashappHandle?: string | null
+  easypaisaNumber?: string | null
+  jazzcashNumber?: string | null
+  nayapayHandle?: string | null
+  bankDetails?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   groupMemberships?: Prisma.GroupMemberUncheckedCreateNestedManyWithoutUserInput
@@ -1697,6 +1889,10 @@ export type UserCreateWithoutIousLentInput = {
   venmoHandle?: string | null
   paypalHandle?: string | null
   cashappHandle?: string | null
+  easypaisaNumber?: string | null
+  jazzcashNumber?: string | null
+  nayapayHandle?: string | null
+  bankDetails?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   groupMemberships?: Prisma.GroupMemberCreateNestedManyWithoutUserInput
@@ -1725,6 +1921,10 @@ export type UserUncheckedCreateWithoutIousLentInput = {
   venmoHandle?: string | null
   paypalHandle?: string | null
   cashappHandle?: string | null
+  easypaisaNumber?: string | null
+  jazzcashNumber?: string | null
+  nayapayHandle?: string | null
+  bankDetails?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   groupMemberships?: Prisma.GroupMemberUncheckedCreateNestedManyWithoutUserInput
@@ -1769,6 +1969,10 @@ export type UserUpdateWithoutIousOwedInput = {
   venmoHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   paypalHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cashappHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  easypaisaNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jazzcashNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nayapayHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   groupMemberships?: Prisma.GroupMemberUpdateManyWithoutUserNestedInput
@@ -1797,6 +2001,10 @@ export type UserUncheckedUpdateWithoutIousOwedInput = {
   venmoHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   paypalHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cashappHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  easypaisaNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jazzcashNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nayapayHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   groupMemberships?: Prisma.GroupMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -1836,6 +2044,10 @@ export type UserUpdateWithoutIousLentInput = {
   venmoHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   paypalHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cashappHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  easypaisaNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jazzcashNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nayapayHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   groupMemberships?: Prisma.GroupMemberUpdateManyWithoutUserNestedInput
@@ -1864,6 +2076,10 @@ export type UserUncheckedUpdateWithoutIousLentInput = {
   venmoHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   paypalHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cashappHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  easypaisaNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jazzcashNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nayapayHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   groupMemberships?: Prisma.GroupMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -1892,6 +2108,10 @@ export type UserCreateWithoutChoreAssignmentsInput = {
   venmoHandle?: string | null
   paypalHandle?: string | null
   cashappHandle?: string | null
+  easypaisaNumber?: string | null
+  jazzcashNumber?: string | null
+  nayapayHandle?: string | null
+  bankDetails?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   groupMemberships?: Prisma.GroupMemberCreateNestedManyWithoutUserInput
@@ -1920,6 +2140,10 @@ export type UserUncheckedCreateWithoutChoreAssignmentsInput = {
   venmoHandle?: string | null
   paypalHandle?: string | null
   cashappHandle?: string | null
+  easypaisaNumber?: string | null
+  jazzcashNumber?: string | null
+  nayapayHandle?: string | null
+  bankDetails?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   groupMemberships?: Prisma.GroupMemberUncheckedCreateNestedManyWithoutUserInput
@@ -1964,6 +2188,10 @@ export type UserUpdateWithoutChoreAssignmentsInput = {
   venmoHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   paypalHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cashappHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  easypaisaNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jazzcashNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nayapayHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   groupMemberships?: Prisma.GroupMemberUpdateManyWithoutUserNestedInput
@@ -1992,6 +2220,10 @@ export type UserUncheckedUpdateWithoutChoreAssignmentsInput = {
   venmoHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   paypalHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cashappHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  easypaisaNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jazzcashNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nayapayHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   groupMemberships?: Prisma.GroupMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -2020,6 +2252,10 @@ export type UserCreateWithoutAvailabilityEntriesInput = {
   venmoHandle?: string | null
   paypalHandle?: string | null
   cashappHandle?: string | null
+  easypaisaNumber?: string | null
+  jazzcashNumber?: string | null
+  nayapayHandle?: string | null
+  bankDetails?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   groupMemberships?: Prisma.GroupMemberCreateNestedManyWithoutUserInput
@@ -2048,6 +2284,10 @@ export type UserUncheckedCreateWithoutAvailabilityEntriesInput = {
   venmoHandle?: string | null
   paypalHandle?: string | null
   cashappHandle?: string | null
+  easypaisaNumber?: string | null
+  jazzcashNumber?: string | null
+  nayapayHandle?: string | null
+  bankDetails?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   groupMemberships?: Prisma.GroupMemberUncheckedCreateNestedManyWithoutUserInput
@@ -2092,6 +2332,10 @@ export type UserUpdateWithoutAvailabilityEntriesInput = {
   venmoHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   paypalHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cashappHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  easypaisaNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jazzcashNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nayapayHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   groupMemberships?: Prisma.GroupMemberUpdateManyWithoutUserNestedInput
@@ -2120,6 +2364,10 @@ export type UserUncheckedUpdateWithoutAvailabilityEntriesInput = {
   venmoHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   paypalHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cashappHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  easypaisaNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jazzcashNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nayapayHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   groupMemberships?: Prisma.GroupMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -2148,6 +2396,10 @@ export type UserCreateWithoutProposalsCreatedInput = {
   venmoHandle?: string | null
   paypalHandle?: string | null
   cashappHandle?: string | null
+  easypaisaNumber?: string | null
+  jazzcashNumber?: string | null
+  nayapayHandle?: string | null
+  bankDetails?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   groupMemberships?: Prisma.GroupMemberCreateNestedManyWithoutUserInput
@@ -2176,6 +2428,10 @@ export type UserUncheckedCreateWithoutProposalsCreatedInput = {
   venmoHandle?: string | null
   paypalHandle?: string | null
   cashappHandle?: string | null
+  easypaisaNumber?: string | null
+  jazzcashNumber?: string | null
+  nayapayHandle?: string | null
+  bankDetails?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   groupMemberships?: Prisma.GroupMemberUncheckedCreateNestedManyWithoutUserInput
@@ -2220,6 +2476,10 @@ export type UserUpdateWithoutProposalsCreatedInput = {
   venmoHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   paypalHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cashappHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  easypaisaNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jazzcashNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nayapayHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   groupMemberships?: Prisma.GroupMemberUpdateManyWithoutUserNestedInput
@@ -2248,6 +2508,10 @@ export type UserUncheckedUpdateWithoutProposalsCreatedInput = {
   venmoHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   paypalHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cashappHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  easypaisaNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jazzcashNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nayapayHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   groupMemberships?: Prisma.GroupMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -2276,6 +2540,10 @@ export type UserCreateWithoutProposalFlagsInput = {
   venmoHandle?: string | null
   paypalHandle?: string | null
   cashappHandle?: string | null
+  easypaisaNumber?: string | null
+  jazzcashNumber?: string | null
+  nayapayHandle?: string | null
+  bankDetails?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   groupMemberships?: Prisma.GroupMemberCreateNestedManyWithoutUserInput
@@ -2304,6 +2572,10 @@ export type UserUncheckedCreateWithoutProposalFlagsInput = {
   venmoHandle?: string | null
   paypalHandle?: string | null
   cashappHandle?: string | null
+  easypaisaNumber?: string | null
+  jazzcashNumber?: string | null
+  nayapayHandle?: string | null
+  bankDetails?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   groupMemberships?: Prisma.GroupMemberUncheckedCreateNestedManyWithoutUserInput
@@ -2348,6 +2620,10 @@ export type UserUpdateWithoutProposalFlagsInput = {
   venmoHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   paypalHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cashappHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  easypaisaNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jazzcashNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nayapayHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   groupMemberships?: Prisma.GroupMemberUpdateManyWithoutUserNestedInput
@@ -2376,6 +2652,10 @@ export type UserUncheckedUpdateWithoutProposalFlagsInput = {
   venmoHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   paypalHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cashappHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  easypaisaNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jazzcashNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nayapayHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   groupMemberships?: Prisma.GroupMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -2534,6 +2814,10 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   venmoHandle?: boolean
   paypalHandle?: boolean
   cashappHandle?: boolean
+  easypaisaNumber?: boolean
+  jazzcashNumber?: boolean
+  nayapayHandle?: boolean
+  bankDetails?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   groupMemberships?: boolean | Prisma.User$groupMembershipsArgs<ExtArgs>
@@ -2564,6 +2848,10 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   venmoHandle?: boolean
   paypalHandle?: boolean
   cashappHandle?: boolean
+  easypaisaNumber?: boolean
+  jazzcashNumber?: boolean
+  nayapayHandle?: boolean
+  bankDetails?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["user"]>
@@ -2581,6 +2869,10 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   venmoHandle?: boolean
   paypalHandle?: boolean
   cashappHandle?: boolean
+  easypaisaNumber?: boolean
+  jazzcashNumber?: boolean
+  nayapayHandle?: boolean
+  bankDetails?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["user"]>
@@ -2598,11 +2890,15 @@ export type UserSelectScalar = {
   venmoHandle?: boolean
   paypalHandle?: boolean
   cashappHandle?: boolean
+  easypaisaNumber?: boolean
+  jazzcashNumber?: boolean
+  nayapayHandle?: boolean
+  bankDetails?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "clerkId" | "email" | "displayName" | "avatarUrl" | "budgetLimit" | "dietaryRestrictions" | "homeLatitude" | "homeLongitude" | "venmoHandle" | "paypalHandle" | "cashappHandle" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "clerkId" | "email" | "displayName" | "avatarUrl" | "budgetLimit" | "dietaryRestrictions" | "homeLatitude" | "homeLongitude" | "venmoHandle" | "paypalHandle" | "cashappHandle" | "easypaisaNumber" | "jazzcashNumber" | "nayapayHandle" | "bankDetails" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   groupMemberships?: boolean | Prisma.User$groupMembershipsArgs<ExtArgs>
   createdGroups?: boolean | Prisma.User$createdGroupsArgs<ExtArgs>
@@ -2650,6 +2946,10 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     venmoHandle: string | null
     paypalHandle: string | null
     cashappHandle: string | null
+    easypaisaNumber: string | null
+    jazzcashNumber: string | null
+    nayapayHandle: string | null
+    bankDetails: string | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["user"]>
@@ -3099,6 +3399,10 @@ export interface UserFieldRefs {
   readonly venmoHandle: Prisma.FieldRef<"User", 'String'>
   readonly paypalHandle: Prisma.FieldRef<"User", 'String'>
   readonly cashappHandle: Prisma.FieldRef<"User", 'String'>
+  readonly easypaisaNumber: Prisma.FieldRef<"User", 'String'>
+  readonly jazzcashNumber: Prisma.FieldRef<"User", 'String'>
+  readonly nayapayHandle: Prisma.FieldRef<"User", 'String'>
+  readonly bankDetails: Prisma.FieldRef<"User", 'String'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"User", 'DateTime'>
 }

@@ -18,6 +18,10 @@ export default async function SettingsPage() {
         initialVenmoHandle={session.venmoHandle ?? ""}
         initialPaypalHandle={session.paypalHandle ?? ""}
         initialCashappHandle={session.cashappHandle ?? ""}
+        initialEasypaisaNumber={session.easypaisaNumber ?? ""}
+        initialJazzcashNumber={session.jazzcashNumber ?? ""}
+        initialNayapayHandle={session.nayapayHandle ?? ""}
+        initialBankDetails={session.bankDetails ?? ""}
       />
     </div>
   );

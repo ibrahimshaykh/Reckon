@@ -74,6 +74,10 @@ model User {
   venmoHandle           String?
   paypalHandle          String?
   cashappHandle         String?
+  easypaisaNumber       String?
+  jazzcashNumber        String?
+  nayapayHandle         String?
+  bankDetails           String?
   createdAt             DateTime @default(now())
   updatedAt             DateTime @updatedAt
 

@@ -8,6 +8,7 @@ import { fromCents } from "@/lib/money";
 import { validate, latitude, longitude } from "@/lib/validation";
 
 const handle = z.string().trim().max(50).optional().or(z.literal(""));
+const bankDetailsText = z.string().trim().max(300).optional().or(z.literal(""));
 
 const updateProfileSchema = z.object({
   budgetLimitCents: z.number().int().min(0).nullable(),
@@ -17,6 +18,10 @@ const updateProfileSchema = z.object({
   venmoHandle: handle,
   paypalHandle: handle,
   cashappHandle: handle,
+  easypaisaNumber: handle,
+  jazzcashNumber: handle,
+  nayapayHandle: handle,
+  bankDetails: bankDetailsText,
 });
 
 export async function updateProfile(input: {
@@ -27,6 +32,10 @@ export async function updateProfile(input: {
   venmoHandle?: string;
   paypalHandle?: string;
   cashappHandle?: string;
+  easypaisaNumber?: string;
+  jazzcashNumber?: string;
+  nayapayHandle?: string;
+  bankDetails?: string;
 }) {
   const session = await requireSession();
   const valid = validate(updateProfileSchema, input);
@@ -42,6 +51,10 @@ export async function updateProfile(input: {
       venmoHandle: valid.venmoHandle || null,
       paypalHandle: valid.paypalHandle || null,
       cashappHandle: valid.cashappHandle || null,
+      easypaisaNumber: valid.easypaisaNumber || null,
+      jazzcashNumber: valid.jazzcashNumber || null,
+      nayapayHandle: valid.nayapayHandle || null,
+      bankDetails: valid.bankDetails || null,
     },
   });
 
