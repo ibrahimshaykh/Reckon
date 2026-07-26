@@ -6,6 +6,7 @@ import { assertMember } from "@/lib/actions/groups";
 import { requireSession } from "@/lib/dal";
 import { ApiError } from "@/lib/api-error";
 import { fromCents } from "@/lib/money";
+import { recalculateSettlements } from "@/lib/actions/settlements";
 
 export async function addIOU(input: {
   groupId: string;
@@ -30,6 +31,7 @@ export async function addIOU(input: {
     },
   });
 
+  await recalculateSettlements(input.groupId);
   revalidatePath(`/groups/${input.groupId}/ious`);
   revalidatePath(`/groups/${input.groupId}/settle`);
 }

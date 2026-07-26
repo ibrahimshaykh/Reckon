@@ -6,6 +6,7 @@ import { requireSession } from "@/lib/dal";
 import { assertMember } from "@/lib/actions/groups";
 import { ApiError } from "@/lib/api-error";
 import { fromCents } from "@/lib/money";
+import { recalculateSettlements } from "@/lib/actions/settlements";
 
 type AddManualExpenseInput = {
   groupId: string;
@@ -60,7 +61,9 @@ export async function addManualExpense(input: AddManualExpenseInput) {
     },
   });
 
+  await recalculateSettlements(input.groupId);
   revalidatePath(`/groups/${input.groupId}`);
+  revalidatePath(`/groups/${input.groupId}/settle`);
 }
 
 // Ratios (not raw cents) are what's stored, since the schema's

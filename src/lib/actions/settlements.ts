@@ -8,10 +8,13 @@ import { ApiError } from "@/lib/api-error";
 import { toCents, fromCents } from "@/lib/money";
 import { computeBalances, computeSettlements, applyIOUs } from "@/lib/settlement";
 
-export async function getGroupSettlements(groupId: string) {
-  const session = await requireSession();
-  await assertMember(groupId, session.id);
-
+// The only writer of Settlement rows. Called from the actions that actually
+// change a group's balances (adding an expense, adding an IOU) — never from
+// a page read, so viewing the settle page doesn't itself mutate the database.
+// One row per (groupId, fromUserId, toUserId) is the DB-enforced invariant
+// (see the settlement_pair_unique migration): it's upserted in place rather
+// than accumulating a new row per settle cycle.
+export async function recalculateSettlements(groupId: string) {
   const [expenses, ious] = await Promise.all([
     db.expense.findMany({
       where: { groupId },
@@ -41,72 +44,81 @@ export async function getGroupSettlements(groupId: string) {
   );
   const computed = computeSettlements(balances);
 
-  const persisted = await Promise.all(
+  await Promise.all(
     computed.map(async (s) => {
-      const existing = await db.settlement.findFirst({
-        where: {
+      const key = {
+        groupId_fromUserId_toUserId: {
           groupId,
           fromUserId: s.fromUserId,
           toUserId: s.toUserId,
-          status: { not: "CONFIRMED" },
+        },
+      };
+      const existing = await db.settlement.findUnique({ where: key });
+
+      await db.settlement.upsert({
+        where: key,
+        update: {
+          amount: fromCents(s.amountCents),
+          explanation: s.explanation,
+          // A previously-settled pair with new debt starts a fresh cycle;
+          // an in-flight PENDING/PAY_MARKED cycle keeps its status so this
+          // doesn't clobber "already marked paid, awaiting confirmation".
+          ...(existing?.status === "CONFIRMED" ? { status: "PENDING" as const } : {}),
+        },
+        create: {
+          groupId,
+          fromUserId: s.fromUserId,
+          toUserId: s.toUserId,
+          amount: fromCents(s.amountCents),
+          explanation: s.explanation,
+          status: "PENDING",
         },
       });
-
-      const row = existing
-        ? await db.settlement.update({
-            where: { id: existing.id },
-            data: {
-              amount: fromCents(s.amountCents),
-              explanation: s.explanation,
-            },
-          })
-        : await db.settlement.create({
-            data: {
-              groupId,
-              fromUserId: s.fromUserId,
-              toUserId: s.toUserId,
-              amount: fromCents(s.amountCents),
-              explanation: s.explanation,
-              status: "PENDING",
-            },
-          });
-
-      return { ...s, id: row.id, status: row.status };
     }),
   );
 
-  // Concurrent calls can each miss the other's fresh insert (no DB-level
-  // uniqueness across non-CONFIRMED rows for a pair) and both create one —
-  // clean up any leftover duplicates for the pairs this call just touched,
-  // keeping the row this call landed on. Self-heals within one extra call.
-  await Promise.all(
-    persisted.map((s) =>
-      db.settlement.deleteMany({
-        where: {
-          groupId,
-          fromUserId: s.fromUserId,
-          toUserId: s.toUserId,
-          status: { not: "CONFIRMED" },
-          id: { not: s.id },
-        },
-      }),
-    ),
-  );
+  // Pairs no longer in the computed set are fully settled by other activity
+  // (e.g. an offsetting IOU) — nothing left to track for them.
+  const activePairs = new Set(computed.map((s) => `${s.fromUserId}:${s.toUserId}`));
+  const existingRows = await db.settlement.findMany({ where: { groupId } });
+  const staleIds = existingRows
+    .filter((r) => !activePairs.has(`${r.fromUserId}:${r.toUserId}`))
+    .map((r) => r.id);
+  if (staleIds.length > 0) {
+    await db.settlement.deleteMany({ where: { id: { in: staleIds } } });
+  }
+}
 
-  const userIds = [...new Set(persisted.flatMap((s) => [s.fromUserId, s.toUserId]))];
+// Pure read — no mutation. Viewing this list must never write to the
+// database; recalculateSettlements (called from the actions that change
+// balances) is the only writer.
+export async function getGroupSettlements(groupId: string) {
+  const session = await requireSession();
+  await assertMember(groupId, session.id);
+
+  const rows = await db.settlement.findMany({ where: { groupId } });
+
+  const userIds = [...new Set(rows.flatMap((s) => [s.fromUserId, s.toUserId]))];
   const users = await db.user.findMany({ where: { id: { in: userIds } } });
   const nameOf = (id: string) => users.find((u) => u.id === id)?.displayName ?? id;
 
-  return persisted.map((s) => ({
-    ...s,
-    fromName: nameOf(s.fromUserId),
-    toName: nameOf(s.toUserId),
-    explanation: {
-      steps: s.explanation.steps.map((step) =>
-        step.replace(s.fromUserId, nameOf(s.fromUserId)).replace(s.toUserId, nameOf(s.toUserId)),
-      ),
-    },
-  }));
+  return rows.map((s) => {
+    const explanation = s.explanation as { steps: string[] };
+    return {
+      id: s.id,
+      status: s.status,
+      fromUserId: s.fromUserId,
+      toUserId: s.toUserId,
+      amountCents: toCents(s.amount),
+      fromName: nameOf(s.fromUserId),
+      toName: nameOf(s.toUserId),
+      explanation: {
+        steps: explanation.steps.map((step) =>
+          step.replace(s.fromUserId, nameOf(s.fromUserId)).replace(s.toUserId, nameOf(s.toUserId)),
+        ),
+      },
+    };
+  });
 }
 
 export async function markPaid(settlementId: string) {

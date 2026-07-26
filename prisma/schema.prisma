@@ -198,6 +198,7 @@ model Settlement {
 
   nudges Nudge[]
 
+  @@unique([groupId, fromUserId, toUserId])
   @@index([groupId, status])
   @@index([fromUserId])
   @@index([toUserId])
