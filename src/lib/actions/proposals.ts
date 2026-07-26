@@ -92,7 +92,16 @@ export async function listProposals(groupId: string) {
         )
       : null;
 
-  return proposals.map((p) => {
+  const memberHomes = members
+    .filter((m) => m.user.homeLatitude !== null && m.user.homeLongitude !== null)
+    .map((m) => ({
+      userId: m.userId,
+      displayName: m.user.displayName,
+      latitude: m.user.homeLatitude!,
+      longitude: m.user.homeLongitude!,
+    }));
+
+  const mappedProposals = proposals.map((p) => {
     const hasLocation = p.latitude !== null && p.longitude !== null;
     const totalDistanceKm =
       hasLocation && homes.length > 0
@@ -117,4 +126,6 @@ export async function listProposals(groupId: string) {
       })),
     };
   });
+
+  return { proposals: mappedProposals, memberHomes };
 }
