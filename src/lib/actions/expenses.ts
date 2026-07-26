@@ -15,6 +15,8 @@ type AddManualExpenseInput = {
   participantIds: string[];
   splitType: "EQUAL" | "CUSTOM";
   customCents?: Record<string, number>;
+  source?: "MANUAL" | "RECEIPT_AI";
+  receiptImageUrl?: string;
 };
 
 export async function addManualExpense(input: AddManualExpenseInput) {
@@ -40,7 +42,8 @@ export async function addManualExpense(input: AddManualExpenseInput) {
       paidById: input.paidById,
       title: input.title.trim(),
       totalAmount: fromCents(input.totalCents),
-      source: "MANUAL",
+      source: input.source ?? "MANUAL",
+      receiptImageUrl: input.receiptImageUrl,
       items: {
         create: {
           label: input.title.trim(),
