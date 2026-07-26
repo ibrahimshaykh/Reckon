@@ -201,6 +201,8 @@ model Settlement {
   status         SettlementStatus @default(PENDING)
   nudgeCount     Int              @default(0)
   lastNudgedAt   DateTime?
+  confirmToken   String?          @unique
+  confirmTokenExpiresAt DateTime?
   recalculatedAt DateTime         @updatedAt
 
   nudges Nudge[]

@@ -1,10 +1,12 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { Resend } from "resend";
 import { db } from "@/lib/db";
 import { assertMember } from "@/lib/actions/groups";
-import { requireSession } from "@/lib/dal";
+import { requireSession, generateGuestToken } from "@/lib/dal";
 import { ApiError } from "@/lib/api-error";
+import { logger } from "@/lib/logger";
 import { toCents, fromCents } from "@/lib/money";
 import { computeBalances, computeSettlements, applyIOUs } from "@/lib/settlement";
 
@@ -131,12 +133,41 @@ export async function getGroupSettlements(groupId: string) {
 
 export async function markPaid(settlementId: string) {
   const session = await requireSession();
-  const settlement = await db.settlement.findUniqueOrThrow({ where: { id: settlementId } });
+  const settlement = await db.settlement.findUniqueOrThrow({
+    where: { id: settlementId },
+    include: { toUser: true, fromUser: true },
+  });
   if (settlement.fromUserId !== session.id) {
     throw new ApiError(403, "Only the person who owes can mark this paid.");
   }
-  await db.settlement.update({ where: { id: settlementId }, data: { status: "PAY_MARKED" } });
+
+  const confirmToken = generateGuestToken();
+  const confirmTokenExpiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+
+  await db.settlement.update({
+    where: { id: settlementId },
+    data: { status: "PAY_MARKED", confirmToken, confirmTokenExpiresAt },
+  });
   revalidatePath(`/groups/${settlement.groupId}/settle`);
+
+  if (!process.env.RESEND_API_KEY || !settlement.toUser.email) {
+    logger.warn(
+      "RESEND_API_KEY not set or receiver has no email — skipping confirm-link send (degrade-open).",
+      { settlementId },
+    );
+    return;
+  }
+
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
+  const resend = new Resend(process.env.RESEND_API_KEY);
+  const amount = Number(settlement.amount).toFixed(2);
+
+  await resend.emails.send({
+    from: "Reckon <onboarding@resend.dev>",
+    to: settlement.toUser.email,
+    subject: `${settlement.fromUser.displayName} says they paid you $${amount}`,
+    html: `<p>${settlement.fromUser.displayName} marked their $${amount} as paid. If you received it, confirm here:</p><p><a href="${baseUrl}/confirm/${confirmToken}">Yes, I received this</a></p>`,
+  });
 }
 
 export async function confirmReceived(settlementId: string) {
@@ -147,4 +178,22 @@ export async function confirmReceived(settlementId: string) {
   }
   await db.settlement.update({ where: { id: settlementId }, data: { status: "CONFIRMED" } });
   revalidatePath(`/groups/${settlement.groupId}/settle`);
+}
+
+// Public, no-login confirmation — the token itself is the credential,
+// same trust model as GuestToken. Only ever called from an explicit
+// button click (never from a bare page load), so an email scanner or
+// link-prefetcher opening the page can't falsely confirm a payment.
+export async function confirmReceivedByToken(token: string) {
+  const settlement = await db.settlement.findUnique({ where: { confirmToken: token } });
+  if (!settlement || !settlement.confirmTokenExpiresAt || settlement.confirmTokenExpiresAt < new Date()) {
+    throw new ApiError(404, "This confirmation link is invalid or has expired.");
+  }
+
+  if (settlement.status === "PAY_MARKED") {
+    await db.settlement.update({ where: { id: settlement.id }, data: { status: "CONFIRMED" } });
+    revalidatePath(`/groups/${settlement.groupId}/settle`);
+  }
+
+  return { status: "CONFIRMED" as const };
 }

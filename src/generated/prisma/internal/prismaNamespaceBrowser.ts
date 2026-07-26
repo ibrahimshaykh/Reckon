@@ -192,6 +192,8 @@ export const SettlementScalarFieldEnum = {
   status: 'status',
   nudgeCount: 'nudgeCount',
   lastNudgedAt: 'lastNudgedAt',
+  confirmToken: 'confirmToken',
+  confirmTokenExpiresAt: 'confirmTokenExpiresAt',
   recalculatedAt: 'recalculatedAt'
 } as const
 

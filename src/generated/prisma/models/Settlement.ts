@@ -45,6 +45,8 @@ export type SettlementMinAggregateOutputType = {
   status: $Enums.SettlementStatus | null
   nudgeCount: number | null
   lastNudgedAt: Date | null
+  confirmToken: string | null
+  confirmTokenExpiresAt: Date | null
   recalculatedAt: Date | null
 }
 
@@ -57,6 +59,8 @@ export type SettlementMaxAggregateOutputType = {
   status: $Enums.SettlementStatus | null
   nudgeCount: number | null
   lastNudgedAt: Date | null
+  confirmToken: string | null
+  confirmTokenExpiresAt: Date | null
   recalculatedAt: Date | null
 }
 
@@ -70,6 +74,8 @@ export type SettlementCountAggregateOutputType = {
   status: number
   nudgeCount: number
   lastNudgedAt: number
+  confirmToken: number
+  confirmTokenExpiresAt: number
   recalculatedAt: number
   _all: number
 }
@@ -94,6 +100,8 @@ export type SettlementMinAggregateInputType = {
   status?: true
   nudgeCount?: true
   lastNudgedAt?: true
+  confirmToken?: true
+  confirmTokenExpiresAt?: true
   recalculatedAt?: true
 }
 
@@ -106,6 +114,8 @@ export type SettlementMaxAggregateInputType = {
   status?: true
   nudgeCount?: true
   lastNudgedAt?: true
+  confirmToken?: true
+  confirmTokenExpiresAt?: true
   recalculatedAt?: true
 }
 
@@ -119,6 +129,8 @@ export type SettlementCountAggregateInputType = {
   status?: true
   nudgeCount?: true
   lastNudgedAt?: true
+  confirmToken?: true
+  confirmTokenExpiresAt?: true
   recalculatedAt?: true
   _all?: true
 }
@@ -219,6 +231,8 @@ export type SettlementGroupByOutputType = {
   status: $Enums.SettlementStatus
   nudgeCount: number
   lastNudgedAt: Date | null
+  confirmToken: string | null
+  confirmTokenExpiresAt: Date | null
   recalculatedAt: Date
   _count: SettlementCountAggregateOutputType | null
   _avg: SettlementAvgAggregateOutputType | null
@@ -255,6 +269,8 @@ export type SettlementWhereInput = {
   status?: Prisma.EnumSettlementStatusFilter<"Settlement"> | $Enums.SettlementStatus
   nudgeCount?: Prisma.IntFilter<"Settlement"> | number
   lastNudgedAt?: Prisma.DateTimeNullableFilter<"Settlement"> | Date | string | null
+  confirmToken?: Prisma.StringNullableFilter<"Settlement"> | string | null
+  confirmTokenExpiresAt?: Prisma.DateTimeNullableFilter<"Settlement"> | Date | string | null
   recalculatedAt?: Prisma.DateTimeFilter<"Settlement"> | Date | string
   group?: Prisma.XOR<Prisma.GroupScalarRelationFilter, Prisma.GroupWhereInput>
   fromUser?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -272,6 +288,8 @@ export type SettlementOrderByWithRelationInput = {
   status?: Prisma.SortOrder
   nudgeCount?: Prisma.SortOrder
   lastNudgedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  confirmToken?: Prisma.SortOrderInput | Prisma.SortOrder
+  confirmTokenExpiresAt?: Prisma.SortOrderInput | Prisma.SortOrder
   recalculatedAt?: Prisma.SortOrder
   group?: Prisma.GroupOrderByWithRelationInput
   fromUser?: Prisma.UserOrderByWithRelationInput
@@ -281,6 +299,7 @@ export type SettlementOrderByWithRelationInput = {
 
 export type SettlementWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  confirmToken?: string
   groupId_fromUserId_toUserId?: Prisma.SettlementGroupIdFromUserIdToUserIdCompoundUniqueInput
   AND?: Prisma.SettlementWhereInput | Prisma.SettlementWhereInput[]
   OR?: Prisma.SettlementWhereInput[]
@@ -293,12 +312,13 @@ export type SettlementWhereUniqueInput = Prisma.AtLeast<{
   status?: Prisma.EnumSettlementStatusFilter<"Settlement"> | $Enums.SettlementStatus
   nudgeCount?: Prisma.IntFilter<"Settlement"> | number
   lastNudgedAt?: Prisma.DateTimeNullableFilter<"Settlement"> | Date | string | null
+  confirmTokenExpiresAt?: Prisma.DateTimeNullableFilter<"Settlement"> | Date | string | null
   recalculatedAt?: Prisma.DateTimeFilter<"Settlement"> | Date | string
   group?: Prisma.XOR<Prisma.GroupScalarRelationFilter, Prisma.GroupWhereInput>
   fromUser?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   toUser?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   nudges?: Prisma.NudgeListRelationFilter
-}, "id" | "groupId_fromUserId_toUserId">
+}, "id" | "confirmToken" | "groupId_fromUserId_toUserId">
 
 export type SettlementOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -310,6 +330,8 @@ export type SettlementOrderByWithAggregationInput = {
   status?: Prisma.SortOrder
   nudgeCount?: Prisma.SortOrder
   lastNudgedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  confirmToken?: Prisma.SortOrderInput | Prisma.SortOrder
+  confirmTokenExpiresAt?: Prisma.SortOrderInput | Prisma.SortOrder
   recalculatedAt?: Prisma.SortOrder
   _count?: Prisma.SettlementCountOrderByAggregateInput
   _avg?: Prisma.SettlementAvgOrderByAggregateInput
@@ -331,6 +353,8 @@ export type SettlementScalarWhereWithAggregatesInput = {
   status?: Prisma.EnumSettlementStatusWithAggregatesFilter<"Settlement"> | $Enums.SettlementStatus
   nudgeCount?: Prisma.IntWithAggregatesFilter<"Settlement"> | number
   lastNudgedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Settlement"> | Date | string | null
+  confirmToken?: Prisma.StringNullableWithAggregatesFilter<"Settlement"> | string | null
+  confirmTokenExpiresAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Settlement"> | Date | string | null
   recalculatedAt?: Prisma.DateTimeWithAggregatesFilter<"Settlement"> | Date | string
 }
 
@@ -341,6 +365,8 @@ export type SettlementCreateInput = {
   status?: $Enums.SettlementStatus
   nudgeCount?: number
   lastNudgedAt?: Date | string | null
+  confirmToken?: string | null
+  confirmTokenExpiresAt?: Date | string | null
   recalculatedAt?: Date | string
   group: Prisma.GroupCreateNestedOneWithoutSettlementsInput
   fromUser: Prisma.UserCreateNestedOneWithoutSettlementsOwedInput
@@ -358,6 +384,8 @@ export type SettlementUncheckedCreateInput = {
   status?: $Enums.SettlementStatus
   nudgeCount?: number
   lastNudgedAt?: Date | string | null
+  confirmToken?: string | null
+  confirmTokenExpiresAt?: Date | string | null
   recalculatedAt?: Date | string
   nudges?: Prisma.NudgeUncheckedCreateNestedManyWithoutSettlementInput
 }
@@ -369,6 +397,8 @@ export type SettlementUpdateInput = {
   status?: Prisma.EnumSettlementStatusFieldUpdateOperationsInput | $Enums.SettlementStatus
   nudgeCount?: Prisma.IntFieldUpdateOperationsInput | number
   lastNudgedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  confirmToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  confirmTokenExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   recalculatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   group?: Prisma.GroupUpdateOneRequiredWithoutSettlementsNestedInput
   fromUser?: Prisma.UserUpdateOneRequiredWithoutSettlementsOwedNestedInput
@@ -386,6 +416,8 @@ export type SettlementUncheckedUpdateInput = {
   status?: Prisma.EnumSettlementStatusFieldUpdateOperationsInput | $Enums.SettlementStatus
   nudgeCount?: Prisma.IntFieldUpdateOperationsInput | number
   lastNudgedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  confirmToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  confirmTokenExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   recalculatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   nudges?: Prisma.NudgeUncheckedUpdateManyWithoutSettlementNestedInput
 }
@@ -400,6 +432,8 @@ export type SettlementCreateManyInput = {
   status?: $Enums.SettlementStatus
   nudgeCount?: number
   lastNudgedAt?: Date | string | null
+  confirmToken?: string | null
+  confirmTokenExpiresAt?: Date | string | null
   recalculatedAt?: Date | string
 }
 
@@ -410,6 +444,8 @@ export type SettlementUpdateManyMutationInput = {
   status?: Prisma.EnumSettlementStatusFieldUpdateOperationsInput | $Enums.SettlementStatus
   nudgeCount?: Prisma.IntFieldUpdateOperationsInput | number
   lastNudgedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  confirmToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  confirmTokenExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   recalculatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -423,6 +459,8 @@ export type SettlementUncheckedUpdateManyInput = {
   status?: Prisma.EnumSettlementStatusFieldUpdateOperationsInput | $Enums.SettlementStatus
   nudgeCount?: Prisma.IntFieldUpdateOperationsInput | number
   lastNudgedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  confirmToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  confirmTokenExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   recalculatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -452,6 +490,8 @@ export type SettlementCountOrderByAggregateInput = {
   status?: Prisma.SortOrder
   nudgeCount?: Prisma.SortOrder
   lastNudgedAt?: Prisma.SortOrder
+  confirmToken?: Prisma.SortOrder
+  confirmTokenExpiresAt?: Prisma.SortOrder
   recalculatedAt?: Prisma.SortOrder
 }
 
@@ -469,6 +509,8 @@ export type SettlementMaxOrderByAggregateInput = {
   status?: Prisma.SortOrder
   nudgeCount?: Prisma.SortOrder
   lastNudgedAt?: Prisma.SortOrder
+  confirmToken?: Prisma.SortOrder
+  confirmTokenExpiresAt?: Prisma.SortOrder
   recalculatedAt?: Prisma.SortOrder
 }
 
@@ -481,6 +523,8 @@ export type SettlementMinOrderByAggregateInput = {
   status?: Prisma.SortOrder
   nudgeCount?: Prisma.SortOrder
   lastNudgedAt?: Prisma.SortOrder
+  confirmToken?: Prisma.SortOrder
+  confirmTokenExpiresAt?: Prisma.SortOrder
   recalculatedAt?: Prisma.SortOrder
 }
 
@@ -657,6 +701,8 @@ export type SettlementCreateWithoutFromUserInput = {
   status?: $Enums.SettlementStatus
   nudgeCount?: number
   lastNudgedAt?: Date | string | null
+  confirmToken?: string | null
+  confirmTokenExpiresAt?: Date | string | null
   recalculatedAt?: Date | string
   group: Prisma.GroupCreateNestedOneWithoutSettlementsInput
   toUser: Prisma.UserCreateNestedOneWithoutSettlementsReceivedInput
@@ -672,6 +718,8 @@ export type SettlementUncheckedCreateWithoutFromUserInput = {
   status?: $Enums.SettlementStatus
   nudgeCount?: number
   lastNudgedAt?: Date | string | null
+  confirmToken?: string | null
+  confirmTokenExpiresAt?: Date | string | null
   recalculatedAt?: Date | string
   nudges?: Prisma.NudgeUncheckedCreateNestedManyWithoutSettlementInput
 }
@@ -693,6 +741,8 @@ export type SettlementCreateWithoutToUserInput = {
   status?: $Enums.SettlementStatus
   nudgeCount?: number
   lastNudgedAt?: Date | string | null
+  confirmToken?: string | null
+  confirmTokenExpiresAt?: Date | string | null
   recalculatedAt?: Date | string
   group: Prisma.GroupCreateNestedOneWithoutSettlementsInput
   fromUser: Prisma.UserCreateNestedOneWithoutSettlementsOwedInput
@@ -708,6 +758,8 @@ export type SettlementUncheckedCreateWithoutToUserInput = {
   status?: $Enums.SettlementStatus
   nudgeCount?: number
   lastNudgedAt?: Date | string | null
+  confirmToken?: string | null
+  confirmTokenExpiresAt?: Date | string | null
   recalculatedAt?: Date | string
   nudges?: Prisma.NudgeUncheckedCreateNestedManyWithoutSettlementInput
 }
@@ -751,6 +803,8 @@ export type SettlementScalarWhereInput = {
   status?: Prisma.EnumSettlementStatusFilter<"Settlement"> | $Enums.SettlementStatus
   nudgeCount?: Prisma.IntFilter<"Settlement"> | number
   lastNudgedAt?: Prisma.DateTimeNullableFilter<"Settlement"> | Date | string | null
+  confirmToken?: Prisma.StringNullableFilter<"Settlement"> | string | null
+  confirmTokenExpiresAt?: Prisma.DateTimeNullableFilter<"Settlement"> | Date | string | null
   recalculatedAt?: Prisma.DateTimeFilter<"Settlement"> | Date | string
 }
 
@@ -777,6 +831,8 @@ export type SettlementCreateWithoutGroupInput = {
   status?: $Enums.SettlementStatus
   nudgeCount?: number
   lastNudgedAt?: Date | string | null
+  confirmToken?: string | null
+  confirmTokenExpiresAt?: Date | string | null
   recalculatedAt?: Date | string
   fromUser: Prisma.UserCreateNestedOneWithoutSettlementsOwedInput
   toUser: Prisma.UserCreateNestedOneWithoutSettlementsReceivedInput
@@ -792,6 +848,8 @@ export type SettlementUncheckedCreateWithoutGroupInput = {
   status?: $Enums.SettlementStatus
   nudgeCount?: number
   lastNudgedAt?: Date | string | null
+  confirmToken?: string | null
+  confirmTokenExpiresAt?: Date | string | null
   recalculatedAt?: Date | string
   nudges?: Prisma.NudgeUncheckedCreateNestedManyWithoutSettlementInput
 }
@@ -829,6 +887,8 @@ export type SettlementCreateWithoutNudgesInput = {
   status?: $Enums.SettlementStatus
   nudgeCount?: number
   lastNudgedAt?: Date | string | null
+  confirmToken?: string | null
+  confirmTokenExpiresAt?: Date | string | null
   recalculatedAt?: Date | string
   group: Prisma.GroupCreateNestedOneWithoutSettlementsInput
   fromUser: Prisma.UserCreateNestedOneWithoutSettlementsOwedInput
@@ -845,6 +905,8 @@ export type SettlementUncheckedCreateWithoutNudgesInput = {
   status?: $Enums.SettlementStatus
   nudgeCount?: number
   lastNudgedAt?: Date | string | null
+  confirmToken?: string | null
+  confirmTokenExpiresAt?: Date | string | null
   recalculatedAt?: Date | string
 }
 
@@ -871,6 +933,8 @@ export type SettlementUpdateWithoutNudgesInput = {
   status?: Prisma.EnumSettlementStatusFieldUpdateOperationsInput | $Enums.SettlementStatus
   nudgeCount?: Prisma.IntFieldUpdateOperationsInput | number
   lastNudgedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  confirmToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  confirmTokenExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   recalculatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   group?: Prisma.GroupUpdateOneRequiredWithoutSettlementsNestedInput
   fromUser?: Prisma.UserUpdateOneRequiredWithoutSettlementsOwedNestedInput
@@ -887,6 +951,8 @@ export type SettlementUncheckedUpdateWithoutNudgesInput = {
   status?: Prisma.EnumSettlementStatusFieldUpdateOperationsInput | $Enums.SettlementStatus
   nudgeCount?: Prisma.IntFieldUpdateOperationsInput | number
   lastNudgedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  confirmToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  confirmTokenExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   recalculatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -899,6 +965,8 @@ export type SettlementCreateManyFromUserInput = {
   status?: $Enums.SettlementStatus
   nudgeCount?: number
   lastNudgedAt?: Date | string | null
+  confirmToken?: string | null
+  confirmTokenExpiresAt?: Date | string | null
   recalculatedAt?: Date | string
 }
 
@@ -911,6 +979,8 @@ export type SettlementCreateManyToUserInput = {
   status?: $Enums.SettlementStatus
   nudgeCount?: number
   lastNudgedAt?: Date | string | null
+  confirmToken?: string | null
+  confirmTokenExpiresAt?: Date | string | null
   recalculatedAt?: Date | string
 }
 
@@ -921,6 +991,8 @@ export type SettlementUpdateWithoutFromUserInput = {
   status?: Prisma.EnumSettlementStatusFieldUpdateOperationsInput | $Enums.SettlementStatus
   nudgeCount?: Prisma.IntFieldUpdateOperationsInput | number
   lastNudgedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  confirmToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  confirmTokenExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   recalculatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   group?: Prisma.GroupUpdateOneRequiredWithoutSettlementsNestedInput
   toUser?: Prisma.UserUpdateOneRequiredWithoutSettlementsReceivedNestedInput
@@ -936,6 +1008,8 @@ export type SettlementUncheckedUpdateWithoutFromUserInput = {
   status?: Prisma.EnumSettlementStatusFieldUpdateOperationsInput | $Enums.SettlementStatus
   nudgeCount?: Prisma.IntFieldUpdateOperationsInput | number
   lastNudgedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  confirmToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  confirmTokenExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   recalculatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   nudges?: Prisma.NudgeUncheckedUpdateManyWithoutSettlementNestedInput
 }
@@ -949,6 +1023,8 @@ export type SettlementUncheckedUpdateManyWithoutFromUserInput = {
   status?: Prisma.EnumSettlementStatusFieldUpdateOperationsInput | $Enums.SettlementStatus
   nudgeCount?: Prisma.IntFieldUpdateOperationsInput | number
   lastNudgedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  confirmToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  confirmTokenExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   recalculatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -959,6 +1035,8 @@ export type SettlementUpdateWithoutToUserInput = {
   status?: Prisma.EnumSettlementStatusFieldUpdateOperationsInput | $Enums.SettlementStatus
   nudgeCount?: Prisma.IntFieldUpdateOperationsInput | number
   lastNudgedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  confirmToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  confirmTokenExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   recalculatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   group?: Prisma.GroupUpdateOneRequiredWithoutSettlementsNestedInput
   fromUser?: Prisma.UserUpdateOneRequiredWithoutSettlementsOwedNestedInput
@@ -974,6 +1052,8 @@ export type SettlementUncheckedUpdateWithoutToUserInput = {
   status?: Prisma.EnumSettlementStatusFieldUpdateOperationsInput | $Enums.SettlementStatus
   nudgeCount?: Prisma.IntFieldUpdateOperationsInput | number
   lastNudgedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  confirmToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  confirmTokenExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   recalculatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   nudges?: Prisma.NudgeUncheckedUpdateManyWithoutSettlementNestedInput
 }
@@ -987,6 +1067,8 @@ export type SettlementUncheckedUpdateManyWithoutToUserInput = {
   status?: Prisma.EnumSettlementStatusFieldUpdateOperationsInput | $Enums.SettlementStatus
   nudgeCount?: Prisma.IntFieldUpdateOperationsInput | number
   lastNudgedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  confirmToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  confirmTokenExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   recalculatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -999,6 +1081,8 @@ export type SettlementCreateManyGroupInput = {
   status?: $Enums.SettlementStatus
   nudgeCount?: number
   lastNudgedAt?: Date | string | null
+  confirmToken?: string | null
+  confirmTokenExpiresAt?: Date | string | null
   recalculatedAt?: Date | string
 }
 
@@ -1009,6 +1093,8 @@ export type SettlementUpdateWithoutGroupInput = {
   status?: Prisma.EnumSettlementStatusFieldUpdateOperationsInput | $Enums.SettlementStatus
   nudgeCount?: Prisma.IntFieldUpdateOperationsInput | number
   lastNudgedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  confirmToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  confirmTokenExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   recalculatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   fromUser?: Prisma.UserUpdateOneRequiredWithoutSettlementsOwedNestedInput
   toUser?: Prisma.UserUpdateOneRequiredWithoutSettlementsReceivedNestedInput
@@ -1024,6 +1110,8 @@ export type SettlementUncheckedUpdateWithoutGroupInput = {
   status?: Prisma.EnumSettlementStatusFieldUpdateOperationsInput | $Enums.SettlementStatus
   nudgeCount?: Prisma.IntFieldUpdateOperationsInput | number
   lastNudgedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  confirmToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  confirmTokenExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   recalculatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   nudges?: Prisma.NudgeUncheckedUpdateManyWithoutSettlementNestedInput
 }
@@ -1037,6 +1125,8 @@ export type SettlementUncheckedUpdateManyWithoutGroupInput = {
   status?: Prisma.EnumSettlementStatusFieldUpdateOperationsInput | $Enums.SettlementStatus
   nudgeCount?: Prisma.IntFieldUpdateOperationsInput | number
   lastNudgedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  confirmToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  confirmTokenExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   recalculatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -1081,6 +1171,8 @@ export type SettlementSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   status?: boolean
   nudgeCount?: boolean
   lastNudgedAt?: boolean
+  confirmToken?: boolean
+  confirmTokenExpiresAt?: boolean
   recalculatedAt?: boolean
   group?: boolean | Prisma.GroupDefaultArgs<ExtArgs>
   fromUser?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -1099,6 +1191,8 @@ export type SettlementSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ex
   status?: boolean
   nudgeCount?: boolean
   lastNudgedAt?: boolean
+  confirmToken?: boolean
+  confirmTokenExpiresAt?: boolean
   recalculatedAt?: boolean
   group?: boolean | Prisma.GroupDefaultArgs<ExtArgs>
   fromUser?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -1115,6 +1209,8 @@ export type SettlementSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ex
   status?: boolean
   nudgeCount?: boolean
   lastNudgedAt?: boolean
+  confirmToken?: boolean
+  confirmTokenExpiresAt?: boolean
   recalculatedAt?: boolean
   group?: boolean | Prisma.GroupDefaultArgs<ExtArgs>
   fromUser?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -1131,10 +1227,12 @@ export type SettlementSelectScalar = {
   status?: boolean
   nudgeCount?: boolean
   lastNudgedAt?: boolean
+  confirmToken?: boolean
+  confirmTokenExpiresAt?: boolean
   recalculatedAt?: boolean
 }
 
-export type SettlementOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "groupId" | "fromUserId" | "toUserId" | "amount" | "explanation" | "status" | "nudgeCount" | "lastNudgedAt" | "recalculatedAt", ExtArgs["result"]["settlement"]>
+export type SettlementOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "groupId" | "fromUserId" | "toUserId" | "amount" | "explanation" | "status" | "nudgeCount" | "lastNudgedAt" | "confirmToken" | "confirmTokenExpiresAt" | "recalculatedAt", ExtArgs["result"]["settlement"]>
 export type SettlementInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   group?: boolean | Prisma.GroupDefaultArgs<ExtArgs>
   fromUser?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -1171,6 +1269,8 @@ export type $SettlementPayload<ExtArgs extends runtime.Types.Extensions.Internal
     status: $Enums.SettlementStatus
     nudgeCount: number
     lastNudgedAt: Date | null
+    confirmToken: string | null
+    confirmTokenExpiresAt: Date | null
     recalculatedAt: Date
   }, ExtArgs["result"]["settlement"]>
   composites: {}
@@ -1608,6 +1708,8 @@ export interface SettlementFieldRefs {
   readonly status: Prisma.FieldRef<"Settlement", 'SettlementStatus'>
   readonly nudgeCount: Prisma.FieldRef<"Settlement", 'Int'>
   readonly lastNudgedAt: Prisma.FieldRef<"Settlement", 'DateTime'>
+  readonly confirmToken: Prisma.FieldRef<"Settlement", 'String'>
+  readonly confirmTokenExpiresAt: Prisma.FieldRef<"Settlement", 'DateTime'>
   readonly recalculatedAt: Prisma.FieldRef<"Settlement", 'DateTime'>
 }
     

@@ -57,3 +57,11 @@ export async function getGuestSession(token: string) {
   if (!guestToken || guestToken.expiresAt < new Date()) return null;
   return guestToken;
 }
+
+export async function getConfirmToken(token: string) {
+  const settlement = await db.settlement.findUnique({ where: { confirmToken: token } });
+  if (!settlement || !settlement.confirmTokenExpiresAt || settlement.confirmTokenExpiresAt < new Date()) {
+    return null;
+  }
+  return settlement;
+}
