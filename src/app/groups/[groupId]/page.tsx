@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getGroup } from "@/lib/actions/groups";
 import { listGroupExpenses } from "@/lib/actions/expenses";
 import { AddMemberForm } from "@/components/groups/add-member-form";
+import { ShareExpenseButton } from "@/components/expenses/share-expense-button";
 import { Button } from "@/components/ui/button";
 
 export default async function GroupPage({
@@ -101,8 +102,13 @@ export default async function GroupPage({
         <ul className="flex flex-col gap-1">
           {expenses.map((e) => (
             <li key={e.id} className="rounded-lg border p-3 text-sm">
-              <strong>{e.title}</strong> — ${e.totalAmount.toFixed(2)}, paid by{" "}
-              {e.paidByName}
+              <div className="flex items-center justify-between">
+                <span>
+                  <strong>{e.title}</strong> — ${e.totalAmount.toFixed(2)}, paid by{" "}
+                  {e.paidByName}
+                </span>
+                <ShareExpenseButton expenseId={e.id} />
+              </div>
             </li>
           ))}
         </ul>
