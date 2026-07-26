@@ -13,6 +13,8 @@ export default async function SettingsPage() {
           session.budgetLimit === null ? null : toCents(session.budgetLimit)
         }
         initialDietaryRestrictions={session.dietaryRestrictions}
+        initialHomeLatitude={session.homeLatitude}
+        initialHomeLongitude={session.homeLongitude}
       />
     </div>
   );

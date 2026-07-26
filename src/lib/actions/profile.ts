@@ -8,6 +8,8 @@ import { fromCents } from "@/lib/money";
 export async function updateProfile(input: {
   budgetLimitCents: number | null;
   dietaryRestrictions: string[];
+  homeLatitude?: number | null;
+  homeLongitude?: number | null;
 }) {
   const session = await requireSession();
 
@@ -17,6 +19,8 @@ export async function updateProfile(input: {
       budgetLimit:
         input.budgetLimitCents === null ? null : fromCents(input.budgetLimitCents),
       dietaryRestrictions: input.dietaryRestrictions,
+      ...(input.homeLatitude !== undefined && { homeLatitude: input.homeLatitude }),
+      ...(input.homeLongitude !== undefined && { homeLongitude: input.homeLongitude }),
     },
   });
 

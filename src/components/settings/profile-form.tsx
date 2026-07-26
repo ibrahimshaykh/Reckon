@@ -9,15 +9,25 @@ import { Button } from "@/components/ui/button";
 export function ProfileForm({
   initialBudgetLimit,
   initialDietaryRestrictions,
+  initialHomeLatitude,
+  initialHomeLongitude,
 }: {
   initialBudgetLimit: number | null;
   initialDietaryRestrictions: string[];
+  initialHomeLatitude: number | null;
+  initialHomeLongitude: number | null;
 }) {
   const [budget, setBudget] = useState(
     initialBudgetLimit === null ? "" : String(fromCents(initialBudgetLimit)),
   );
   const [restrictions, setRestrictions] = useState(
     initialDietaryRestrictions.join(", "),
+  );
+  const [homeLatitude, setHomeLatitude] = useState(
+    initialHomeLatitude === null ? "" : String(initialHomeLatitude),
+  );
+  const [homeLongitude, setHomeLongitude] = useState(
+    initialHomeLongitude === null ? "" : String(initialHomeLongitude),
   );
   const [pending, setPending] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -32,6 +42,8 @@ export function ProfileForm({
         .split(",")
         .map((r) => r.trim().toLowerCase())
         .filter(Boolean),
+      homeLatitude: homeLatitude.trim() === "" ? null : Number(homeLatitude),
+      homeLongitude: homeLongitude.trim() === "" ? null : Number(homeLongitude),
     });
     setPending(false);
     setSaved(true);
@@ -58,6 +70,25 @@ export function ProfileForm({
         onChange={(e) => setRestrictions(e.target.value)}
         placeholder="vegetarian, nut-free"
       />
+      <label className="text-sm text-muted-foreground">
+        Home coordinates (optional, used for the fair meeting point feature)
+      </label>
+      <div className="flex gap-2">
+        <Input
+          type="number"
+          step="any"
+          value={homeLatitude}
+          onChange={(e) => setHomeLatitude(e.target.value)}
+          placeholder="Latitude"
+        />
+        <Input
+          type="number"
+          step="any"
+          value={homeLongitude}
+          onChange={(e) => setHomeLongitude(e.target.value)}
+          placeholder="Longitude"
+        />
+      </div>
       <Button type="submit" disabled={pending}>
         {pending ? "Saving…" : "Save"}
       </Button>

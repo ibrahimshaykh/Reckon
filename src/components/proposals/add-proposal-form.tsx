@@ -12,6 +12,8 @@ export function AddProposalForm({ groupId }: { groupId: string }) {
   const [title, setTitle] = useState("");
   const [cost, setCost] = useState("");
   const [dietaryTags, setDietaryTags] = useState("");
+  const [latitude, setLatitude] = useState("");
+  const [longitude, setLongitude] = useState("");
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -28,10 +30,14 @@ export function AddProposalForm({ groupId }: { groupId: string }) {
           .split(",")
           .map((t) => t.trim().toLowerCase())
           .filter(Boolean),
+        latitude: latitude.trim() === "" ? null : Number(latitude),
+        longitude: longitude.trim() === "" ? null : Number(longitude),
       });
       setTitle("");
       setCost("");
       setDietaryTags("");
+      setLatitude("");
+      setLongitude("");
       router.refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong.");
@@ -61,6 +67,22 @@ export function AddProposalForm({ groupId }: { groupId: string }) {
         onChange={(e) => setDietaryTags(e.target.value)}
         placeholder="Covers (comma-separated, e.g. vegetarian)"
       />
+      <div className="flex gap-2">
+        <Input
+          type="number"
+          step="any"
+          value={latitude}
+          onChange={(e) => setLatitude(e.target.value)}
+          placeholder="Location latitude (optional)"
+        />
+        <Input
+          type="number"
+          step="any"
+          value={longitude}
+          onChange={(e) => setLongitude(e.target.value)}
+          placeholder="Location longitude (optional)"
+        />
+      </div>
       {error && <p className="text-sm text-destructive">{error}</p>}
       <Button type="submit" disabled={pending}>
         {pending ? "Adding…" : "Add proposal"}
