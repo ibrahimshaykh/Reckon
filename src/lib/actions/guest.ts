@@ -1,8 +1,15 @@
 "use server";
 
+import { z } from "zod";
 import { db } from "@/lib/db";
 import { requireSession, generateGuestToken } from "@/lib/dal";
-import { ApiError } from "@/lib/api-error";
+import { validate, cuid, shortText } from "@/lib/validation";
+
+const createGuestLinkSchema = z.object({
+  expenseId: cuid,
+  guestName: shortText("Name", 100),
+  guestEmail: z.string().trim().email().optional().or(z.literal("")),
+});
 
 export async function createGuestLink(input: {
   expenseId: string;
@@ -10,7 +17,7 @@ export async function createGuestLink(input: {
   guestEmail?: string;
 }) {
   await requireSession();
-  if (!input.guestName.trim()) throw new ApiError(400, "A name is required.");
+  const valid = validate(createGuestLinkSchema, input);
 
   const token = generateGuestToken();
   const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
@@ -18,9 +25,9 @@ export async function createGuestLink(input: {
   await db.guestToken.create({
     data: {
       token,
-      expenseId: input.expenseId,
-      guestName: input.guestName.trim(),
-      guestEmail: input.guestEmail,
+      expenseId: valid.expenseId,
+      guestName: valid.guestName,
+      guestEmail: valid.guestEmail || undefined,
       expiresAt,
     },
   });

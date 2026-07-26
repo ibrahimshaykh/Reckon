@@ -1,11 +1,13 @@
 "use server";
 
+import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
 import { requireSession } from "@/lib/dal";
 import { assertMember } from "@/lib/actions/groups";
 import { ApiError } from "@/lib/api-error";
 import { fromCents } from "@/lib/money";
+import { validate, cuid, positiveCents, shortText } from "@/lib/validation";
 import { recalculateSettlements } from "@/lib/actions/settlements";
 
 type AddManualExpenseInput = {
@@ -20,38 +22,45 @@ type AddManualExpenseInput = {
   receiptImageUrl?: string;
 };
 
+const addManualExpenseSchema = z.object({
+  groupId: cuid,
+  title: shortText("Title", 150),
+  totalCents: positiveCents,
+  paidById: cuid,
+  participantIds: z.array(cuid).min(1, "Pick at least one participant."),
+  splitType: z.enum(["EQUAL", "CUSTOM"]),
+  customCents: z.record(z.string(), z.number().int()).optional(),
+  source: z.enum(["MANUAL", "RECEIPT_AI"]).optional(),
+  receiptImageUrl: z.string().url().optional(),
+});
+
 export async function addManualExpense(input: AddManualExpenseInput) {
   const session = await requireSession();
-  await assertMember(input.groupId, session.id);
-
-  if (!input.title.trim()) throw new ApiError(400, "Title is required.");
-  if (input.totalCents <= 0) throw new ApiError(400, "Amount must be positive.");
-  if (input.participantIds.length === 0) {
-    throw new ApiError(400, "Pick at least one participant.");
-  }
+  const valid = validate(addManualExpenseSchema, input);
+  await assertMember(valid.groupId, session.id);
 
   const shares = splitToShareRatios(
-    input.totalCents,
-    input.participantIds,
-    input.splitType,
-    input.customCents,
+    valid.totalCents,
+    valid.participantIds,
+    valid.splitType,
+    valid.customCents,
   );
 
   await db.expense.create({
     data: {
-      groupId: input.groupId,
-      paidById: input.paidById,
-      title: input.title.trim(),
-      totalAmount: fromCents(input.totalCents),
-      source: input.source ?? "MANUAL",
-      receiptImageUrl: input.receiptImageUrl,
+      groupId: valid.groupId,
+      paidById: valid.paidById,
+      title: valid.title,
+      totalAmount: fromCents(valid.totalCents),
+      source: valid.source ?? "MANUAL",
+      receiptImageUrl: valid.receiptImageUrl,
       items: {
         create: {
-          label: input.title.trim(),
-          amount: fromCents(input.totalCents),
-          splitType: input.splitType,
+          label: valid.title,
+          amount: fromCents(valid.totalCents),
+          splitType: valid.splitType,
           participants: {
-            create: input.participantIds.map((userId) => ({
+            create: valid.participantIds.map((userId) => ({
               userId,
               shareRatio: shares[userId],
             })),

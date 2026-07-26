@@ -1,11 +1,20 @@
 "use server";
 
+import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
 import { assertMember } from "@/lib/actions/groups";
 import { requireSession } from "@/lib/dal";
 import { ApiError } from "@/lib/api-error";
+import { validate, cuid } from "@/lib/validation";
 import { findGroupFreeTime } from "@/lib/availability";
+
+const addAvailabilitySchema = z.object({
+  groupId: cuid,
+  startsAt: z.string().min(1, "Start time is required."),
+  endsAt: z.string().min(1, "End time is required."),
+  label: z.string().trim().max(200).optional(),
+});
 
 export async function addAvailability(input: {
   groupId: string;
@@ -14,21 +23,25 @@ export async function addAvailability(input: {
   label?: string;
 }) {
   const session = await requireSession();
-  await assertMember(input.groupId, session.id);
+  const valid = validate(addAvailabilitySchema, input);
+  await assertMember(valid.groupId, session.id);
 
-  const startsAt = new Date(input.startsAt);
-  const endsAt = new Date(input.endsAt);
+  const startsAt = new Date(valid.startsAt);
+  const endsAt = new Date(valid.endsAt);
+  if (Number.isNaN(startsAt.getTime()) || Number.isNaN(endsAt.getTime())) {
+    throw new ApiError(400, "Enter valid start and end times.");
+  }
   if (endsAt <= startsAt) {
     throw new ApiError(400, "End time must be after start time.");
   }
 
   await db.availabilityEntry.create({
     data: {
-      groupId: input.groupId,
+      groupId: valid.groupId,
       userId: session.id,
       startsAt,
       endsAt,
-      label: input.label,
+      label: valid.label,
     },
   });
 

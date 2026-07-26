@@ -1,17 +1,19 @@
 "use server";
 
+import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
 import { requireSession } from "@/lib/dal";
 import { ApiError } from "@/lib/api-error";
+import { validate, cuid, shortText } from "@/lib/validation";
 
 export async function createGroup(name: string) {
   const session = await requireSession();
-  if (!name.trim()) throw new ApiError(400, "Group name is required.");
+  const validName = validate(shortText("Group name", 100), name);
 
   const group = await db.group.create({
     data: {
-      name: name.trim(),
+      name: validName,
       createdById: session.id,
       members: { create: { userId: session.id } },
     },
@@ -23,9 +25,11 @@ export async function createGroup(name: string) {
 
 export async function addMemberByEmail(groupId: string, email: string) {
   const session = await requireSession();
+  validate(cuid, groupId);
+  const validEmail = validate(z.string().trim().email("Enter a valid email address."), email);
   await assertMember(groupId, session.id);
 
-  const user = await db.user.findUnique({ where: { email: email.trim() } });
+  const user = await db.user.findUnique({ where: { email: validEmail } });
   if (!user) {
     throw new ApiError(
       404,

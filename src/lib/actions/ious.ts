@@ -1,12 +1,21 @@
 "use server";
 
+import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
 import { assertMember } from "@/lib/actions/groups";
 import { requireSession } from "@/lib/dal";
 import { ApiError } from "@/lib/api-error";
 import { fromCents } from "@/lib/money";
+import { validate, cuid, positiveCents } from "@/lib/validation";
 import { recalculateSettlements } from "@/lib/actions/settlements";
+
+const addIOUSchema = z.object({
+  groupId: cuid,
+  owedByUserId: cuid,
+  amountCents: positiveCents,
+  note: z.string().trim().max(300).optional(),
+});
 
 export async function addIOU(input: {
   groupId: string;
@@ -15,19 +24,19 @@ export async function addIOU(input: {
   note?: string;
 }) {
   const session = await requireSession();
-  await assertMember(input.groupId, session.id);
-  if (input.amountCents <= 0) throw new ApiError(400, "Amount must be positive.");
-  if (input.owedByUserId === session.id) {
+  const valid = validate(addIOUSchema, input);
+  await assertMember(valid.groupId, session.id);
+  if (valid.owedByUserId === session.id) {
     throw new ApiError(400, "You can't lend to yourself.");
   }
 
   await db.iOU.create({
     data: {
-      groupId: input.groupId,
-      fromUserId: input.owedByUserId,
+      groupId: valid.groupId,
+      fromUserId: valid.owedByUserId,
       toUserId: session.id,
-      amount: fromCents(input.amountCents),
-      note: input.note,
+      amount: fromCents(valid.amountCents),
+      note: valid.note,
     },
   });
 

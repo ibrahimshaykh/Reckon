@@ -1,13 +1,21 @@
 "use server";
 
+import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
 import { assertMember } from "@/lib/actions/groups";
 import { requireSession } from "@/lib/dal";
-import { ApiError } from "@/lib/api-error";
+import { validate, cuid, shortText } from "@/lib/validation";
 import { assignChoresForPeriod } from "@/lib/chore-rotation";
 
 type Frequency = "DAILY" | "WEEKLY" | "BIWEEKLY" | "MONTHLY";
+
+const createChoreSchema = z.object({
+  groupId: cuid,
+  name: shortText("Chore name", 100),
+  effortWeight: z.number().int().min(1, "Effort must be at least 1.").max(100),
+  frequency: z.enum(["DAILY", "WEEKLY", "BIWEEKLY", "MONTHLY"]),
+});
 
 function periodLengthDays(frequency: Frequency): number {
   switch (frequency) {
@@ -29,16 +37,15 @@ export async function createChore(input: {
   frequency: Frequency;
 }) {
   const session = await requireSession();
-  await assertMember(input.groupId, session.id);
-  if (!input.name.trim()) throw new ApiError(400, "Chore name is required.");
-  if (input.effortWeight <= 0) throw new ApiError(400, "Effort must be positive.");
+  const valid = validate(createChoreSchema, input);
+  await assertMember(valid.groupId, session.id);
 
   await db.chore.create({
     data: {
-      groupId: input.groupId,
-      name: input.name.trim(),
-      effortWeight: input.effortWeight,
-      frequency: input.frequency,
+      groupId: valid.groupId,
+      name: valid.name,
+      effortWeight: valid.effortWeight,
+      frequency: valid.frequency,
     },
   });
 

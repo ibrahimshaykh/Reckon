@@ -5,25 +5,28 @@ import { assertMember } from "@/lib/actions/groups";
 import { requireSession } from "@/lib/dal";
 import { answerGroupQuestion, getCapabilityPrimer } from "@/lib/gemini";
 import { enforceRateLimit } from "@/lib/rate-limit";
+import { validate, cuid, shortText } from "@/lib/validation";
 
 export { getCapabilityPrimer };
 
 export async function askGroupQuestion(groupId: string, question: string) {
   const session = await requireSession();
-  await assertMember(groupId, session.id);
+  const validGroupId = validate(cuid, groupId);
+  const validQuestion = validate(shortText("Question", 500), question);
+  await assertMember(validGroupId, session.id);
   await enforceRateLimit(`ai-query:${session.id}`, 20, 60);
 
   const [expenses, chores] = await Promise.all([
-    db.expense.findMany({ where: { groupId }, include: { paidBy: true } }),
+    db.expense.findMany({ where: { groupId: validGroupId }, include: { paidBy: true } }),
     db.chore.findMany({
-      where: { groupId },
+      where: { groupId: validGroupId },
       include: {
         assignments: { orderBy: { periodStart: "desc" }, take: 1, include: { user: true } },
       },
     }),
   ]);
 
-  const answer = await answerGroupQuestion(question, {
+  const answer = await answerGroupQuestion(validQuestion, {
     today: new Date().toISOString().slice(0, 10),
     expenses: expenses.map((e) => ({
       title: e.title,

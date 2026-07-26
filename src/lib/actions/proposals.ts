@@ -1,13 +1,23 @@
 "use server";
 
+import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
 import { assertMember } from "@/lib/actions/groups";
 import { requireSession } from "@/lib/dal";
-import { ApiError } from "@/lib/api-error";
 import { toCents } from "@/lib/money";
+import { validate, cuid, shortText, latitude, longitude } from "@/lib/validation";
 import { computeProposalFlags } from "@/lib/constraint-check";
 import { pickFairestMeetingPoint, totalTravelDistanceKm } from "@/lib/fair-meeting-point";
+
+const createProposalSchema = z.object({
+  groupId: cuid,
+  title: shortText("Title", 150),
+  estimatedCostPerPersonCents: z.number().int().min(0).nullable(),
+  dietaryTags: z.array(z.string().trim().max(50)).max(20),
+  latitude: latitude.nullable().optional(),
+  longitude: longitude.nullable().optional(),
+});
 
 export async function createProposal(input: {
   groupId: string;
@@ -18,18 +28,18 @@ export async function createProposal(input: {
   longitude?: number | null;
 }) {
   const session = await requireSession();
-  await assertMember(input.groupId, session.id);
-  if (!input.title.trim()) throw new ApiError(400, "Title is required.");
+  const valid = validate(createProposalSchema, input);
+  await assertMember(valid.groupId, session.id);
 
   const members = await db.groupMember.findMany({
-    where: { groupId: input.groupId },
+    where: { groupId: valid.groupId },
     include: { user: true },
   });
 
   const flags = computeProposalFlags(
     {
-      estimatedCostPerPersonCents: input.estimatedCostPerPersonCents,
-      dietaryTags: input.dietaryTags,
+      estimatedCostPerPersonCents: valid.estimatedCostPerPersonCents,
+      dietaryTags: valid.dietaryTags,
     },
     members.map((m) => ({
       userId: m.userId,
@@ -40,16 +50,16 @@ export async function createProposal(input: {
 
   await db.proposal.create({
     data: {
-      groupId: input.groupId,
+      groupId: valid.groupId,
       proposedById: session.id,
-      title: input.title.trim(),
+      title: valid.title,
       estimatedCostPerPerson:
-        input.estimatedCostPerPersonCents === null
+        valid.estimatedCostPerPersonCents === null
           ? null
-          : input.estimatedCostPerPersonCents / 100,
-      dietaryTags: input.dietaryTags,
-      latitude: input.latitude ?? null,
-      longitude: input.longitude ?? null,
+          : valid.estimatedCostPerPersonCents / 100,
+      dietaryTags: valid.dietaryTags,
+      latitude: valid.latitude ?? null,
+      longitude: valid.longitude ?? null,
       flags: {
         create: flags.map((f) => ({
           userId: f.userId,

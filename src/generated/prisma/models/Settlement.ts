@@ -281,6 +281,7 @@ export type SettlementOrderByWithRelationInput = {
 
 export type SettlementWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  groupId_fromUserId_toUserId?: Prisma.SettlementGroupIdFromUserIdToUserIdCompoundUniqueInput
   AND?: Prisma.SettlementWhereInput | Prisma.SettlementWhereInput[]
   OR?: Prisma.SettlementWhereInput[]
   NOT?: Prisma.SettlementWhereInput | Prisma.SettlementWhereInput[]
@@ -297,7 +298,7 @@ export type SettlementWhereUniqueInput = Prisma.AtLeast<{
   fromUser?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   toUser?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   nudges?: Prisma.NudgeListRelationFilter
-}, "id">
+}, "id" | "groupId_fromUserId_toUserId">
 
 export type SettlementOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -433,6 +434,12 @@ export type SettlementListRelationFilter = {
 
 export type SettlementOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
+}
+
+export type SettlementGroupIdFromUserIdToUserIdCompoundUniqueInput = {
+  groupId: string
+  fromUserId: string
+  toUserId: string
 }
 
 export type SettlementCountOrderByAggregateInput = {
