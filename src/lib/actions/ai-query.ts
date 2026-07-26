@@ -4,12 +4,14 @@ import { db } from "@/lib/db";
 import { assertMember } from "@/lib/actions/groups";
 import { requireSession } from "@/lib/dal";
 import { answerGroupQuestion, getCapabilityPrimer } from "@/lib/gemini";
+import { enforceRateLimit } from "@/lib/rate-limit";
 
 export { getCapabilityPrimer };
 
 export async function askGroupQuestion(groupId: string, question: string) {
   const session = await requireSession();
   await assertMember(groupId, session.id);
+  await enforceRateLimit(`ai-query:${session.id}`, 20, 60);
 
   const [expenses, chores] = await Promise.all([
     db.expense.findMany({ where: { groupId }, include: { paidBy: true } }),

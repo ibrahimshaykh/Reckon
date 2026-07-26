@@ -8,13 +8,15 @@ import {
   correctReceiptParse,
   type ParsedReceipt,
 } from "@/lib/gemini";
+import { enforceRateLimit } from "@/lib/rate-limit";
 
 export async function uploadAndParseReceipt(
   base64: string,
   mimeType: string,
   filename: string,
 ) {
-  await requireSession();
+  const session = await requireSession();
+  await enforceRateLimit(`receipt:${session.id}`, 15, 60);
   if (!mimeType.startsWith("image/")) {
     throw new ApiError(400, "File must be an image.");
   }
@@ -37,7 +39,8 @@ export async function correctReceipt(input: {
   priorParse: ParsedReceipt;
   correction: string;
 }) {
-  await requireSession();
+  const session = await requireSession();
+  await enforceRateLimit(`receipt:${session.id}`, 15, 60);
   return correctReceiptParse(
     input.base64,
     input.mimeType,

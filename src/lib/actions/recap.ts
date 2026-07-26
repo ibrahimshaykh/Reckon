@@ -4,10 +4,12 @@ import { db } from "@/lib/db";
 import { assertMember } from "@/lib/actions/groups";
 import { requireSession } from "@/lib/dal";
 import { generateMonthlyRecap } from "@/lib/gemini";
+import { enforceRateLimit } from "@/lib/rate-limit";
 
 export async function getMonthlyRecap(groupId: string) {
   const session = await requireSession();
   await assertMember(groupId, session.id);
+  await enforceRateLimit(`recap:${session.id}`, 5, 60);
 
   const now = new Date();
   const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
