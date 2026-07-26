@@ -29,6 +29,16 @@ export default async function GroupPage({
         </ul>
         <AddMemberForm groupId={group.id} />
       </section>
+      <nav className="flex gap-2">
+        <Button
+          render={<Link href={`/groups/${group.id}/chores`} />}
+          nativeButton={false}
+          variant="outline"
+          size="sm"
+        >
+          Chores
+        </Button>
+      </nav>
       <section className="flex flex-col gap-2">
         <div className="flex items-center justify-between">
           <h2 className="text-sm font-medium text-muted-foreground">Expenses</h2>

@@ -1,0 +1,139 @@
+"use server";
+
+import { revalidatePath } from "next/cache";
+import { db } from "@/lib/db";
+import { assertMember } from "@/lib/actions/groups";
+import { requireSession } from "@/lib/dal";
+import { ApiError } from "@/lib/api-error";
+import { assignChoresForPeriod } from "@/lib/chore-rotation";
+
+type Frequency = "DAILY" | "WEEKLY" | "BIWEEKLY" | "MONTHLY";
+
+function periodLengthDays(frequency: Frequency): number {
+  switch (frequency) {
+    case "DAILY":
+      return 1;
+    case "WEEKLY":
+      return 7;
+    case "BIWEEKLY":
+      return 14;
+    case "MONTHLY":
+      return 30;
+  }
+}
+
+export async function createChore(input: {
+  groupId: string;
+  name: string;
+  effortWeight: number;
+  frequency: Frequency;
+}) {
+  const session = await requireSession();
+  await assertMember(input.groupId, session.id);
+  if (!input.name.trim()) throw new ApiError(400, "Chore name is required.");
+  if (input.effortWeight <= 0) throw new ApiError(400, "Effort must be positive.");
+
+  await db.chore.create({
+    data: {
+      groupId: input.groupId,
+      name: input.name.trim(),
+      effortWeight: input.effortWeight,
+      frequency: input.frequency,
+    },
+  });
+
+  revalidatePath(`/groups/${input.groupId}/chores`);
+}
+
+export async function rotateChores(groupId: string) {
+  const session = await requireSession();
+  await assertMember(groupId, session.id);
+
+  const [chores, members, pastAssignments] = await Promise.all([
+    db.chore.findMany({ where: { groupId } }),
+    db.groupMember.findMany({ where: { groupId }, include: { user: true } }),
+    db.choreAssignment.findMany({ where: { chore: { groupId } } }),
+  ]);
+
+  const now = new Date();
+  const needsAssignment = chores.filter((chore) => {
+    const latest = pastAssignments
+      .filter((a) => a.choreId === chore.id)
+      .sort((a, b) => b.periodEnd.getTime() - a.periodEnd.getTime())[0];
+    return !latest || latest.periodEnd < now;
+  });
+
+  if (needsAssignment.length === 0 || members.length === 0) {
+    return { created: 0 };
+  }
+
+  const cumulative: Record<string, number> = {};
+  members.forEach((m) => (cumulative[m.userId] = 0));
+  pastAssignments.forEach((a) => {
+    const chore = chores.find((c) => c.id === a.choreId);
+    if (chore) cumulative[a.userId] = (cumulative[a.userId] ?? 0) + chore.effortWeight;
+  });
+
+  const assignments = assignChoresForPeriod(
+    needsAssignment.map((c) => ({ id: c.id, effortWeight: c.effortWeight })),
+    members.map((m) => ({ userId: m.userId, cumulativeEffort: cumulative[m.userId] ?? 0 })),
+  );
+
+  await Promise.all(
+    needsAssignment.map((chore) => {
+      const userId = assignments[chore.id];
+      const assignee = members.find((m) => m.userId === userId);
+      const periodEnd = new Date(
+        now.getTime() + periodLengthDays(chore.frequency) * 86_400_000,
+      );
+
+      return db.choreAssignment.create({
+        data: {
+          choreId: chore.id,
+          userId,
+          periodStart: now,
+          periodEnd,
+          explanation: {
+            steps: [
+              `${chore.name} has effort weight ${chore.effortWeight}.`,
+              `${assignee?.user.displayName} had the lowest cumulative effort (${cumulative[userId] ?? 0}) of the group.`,
+              `Assigned to keep total effort balanced over time.`,
+            ],
+          },
+        },
+      });
+    }),
+  );
+
+  revalidatePath(`/groups/${groupId}/chores`);
+  return { created: needsAssignment.length };
+}
+
+export async function listChores(groupId: string) {
+  const session = await requireSession();
+  await assertMember(groupId, session.id);
+
+  const chores = await db.chore.findMany({
+    where: { groupId },
+    include: {
+      assignments: {
+        orderBy: { periodStart: "desc" },
+        take: 1,
+        include: { user: true },
+      },
+    },
+  });
+
+  return chores.map((c) => {
+    const current = c.assignments[0];
+    return {
+      id: c.id,
+      name: c.name,
+      effortWeight: c.effortWeight,
+      frequency: c.frequency,
+      currentAssignee: current?.user.displayName ?? null,
+      periodEnd: current?.periodEnd.toISOString() ?? null,
+      explanation: (current?.explanation as { steps: string[] } | undefined) ?? null,
+    };
+  });
+}
