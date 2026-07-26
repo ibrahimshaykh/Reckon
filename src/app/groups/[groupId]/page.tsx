@@ -47,6 +47,14 @@ export default async function GroupPage({
           Availability
         </Button>
         <Button
+          render={<Link href={`/groups/${group.id}/ious`} />}
+          nativeButton={false}
+          variant="outline"
+          size="sm"
+        >
+          IOUs
+        </Button>
+        <Button
           render={<Link href={`/groups/${group.id}/proposals`} />}
           nativeButton={false}
           variant="outline"

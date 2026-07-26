@@ -6,16 +6,19 @@ import { assertMember } from "@/lib/actions/groups";
 import { requireSession } from "@/lib/dal";
 import { ApiError } from "@/lib/api-error";
 import { toCents, fromCents } from "@/lib/money";
-import { computeBalances, computeSettlements } from "@/lib/settlement";
+import { computeBalances, computeSettlements, applyIOUs } from "@/lib/settlement";
 
 export async function getGroupSettlements(groupId: string) {
   const session = await requireSession();
   await assertMember(groupId, session.id);
 
-  const expenses = await db.expense.findMany({
-    where: { groupId },
-    include: { items: { include: { participants: true } } },
-  });
+  const [expenses, ious] = await Promise.all([
+    db.expense.findMany({
+      where: { groupId },
+      include: { items: { include: { participants: true } } },
+    }),
+    db.iOU.findMany({ where: { groupId } }),
+  ]);
 
   const flattened = expenses.flatMap((expense) =>
     expense.items.map((item) => ({
@@ -28,7 +31,14 @@ export async function getGroupSettlements(groupId: string) {
     })),
   );
 
-  const balances = computeBalances(flattened);
+  const balances = applyIOUs(
+    computeBalances(flattened),
+    ious.map((i) => ({
+      fromUserId: i.fromUserId,
+      toUserId: i.toUserId,
+      amountCents: toCents(i.amount),
+    })),
+  );
   const computed = computeSettlements(balances);
 
   const persisted = await Promise.all(

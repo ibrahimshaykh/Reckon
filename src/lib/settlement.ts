@@ -7,6 +7,23 @@ export type SettlementResult = {
   };
 };
 
+export type IOUInput = { fromUserId: string; toUserId: string; amountCents: number };
+
+// An IOU is a direct debt outside any expense — "I lent Sam $20" — folded
+// into the same balance sheet the expense-based settlement uses, so one
+// "who owes who" list covers both.
+export function applyIOUs(
+  balances: Record<string, number>,
+  ious: IOUInput[],
+): Record<string, number> {
+  const result = { ...balances };
+  for (const iou of ious) {
+    result[iou.fromUserId] = (result[iou.fromUserId] ?? 0) - iou.amountCents;
+    result[iou.toUserId] = (result[iou.toUserId] ?? 0) + iou.amountCents;
+  }
+  return result;
+}
+
 // Greedy debt minimization: repeatedly match the largest creditor against
 // the largest debtor until every balance is zero. This is the standard
 // minimum-transaction heuristic — not always the mathematically fewest
