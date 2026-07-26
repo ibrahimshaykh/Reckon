@@ -95,6 +95,9 @@ export const UserScalarFieldEnum = {
   dietaryRestrictions: 'dietaryRestrictions',
   homeLatitude: 'homeLatitude',
   homeLongitude: 'homeLongitude',
+  venmoHandle: 'venmoHandle',
+  paypalHandle: 'paypalHandle',
+  cashappHandle: 'cashappHandle',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

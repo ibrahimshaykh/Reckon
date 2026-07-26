@@ -47,6 +47,9 @@ export type UserMinAggregateOutputType = {
   budgetLimit: runtime.Decimal | null
   homeLatitude: number | null
   homeLongitude: number | null
+  venmoHandle: string | null
+  paypalHandle: string | null
+  cashappHandle: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -60,6 +63,9 @@ export type UserMaxAggregateOutputType = {
   budgetLimit: runtime.Decimal | null
   homeLatitude: number | null
   homeLongitude: number | null
+  venmoHandle: string | null
+  paypalHandle: string | null
+  cashappHandle: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -74,6 +80,9 @@ export type UserCountAggregateOutputType = {
   dietaryRestrictions: number
   homeLatitude: number
   homeLongitude: number
+  venmoHandle: number
+  paypalHandle: number
+  cashappHandle: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -101,6 +110,9 @@ export type UserMinAggregateInputType = {
   budgetLimit?: true
   homeLatitude?: true
   homeLongitude?: true
+  venmoHandle?: true
+  paypalHandle?: true
+  cashappHandle?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -114,6 +126,9 @@ export type UserMaxAggregateInputType = {
   budgetLimit?: true
   homeLatitude?: true
   homeLongitude?: true
+  venmoHandle?: true
+  paypalHandle?: true
+  cashappHandle?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -128,6 +143,9 @@ export type UserCountAggregateInputType = {
   dietaryRestrictions?: true
   homeLatitude?: true
   homeLongitude?: true
+  venmoHandle?: true
+  paypalHandle?: true
+  cashappHandle?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -229,6 +247,9 @@ export type UserGroupByOutputType = {
   dietaryRestrictions: string[]
   homeLatitude: number | null
   homeLongitude: number | null
+  venmoHandle: string | null
+  paypalHandle: string | null
+  cashappHandle: string | null
   createdAt: Date
   updatedAt: Date
   _count: UserCountAggregateOutputType | null
@@ -266,6 +287,9 @@ export type UserWhereInput = {
   dietaryRestrictions?: Prisma.StringNullableListFilter<"User">
   homeLatitude?: Prisma.FloatNullableFilter<"User"> | number | null
   homeLongitude?: Prisma.FloatNullableFilter<"User"> | number | null
+  venmoHandle?: Prisma.StringNullableFilter<"User"> | string | null
+  paypalHandle?: Prisma.StringNullableFilter<"User"> | string | null
+  cashappHandle?: Prisma.StringNullableFilter<"User"> | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   groupMemberships?: Prisma.GroupMemberListRelationFilter
@@ -292,6 +316,9 @@ export type UserOrderByWithRelationInput = {
   dietaryRestrictions?: Prisma.SortOrder
   homeLatitude?: Prisma.SortOrderInput | Prisma.SortOrder
   homeLongitude?: Prisma.SortOrderInput | Prisma.SortOrder
+  venmoHandle?: Prisma.SortOrderInput | Prisma.SortOrder
+  paypalHandle?: Prisma.SortOrderInput | Prisma.SortOrder
+  cashappHandle?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   groupMemberships?: Prisma.GroupMemberOrderByRelationAggregateInput
@@ -321,6 +348,9 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   dietaryRestrictions?: Prisma.StringNullableListFilter<"User">
   homeLatitude?: Prisma.FloatNullableFilter<"User"> | number | null
   homeLongitude?: Prisma.FloatNullableFilter<"User"> | number | null
+  venmoHandle?: Prisma.StringNullableFilter<"User"> | string | null
+  paypalHandle?: Prisma.StringNullableFilter<"User"> | string | null
+  cashappHandle?: Prisma.StringNullableFilter<"User"> | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   groupMemberships?: Prisma.GroupMemberListRelationFilter
@@ -347,6 +377,9 @@ export type UserOrderByWithAggregationInput = {
   dietaryRestrictions?: Prisma.SortOrder
   homeLatitude?: Prisma.SortOrderInput | Prisma.SortOrder
   homeLongitude?: Prisma.SortOrderInput | Prisma.SortOrder
+  venmoHandle?: Prisma.SortOrderInput | Prisma.SortOrder
+  paypalHandle?: Prisma.SortOrderInput | Prisma.SortOrder
+  cashappHandle?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
@@ -369,6 +402,9 @@ export type UserScalarWhereWithAggregatesInput = {
   dietaryRestrictions?: Prisma.StringNullableListFilter<"User">
   homeLatitude?: Prisma.FloatNullableWithAggregatesFilter<"User"> | number | null
   homeLongitude?: Prisma.FloatNullableWithAggregatesFilter<"User"> | number | null
+  venmoHandle?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  paypalHandle?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  cashappHandle?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
 }
@@ -383,6 +419,9 @@ export type UserCreateInput = {
   dietaryRestrictions?: Prisma.UserCreatedietaryRestrictionsInput | string[]
   homeLatitude?: number | null
   homeLongitude?: number | null
+  venmoHandle?: string | null
+  paypalHandle?: string | null
+  cashappHandle?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   groupMemberships?: Prisma.GroupMemberCreateNestedManyWithoutUserInput
@@ -409,6 +448,9 @@ export type UserUncheckedCreateInput = {
   dietaryRestrictions?: Prisma.UserCreatedietaryRestrictionsInput | string[]
   homeLatitude?: number | null
   homeLongitude?: number | null
+  venmoHandle?: string | null
+  paypalHandle?: string | null
+  cashappHandle?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   groupMemberships?: Prisma.GroupMemberUncheckedCreateNestedManyWithoutUserInput
@@ -435,6 +477,9 @@ export type UserUpdateInput = {
   dietaryRestrictions?: Prisma.UserUpdatedietaryRestrictionsInput | string[]
   homeLatitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   homeLongitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  venmoHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paypalHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cashappHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   groupMemberships?: Prisma.GroupMemberUpdateManyWithoutUserNestedInput
@@ -461,6 +506,9 @@ export type UserUncheckedUpdateInput = {
   dietaryRestrictions?: Prisma.UserUpdatedietaryRestrictionsInput | string[]
   homeLatitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   homeLongitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  venmoHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paypalHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cashappHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   groupMemberships?: Prisma.GroupMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -487,6 +535,9 @@ export type UserCreateManyInput = {
   dietaryRestrictions?: Prisma.UserCreatedietaryRestrictionsInput | string[]
   homeLatitude?: number | null
   homeLongitude?: number | null
+  venmoHandle?: string | null
+  paypalHandle?: string | null
+  cashappHandle?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -501,6 +552,9 @@ export type UserUpdateManyMutationInput = {
   dietaryRestrictions?: Prisma.UserUpdatedietaryRestrictionsInput | string[]
   homeLatitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   homeLongitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  venmoHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paypalHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cashappHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -515,6 +569,9 @@ export type UserUncheckedUpdateManyInput = {
   dietaryRestrictions?: Prisma.UserUpdatedietaryRestrictionsInput | string[]
   homeLatitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   homeLongitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  venmoHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paypalHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cashappHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -537,6 +594,9 @@ export type UserCountOrderByAggregateInput = {
   dietaryRestrictions?: Prisma.SortOrder
   homeLatitude?: Prisma.SortOrder
   homeLongitude?: Prisma.SortOrder
+  venmoHandle?: Prisma.SortOrder
+  paypalHandle?: Prisma.SortOrder
+  cashappHandle?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -556,6 +616,9 @@ export type UserMaxOrderByAggregateInput = {
   budgetLimit?: Prisma.SortOrder
   homeLatitude?: Prisma.SortOrder
   homeLongitude?: Prisma.SortOrder
+  venmoHandle?: Prisma.SortOrder
+  paypalHandle?: Prisma.SortOrder
+  cashappHandle?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -569,6 +632,9 @@ export type UserMinOrderByAggregateInput = {
   budgetLimit?: Prisma.SortOrder
   homeLatitude?: Prisma.SortOrder
   homeLongitude?: Prisma.SortOrder
+  venmoHandle?: Prisma.SortOrder
+  paypalHandle?: Prisma.SortOrder
+  cashappHandle?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -799,6 +865,9 @@ export type UserCreateWithoutCreatedGroupsInput = {
   dietaryRestrictions?: Prisma.UserCreatedietaryRestrictionsInput | string[]
   homeLatitude?: number | null
   homeLongitude?: number | null
+  venmoHandle?: string | null
+  paypalHandle?: string | null
+  cashappHandle?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   groupMemberships?: Prisma.GroupMemberCreateNestedManyWithoutUserInput
@@ -824,6 +893,9 @@ export type UserUncheckedCreateWithoutCreatedGroupsInput = {
   dietaryRestrictions?: Prisma.UserCreatedietaryRestrictionsInput | string[]
   homeLatitude?: number | null
   homeLongitude?: number | null
+  venmoHandle?: string | null
+  paypalHandle?: string | null
+  cashappHandle?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   groupMemberships?: Prisma.GroupMemberUncheckedCreateNestedManyWithoutUserInput
@@ -865,6 +937,9 @@ export type UserUpdateWithoutCreatedGroupsInput = {
   dietaryRestrictions?: Prisma.UserUpdatedietaryRestrictionsInput | string[]
   homeLatitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   homeLongitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  venmoHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paypalHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cashappHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   groupMemberships?: Prisma.GroupMemberUpdateManyWithoutUserNestedInput
@@ -890,6 +965,9 @@ export type UserUncheckedUpdateWithoutCreatedGroupsInput = {
   dietaryRestrictions?: Prisma.UserUpdatedietaryRestrictionsInput | string[]
   homeLatitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   homeLongitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  venmoHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paypalHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cashappHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   groupMemberships?: Prisma.GroupMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -915,6 +993,9 @@ export type UserCreateWithoutGroupMembershipsInput = {
   dietaryRestrictions?: Prisma.UserCreatedietaryRestrictionsInput | string[]
   homeLatitude?: number | null
   homeLongitude?: number | null
+  venmoHandle?: string | null
+  paypalHandle?: string | null
+  cashappHandle?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   createdGroups?: Prisma.GroupCreateNestedManyWithoutCreatedByInput
@@ -940,6 +1021,9 @@ export type UserUncheckedCreateWithoutGroupMembershipsInput = {
   dietaryRestrictions?: Prisma.UserCreatedietaryRestrictionsInput | string[]
   homeLatitude?: number | null
   homeLongitude?: number | null
+  venmoHandle?: string | null
+  paypalHandle?: string | null
+  cashappHandle?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   createdGroups?: Prisma.GroupUncheckedCreateNestedManyWithoutCreatedByInput
@@ -981,6 +1065,9 @@ export type UserUpdateWithoutGroupMembershipsInput = {
   dietaryRestrictions?: Prisma.UserUpdatedietaryRestrictionsInput | string[]
   homeLatitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   homeLongitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  venmoHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paypalHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cashappHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdGroups?: Prisma.GroupUpdateManyWithoutCreatedByNestedInput
@@ -1006,6 +1093,9 @@ export type UserUncheckedUpdateWithoutGroupMembershipsInput = {
   dietaryRestrictions?: Prisma.UserUpdatedietaryRestrictionsInput | string[]
   homeLatitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   homeLongitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  venmoHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paypalHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cashappHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdGroups?: Prisma.GroupUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -1031,6 +1121,9 @@ export type UserCreateWithoutPaidExpensesInput = {
   dietaryRestrictions?: Prisma.UserCreatedietaryRestrictionsInput | string[]
   homeLatitude?: number | null
   homeLongitude?: number | null
+  venmoHandle?: string | null
+  paypalHandle?: string | null
+  cashappHandle?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   groupMemberships?: Prisma.GroupMemberCreateNestedManyWithoutUserInput
@@ -1056,6 +1149,9 @@ export type UserUncheckedCreateWithoutPaidExpensesInput = {
   dietaryRestrictions?: Prisma.UserCreatedietaryRestrictionsInput | string[]
   homeLatitude?: number | null
   homeLongitude?: number | null
+  venmoHandle?: string | null
+  paypalHandle?: string | null
+  cashappHandle?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   groupMemberships?: Prisma.GroupMemberUncheckedCreateNestedManyWithoutUserInput
@@ -1097,6 +1193,9 @@ export type UserUpdateWithoutPaidExpensesInput = {
   dietaryRestrictions?: Prisma.UserUpdatedietaryRestrictionsInput | string[]
   homeLatitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   homeLongitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  venmoHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paypalHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cashappHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   groupMemberships?: Prisma.GroupMemberUpdateManyWithoutUserNestedInput
@@ -1122,6 +1221,9 @@ export type UserUncheckedUpdateWithoutPaidExpensesInput = {
   dietaryRestrictions?: Prisma.UserUpdatedietaryRestrictionsInput | string[]
   homeLatitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   homeLongitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  venmoHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paypalHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cashappHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   groupMemberships?: Prisma.GroupMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -1147,6 +1249,9 @@ export type UserCreateWithoutExpenseParticipationsInput = {
   dietaryRestrictions?: Prisma.UserCreatedietaryRestrictionsInput | string[]
   homeLatitude?: number | null
   homeLongitude?: number | null
+  venmoHandle?: string | null
+  paypalHandle?: string | null
+  cashappHandle?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   groupMemberships?: Prisma.GroupMemberCreateNestedManyWithoutUserInput
@@ -1172,6 +1277,9 @@ export type UserUncheckedCreateWithoutExpenseParticipationsInput = {
   dietaryRestrictions?: Prisma.UserCreatedietaryRestrictionsInput | string[]
   homeLatitude?: number | null
   homeLongitude?: number | null
+  venmoHandle?: string | null
+  paypalHandle?: string | null
+  cashappHandle?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   groupMemberships?: Prisma.GroupMemberUncheckedCreateNestedManyWithoutUserInput
@@ -1213,6 +1321,9 @@ export type UserUpdateWithoutExpenseParticipationsInput = {
   dietaryRestrictions?: Prisma.UserUpdatedietaryRestrictionsInput | string[]
   homeLatitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   homeLongitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  venmoHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paypalHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cashappHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   groupMemberships?: Prisma.GroupMemberUpdateManyWithoutUserNestedInput
@@ -1238,6 +1349,9 @@ export type UserUncheckedUpdateWithoutExpenseParticipationsInput = {
   dietaryRestrictions?: Prisma.UserUpdatedietaryRestrictionsInput | string[]
   homeLatitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   homeLongitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  venmoHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paypalHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cashappHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   groupMemberships?: Prisma.GroupMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -1263,6 +1377,9 @@ export type UserCreateWithoutSettlementsOwedInput = {
   dietaryRestrictions?: Prisma.UserCreatedietaryRestrictionsInput | string[]
   homeLatitude?: number | null
   homeLongitude?: number | null
+  venmoHandle?: string | null
+  paypalHandle?: string | null
+  cashappHandle?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   groupMemberships?: Prisma.GroupMemberCreateNestedManyWithoutUserInput
@@ -1288,6 +1405,9 @@ export type UserUncheckedCreateWithoutSettlementsOwedInput = {
   dietaryRestrictions?: Prisma.UserCreatedietaryRestrictionsInput | string[]
   homeLatitude?: number | null
   homeLongitude?: number | null
+  venmoHandle?: string | null
+  paypalHandle?: string | null
+  cashappHandle?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   groupMemberships?: Prisma.GroupMemberUncheckedCreateNestedManyWithoutUserInput
@@ -1318,6 +1438,9 @@ export type UserCreateWithoutSettlementsReceivedInput = {
   dietaryRestrictions?: Prisma.UserCreatedietaryRestrictionsInput | string[]
   homeLatitude?: number | null
   homeLongitude?: number | null
+  venmoHandle?: string | null
+  paypalHandle?: string | null
+  cashappHandle?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   groupMemberships?: Prisma.GroupMemberCreateNestedManyWithoutUserInput
@@ -1343,6 +1466,9 @@ export type UserUncheckedCreateWithoutSettlementsReceivedInput = {
   dietaryRestrictions?: Prisma.UserCreatedietaryRestrictionsInput | string[]
   homeLatitude?: number | null
   homeLongitude?: number | null
+  venmoHandle?: string | null
+  paypalHandle?: string | null
+  cashappHandle?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   groupMemberships?: Prisma.GroupMemberUncheckedCreateNestedManyWithoutUserInput
@@ -1384,6 +1510,9 @@ export type UserUpdateWithoutSettlementsOwedInput = {
   dietaryRestrictions?: Prisma.UserUpdatedietaryRestrictionsInput | string[]
   homeLatitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   homeLongitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  venmoHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paypalHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cashappHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   groupMemberships?: Prisma.GroupMemberUpdateManyWithoutUserNestedInput
@@ -1409,6 +1538,9 @@ export type UserUncheckedUpdateWithoutSettlementsOwedInput = {
   dietaryRestrictions?: Prisma.UserUpdatedietaryRestrictionsInput | string[]
   homeLatitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   homeLongitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  venmoHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paypalHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cashappHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   groupMemberships?: Prisma.GroupMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -1445,6 +1577,9 @@ export type UserUpdateWithoutSettlementsReceivedInput = {
   dietaryRestrictions?: Prisma.UserUpdatedietaryRestrictionsInput | string[]
   homeLatitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   homeLongitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  venmoHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paypalHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cashappHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   groupMemberships?: Prisma.GroupMemberUpdateManyWithoutUserNestedInput
@@ -1470,6 +1605,9 @@ export type UserUncheckedUpdateWithoutSettlementsReceivedInput = {
   dietaryRestrictions?: Prisma.UserUpdatedietaryRestrictionsInput | string[]
   homeLatitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   homeLongitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  venmoHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paypalHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cashappHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   groupMemberships?: Prisma.GroupMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -1495,6 +1633,9 @@ export type UserCreateWithoutIousOwedInput = {
   dietaryRestrictions?: Prisma.UserCreatedietaryRestrictionsInput | string[]
   homeLatitude?: number | null
   homeLongitude?: number | null
+  venmoHandle?: string | null
+  paypalHandle?: string | null
+  cashappHandle?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   groupMemberships?: Prisma.GroupMemberCreateNestedManyWithoutUserInput
@@ -1520,6 +1661,9 @@ export type UserUncheckedCreateWithoutIousOwedInput = {
   dietaryRestrictions?: Prisma.UserCreatedietaryRestrictionsInput | string[]
   homeLatitude?: number | null
   homeLongitude?: number | null
+  venmoHandle?: string | null
+  paypalHandle?: string | null
+  cashappHandle?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   groupMemberships?: Prisma.GroupMemberUncheckedCreateNestedManyWithoutUserInput
@@ -1550,6 +1694,9 @@ export type UserCreateWithoutIousLentInput = {
   dietaryRestrictions?: Prisma.UserCreatedietaryRestrictionsInput | string[]
   homeLatitude?: number | null
   homeLongitude?: number | null
+  venmoHandle?: string | null
+  paypalHandle?: string | null
+  cashappHandle?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   groupMemberships?: Prisma.GroupMemberCreateNestedManyWithoutUserInput
@@ -1575,6 +1722,9 @@ export type UserUncheckedCreateWithoutIousLentInput = {
   dietaryRestrictions?: Prisma.UserCreatedietaryRestrictionsInput | string[]
   homeLatitude?: number | null
   homeLongitude?: number | null
+  venmoHandle?: string | null
+  paypalHandle?: string | null
+  cashappHandle?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   groupMemberships?: Prisma.GroupMemberUncheckedCreateNestedManyWithoutUserInput
@@ -1616,6 +1766,9 @@ export type UserUpdateWithoutIousOwedInput = {
   dietaryRestrictions?: Prisma.UserUpdatedietaryRestrictionsInput | string[]
   homeLatitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   homeLongitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  venmoHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paypalHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cashappHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   groupMemberships?: Prisma.GroupMemberUpdateManyWithoutUserNestedInput
@@ -1641,6 +1794,9 @@ export type UserUncheckedUpdateWithoutIousOwedInput = {
   dietaryRestrictions?: Prisma.UserUpdatedietaryRestrictionsInput | string[]
   homeLatitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   homeLongitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  venmoHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paypalHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cashappHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   groupMemberships?: Prisma.GroupMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -1677,6 +1833,9 @@ export type UserUpdateWithoutIousLentInput = {
   dietaryRestrictions?: Prisma.UserUpdatedietaryRestrictionsInput | string[]
   homeLatitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   homeLongitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  venmoHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paypalHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cashappHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   groupMemberships?: Prisma.GroupMemberUpdateManyWithoutUserNestedInput
@@ -1702,6 +1861,9 @@ export type UserUncheckedUpdateWithoutIousLentInput = {
   dietaryRestrictions?: Prisma.UserUpdatedietaryRestrictionsInput | string[]
   homeLatitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   homeLongitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  venmoHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paypalHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cashappHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   groupMemberships?: Prisma.GroupMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -1727,6 +1889,9 @@ export type UserCreateWithoutChoreAssignmentsInput = {
   dietaryRestrictions?: Prisma.UserCreatedietaryRestrictionsInput | string[]
   homeLatitude?: number | null
   homeLongitude?: number | null
+  venmoHandle?: string | null
+  paypalHandle?: string | null
+  cashappHandle?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   groupMemberships?: Prisma.GroupMemberCreateNestedManyWithoutUserInput
@@ -1752,6 +1917,9 @@ export type UserUncheckedCreateWithoutChoreAssignmentsInput = {
   dietaryRestrictions?: Prisma.UserCreatedietaryRestrictionsInput | string[]
   homeLatitude?: number | null
   homeLongitude?: number | null
+  venmoHandle?: string | null
+  paypalHandle?: string | null
+  cashappHandle?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   groupMemberships?: Prisma.GroupMemberUncheckedCreateNestedManyWithoutUserInput
@@ -1793,6 +1961,9 @@ export type UserUpdateWithoutChoreAssignmentsInput = {
   dietaryRestrictions?: Prisma.UserUpdatedietaryRestrictionsInput | string[]
   homeLatitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   homeLongitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  venmoHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paypalHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cashappHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   groupMemberships?: Prisma.GroupMemberUpdateManyWithoutUserNestedInput
@@ -1818,6 +1989,9 @@ export type UserUncheckedUpdateWithoutChoreAssignmentsInput = {
   dietaryRestrictions?: Prisma.UserUpdatedietaryRestrictionsInput | string[]
   homeLatitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   homeLongitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  venmoHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paypalHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cashappHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   groupMemberships?: Prisma.GroupMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -1843,6 +2017,9 @@ export type UserCreateWithoutAvailabilityEntriesInput = {
   dietaryRestrictions?: Prisma.UserCreatedietaryRestrictionsInput | string[]
   homeLatitude?: number | null
   homeLongitude?: number | null
+  venmoHandle?: string | null
+  paypalHandle?: string | null
+  cashappHandle?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   groupMemberships?: Prisma.GroupMemberCreateNestedManyWithoutUserInput
@@ -1868,6 +2045,9 @@ export type UserUncheckedCreateWithoutAvailabilityEntriesInput = {
   dietaryRestrictions?: Prisma.UserCreatedietaryRestrictionsInput | string[]
   homeLatitude?: number | null
   homeLongitude?: number | null
+  venmoHandle?: string | null
+  paypalHandle?: string | null
+  cashappHandle?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   groupMemberships?: Prisma.GroupMemberUncheckedCreateNestedManyWithoutUserInput
@@ -1909,6 +2089,9 @@ export type UserUpdateWithoutAvailabilityEntriesInput = {
   dietaryRestrictions?: Prisma.UserUpdatedietaryRestrictionsInput | string[]
   homeLatitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   homeLongitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  venmoHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paypalHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cashappHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   groupMemberships?: Prisma.GroupMemberUpdateManyWithoutUserNestedInput
@@ -1934,6 +2117,9 @@ export type UserUncheckedUpdateWithoutAvailabilityEntriesInput = {
   dietaryRestrictions?: Prisma.UserUpdatedietaryRestrictionsInput | string[]
   homeLatitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   homeLongitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  venmoHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paypalHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cashappHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   groupMemberships?: Prisma.GroupMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -1959,6 +2145,9 @@ export type UserCreateWithoutProposalsCreatedInput = {
   dietaryRestrictions?: Prisma.UserCreatedietaryRestrictionsInput | string[]
   homeLatitude?: number | null
   homeLongitude?: number | null
+  venmoHandle?: string | null
+  paypalHandle?: string | null
+  cashappHandle?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   groupMemberships?: Prisma.GroupMemberCreateNestedManyWithoutUserInput
@@ -1984,6 +2173,9 @@ export type UserUncheckedCreateWithoutProposalsCreatedInput = {
   dietaryRestrictions?: Prisma.UserCreatedietaryRestrictionsInput | string[]
   homeLatitude?: number | null
   homeLongitude?: number | null
+  venmoHandle?: string | null
+  paypalHandle?: string | null
+  cashappHandle?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   groupMemberships?: Prisma.GroupMemberUncheckedCreateNestedManyWithoutUserInput
@@ -2025,6 +2217,9 @@ export type UserUpdateWithoutProposalsCreatedInput = {
   dietaryRestrictions?: Prisma.UserUpdatedietaryRestrictionsInput | string[]
   homeLatitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   homeLongitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  venmoHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paypalHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cashappHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   groupMemberships?: Prisma.GroupMemberUpdateManyWithoutUserNestedInput
@@ -2050,6 +2245,9 @@ export type UserUncheckedUpdateWithoutProposalsCreatedInput = {
   dietaryRestrictions?: Prisma.UserUpdatedietaryRestrictionsInput | string[]
   homeLatitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   homeLongitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  venmoHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paypalHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cashappHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   groupMemberships?: Prisma.GroupMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -2075,6 +2273,9 @@ export type UserCreateWithoutProposalFlagsInput = {
   dietaryRestrictions?: Prisma.UserCreatedietaryRestrictionsInput | string[]
   homeLatitude?: number | null
   homeLongitude?: number | null
+  venmoHandle?: string | null
+  paypalHandle?: string | null
+  cashappHandle?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   groupMemberships?: Prisma.GroupMemberCreateNestedManyWithoutUserInput
@@ -2100,6 +2301,9 @@ export type UserUncheckedCreateWithoutProposalFlagsInput = {
   dietaryRestrictions?: Prisma.UserCreatedietaryRestrictionsInput | string[]
   homeLatitude?: number | null
   homeLongitude?: number | null
+  venmoHandle?: string | null
+  paypalHandle?: string | null
+  cashappHandle?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   groupMemberships?: Prisma.GroupMemberUncheckedCreateNestedManyWithoutUserInput
@@ -2141,6 +2345,9 @@ export type UserUpdateWithoutProposalFlagsInput = {
   dietaryRestrictions?: Prisma.UserUpdatedietaryRestrictionsInput | string[]
   homeLatitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   homeLongitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  venmoHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paypalHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cashappHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   groupMemberships?: Prisma.GroupMemberUpdateManyWithoutUserNestedInput
@@ -2166,6 +2373,9 @@ export type UserUncheckedUpdateWithoutProposalFlagsInput = {
   dietaryRestrictions?: Prisma.UserUpdatedietaryRestrictionsInput | string[]
   homeLatitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   homeLongitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  venmoHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paypalHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cashappHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   groupMemberships?: Prisma.GroupMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -2321,6 +2531,9 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   dietaryRestrictions?: boolean
   homeLatitude?: boolean
   homeLongitude?: boolean
+  venmoHandle?: boolean
+  paypalHandle?: boolean
+  cashappHandle?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   groupMemberships?: boolean | Prisma.User$groupMembershipsArgs<ExtArgs>
@@ -2348,6 +2561,9 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   dietaryRestrictions?: boolean
   homeLatitude?: boolean
   homeLongitude?: boolean
+  venmoHandle?: boolean
+  paypalHandle?: boolean
+  cashappHandle?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["user"]>
@@ -2362,6 +2578,9 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   dietaryRestrictions?: boolean
   homeLatitude?: boolean
   homeLongitude?: boolean
+  venmoHandle?: boolean
+  paypalHandle?: boolean
+  cashappHandle?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["user"]>
@@ -2376,11 +2595,14 @@ export type UserSelectScalar = {
   dietaryRestrictions?: boolean
   homeLatitude?: boolean
   homeLongitude?: boolean
+  venmoHandle?: boolean
+  paypalHandle?: boolean
+  cashappHandle?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "clerkId" | "email" | "displayName" | "avatarUrl" | "budgetLimit" | "dietaryRestrictions" | "homeLatitude" | "homeLongitude" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "clerkId" | "email" | "displayName" | "avatarUrl" | "budgetLimit" | "dietaryRestrictions" | "homeLatitude" | "homeLongitude" | "venmoHandle" | "paypalHandle" | "cashappHandle" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   groupMemberships?: boolean | Prisma.User$groupMembershipsArgs<ExtArgs>
   createdGroups?: boolean | Prisma.User$createdGroupsArgs<ExtArgs>
@@ -2425,6 +2647,9 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     dietaryRestrictions: string[]
     homeLatitude: number | null
     homeLongitude: number | null
+    venmoHandle: string | null
+    paypalHandle: string | null
+    cashappHandle: string | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["user"]>
@@ -2871,6 +3096,9 @@ export interface UserFieldRefs {
   readonly dietaryRestrictions: Prisma.FieldRef<"User", 'String[]'>
   readonly homeLatitude: Prisma.FieldRef<"User", 'Float'>
   readonly homeLongitude: Prisma.FieldRef<"User", 'Float'>
+  readonly venmoHandle: Prisma.FieldRef<"User", 'String'>
+  readonly paypalHandle: Prisma.FieldRef<"User", 'String'>
+  readonly cashappHandle: Prisma.FieldRef<"User", 'String'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"User", 'DateTime'>
 }

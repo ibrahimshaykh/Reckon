@@ -4,7 +4,6 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { markPaid, confirmReceived } from "@/lib/actions/settlements";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { buildPayLink, type PayProvider } from "@/lib/pay-links";
 
 type Settlement = {
@@ -15,6 +14,9 @@ type Settlement = {
   fromName: string;
   toName: string;
   amountCents: number;
+  toVenmoHandle: string | null;
+  toPaypalHandle: string | null;
+  toCashappHandle: string | null;
   explanation: { steps: string[] };
 };
 
@@ -47,17 +49,23 @@ function SettlementRow({
 }) {
   const router = useRouter();
   const [showMath, setShowMath] = useState(false);
-  const [handle, setHandle] = useState("");
   const [pending, setPending] = useState(false);
 
   const amount = (settlement.amountCents / 100).toFixed(2);
   const isPayer = settlement.fromUserId === currentUserId;
   const isPayee = settlement.toUserId === currentUserId;
 
+  const handlesByProvider: Record<PayProvider, string | null> = {
+    venmo: settlement.toVenmoHandle,
+    paypal: settlement.toPaypalHandle,
+    cashapp: settlement.toCashappHandle,
+  };
+
   function pay(provider: PayProvider) {
-    if (!handle.trim()) return;
+    const providerHandle = handlesByProvider[provider];
+    if (!providerHandle) return;
     const url = buildPayLink(provider, {
-      handle,
+      handle: providerHandle,
       amountCents: settlement.amountCents,
       note: `Reckon settle-up`,
     });
@@ -100,15 +108,22 @@ function SettlementRow({
         <>
           {isPayer && (
             <div className="mt-2 flex items-center gap-2">
-              <Input
-                value={handle}
-                onChange={(e) => setHandle(e.target.value)}
-                placeholder="@their-handle"
-                className="max-w-40"
-              />
-              <Button size="sm" onClick={() => pay("venmo")}>Venmo</Button>
-              <Button size="sm" onClick={() => pay("paypal")}>PayPal</Button>
-              <Button size="sm" onClick={() => pay("cashapp")}>Cash App</Button>
+              {settlement.toVenmoHandle && (
+                <Button size="sm" onClick={() => pay("venmo")}>Venmo</Button>
+              )}
+              {settlement.toPaypalHandle && (
+                <Button size="sm" onClick={() => pay("paypal")}>PayPal</Button>
+              )}
+              {settlement.toCashappHandle && (
+                <Button size="sm" onClick={() => pay("cashapp")}>Cash App</Button>
+              )}
+              {!settlement.toVenmoHandle &&
+                !settlement.toPaypalHandle &&
+                !settlement.toCashappHandle && (
+                  <p className="text-xs text-muted-foreground">
+                    {settlement.toName} hasn&apos;t added a payment handle yet.
+                  </p>
+                )}
             </div>
           )}
           <div className="mt-2 flex gap-2">

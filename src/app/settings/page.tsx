@@ -15,6 +15,9 @@ export default async function SettingsPage() {
         initialDietaryRestrictions={session.dietaryRestrictions}
         initialHomeLatitude={session.homeLatitude}
         initialHomeLongitude={session.homeLongitude}
+        initialVenmoHandle={session.venmoHandle ?? ""}
+        initialPaypalHandle={session.paypalHandle ?? ""}
+        initialCashappHandle={session.cashappHandle ?? ""}
       />
     </div>
   );

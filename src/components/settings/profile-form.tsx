@@ -11,11 +11,17 @@ export function ProfileForm({
   initialDietaryRestrictions,
   initialHomeLatitude,
   initialHomeLongitude,
+  initialVenmoHandle,
+  initialPaypalHandle,
+  initialCashappHandle,
 }: {
   initialBudgetLimit: number | null;
   initialDietaryRestrictions: string[];
   initialHomeLatitude: number | null;
   initialHomeLongitude: number | null;
+  initialVenmoHandle: string;
+  initialPaypalHandle: string;
+  initialCashappHandle: string;
 }) {
   const [budget, setBudget] = useState(
     initialBudgetLimit === null ? "" : String(fromCents(initialBudgetLimit)),
@@ -29,6 +35,9 @@ export function ProfileForm({
   const [homeLongitude, setHomeLongitude] = useState(
     initialHomeLongitude === null ? "" : String(initialHomeLongitude),
   );
+  const [venmoHandle, setVenmoHandle] = useState(initialVenmoHandle);
+  const [paypalHandle, setPaypalHandle] = useState(initialPaypalHandle);
+  const [cashappHandle, setCashappHandle] = useState(initialCashappHandle);
   const [pending, setPending] = useState(false);
   const [saved, setSaved] = useState(false);
 
@@ -44,6 +53,9 @@ export function ProfileForm({
         .filter(Boolean),
       homeLatitude: homeLatitude.trim() === "" ? null : Number(homeLatitude),
       homeLongitude: homeLongitude.trim() === "" ? null : Number(homeLongitude),
+      venmoHandle,
+      paypalHandle,
+      cashappHandle,
     });
     setPending(false);
     setSaved(true);
@@ -89,6 +101,24 @@ export function ProfileForm({
           placeholder="Longitude"
         />
       </div>
+      <label className="text-sm text-muted-foreground">
+        Payment handles (optional — used for one-tap settle-up links)
+      </label>
+      <Input
+        value={venmoHandle}
+        onChange={(e) => setVenmoHandle(e.target.value)}
+        placeholder="Venmo handle"
+      />
+      <Input
+        value={paypalHandle}
+        onChange={(e) => setPaypalHandle(e.target.value)}
+        placeholder="PayPal.me handle"
+      />
+      <Input
+        value={cashappHandle}
+        onChange={(e) => setCashappHandle(e.target.value)}
+        placeholder="Cash App $cashtag"
+      />
       <Button type="submit" disabled={pending}>
         {pending ? "Saving…" : "Save"}
       </Button>

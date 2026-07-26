@@ -38,16 +38,22 @@ export default async function GuestExpensePage({
           )),
         )}
       </ul>
-      <a
-        href={buildPayLink("venmo", {
-          handle: expense.paidBy.displayName,
-          amountCents: toCents(expense.totalAmount),
-          note: expense.title,
-        })}
-        className="text-sm text-primary underline"
-      >
-        Pay {expense.paidBy.displayName} on Venmo
-      </a>
+      {expense.paidBy.venmoHandle ? (
+        <a
+          href={buildPayLink("venmo", {
+            handle: expense.paidBy.venmoHandle,
+            amountCents: toCents(expense.totalAmount),
+            note: expense.title,
+          })}
+          className="text-sm text-primary underline"
+        >
+          Pay {expense.paidBy.displayName} on Venmo
+        </a>
+      ) : (
+        <p className="text-sm text-muted-foreground">
+          {expense.paidBy.displayName} hasn&apos;t added a payment handle yet.
+        </p>
+      )}
     </div>
   );
 }

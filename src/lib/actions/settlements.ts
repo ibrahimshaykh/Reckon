@@ -104,6 +104,7 @@ export async function getGroupSettlements(groupId: string) {
 
   return rows.map((s) => {
     const explanation = s.explanation as { steps: string[] };
+    const toUser = users.find((u) => u.id === s.toUserId);
     return {
       id: s.id,
       status: s.status,
@@ -112,6 +113,9 @@ export async function getGroupSettlements(groupId: string) {
       amountCents: toCents(s.amount),
       fromName: nameOf(s.fromUserId),
       toName: nameOf(s.toUserId),
+      toVenmoHandle: toUser?.venmoHandle ?? null,
+      toPaypalHandle: toUser?.paypalHandle ?? null,
+      toCashappHandle: toUser?.cashappHandle ?? null,
       explanation: {
         steps: explanation.steps.map((step) =>
           step.replace(s.fromUserId, nameOf(s.fromUserId)).replace(s.toUserId, nameOf(s.toUserId)),
