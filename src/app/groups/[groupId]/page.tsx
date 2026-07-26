@@ -74,6 +74,14 @@ export default async function GroupPage({
         >
           Ask AI
         </Button>
+        <Button
+          render={<Link href={`/groups/${group.id}/recap`} />}
+          nativeButton={false}
+          variant="outline"
+          size="sm"
+        >
+          Monthly recap
+        </Button>
       </nav>
       <section className="flex flex-col gap-2">
         <div className="flex items-center justify-between">

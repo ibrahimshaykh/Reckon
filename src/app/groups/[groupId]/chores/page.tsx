@@ -1,6 +1,7 @@
 import { listChores } from "@/lib/actions/chores";
 import { AddChoreForm } from "@/components/chores/add-chore-form";
 import { ChoreList } from "@/components/chores/chore-list";
+import { HelpTip } from "@/components/help-tip";
 
 export default async function ChoresPage({
   params,
@@ -13,6 +14,7 @@ export default async function ChoresPage({
   return (
     <div className="mx-auto flex w-full max-w-2xl flex-col gap-6 p-6">
       <h1 className="text-xl font-semibold">Chores</h1>
+      <HelpTip text="Rotate now assigns any chore whose current period has ended, weighting by effort so nobody keeps the worst jobs." />
       <AddChoreForm groupId={groupId} />
       <ChoreList groupId={groupId} chores={chores} />
     </div>

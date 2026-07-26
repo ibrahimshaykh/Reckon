@@ -1,6 +1,7 @@
 import { listProposals } from "@/lib/actions/proposals";
 import { AddProposalForm } from "@/components/proposals/add-proposal-form";
 import { ProposalList } from "@/components/proposals/proposal-list";
+import { HelpTip } from "@/components/help-tip";
 
 export default async function ProposalsPage({
   params,
@@ -13,6 +14,7 @@ export default async function ProposalsPage({
   return (
     <div className="mx-auto flex w-full max-w-2xl flex-col gap-6 p-6">
       <h1 className="text-xl font-semibold">Proposals</h1>
+      <HelpTip text="Flags come from each person's own budget and dietary settings — nothing is picked for the group." />
       <AddProposalForm groupId={groupId} />
       <ProposalList proposals={proposals} />
     </div>

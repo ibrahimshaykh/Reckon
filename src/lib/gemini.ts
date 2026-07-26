@@ -88,6 +88,27 @@ export async function answerGroupQuestion(
   return response.text ?? "I couldn't come up with an answer for that.";
 }
 
+export async function generateMonthlyRecap(context: {
+  month: string;
+  totalSpentCents: number;
+  topExpenses: { title: string; amount: number }[];
+  choresCompleted: number;
+  proposalsDecided: number;
+}): Promise<string> {
+  const response = await ai.models.generateContent({
+    model: "gemini-3.5-flash",
+    contents: createUserContent([
+      `Write a short (3-4 sentence), friendly recap of this group's ${context.month} for a roommate/friend-group app. ` +
+        `Data: total spent $${(context.totalSpentCents / 100).toFixed(2)}, ` +
+        `notable expenses: ${JSON.stringify(context.topExpenses)}, ` +
+        `${context.choresCompleted} chores completed, ${context.proposalsDecided} proposals decided. ` +
+        `Use only this data — don't invent specifics it doesn't cover.`,
+    ]),
+  });
+
+  return response.text ?? "Couldn't generate a recap right now.";
+}
+
 export async function correctReceiptParse(
   base64: string,
   mimeType: string,
