@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { markPaid, confirmReceived } from "@/lib/actions/settlements";
+import { createSafepayCheckout } from "@/lib/actions/safepay-checkout";
 import { Button } from "@/components/ui/button";
 import { CopyRow } from "@/components/copy-row";
 import { buildPayLink, type PayProvider } from "@/lib/pay-links";
@@ -55,6 +56,7 @@ function SettlementRow({
   const router = useRouter();
   const [showMath, setShowMath] = useState(false);
   const [pending, setPending] = useState(false);
+  const [safepayUnavailable, setSafepayUnavailable] = useState(false);
 
   const amount = (settlement.amountCents / 100).toFixed(2);
   const isPayer = settlement.fromUserId === currentUserId;
@@ -87,6 +89,17 @@ function SettlementRow({
     setPending(true);
     await confirmReceived(settlement.id);
     router.refresh();
+  }
+
+  async function onPayBySafepay() {
+    setPending(true);
+    const result = await createSafepayCheckout(settlement.id);
+    if ("unavailable" in result) {
+      setSafepayUnavailable(true);
+      setPending(false);
+      return;
+    }
+    window.location.href = result.url;
   }
 
   const hasAnyPaymentMethod =
@@ -148,6 +161,16 @@ function SettlementRow({
               {!hasAnyPaymentMethod && (
                 <p className="text-xs text-muted-foreground">
                   {settlement.toName} hasn&apos;t added a payment method yet.
+                </p>
+              )}
+              {!safepayUnavailable && (
+                <Button size="sm" variant="outline" disabled={pending} onClick={onPayBySafepay}>
+                  Pay by card / EasyPaisa / JazzCash
+                </Button>
+              )}
+              {safepayUnavailable && (
+                <p className="text-xs text-muted-foreground">
+                  Card payment isn&apos;t set up yet.
                 </p>
               )}
             </div>
