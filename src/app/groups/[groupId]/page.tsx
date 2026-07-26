@@ -46,6 +46,14 @@ export default async function GroupPage({
         >
           Availability
         </Button>
+        <Button
+          render={<Link href={`/groups/${group.id}/proposals`} />}
+          nativeButton={false}
+          variant="outline"
+          size="sm"
+        >
+          Proposals
+        </Button>
       </nav>
       <section className="flex flex-col gap-2">
         <div className="flex items-center justify-between">
