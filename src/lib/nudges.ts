@@ -1,5 +1,6 @@
 import { Resend } from "resend";
 import { db } from "@/lib/db";
+import { logger } from "@/lib/logger";
 
 const NUDGE_COOLDOWN_MS = 3 * 24 * 60 * 60 * 1000;
 
@@ -24,9 +25,9 @@ export async function runNudgeSweep() {
   const due = await findDueSettlements();
 
   if (!process.env.RESEND_API_KEY) {
-    console.warn(
-      "RESEND_API_KEY not set — skipping nudge sweep send (no email service configured yet).",
-    );
+    logger.warn("RESEND_API_KEY not set — skipping nudge sweep send (degrade-open).", {
+      due: due.length,
+    });
     return { sent: 0, due: due.length, skipped: true };
   }
 

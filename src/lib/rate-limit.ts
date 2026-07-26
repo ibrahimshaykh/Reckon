@@ -1,6 +1,7 @@
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
 import { ApiError } from "@/lib/api-error";
+import { logger } from "@/lib/logger";
 
 const limiters = new Map<string, Ratelimit>();
 let warned = false;
@@ -8,7 +9,7 @@ let warned = false;
 function getLimiter(limit: number, windowSeconds: number): Ratelimit | null {
   if (!process.env.UPSTASH_REDIS_REST_URL || !process.env.UPSTASH_REDIS_REST_TOKEN) {
     if (!warned) {
-      console.warn("Upstash not configured — rate limiting is disabled (degrade-open).");
+      logger.warn("Upstash not configured — rate limiting is disabled (degrade-open).");
       warned = true;
     }
     return null;

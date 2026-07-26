@@ -155,7 +155,7 @@ model Expense {
   items       ExpenseItem[]
   guestTokens GuestToken[]
 
-  @@index([groupId])
+  @@index([groupId, createdAt])
   @@index([paidById])
 }
 
