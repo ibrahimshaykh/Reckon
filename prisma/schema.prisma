@@ -1,0 +1,312 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+// Models here mirror docs/superpowers/specs/reckon-spec.md — keep both in sync.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ── Enums ──────────────────────────────────────────────
+
+enum ExpenseSource {
+  MANUAL
+  RECEIPT_AI
+}
+
+enum SplitType {
+  EQUAL
+  CUSTOM
+}
+
+enum SettlementStatus {
+  PENDING
+  PAY_MARKED
+  CONFIRMED
+}
+
+enum ChoreFrequency {
+  DAILY
+  WEEKLY
+  BIWEEKLY
+  MONTHLY
+}
+
+enum ProposalStatus {
+  PROPOSED
+  AGREED
+  REJECTED
+}
+
+enum FlagReason {
+  OVER_BUDGET
+  DIETARY_CONFLICT
+}
+
+enum NudgeChannel {
+  EMAIL
+}
+
+enum ActivityType {
+  EXPENSE_ADDED
+  SETTLEMENT_PAID
+  SETTLEMENT_CONFIRMED
+  CHORE_COMPLETED
+  PROPOSAL_AGREED
+}
+
+// ── Models ─────────────────────────────────────────────
+
+model User {
+  id                    String   @id @default(cuid())
+  clerkId               String   @unique
+  email                 String   @unique
+  displayName           String
+  avatarUrl             String?
+  budgetLimit           Decimal? @db.Decimal(10, 2)
+  dietaryRestrictions   String[] @default([])
+  homeLatitude          Float?
+  homeLongitude         Float?
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  groupMemberships      GroupMember[]
+  createdGroups         Group[]                  @relation("GroupCreator")
+  paidExpenses          Expense[]                @relation("ExpensePayer")
+  expenseParticipations ExpenseItemParticipant[]
+  settlementsOwed       Settlement[]             @relation("SettlementFrom")
+  settlementsReceived   Settlement[]             @relation("SettlementTo")
+  iousOwed              IOU[]                    @relation("IOUFrom")
+  iousLent              IOU[]                    @relation("IOUTo")
+  choreAssignments      ChoreAssignment[]
+  availabilityEntries   AvailabilityEntry[]
+  proposalsCreated      Proposal[]               @relation("ProposalCreator")
+  proposalFlags         ProposalFlag[]
+
+  @@index([email])
+}
+
+model Group {
+  id          String   @id @default(cuid())
+  name        String
+  createdById String
+  createdBy   User     @relation("GroupCreator", fields: [createdById], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  members             GroupMember[]
+  expenses            Expense[]
+  settlements         Settlement[]
+  ious                IOU[]
+  chores              Chore[]
+  availabilityEntries AvailabilityEntry[]
+  proposals           Proposal[]
+  activityEvents      ActivityEvent[]
+
+  @@index([createdById])
+}
+
+model GroupMember {
+  id       String   @id @default(cuid())
+  groupId  String
+  group    Group    @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  userId   String
+  user     User     @relation(fields: [userId], references: [id])
+  joinedAt DateTime @default(now())
+
+  @@unique([groupId, userId])
+}
+
+model GuestToken {
+  id         String   @id @default(cuid())
+  token      String   @unique
+  expenseId  String
+  expense    Expense  @relation(fields: [expenseId], references: [id], onDelete: Cascade)
+  guestName  String
+  guestEmail String?
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+
+  @@index([token])
+}
+
+model Expense {
+  id              String        @id @default(cuid())
+  groupId         String
+  group           Group         @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  paidById        String
+  paidBy          User          @relation("ExpensePayer", fields: [paidById], references: [id])
+  title           String
+  totalAmount     Decimal       @db.Decimal(10, 2)
+  receiptImageUrl String?
+  isRecurring     Boolean       @default(false)
+  recurrenceRule  String?
+  source          ExpenseSource @default(MANUAL)
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  items       ExpenseItem[]
+  guestTokens GuestToken[]
+
+  @@index([groupId])
+  @@index([paidById])
+}
+
+model ExpenseItem {
+  id        String    @id @default(cuid())
+  expenseId String
+  expense   Expense   @relation(fields: [expenseId], references: [id], onDelete: Cascade)
+  label     String
+  amount    Decimal   @db.Decimal(10, 2)
+  splitType SplitType @default(EQUAL)
+  createdAt DateTime  @default(now())
+
+  participants ExpenseItemParticipant[]
+
+  @@index([expenseId])
+}
+
+model ExpenseItemParticipant {
+  id            String      @id @default(cuid())
+  expenseItemId String
+  expenseItem   ExpenseItem @relation(fields: [expenseItemId], references: [id], onDelete: Cascade)
+  userId        String
+  user          User        @relation(fields: [userId], references: [id])
+  shareRatio    Decimal     @db.Decimal(5, 4)
+
+  @@unique([expenseItemId, userId])
+}
+
+model Settlement {
+  id             String           @id @default(cuid())
+  groupId        String
+  group          Group            @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  fromUserId     String
+  fromUser       User             @relation("SettlementFrom", fields: [fromUserId], references: [id])
+  toUserId       String
+  toUser         User             @relation("SettlementTo", fields: [toUserId], references: [id])
+  amount         Decimal          @db.Decimal(10, 2)
+  explanation    Json
+  status         SettlementStatus @default(PENDING)
+  nudgeCount     Int              @default(0)
+  lastNudgedAt   DateTime?
+  recalculatedAt DateTime         @updatedAt
+
+  nudges Nudge[]
+
+  @@index([groupId, status])
+  @@index([fromUserId])
+  @@index([toUserId])
+}
+
+model IOU {
+  id         String   @id @default(cuid())
+  groupId    String
+  group      Group    @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  fromUserId String
+  fromUser   User     @relation("IOUFrom", fields: [fromUserId], references: [id])
+  toUserId   String
+  toUser     User     @relation("IOUTo", fields: [toUserId], references: [id])
+  amount     Decimal  @db.Decimal(10, 2)
+  note       String?
+  createdAt  DateTime @default(now())
+
+  @@index([groupId])
+}
+
+model Chore {
+  id           String         @id @default(cuid())
+  groupId      String
+  group        Group          @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  name         String
+  effortWeight Int            @default(1)
+  frequency    ChoreFrequency @default(WEEKLY)
+  createdAt    DateTime       @default(now())
+
+  assignments ChoreAssignment[]
+
+  @@index([groupId])
+}
+
+model ChoreAssignment {
+  id          String    @id @default(cuid())
+  choreId     String
+  chore       Chore     @relation(fields: [choreId], references: [id], onDelete: Cascade)
+  userId      String
+  user        User      @relation(fields: [userId], references: [id])
+  periodStart DateTime
+  periodEnd   DateTime
+  completedAt DateTime?
+  explanation Json
+
+  @@index([choreId, periodStart])
+}
+
+model AvailabilityEntry {
+  id       String   @id @default(cuid())
+  groupId  String
+  group    Group    @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  userId   String
+  user     User     @relation(fields: [userId], references: [id])
+  startsAt DateTime
+  endsAt   DateTime
+  label    String?
+
+  @@index([groupId, startsAt])
+}
+
+model Proposal {
+  id                     String         @id @default(cuid())
+  groupId                String
+  group                  Group          @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  proposedById           String
+  proposedBy             User           @relation("ProposalCreator", fields: [proposedById], references: [id])
+  title                  String
+  estimatedCostPerPerson Decimal?       @db.Decimal(10, 2)
+  dietaryTags            String[]       @default([])
+  latitude               Float?
+  longitude              Float?
+  status                 ProposalStatus @default(PROPOSED)
+  createdAt              DateTime       @default(now())
+
+  flags ProposalFlag[]
+
+  @@index([groupId])
+}
+
+model ProposalFlag {
+  id         String     @id @default(cuid())
+  proposalId String
+  proposal   Proposal   @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+  userId     String
+  user       User       @relation(fields: [userId], references: [id])
+  reason     FlagReason
+  detail     String
+
+  @@index([proposalId])
+}
+
+model Nudge {
+  id           String       @id @default(cuid())
+  settlementId String
+  settlement   Settlement   @relation(fields: [settlementId], references: [id], onDelete: Cascade)
+  sentAt       DateTime     @default(now())
+  channel      NudgeChannel @default(EMAIL)
+
+  @@index([settlementId])
+}
+
+model ActivityEvent {
+  id        String       @id @default(cuid())
+  groupId   String
+  group     Group        @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  type      ActivityType
+  payload   Json
+  createdAt DateTime     @default(now())
+
+  @@index([groupId, createdAt])
+}
