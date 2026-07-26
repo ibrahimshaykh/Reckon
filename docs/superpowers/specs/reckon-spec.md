@@ -52,8 +52,13 @@ time runs out mid-tier, what shipped is still a complete, demoable product.
 12. **Cross-group debt netting** — nets a pair's balance across all shared groups.
 13. **No-signup guest access** — a scoped link to view/pay one expense, no account.
 14. **Fair meeting point** — computes the fairest agreed venue (lowest total group
-    travel), deep-links each person to their own Maps. From the user's map idea,
-    minus rebuilding a map.
+    travel) and shows it on a real visual map (member homes + proposed locations,
+    fairest pick highlighted), then deep-links each person to their own Maps for
+    actual navigation. Revised 2026-07-26: this is now being built for a company
+    evaluation with a 1.5-month runway, so the visual map was added back in —
+    using Leaflet + OpenStreetMap (free, no API key, no card on file) rather than
+    Google Maps JS API, to keep the $0/no-card rule intact while still being a
+    real interactive map, not just a distance number.
 15. **In-app contextual help** — how-to guidance written alongside each feature.
 16. **Monthly recap** — short AI digest of the month's spending/chores/decisions.
 
@@ -69,8 +74,15 @@ Both survive only as their objective cores: #6 and #7.
   Matrix API (needs a card — use haversine math instead), no payment processor.
 - **Stack:** Next.js 16 (App Router) + TypeScript, Prisma 7 + Neon Postgres,
   Clerk auth, Gemini for AI, Inngest for scheduled jobs, Vercel Blob for receipt
-  photos, Resend for nudge emails, shadcn/ui (+ Magic UI / Animate UI / Lenis for
-  the landing page later). Deploy target: Vercel.
+  photos, Resend for nudge emails, Leaflet + OpenStreetMap for the fair-meeting-point
+  map, shadcn/ui (+ Magic UI / Animate UI / Lenis for the landing page later).
+  Deploy target: Vercel.
+- **Company-evaluation pivot (2026-07-26):** this project is now being built for
+  a company evaluation with a 1.5-month runway, not just a personal portfolio
+  demo. Priority order for the remaining time: (1) the visual map, (2) a full
+  visual/design polish pass across the whole app, (3) production-hardening
+  (automated tests, security review, deployment/CI) — in that order, per the
+  user's explicit call.
 
 ## Hard-won facts from the v1 build (bake these in, don't rediscover)
 
