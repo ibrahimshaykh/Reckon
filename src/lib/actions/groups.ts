@@ -2,6 +2,7 @@
 
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
+import { notFound } from "next/navigation";
 import { db } from "@/lib/db";
 import { requireSession } from "@/lib/dal";
 import { ApiError } from "@/lib/api-error";
@@ -57,14 +58,23 @@ export async function listMyGroups() {
   return memberships.map((m) => ({ id: m.group.id, name: m.group.name }));
 }
 
+// Used to render pages, unlike assertMember (used to gate mutations) — a
+// missing group and "not your group" both 404 here rather than leaking a
+// 403, so a stranger can't tell the difference between "doesn't exist" and
+// "exists but isn't yours".
 export async function getGroup(groupId: string) {
   const session = await requireSession();
-  await assertMember(groupId, session.id);
 
-  const group = await db.group.findUniqueOrThrow({
+  const membership = await db.groupMember.findUnique({
+    where: { groupId_userId: { groupId, userId: session.id } },
+  });
+  if (!membership) notFound();
+
+  const group = await db.group.findUnique({
     where: { id: groupId },
     include: { members: { include: { user: true } } },
   });
+  if (!group) notFound();
 
   return {
     id: group.id,
