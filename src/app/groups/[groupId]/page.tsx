@@ -38,6 +38,14 @@ export default async function GroupPage({
         >
           Chores
         </Button>
+        <Button
+          render={<Link href={`/groups/${group.id}/availability`} />}
+          nativeButton={false}
+          variant="outline"
+          size="sm"
+        >
+          Availability
+        </Button>
       </nav>
       <section className="flex flex-col gap-2">
         <div className="flex items-center justify-between">
