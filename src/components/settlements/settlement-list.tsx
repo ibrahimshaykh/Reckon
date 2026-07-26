@@ -1,11 +1,15 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { markPaid, confirmReceived } from "@/lib/actions/settlements";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { buildPayLink, type PayProvider } from "@/lib/pay-links";
 
 type Settlement = {
+  id: string;
+  status: string;
   fromUserId: string;
   toUserId: string;
   fromName: string;
@@ -27,8 +31,8 @@ export function SettlementList({
 
   return (
     <ul className="flex flex-col gap-3">
-      {settlements.map((s, i) => (
-        <SettlementRow key={i} settlement={s} currentUserId={currentUserId} />
+      {settlements.map((s) => (
+        <SettlementRow key={s.id} settlement={s} currentUserId={currentUserId} />
       ))}
     </ul>
   );
@@ -41,11 +45,14 @@ function SettlementRow({
   settlement: Settlement;
   currentUserId: string;
 }) {
+  const router = useRouter();
   const [showMath, setShowMath] = useState(false);
   const [handle, setHandle] = useState("");
+  const [pending, setPending] = useState(false);
 
   const amount = (settlement.amountCents / 100).toFixed(2);
   const isPayer = settlement.fromUserId === currentUserId;
+  const isPayee = settlement.toUserId === currentUserId;
 
   function pay(provider: PayProvider) {
     if (!handle.trim()) return;
@@ -55,6 +62,18 @@ function SettlementRow({
       note: `Reckon settle-up`,
     });
     window.open(url, "_blank");
+  }
+
+  async function onMarkPaid() {
+    setPending(true);
+    await markPaid(settlement.id);
+    router.refresh();
+  }
+
+  async function onConfirmReceived() {
+    setPending(true);
+    await confirmReceived(settlement.id);
+    router.refresh();
   }
 
   return (
@@ -75,18 +94,39 @@ function SettlementRow({
           ))}
         </ul>
       )}
-      {isPayer && (
-        <div className="mt-2 flex items-center gap-2">
-          <Input
-            value={handle}
-            onChange={(e) => setHandle(e.target.value)}
-            placeholder="@their-handle"
-            className="max-w-40"
-          />
-          <Button size="sm" onClick={() => pay("venmo")}>Venmo</Button>
-          <Button size="sm" onClick={() => pay("paypal")}>PayPal</Button>
-          <Button size="sm" onClick={() => pay("cashapp")}>Cash App</Button>
-        </div>
+      {settlement.status === "CONFIRMED" ? (
+        <p className="mt-2 text-sm text-muted-foreground">✓ Settled</p>
+      ) : (
+        <>
+          {isPayer && (
+            <div className="mt-2 flex items-center gap-2">
+              <Input
+                value={handle}
+                onChange={(e) => setHandle(e.target.value)}
+                placeholder="@their-handle"
+                className="max-w-40"
+              />
+              <Button size="sm" onClick={() => pay("venmo")}>Venmo</Button>
+              <Button size="sm" onClick={() => pay("paypal")}>PayPal</Button>
+              <Button size="sm" onClick={() => pay("cashapp")}>Cash App</Button>
+            </div>
+          )}
+          <div className="mt-2 flex gap-2">
+            {isPayer && settlement.status === "PENDING" && (
+              <Button size="sm" variant="outline" disabled={pending} onClick={onMarkPaid}>
+                Mark as paid
+              </Button>
+            )}
+            {isPayee && settlement.status === "PAY_MARKED" && (
+              <Button size="sm" variant="outline" disabled={pending} onClick={onConfirmReceived}>
+                Confirm received
+              </Button>
+            )}
+            {settlement.status === "PAY_MARKED" && !isPayee && (
+              <p className="text-xs text-muted-foreground">Waiting for confirmation…</p>
+            )}
+          </div>
+        </>
       )}
     </li>
   );
