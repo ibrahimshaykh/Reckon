@@ -98,6 +98,11 @@ export type ProposalVote = Prisma.ProposalVoteModel
  */
 export type Nudge = Prisma.NudgeModel
 /**
+ * Model Recap
+ * 
+ */
+export type Recap = Prisma.RecapModel
+/**
  * Model ActivityEvent
  * 
  */

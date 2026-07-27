@@ -67,6 +67,7 @@ export const ModelName = {
   ProposalFlag: 'ProposalFlag',
   ProposalVote: 'ProposalVote',
   Nudge: 'Nudge',
+  Recap: 'Recap',
   ActivityEvent: 'ActivityEvent'
 } as const
 
@@ -299,6 +300,23 @@ export const NudgeScalarFieldEnum = {
 } as const
 
 export type NudgeScalarFieldEnum = (typeof NudgeScalarFieldEnum)[keyof typeof NudgeScalarFieldEnum]
+
+
+export const RecapScalarFieldEnum = {
+  id: 'id',
+  groupId: 'groupId',
+  month: 'month',
+  summaryText: 'summaryText',
+  totalSpentCents: 'totalSpentCents',
+  choresCompleted: 'choresCompleted',
+  proposalsDecided: 'proposalsDecided',
+  topExpenses: 'topExpenses',
+  choreMvpName: 'choreMvpName',
+  bigSpenderName: 'bigSpenderName',
+  createdAt: 'createdAt'
+} as const
+
+export type RecapScalarFieldEnum = (typeof RecapScalarFieldEnum)[keyof typeof RecapScalarFieldEnum]
 
 
 export const ActivityEventScalarFieldEnum = {

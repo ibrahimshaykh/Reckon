@@ -191,6 +191,7 @@ export type GroupWhereInput = {
   availabilityEntries?: Prisma.AvailabilityEntryListRelationFilter
   proposals?: Prisma.ProposalListRelationFilter
   activityEvents?: Prisma.ActivityEventListRelationFilter
+  recaps?: Prisma.RecapListRelationFilter
 }
 
 export type GroupOrderByWithRelationInput = {
@@ -208,6 +209,7 @@ export type GroupOrderByWithRelationInput = {
   availabilityEntries?: Prisma.AvailabilityEntryOrderByRelationAggregateInput
   proposals?: Prisma.ProposalOrderByRelationAggregateInput
   activityEvents?: Prisma.ActivityEventOrderByRelationAggregateInput
+  recaps?: Prisma.RecapOrderByRelationAggregateInput
 }
 
 export type GroupWhereUniqueInput = Prisma.AtLeast<{
@@ -228,6 +230,7 @@ export type GroupWhereUniqueInput = Prisma.AtLeast<{
   availabilityEntries?: Prisma.AvailabilityEntryListRelationFilter
   proposals?: Prisma.ProposalListRelationFilter
   activityEvents?: Prisma.ActivityEventListRelationFilter
+  recaps?: Prisma.RecapListRelationFilter
 }, "id">
 
 export type GroupOrderByWithAggregationInput = {
@@ -266,6 +269,7 @@ export type GroupCreateInput = {
   availabilityEntries?: Prisma.AvailabilityEntryCreateNestedManyWithoutGroupInput
   proposals?: Prisma.ProposalCreateNestedManyWithoutGroupInput
   activityEvents?: Prisma.ActivityEventCreateNestedManyWithoutGroupInput
+  recaps?: Prisma.RecapCreateNestedManyWithoutGroupInput
 }
 
 export type GroupUncheckedCreateInput = {
@@ -282,6 +286,7 @@ export type GroupUncheckedCreateInput = {
   availabilityEntries?: Prisma.AvailabilityEntryUncheckedCreateNestedManyWithoutGroupInput
   proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutGroupInput
   activityEvents?: Prisma.ActivityEventUncheckedCreateNestedManyWithoutGroupInput
+  recaps?: Prisma.RecapUncheckedCreateNestedManyWithoutGroupInput
 }
 
 export type GroupUpdateInput = {
@@ -298,6 +303,7 @@ export type GroupUpdateInput = {
   availabilityEntries?: Prisma.AvailabilityEntryUpdateManyWithoutGroupNestedInput
   proposals?: Prisma.ProposalUpdateManyWithoutGroupNestedInput
   activityEvents?: Prisma.ActivityEventUpdateManyWithoutGroupNestedInput
+  recaps?: Prisma.RecapUpdateManyWithoutGroupNestedInput
 }
 
 export type GroupUncheckedUpdateInput = {
@@ -314,6 +320,7 @@ export type GroupUncheckedUpdateInput = {
   availabilityEntries?: Prisma.AvailabilityEntryUncheckedUpdateManyWithoutGroupNestedInput
   proposals?: Prisma.ProposalUncheckedUpdateManyWithoutGroupNestedInput
   activityEvents?: Prisma.ActivityEventUncheckedUpdateManyWithoutGroupNestedInput
+  recaps?: Prisma.RecapUncheckedUpdateManyWithoutGroupNestedInput
 }
 
 export type GroupCreateManyInput = {
@@ -518,6 +525,20 @@ export type GroupUpdateOneRequiredWithoutProposalsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.GroupUpdateToOneWithWhereWithoutProposalsInput, Prisma.GroupUpdateWithoutProposalsInput>, Prisma.GroupUncheckedUpdateWithoutProposalsInput>
 }
 
+export type GroupCreateNestedOneWithoutRecapsInput = {
+  create?: Prisma.XOR<Prisma.GroupCreateWithoutRecapsInput, Prisma.GroupUncheckedCreateWithoutRecapsInput>
+  connectOrCreate?: Prisma.GroupCreateOrConnectWithoutRecapsInput
+  connect?: Prisma.GroupWhereUniqueInput
+}
+
+export type GroupUpdateOneRequiredWithoutRecapsNestedInput = {
+  create?: Prisma.XOR<Prisma.GroupCreateWithoutRecapsInput, Prisma.GroupUncheckedCreateWithoutRecapsInput>
+  connectOrCreate?: Prisma.GroupCreateOrConnectWithoutRecapsInput
+  upsert?: Prisma.GroupUpsertWithoutRecapsInput
+  connect?: Prisma.GroupWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.GroupUpdateToOneWithWhereWithoutRecapsInput, Prisma.GroupUpdateWithoutRecapsInput>, Prisma.GroupUncheckedUpdateWithoutRecapsInput>
+}
+
 export type GroupCreateNestedOneWithoutActivityEventsInput = {
   create?: Prisma.XOR<Prisma.GroupCreateWithoutActivityEventsInput, Prisma.GroupUncheckedCreateWithoutActivityEventsInput>
   connectOrCreate?: Prisma.GroupCreateOrConnectWithoutActivityEventsInput
@@ -545,6 +566,7 @@ export type GroupCreateWithoutCreatedByInput = {
   availabilityEntries?: Prisma.AvailabilityEntryCreateNestedManyWithoutGroupInput
   proposals?: Prisma.ProposalCreateNestedManyWithoutGroupInput
   activityEvents?: Prisma.ActivityEventCreateNestedManyWithoutGroupInput
+  recaps?: Prisma.RecapCreateNestedManyWithoutGroupInput
 }
 
 export type GroupUncheckedCreateWithoutCreatedByInput = {
@@ -560,6 +582,7 @@ export type GroupUncheckedCreateWithoutCreatedByInput = {
   availabilityEntries?: Prisma.AvailabilityEntryUncheckedCreateNestedManyWithoutGroupInput
   proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutGroupInput
   activityEvents?: Prisma.ActivityEventUncheckedCreateNestedManyWithoutGroupInput
+  recaps?: Prisma.RecapUncheckedCreateNestedManyWithoutGroupInput
 }
 
 export type GroupCreateOrConnectWithoutCreatedByInput = {
@@ -612,6 +635,7 @@ export type GroupCreateWithoutMembersInput = {
   availabilityEntries?: Prisma.AvailabilityEntryCreateNestedManyWithoutGroupInput
   proposals?: Prisma.ProposalCreateNestedManyWithoutGroupInput
   activityEvents?: Prisma.ActivityEventCreateNestedManyWithoutGroupInput
+  recaps?: Prisma.RecapCreateNestedManyWithoutGroupInput
 }
 
 export type GroupUncheckedCreateWithoutMembersInput = {
@@ -627,6 +651,7 @@ export type GroupUncheckedCreateWithoutMembersInput = {
   availabilityEntries?: Prisma.AvailabilityEntryUncheckedCreateNestedManyWithoutGroupInput
   proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutGroupInput
   activityEvents?: Prisma.ActivityEventUncheckedCreateNestedManyWithoutGroupInput
+  recaps?: Prisma.RecapUncheckedCreateNestedManyWithoutGroupInput
 }
 
 export type GroupCreateOrConnectWithoutMembersInput = {
@@ -658,6 +683,7 @@ export type GroupUpdateWithoutMembersInput = {
   availabilityEntries?: Prisma.AvailabilityEntryUpdateManyWithoutGroupNestedInput
   proposals?: Prisma.ProposalUpdateManyWithoutGroupNestedInput
   activityEvents?: Prisma.ActivityEventUpdateManyWithoutGroupNestedInput
+  recaps?: Prisma.RecapUpdateManyWithoutGroupNestedInput
 }
 
 export type GroupUncheckedUpdateWithoutMembersInput = {
@@ -673,6 +699,7 @@ export type GroupUncheckedUpdateWithoutMembersInput = {
   availabilityEntries?: Prisma.AvailabilityEntryUncheckedUpdateManyWithoutGroupNestedInput
   proposals?: Prisma.ProposalUncheckedUpdateManyWithoutGroupNestedInput
   activityEvents?: Prisma.ActivityEventUncheckedUpdateManyWithoutGroupNestedInput
+  recaps?: Prisma.RecapUncheckedUpdateManyWithoutGroupNestedInput
 }
 
 export type GroupCreateWithoutExpensesInput = {
@@ -688,6 +715,7 @@ export type GroupCreateWithoutExpensesInput = {
   availabilityEntries?: Prisma.AvailabilityEntryCreateNestedManyWithoutGroupInput
   proposals?: Prisma.ProposalCreateNestedManyWithoutGroupInput
   activityEvents?: Prisma.ActivityEventCreateNestedManyWithoutGroupInput
+  recaps?: Prisma.RecapCreateNestedManyWithoutGroupInput
 }
 
 export type GroupUncheckedCreateWithoutExpensesInput = {
@@ -703,6 +731,7 @@ export type GroupUncheckedCreateWithoutExpensesInput = {
   availabilityEntries?: Prisma.AvailabilityEntryUncheckedCreateNestedManyWithoutGroupInput
   proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutGroupInput
   activityEvents?: Prisma.ActivityEventUncheckedCreateNestedManyWithoutGroupInput
+  recaps?: Prisma.RecapUncheckedCreateNestedManyWithoutGroupInput
 }
 
 export type GroupCreateOrConnectWithoutExpensesInput = {
@@ -734,6 +763,7 @@ export type GroupUpdateWithoutExpensesInput = {
   availabilityEntries?: Prisma.AvailabilityEntryUpdateManyWithoutGroupNestedInput
   proposals?: Prisma.ProposalUpdateManyWithoutGroupNestedInput
   activityEvents?: Prisma.ActivityEventUpdateManyWithoutGroupNestedInput
+  recaps?: Prisma.RecapUpdateManyWithoutGroupNestedInput
 }
 
 export type GroupUncheckedUpdateWithoutExpensesInput = {
@@ -749,6 +779,7 @@ export type GroupUncheckedUpdateWithoutExpensesInput = {
   availabilityEntries?: Prisma.AvailabilityEntryUncheckedUpdateManyWithoutGroupNestedInput
   proposals?: Prisma.ProposalUncheckedUpdateManyWithoutGroupNestedInput
   activityEvents?: Prisma.ActivityEventUncheckedUpdateManyWithoutGroupNestedInput
+  recaps?: Prisma.RecapUncheckedUpdateManyWithoutGroupNestedInput
 }
 
 export type GroupCreateWithoutSettlementsInput = {
@@ -764,6 +795,7 @@ export type GroupCreateWithoutSettlementsInput = {
   availabilityEntries?: Prisma.AvailabilityEntryCreateNestedManyWithoutGroupInput
   proposals?: Prisma.ProposalCreateNestedManyWithoutGroupInput
   activityEvents?: Prisma.ActivityEventCreateNestedManyWithoutGroupInput
+  recaps?: Prisma.RecapCreateNestedManyWithoutGroupInput
 }
 
 export type GroupUncheckedCreateWithoutSettlementsInput = {
@@ -779,6 +811,7 @@ export type GroupUncheckedCreateWithoutSettlementsInput = {
   availabilityEntries?: Prisma.AvailabilityEntryUncheckedCreateNestedManyWithoutGroupInput
   proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutGroupInput
   activityEvents?: Prisma.ActivityEventUncheckedCreateNestedManyWithoutGroupInput
+  recaps?: Prisma.RecapUncheckedCreateNestedManyWithoutGroupInput
 }
 
 export type GroupCreateOrConnectWithoutSettlementsInput = {
@@ -810,6 +843,7 @@ export type GroupUpdateWithoutSettlementsInput = {
   availabilityEntries?: Prisma.AvailabilityEntryUpdateManyWithoutGroupNestedInput
   proposals?: Prisma.ProposalUpdateManyWithoutGroupNestedInput
   activityEvents?: Prisma.ActivityEventUpdateManyWithoutGroupNestedInput
+  recaps?: Prisma.RecapUpdateManyWithoutGroupNestedInput
 }
 
 export type GroupUncheckedUpdateWithoutSettlementsInput = {
@@ -825,6 +859,7 @@ export type GroupUncheckedUpdateWithoutSettlementsInput = {
   availabilityEntries?: Prisma.AvailabilityEntryUncheckedUpdateManyWithoutGroupNestedInput
   proposals?: Prisma.ProposalUncheckedUpdateManyWithoutGroupNestedInput
   activityEvents?: Prisma.ActivityEventUncheckedUpdateManyWithoutGroupNestedInput
+  recaps?: Prisma.RecapUncheckedUpdateManyWithoutGroupNestedInput
 }
 
 export type GroupCreateWithoutIousInput = {
@@ -840,6 +875,7 @@ export type GroupCreateWithoutIousInput = {
   availabilityEntries?: Prisma.AvailabilityEntryCreateNestedManyWithoutGroupInput
   proposals?: Prisma.ProposalCreateNestedManyWithoutGroupInput
   activityEvents?: Prisma.ActivityEventCreateNestedManyWithoutGroupInput
+  recaps?: Prisma.RecapCreateNestedManyWithoutGroupInput
 }
 
 export type GroupUncheckedCreateWithoutIousInput = {
@@ -855,6 +891,7 @@ export type GroupUncheckedCreateWithoutIousInput = {
   availabilityEntries?: Prisma.AvailabilityEntryUncheckedCreateNestedManyWithoutGroupInput
   proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutGroupInput
   activityEvents?: Prisma.ActivityEventUncheckedCreateNestedManyWithoutGroupInput
+  recaps?: Prisma.RecapUncheckedCreateNestedManyWithoutGroupInput
 }
 
 export type GroupCreateOrConnectWithoutIousInput = {
@@ -886,6 +923,7 @@ export type GroupUpdateWithoutIousInput = {
   availabilityEntries?: Prisma.AvailabilityEntryUpdateManyWithoutGroupNestedInput
   proposals?: Prisma.ProposalUpdateManyWithoutGroupNestedInput
   activityEvents?: Prisma.ActivityEventUpdateManyWithoutGroupNestedInput
+  recaps?: Prisma.RecapUpdateManyWithoutGroupNestedInput
 }
 
 export type GroupUncheckedUpdateWithoutIousInput = {
@@ -901,6 +939,7 @@ export type GroupUncheckedUpdateWithoutIousInput = {
   availabilityEntries?: Prisma.AvailabilityEntryUncheckedUpdateManyWithoutGroupNestedInput
   proposals?: Prisma.ProposalUncheckedUpdateManyWithoutGroupNestedInput
   activityEvents?: Prisma.ActivityEventUncheckedUpdateManyWithoutGroupNestedInput
+  recaps?: Prisma.RecapUncheckedUpdateManyWithoutGroupNestedInput
 }
 
 export type GroupCreateWithoutChoresInput = {
@@ -916,6 +955,7 @@ export type GroupCreateWithoutChoresInput = {
   availabilityEntries?: Prisma.AvailabilityEntryCreateNestedManyWithoutGroupInput
   proposals?: Prisma.ProposalCreateNestedManyWithoutGroupInput
   activityEvents?: Prisma.ActivityEventCreateNestedManyWithoutGroupInput
+  recaps?: Prisma.RecapCreateNestedManyWithoutGroupInput
 }
 
 export type GroupUncheckedCreateWithoutChoresInput = {
@@ -931,6 +971,7 @@ export type GroupUncheckedCreateWithoutChoresInput = {
   availabilityEntries?: Prisma.AvailabilityEntryUncheckedCreateNestedManyWithoutGroupInput
   proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutGroupInput
   activityEvents?: Prisma.ActivityEventUncheckedCreateNestedManyWithoutGroupInput
+  recaps?: Prisma.RecapUncheckedCreateNestedManyWithoutGroupInput
 }
 
 export type GroupCreateOrConnectWithoutChoresInput = {
@@ -962,6 +1003,7 @@ export type GroupUpdateWithoutChoresInput = {
   availabilityEntries?: Prisma.AvailabilityEntryUpdateManyWithoutGroupNestedInput
   proposals?: Prisma.ProposalUpdateManyWithoutGroupNestedInput
   activityEvents?: Prisma.ActivityEventUpdateManyWithoutGroupNestedInput
+  recaps?: Prisma.RecapUpdateManyWithoutGroupNestedInput
 }
 
 export type GroupUncheckedUpdateWithoutChoresInput = {
@@ -977,6 +1019,7 @@ export type GroupUncheckedUpdateWithoutChoresInput = {
   availabilityEntries?: Prisma.AvailabilityEntryUncheckedUpdateManyWithoutGroupNestedInput
   proposals?: Prisma.ProposalUncheckedUpdateManyWithoutGroupNestedInput
   activityEvents?: Prisma.ActivityEventUncheckedUpdateManyWithoutGroupNestedInput
+  recaps?: Prisma.RecapUncheckedUpdateManyWithoutGroupNestedInput
 }
 
 export type GroupCreateWithoutAvailabilityEntriesInput = {
@@ -992,6 +1035,7 @@ export type GroupCreateWithoutAvailabilityEntriesInput = {
   chores?: Prisma.ChoreCreateNestedManyWithoutGroupInput
   proposals?: Prisma.ProposalCreateNestedManyWithoutGroupInput
   activityEvents?: Prisma.ActivityEventCreateNestedManyWithoutGroupInput
+  recaps?: Prisma.RecapCreateNestedManyWithoutGroupInput
 }
 
 export type GroupUncheckedCreateWithoutAvailabilityEntriesInput = {
@@ -1007,6 +1051,7 @@ export type GroupUncheckedCreateWithoutAvailabilityEntriesInput = {
   chores?: Prisma.ChoreUncheckedCreateNestedManyWithoutGroupInput
   proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutGroupInput
   activityEvents?: Prisma.ActivityEventUncheckedCreateNestedManyWithoutGroupInput
+  recaps?: Prisma.RecapUncheckedCreateNestedManyWithoutGroupInput
 }
 
 export type GroupCreateOrConnectWithoutAvailabilityEntriesInput = {
@@ -1038,6 +1083,7 @@ export type GroupUpdateWithoutAvailabilityEntriesInput = {
   chores?: Prisma.ChoreUpdateManyWithoutGroupNestedInput
   proposals?: Prisma.ProposalUpdateManyWithoutGroupNestedInput
   activityEvents?: Prisma.ActivityEventUpdateManyWithoutGroupNestedInput
+  recaps?: Prisma.RecapUpdateManyWithoutGroupNestedInput
 }
 
 export type GroupUncheckedUpdateWithoutAvailabilityEntriesInput = {
@@ -1053,6 +1099,7 @@ export type GroupUncheckedUpdateWithoutAvailabilityEntriesInput = {
   chores?: Prisma.ChoreUncheckedUpdateManyWithoutGroupNestedInput
   proposals?: Prisma.ProposalUncheckedUpdateManyWithoutGroupNestedInput
   activityEvents?: Prisma.ActivityEventUncheckedUpdateManyWithoutGroupNestedInput
+  recaps?: Prisma.RecapUncheckedUpdateManyWithoutGroupNestedInput
 }
 
 export type GroupCreateWithoutProposalsInput = {
@@ -1068,6 +1115,7 @@ export type GroupCreateWithoutProposalsInput = {
   chores?: Prisma.ChoreCreateNestedManyWithoutGroupInput
   availabilityEntries?: Prisma.AvailabilityEntryCreateNestedManyWithoutGroupInput
   activityEvents?: Prisma.ActivityEventCreateNestedManyWithoutGroupInput
+  recaps?: Prisma.RecapCreateNestedManyWithoutGroupInput
 }
 
 export type GroupUncheckedCreateWithoutProposalsInput = {
@@ -1083,6 +1131,7 @@ export type GroupUncheckedCreateWithoutProposalsInput = {
   chores?: Prisma.ChoreUncheckedCreateNestedManyWithoutGroupInput
   availabilityEntries?: Prisma.AvailabilityEntryUncheckedCreateNestedManyWithoutGroupInput
   activityEvents?: Prisma.ActivityEventUncheckedCreateNestedManyWithoutGroupInput
+  recaps?: Prisma.RecapUncheckedCreateNestedManyWithoutGroupInput
 }
 
 export type GroupCreateOrConnectWithoutProposalsInput = {
@@ -1114,6 +1163,7 @@ export type GroupUpdateWithoutProposalsInput = {
   chores?: Prisma.ChoreUpdateManyWithoutGroupNestedInput
   availabilityEntries?: Prisma.AvailabilityEntryUpdateManyWithoutGroupNestedInput
   activityEvents?: Prisma.ActivityEventUpdateManyWithoutGroupNestedInput
+  recaps?: Prisma.RecapUpdateManyWithoutGroupNestedInput
 }
 
 export type GroupUncheckedUpdateWithoutProposalsInput = {
@@ -1128,6 +1178,87 @@ export type GroupUncheckedUpdateWithoutProposalsInput = {
   ious?: Prisma.IOUUncheckedUpdateManyWithoutGroupNestedInput
   chores?: Prisma.ChoreUncheckedUpdateManyWithoutGroupNestedInput
   availabilityEntries?: Prisma.AvailabilityEntryUncheckedUpdateManyWithoutGroupNestedInput
+  activityEvents?: Prisma.ActivityEventUncheckedUpdateManyWithoutGroupNestedInput
+  recaps?: Prisma.RecapUncheckedUpdateManyWithoutGroupNestedInput
+}
+
+export type GroupCreateWithoutRecapsInput = {
+  id?: string
+  name: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  createdBy: Prisma.UserCreateNestedOneWithoutCreatedGroupsInput
+  members?: Prisma.GroupMemberCreateNestedManyWithoutGroupInput
+  expenses?: Prisma.ExpenseCreateNestedManyWithoutGroupInput
+  settlements?: Prisma.SettlementCreateNestedManyWithoutGroupInput
+  ious?: Prisma.IOUCreateNestedManyWithoutGroupInput
+  chores?: Prisma.ChoreCreateNestedManyWithoutGroupInput
+  availabilityEntries?: Prisma.AvailabilityEntryCreateNestedManyWithoutGroupInput
+  proposals?: Prisma.ProposalCreateNestedManyWithoutGroupInput
+  activityEvents?: Prisma.ActivityEventCreateNestedManyWithoutGroupInput
+}
+
+export type GroupUncheckedCreateWithoutRecapsInput = {
+  id?: string
+  name: string
+  createdById: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  members?: Prisma.GroupMemberUncheckedCreateNestedManyWithoutGroupInput
+  expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutGroupInput
+  settlements?: Prisma.SettlementUncheckedCreateNestedManyWithoutGroupInput
+  ious?: Prisma.IOUUncheckedCreateNestedManyWithoutGroupInput
+  chores?: Prisma.ChoreUncheckedCreateNestedManyWithoutGroupInput
+  availabilityEntries?: Prisma.AvailabilityEntryUncheckedCreateNestedManyWithoutGroupInput
+  proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutGroupInput
+  activityEvents?: Prisma.ActivityEventUncheckedCreateNestedManyWithoutGroupInput
+}
+
+export type GroupCreateOrConnectWithoutRecapsInput = {
+  where: Prisma.GroupWhereUniqueInput
+  create: Prisma.XOR<Prisma.GroupCreateWithoutRecapsInput, Prisma.GroupUncheckedCreateWithoutRecapsInput>
+}
+
+export type GroupUpsertWithoutRecapsInput = {
+  update: Prisma.XOR<Prisma.GroupUpdateWithoutRecapsInput, Prisma.GroupUncheckedUpdateWithoutRecapsInput>
+  create: Prisma.XOR<Prisma.GroupCreateWithoutRecapsInput, Prisma.GroupUncheckedCreateWithoutRecapsInput>
+  where?: Prisma.GroupWhereInput
+}
+
+export type GroupUpdateToOneWithWhereWithoutRecapsInput = {
+  where?: Prisma.GroupWhereInput
+  data: Prisma.XOR<Prisma.GroupUpdateWithoutRecapsInput, Prisma.GroupUncheckedUpdateWithoutRecapsInput>
+}
+
+export type GroupUpdateWithoutRecapsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedGroupsNestedInput
+  members?: Prisma.GroupMemberUpdateManyWithoutGroupNestedInput
+  expenses?: Prisma.ExpenseUpdateManyWithoutGroupNestedInput
+  settlements?: Prisma.SettlementUpdateManyWithoutGroupNestedInput
+  ious?: Prisma.IOUUpdateManyWithoutGroupNestedInput
+  chores?: Prisma.ChoreUpdateManyWithoutGroupNestedInput
+  availabilityEntries?: Prisma.AvailabilityEntryUpdateManyWithoutGroupNestedInput
+  proposals?: Prisma.ProposalUpdateManyWithoutGroupNestedInput
+  activityEvents?: Prisma.ActivityEventUpdateManyWithoutGroupNestedInput
+}
+
+export type GroupUncheckedUpdateWithoutRecapsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  createdById?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  members?: Prisma.GroupMemberUncheckedUpdateManyWithoutGroupNestedInput
+  expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutGroupNestedInput
+  settlements?: Prisma.SettlementUncheckedUpdateManyWithoutGroupNestedInput
+  ious?: Prisma.IOUUncheckedUpdateManyWithoutGroupNestedInput
+  chores?: Prisma.ChoreUncheckedUpdateManyWithoutGroupNestedInput
+  availabilityEntries?: Prisma.AvailabilityEntryUncheckedUpdateManyWithoutGroupNestedInput
+  proposals?: Prisma.ProposalUncheckedUpdateManyWithoutGroupNestedInput
   activityEvents?: Prisma.ActivityEventUncheckedUpdateManyWithoutGroupNestedInput
 }
 
@@ -1144,6 +1275,7 @@ export type GroupCreateWithoutActivityEventsInput = {
   chores?: Prisma.ChoreCreateNestedManyWithoutGroupInput
   availabilityEntries?: Prisma.AvailabilityEntryCreateNestedManyWithoutGroupInput
   proposals?: Prisma.ProposalCreateNestedManyWithoutGroupInput
+  recaps?: Prisma.RecapCreateNestedManyWithoutGroupInput
 }
 
 export type GroupUncheckedCreateWithoutActivityEventsInput = {
@@ -1159,6 +1291,7 @@ export type GroupUncheckedCreateWithoutActivityEventsInput = {
   chores?: Prisma.ChoreUncheckedCreateNestedManyWithoutGroupInput
   availabilityEntries?: Prisma.AvailabilityEntryUncheckedCreateNestedManyWithoutGroupInput
   proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutGroupInput
+  recaps?: Prisma.RecapUncheckedCreateNestedManyWithoutGroupInput
 }
 
 export type GroupCreateOrConnectWithoutActivityEventsInput = {
@@ -1190,6 +1323,7 @@ export type GroupUpdateWithoutActivityEventsInput = {
   chores?: Prisma.ChoreUpdateManyWithoutGroupNestedInput
   availabilityEntries?: Prisma.AvailabilityEntryUpdateManyWithoutGroupNestedInput
   proposals?: Prisma.ProposalUpdateManyWithoutGroupNestedInput
+  recaps?: Prisma.RecapUpdateManyWithoutGroupNestedInput
 }
 
 export type GroupUncheckedUpdateWithoutActivityEventsInput = {
@@ -1205,6 +1339,7 @@ export type GroupUncheckedUpdateWithoutActivityEventsInput = {
   chores?: Prisma.ChoreUncheckedUpdateManyWithoutGroupNestedInput
   availabilityEntries?: Prisma.AvailabilityEntryUncheckedUpdateManyWithoutGroupNestedInput
   proposals?: Prisma.ProposalUncheckedUpdateManyWithoutGroupNestedInput
+  recaps?: Prisma.RecapUncheckedUpdateManyWithoutGroupNestedInput
 }
 
 export type GroupCreateManyCreatedByInput = {
@@ -1227,6 +1362,7 @@ export type GroupUpdateWithoutCreatedByInput = {
   availabilityEntries?: Prisma.AvailabilityEntryUpdateManyWithoutGroupNestedInput
   proposals?: Prisma.ProposalUpdateManyWithoutGroupNestedInput
   activityEvents?: Prisma.ActivityEventUpdateManyWithoutGroupNestedInput
+  recaps?: Prisma.RecapUpdateManyWithoutGroupNestedInput
 }
 
 export type GroupUncheckedUpdateWithoutCreatedByInput = {
@@ -1242,6 +1378,7 @@ export type GroupUncheckedUpdateWithoutCreatedByInput = {
   availabilityEntries?: Prisma.AvailabilityEntryUncheckedUpdateManyWithoutGroupNestedInput
   proposals?: Prisma.ProposalUncheckedUpdateManyWithoutGroupNestedInput
   activityEvents?: Prisma.ActivityEventUncheckedUpdateManyWithoutGroupNestedInput
+  recaps?: Prisma.RecapUncheckedUpdateManyWithoutGroupNestedInput
 }
 
 export type GroupUncheckedUpdateManyWithoutCreatedByInput = {
@@ -1265,6 +1402,7 @@ export type GroupCountOutputType = {
   availabilityEntries: number
   proposals: number
   activityEvents: number
+  recaps: number
 }
 
 export type GroupCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1276,6 +1414,7 @@ export type GroupCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.
   availabilityEntries?: boolean | GroupCountOutputTypeCountAvailabilityEntriesArgs
   proposals?: boolean | GroupCountOutputTypeCountProposalsArgs
   activityEvents?: boolean | GroupCountOutputTypeCountActivityEventsArgs
+  recaps?: boolean | GroupCountOutputTypeCountRecapsArgs
 }
 
 /**
@@ -1344,6 +1483,13 @@ export type GroupCountOutputTypeCountActivityEventsArgs<ExtArgs extends runtime.
   where?: Prisma.ActivityEventWhereInput
 }
 
+/**
+ * GroupCountOutputType without action
+ */
+export type GroupCountOutputTypeCountRecapsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.RecapWhereInput
+}
+
 
 export type GroupSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1360,6 +1506,7 @@ export type GroupSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   availabilityEntries?: boolean | Prisma.Group$availabilityEntriesArgs<ExtArgs>
   proposals?: boolean | Prisma.Group$proposalsArgs<ExtArgs>
   activityEvents?: boolean | Prisma.Group$activityEventsArgs<ExtArgs>
+  recaps?: boolean | Prisma.Group$recapsArgs<ExtArgs>
   _count?: boolean | Prisma.GroupCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["group"]>
 
@@ -1400,6 +1547,7 @@ export type GroupInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   availabilityEntries?: boolean | Prisma.Group$availabilityEntriesArgs<ExtArgs>
   proposals?: boolean | Prisma.Group$proposalsArgs<ExtArgs>
   activityEvents?: boolean | Prisma.Group$activityEventsArgs<ExtArgs>
+  recaps?: boolean | Prisma.Group$recapsArgs<ExtArgs>
   _count?: boolean | Prisma.GroupCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type GroupIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1421,6 +1569,7 @@ export type $GroupPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     availabilityEntries: Prisma.$AvailabilityEntryPayload<ExtArgs>[]
     proposals: Prisma.$ProposalPayload<ExtArgs>[]
     activityEvents: Prisma.$ActivityEventPayload<ExtArgs>[]
+    recaps: Prisma.$RecapPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1831,6 +1980,7 @@ export interface Prisma__GroupClient<T, Null = never, ExtArgs extends runtime.Ty
   availabilityEntries<T extends Prisma.Group$availabilityEntriesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Group$availabilityEntriesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AvailabilityEntryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   proposals<T extends Prisma.Group$proposalsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Group$proposalsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProposalPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   activityEvents<T extends Prisma.Group$activityEventsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Group$activityEventsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ActivityEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  recaps<T extends Prisma.Group$recapsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Group$recapsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RecapPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2455,6 +2605,30 @@ export type Group$activityEventsArgs<ExtArgs extends runtime.Types.Extensions.In
   take?: number
   skip?: number
   distinct?: Prisma.ActivityEventScalarFieldEnum | Prisma.ActivityEventScalarFieldEnum[]
+}
+
+/**
+ * Group.recaps
+ */
+export type Group$recapsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Recap
+   */
+  select?: Prisma.RecapSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Recap
+   */
+  omit?: Prisma.RecapOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RecapInclude<ExtArgs> | null
+  where?: Prisma.RecapWhereInput
+  orderBy?: Prisma.RecapOrderByWithRelationInput | Prisma.RecapOrderByWithRelationInput[]
+  cursor?: Prisma.RecapWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.RecapScalarFieldEnum | Prisma.RecapScalarFieldEnum[]
 }
 
 /**

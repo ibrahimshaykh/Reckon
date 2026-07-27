@@ -4,13 +4,23 @@ import { useState } from "react";
 import { getMonthlyRecap } from "@/lib/actions/recap";
 import { Button } from "@/components/ui/button";
 
+type Recap = {
+  summaryText: string;
+  totalSpentCents: number;
+  topExpenses: { title: string; amount: number }[];
+  choresCompleted: number;
+  proposalsDecided: number;
+  choreMvpName: string | null;
+  bigSpenderName: string | null;
+  previousTotalSpentCents: number | null;
+};
+
 export function RecapView({ groupId }: { groupId: string }) {
-  const [recap, setRecap] = useState<string | null>(null);
+  const [recap, setRecap] = useState<Recap | null>(null);
   const [pending, setPending] = useState(false);
 
   async function onGenerate() {
     setPending(true);
-    setRecap(null);
     try {
       const result = await getMonthlyRecap(groupId);
       setRecap(result);
@@ -19,12 +29,80 @@ export function RecapView({ groupId }: { groupId: string }) {
     }
   }
 
+  const delta =
+    recap && recap.previousTotalSpentCents !== null
+      ? recap.totalSpentCents - recap.previousTotalSpentCents
+      : null;
+
   return (
-    <div className="flex flex-col gap-3 max-w-sm">
+    <div className="flex flex-col gap-3">
       <Button onClick={onGenerate} disabled={pending}>
         {pending ? "Generating…" : "Generate recap"}
       </Button>
-      {recap && <p className="rounded-lg border p-3 text-sm">{recap}</p>}
+
+      {recap && (
+        <div className="flex flex-col gap-2">
+          <div className="rounded-lg border p-4">
+            <p className="text-xs text-muted-foreground">Total spent</p>
+            <p className="text-2xl font-semibold">${(recap.totalSpentCents / 100).toFixed(2)}</p>
+            {delta !== null && (
+              <p
+                className={`text-xs ${
+                  delta > 0
+                    ? "text-destructive"
+                    : delta < 0
+                      ? "text-emerald-600 dark:text-emerald-400"
+                      : "text-muted-foreground"
+                }`}
+              >
+                {delta === 0 ? "Same as" : delta > 0 ? "↑" : "↓"} $
+                {(Math.abs(delta) / 100).toFixed(2)} vs last month
+              </p>
+            )}
+          </div>
+
+          {recap.topExpenses.length > 0 && (
+            <div className="rounded-lg border p-3">
+              <p className="mb-1 text-xs text-muted-foreground">Top expenses</p>
+              <ul className="flex flex-col gap-0.5 text-sm">
+                {recap.topExpenses.map((e, i) => (
+                  <li key={i}>
+                    {e.title} — ${e.amount.toFixed(2)}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          <div className="grid grid-cols-2 gap-2">
+            <div className="rounded-lg border p-3 text-center">
+              <p className="text-xl font-semibold">{recap.choresCompleted}</p>
+              <p className="text-xs text-muted-foreground">chores done</p>
+            </div>
+            <div className="rounded-lg border p-3 text-center">
+              <p className="text-xl font-semibold">{recap.proposalsDecided}</p>
+              <p className="text-xs text-muted-foreground">plans decided</p>
+            </div>
+          </div>
+
+          {(recap.choreMvpName || recap.bigSpenderName) && (
+            <div className="flex flex-wrap gap-2">
+              {recap.choreMvpName && (
+                <span className="rounded-full bg-primary/10 px-2 py-1 text-xs text-primary">
+                  🏆 Chore MVP: {recap.choreMvpName}
+                </span>
+              )}
+              {recap.bigSpenderName && (
+                <span className="rounded-full bg-amber-500/10 px-2 py-1 text-xs text-amber-600 dark:text-amber-400">
+                  💳 Big Spender: {recap.bigSpenderName}
+                </span>
+              )}
+            </div>
+          )}
+
+          <p className="rounded-lg border p-3 text-sm text-muted-foreground">{recap.summaryText}</p>
+        </div>
+      )}
     </div>
   );
 }

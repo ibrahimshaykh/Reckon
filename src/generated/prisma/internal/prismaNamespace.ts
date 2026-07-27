@@ -413,6 +413,7 @@ export const ModelName = {
   ProposalFlag: 'ProposalFlag',
   ProposalVote: 'ProposalVote',
   Nudge: 'Nudge',
+  Recap: 'Recap',
   ActivityEvent: 'ActivityEvent'
 } as const
 
@@ -429,7 +430,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "group" | "groupMember" | "guestToken" | "expense" | "expenseItem" | "expenseItemParticipant" | "settlement" | "iOU" | "chore" | "choreAssignment" | "availabilityEntry" | "proposal" | "proposalFlag" | "proposalVote" | "nudge" | "activityEvent"
+    modelProps: "user" | "group" | "groupMember" | "guestToken" | "expense" | "expenseItem" | "expenseItemParticipant" | "settlement" | "iOU" | "chore" | "choreAssignment" | "availabilityEntry" | "proposal" | "proposalFlag" | "proposalVote" | "nudge" | "recap" | "activityEvent"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1617,6 +1618,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    Recap: {
+      payload: Prisma.$RecapPayload<ExtArgs>
+      fields: Prisma.RecapFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.RecapFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RecapPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.RecapFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RecapPayload>
+        }
+        findFirst: {
+          args: Prisma.RecapFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RecapPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.RecapFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RecapPayload>
+        }
+        findMany: {
+          args: Prisma.RecapFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RecapPayload>[]
+        }
+        create: {
+          args: Prisma.RecapCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RecapPayload>
+        }
+        createMany: {
+          args: Prisma.RecapCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.RecapCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RecapPayload>[]
+        }
+        delete: {
+          args: Prisma.RecapDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RecapPayload>
+        }
+        update: {
+          args: Prisma.RecapUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RecapPayload>
+        }
+        deleteMany: {
+          args: Prisma.RecapDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.RecapUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.RecapUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RecapPayload>[]
+        }
+        upsert: {
+          args: Prisma.RecapUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RecapPayload>
+        }
+        aggregate: {
+          args: Prisma.RecapAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateRecap>
+        }
+        groupBy: {
+          args: Prisma.RecapGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.RecapGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.RecapCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.RecapCountAggregateOutputType> | number
+        }
+      }
+    }
     ActivityEvent: {
       payload: Prisma.$ActivityEventPayload<ExtArgs>
       fields: Prisma.ActivityEventFieldRefs
@@ -1943,6 +2018,23 @@ export const NudgeScalarFieldEnum = {
 } as const
 
 export type NudgeScalarFieldEnum = (typeof NudgeScalarFieldEnum)[keyof typeof NudgeScalarFieldEnum]
+
+
+export const RecapScalarFieldEnum = {
+  id: 'id',
+  groupId: 'groupId',
+  month: 'month',
+  summaryText: 'summaryText',
+  totalSpentCents: 'totalSpentCents',
+  choresCompleted: 'choresCompleted',
+  proposalsDecided: 'proposalsDecided',
+  topExpenses: 'topExpenses',
+  choreMvpName: 'choreMvpName',
+  bigSpenderName: 'bigSpenderName',
+  createdAt: 'createdAt'
+} as const
+
+export type RecapScalarFieldEnum = (typeof RecapScalarFieldEnum)[keyof typeof RecapScalarFieldEnum]
 
 
 export const ActivityEventScalarFieldEnum = {
@@ -2385,6 +2477,7 @@ export type GlobalOmitConfig = {
   proposalFlag?: Prisma.ProposalFlagOmit
   proposalVote?: Prisma.ProposalVoteOmit
   nudge?: Prisma.NudgeOmit
+  recap?: Prisma.RecapOmit
   activityEvent?: Prisma.ActivityEventOmit
 }
 
