@@ -1,5 +1,8 @@
 import { getNetBalanceWithUser } from "@/lib/actions/cross-group";
 import { formatMoney } from "@/lib/money";
+import { requireSession } from "@/lib/dal";
+import { getDictionary } from "@/lib/dictionary";
+import { interpolate } from "@/lib/i18n";
 
 export default async function FriendNetPage({
   params,
@@ -7,26 +10,35 @@ export default async function FriendNetPage({
   params: Promise<{ userId: string }>;
 }) {
   const { userId } = await params;
-  const { otherUserName, groupBreakdown, totalNetCents, commonCurrency } =
-    await getNetBalanceWithUser(userId);
+  const [session, { otherUserName, groupBreakdown, totalNetCents, commonCurrency }] =
+    await Promise.all([requireSession(), getNetBalanceWithUser(userId)]);
+  const dict = await getDictionary(session.locale);
 
   return (
     <div className="mx-auto flex w-full max-w-sm flex-col gap-4 p-6">
-      <h1 className="text-xl font-semibold">You and {otherUserName}</h1>
+      <h1 className="text-xl font-semibold">
+        {interpolate(dict.friends.youAnd, { name: otherUserName })}
+      </h1>
       <p className="text-sm">
         {totalNetCents === null
-          ? "Shared groups use different currencies — see the breakdown below."
+          ? dict.friends.mixedCurrencies
           : totalNetCents === 0
-            ? "All settled up across every shared group."
+            ? dict.friends.allSettled
             : totalNetCents > 0
-              ? `${otherUserName} owes you ${formatMoney(totalNetCents, commonCurrency!)} overall.`
-              : `You owe ${otherUserName} ${formatMoney(-totalNetCents, commonCurrency!)} overall.`}
+              ? interpolate(dict.friends.owesYouOverall, {
+                  name: otherUserName,
+                  amount: formatMoney(totalNetCents, commonCurrency!),
+                })
+              : interpolate(dict.friends.youOweOverall, {
+                  name: otherUserName,
+                  amount: formatMoney(-totalNetCents, commonCurrency!),
+                })}
       </p>
       <ul className="flex flex-col gap-1">
         {groupBreakdown.map((g) => (
           <li key={g.groupId} className="text-xs text-muted-foreground">
             {g.groupName}:{" "}
-            {g.netCents === 0 ? "settled" : formatMoney(Math.abs(g.netCents), g.currency)}
+            {g.netCents === 0 ? dict.friends.settled : formatMoney(Math.abs(g.netCents), g.currency)}
           </li>
         ))}
       </ul>

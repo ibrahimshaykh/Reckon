@@ -2,6 +2,9 @@ import Link from "next/link";
 import { getGroup } from "@/lib/actions/groups";
 import { listGroupExpenses } from "@/lib/actions/expenses";
 import { formatMoney } from "@/lib/money";
+import { requireSession } from "@/lib/dal";
+import { getDictionary } from "@/lib/dictionary";
+import { interpolate } from "@/lib/i18n";
 import { AddMemberForm } from "@/components/groups/add-member-form";
 import { ShareExpenseButton } from "@/components/expenses/share-expense-button";
 import { CurrencyPicker } from "@/components/groups/currency-picker";
@@ -13,19 +16,21 @@ export default async function GroupPage({
   params: Promise<{ groupId: string }>;
 }) {
   const { groupId } = await params;
-  const [group, expenses] = await Promise.all([
+  const [session, group, expenses] = await Promise.all([
+    requireSession(),
     getGroup(groupId),
     listGroupExpenses(groupId),
   ]);
+  const dict = await getDictionary(session.locale);
 
   return (
     <div className="mx-auto flex w-full max-w-2xl flex-col gap-6 p-6">
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-semibold">{group.name}</h1>
-        <CurrencyPicker groupId={group.id} currency={group.currency} />
+        <CurrencyPicker groupId={group.id} currency={group.currency} dict={dict} />
       </div>
       <section className="flex flex-col gap-2">
-        <h2 className="text-sm font-medium text-muted-foreground">Members</h2>
+        <h2 className="text-sm font-medium text-muted-foreground">{dict.groupHub.members}</h2>
         <ul className="flex flex-col gap-1">
           {group.members.map((m) => (
             <li key={m.id} className="text-sm">
@@ -36,7 +41,7 @@ export default async function GroupPage({
             </li>
           ))}
         </ul>
-        <AddMemberForm groupId={group.id} />
+        <AddMemberForm groupId={group.id} dict={dict} />
       </section>
       <nav className="flex gap-2">
         <Button
@@ -45,7 +50,7 @@ export default async function GroupPage({
           variant="outline"
           size="sm"
         >
-          Chores
+          {dict.groupHub.chores}
         </Button>
         <Button
           render={<Link href={`/groups/${group.id}/availability`} />}
@@ -53,7 +58,7 @@ export default async function GroupPage({
           variant="outline"
           size="sm"
         >
-          Availability
+          {dict.groupHub.availability}
         </Button>
         <Button
           render={<Link href={`/groups/${group.id}/ious`} />}
@@ -61,7 +66,7 @@ export default async function GroupPage({
           variant="outline"
           size="sm"
         >
-          IOUs
+          {dict.groupHub.ious}
         </Button>
         <Button
           render={<Link href={`/groups/${group.id}/proposals`} />}
@@ -69,7 +74,7 @@ export default async function GroupPage({
           variant="outline"
           size="sm"
         >
-          Proposals
+          {dict.groupHub.proposals}
         </Button>
         <Button
           render={<Link href={`/groups/${group.id}/ask`} />}
@@ -77,7 +82,7 @@ export default async function GroupPage({
           variant="outline"
           size="sm"
         >
-          Ask AI
+          {dict.groupHub.askAi}
         </Button>
         <Button
           render={<Link href={`/groups/${group.id}/recap`} />}
@@ -85,19 +90,19 @@ export default async function GroupPage({
           variant="outline"
           size="sm"
         >
-          Monthly recap
+          {dict.groupHub.monthlyRecap}
         </Button>
       </nav>
       <section className="flex flex-col gap-2">
         <div className="flex items-center justify-between">
-          <h2 className="text-sm font-medium text-muted-foreground">Expenses</h2>
+          <h2 className="text-sm font-medium text-muted-foreground">{dict.groupHub.expenses}</h2>
           <div className="flex gap-2">
             <Button
               render={<Link href={`/groups/${group.id}/expenses/new`} />}
               nativeButton={false}
               size="sm"
             >
-              Add expense
+              {dict.groupHub.addExpense}
             </Button>
             <Button
               render={<Link href={`/groups/${group.id}/settle`} />}
@@ -105,22 +110,25 @@ export default async function GroupPage({
               variant="outline"
               size="sm"
             >
-              Who owes who
+              {dict.groupHub.whoOwesWho}
             </Button>
           </div>
         </div>
         {expenses.length === 0 && (
-          <p className="text-sm text-muted-foreground">No expenses yet.</p>
+          <p className="text-sm text-muted-foreground">{dict.groupHub.noExpensesYet}</p>
         )}
         <ul className="flex flex-col gap-1">
           {expenses.map((e) => (
             <li key={e.id} className="rounded-lg border p-3 text-sm">
               <div className="flex items-center justify-between">
                 <span>
-                  <strong>{e.title}</strong> — {formatMoney(e.totalAmount * 100, group.currency)}, paid
-                  by {e.paidByName}
+                  <strong>{e.title}</strong>{" "}
+                  {interpolate(dict.groupHub.paidByLine, {
+                    amount: formatMoney(e.totalAmount * 100, group.currency),
+                    name: e.paidByName,
+                  })}
                 </span>
-                <ShareExpenseButton expenseId={e.id} />
+                <ShareExpenseButton expenseId={e.id} dict={dict} />
               </div>
             </li>
           ))}

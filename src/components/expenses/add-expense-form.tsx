@@ -7,6 +7,7 @@ import { toCents } from "@/lib/money";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import type { Dictionary } from "@/lib/dictionary";
 
 type Member = { id: string; displayName: string };
 
@@ -15,11 +16,13 @@ export function AddExpenseForm({
   members,
   currentUserId,
   currency,
+  dict,
 }: {
   groupId: string;
   members: Member[];
   currentUserId: string;
   currency: string;
+  dict: Dictionary;
 }) {
   const router = useRouter();
   const [title, setTitle] = useState("");
@@ -52,7 +55,7 @@ export function AddExpenseForm({
       });
       router.push(`/groups/${groupId}`);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong.");
+      setError(err instanceof Error ? err.message : dict.common.somethingWrong);
       setPending(false);
     }
   }
@@ -62,7 +65,7 @@ export function AddExpenseForm({
       <Input
         value={title}
         onChange={(e) => setTitle(e.target.value)}
-        placeholder="Groceries"
+        placeholder={dict.expenses.groceriesPlaceholder}
         required
       />
       <Input
@@ -74,7 +77,7 @@ export function AddExpenseForm({
         placeholder={`0.00 ${currency}`}
         required
       />
-      <label className="text-sm text-muted-foreground">Paid by</label>
+      <label className="text-sm text-muted-foreground">{dict.common.paidBy}</label>
       <select
         className="rounded-md border bg-background p-2 text-sm"
         value={paidById}
@@ -86,7 +89,7 @@ export function AddExpenseForm({
           </option>
         ))}
       </select>
-      <label className="text-sm text-muted-foreground">Split between</label>
+      <label className="text-sm text-muted-foreground">{dict.expenses.splitBetween}</label>
       <div className="flex flex-col gap-1">
         {members.map((m) => (
           <label key={m.id} className="flex items-center gap-2 text-sm">
@@ -100,7 +103,7 @@ export function AddExpenseForm({
       </div>
       {error && <p className="text-sm text-destructive">{error}</p>}
       <Button type="submit" disabled={pending}>
-        {pending ? "Adding…" : "Add expense"}
+        {pending ? dict.common.adding : dict.expenses.addExpenseButton}
       </Button>
     </form>
   );

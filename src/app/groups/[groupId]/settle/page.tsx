@@ -1,6 +1,7 @@
 import { getGroupSettlements } from "@/lib/actions/settlements";
 import { getGroup } from "@/lib/actions/groups";
 import { requireSession } from "@/lib/dal";
+import { getDictionary } from "@/lib/dictionary";
 import { SettlementList } from "@/components/settlements/settlement-list";
 import { HelpTip } from "@/components/help-tip";
 
@@ -15,12 +16,18 @@ export default async function SettlePage({
     requireSession(),
     getGroup(groupId),
   ]);
+  const dict = await getDictionary(session.locale);
 
   return (
     <div className="mx-auto flex w-full max-w-2xl flex-col gap-4 p-6">
-      <h1 className="text-xl font-semibold">Who owes who</h1>
-      <HelpTip text="This is the fewest payments needed to clear every debt — expand a row to see the math." />
-      <SettlementList settlements={settlements} currentUserId={session.id} currency={group.currency} />
+      <h1 className="text-xl font-semibold">{dict.settle.title}</h1>
+      <HelpTip text={dict.settle.helpTip} />
+      <SettlementList
+        settlements={settlements}
+        currentUserId={session.id}
+        currency={group.currency}
+        dict={dict}
+      />
     </div>
   );
 }

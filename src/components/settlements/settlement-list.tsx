@@ -8,6 +8,8 @@ import { formatMoney } from "@/lib/money";
 import { Button } from "@/components/ui/button";
 import { CopyRow } from "@/components/copy-row";
 import { buildPayLink, type PayProvider } from "@/lib/pay-links";
+import type { Dictionary } from "@/lib/dictionary";
+import { interpolate } from "@/lib/i18n";
 
 type Settlement = {
   id: string;
@@ -31,19 +33,27 @@ export function SettlementList({
   settlements,
   currentUserId,
   currency,
+  dict,
 }: {
   settlements: Settlement[];
   currentUserId: string;
   currency: string;
+  dict: Dictionary;
 }) {
   if (settlements.length === 0) {
-    return <p className="text-sm text-muted-foreground">Everyone&apos;s settled up.</p>;
+    return <p className="text-sm text-muted-foreground">{dict.settle.settledUp}</p>;
   }
 
   return (
     <ul className="flex flex-col gap-3">
       {settlements.map((s) => (
-        <SettlementRow key={s.id} settlement={s} currentUserId={currentUserId} currency={currency} />
+        <SettlementRow
+          key={s.id}
+          settlement={s}
+          currentUserId={currentUserId}
+          currency={currency}
+          dict={dict}
+        />
       ))}
     </ul>
   );
@@ -53,10 +63,12 @@ function SettlementRow({
   settlement,
   currentUserId,
   currency,
+  dict,
 }: {
   settlement: Settlement;
   currentUserId: string;
   currency: string;
+  dict: Dictionary;
 }) {
   const router = useRouter();
   const [showMath, setShowMath] = useState(false);
@@ -79,7 +91,7 @@ function SettlementRow({
     const url = buildPayLink(provider, {
       handle: providerHandle,
       amountCents: settlement.amountCents,
-      note: `Reckon settle-up`,
+      note: dict.settle.payNote,
     });
     window.open(url, "_blank");
   }
@@ -120,11 +132,14 @@ function SettlementRow({
     <li className="rounded-lg border p-3">
       <div className="flex items-center justify-between">
         <p className="text-sm">
-          <strong>{settlement.fromName}</strong> owes{" "}
-          <strong>{settlement.toName}</strong> {amount}
+          {interpolate(dict.settle.owesLine, {
+            fromName: settlement.fromName,
+            toName: settlement.toName,
+            amount,
+          })}
         </p>
         <Button variant="ghost" size="sm" onClick={() => setShowMath((v) => !v)}>
-          {showMath ? "Hide math" : "Show the math"}
+          {showMath ? dict.common.hideMath : dict.common.showMath}
         </Button>
       </div>
       {showMath && (
@@ -135,47 +150,47 @@ function SettlementRow({
         </ul>
       )}
       {settlement.status === "CONFIRMED" ? (
-        <p className="mt-2 text-sm text-muted-foreground">✓ Settled</p>
+        <p className="mt-2 text-sm text-muted-foreground">{dict.settle.settledBadge}</p>
       ) : (
         <>
           {isPayer && (
             <div className="mt-2 flex flex-col gap-2">
               <div className="flex items-center gap-2">
                 {settlement.toVenmoHandle && (
-                  <Button size="sm" onClick={() => pay("venmo")}>Venmo</Button>
+                  <Button size="sm" onClick={() => pay("venmo")}>{dict.settle.venmoButton}</Button>
                 )}
                 {settlement.toPaypalHandle && (
-                  <Button size="sm" onClick={() => pay("paypal")}>PayPal</Button>
+                  <Button size="sm" onClick={() => pay("paypal")}>{dict.settle.paypalButton}</Button>
                 )}
                 {settlement.toCashappHandle && (
-                  <Button size="sm" onClick={() => pay("cashapp")}>Cash App</Button>
+                  <Button size="sm" onClick={() => pay("cashapp")}>{dict.settle.cashappButton}</Button>
                 )}
               </div>
               {settlement.toEasypaisaNumber && (
-                <CopyRow label="EasyPaisa" value={settlement.toEasypaisaNumber} />
+                <CopyRow label={dict.common.easypaisa} value={settlement.toEasypaisaNumber} dict={dict} />
               )}
               {settlement.toJazzcashNumber && (
-                <CopyRow label="JazzCash" value={settlement.toJazzcashNumber} />
+                <CopyRow label={dict.common.jazzcash} value={settlement.toJazzcashNumber} dict={dict} />
               )}
               {settlement.toNayapayHandle && (
-                <CopyRow label="NayaPay" value={settlement.toNayapayHandle} />
+                <CopyRow label={dict.common.nayapay} value={settlement.toNayapayHandle} dict={dict} />
               )}
               {settlement.toBankDetails && (
-                <CopyRow label="Bank transfer" value={settlement.toBankDetails} />
+                <CopyRow label={dict.common.bankTransfer} value={settlement.toBankDetails} dict={dict} />
               )}
               {!hasAnyPaymentMethod && (
                 <p className="text-xs text-muted-foreground">
-                  {settlement.toName} hasn&apos;t added a payment method yet.
+                  {interpolate(dict.common.noPaymentMethod, { name: settlement.toName })}
                 </p>
               )}
               {!safepayUnavailable && (
                 <Button size="sm" variant="outline" disabled={pending} onClick={onPayBySafepay}>
-                  Pay by card / EasyPaisa / JazzCash
+                  {dict.settle.payByCard}
                 </Button>
               )}
               {safepayUnavailable && (
                 <p className="text-xs text-muted-foreground">
-                  Card payment isn&apos;t set up yet.
+                  {dict.settle.cardNotSetUp}
                 </p>
               )}
             </div>
@@ -183,16 +198,16 @@ function SettlementRow({
           <div className="mt-2 flex gap-2">
             {isPayer && settlement.status === "PENDING" && (
               <Button size="sm" variant="outline" disabled={pending} onClick={onMarkPaid}>
-                Mark as paid
+                {dict.settle.markAsPaid}
               </Button>
             )}
             {isPayee && settlement.status === "PAY_MARKED" && (
               <Button size="sm" variant="outline" disabled={pending} onClick={onConfirmReceived}>
-                Confirm received
+                {dict.settle.confirmReceived}
               </Button>
             )}
             {settlement.status === "PAY_MARKED" && !isPayee && (
-              <p className="text-xs text-muted-foreground">Waiting for confirmation…</p>
+              <p className="text-xs text-muted-foreground">{dict.settle.waitingConfirmation}</p>
             )}
           </div>
         </>

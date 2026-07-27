@@ -2,6 +2,8 @@
 
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import { defaultMarkerIcon } from "@/lib/leaflet-icon-fix";
+import type { Dictionary } from "@/lib/dictionary";
+import { interpolate } from "@/lib/i18n";
 import "leaflet/dist/leaflet.css";
 
 type Home = { userId: string; displayName: string; latitude: number; longitude: number };
@@ -17,9 +19,11 @@ type ProposalPin = {
 export function MeetingPointMap({
   homes,
   proposals,
+  dict,
 }: {
   homes: Home[];
   proposals: ProposalPin[];
+  dict: Dictionary;
 }) {
   const points = [
     ...homes.map((h) => [h.latitude, h.longitude] as [number, number]),
@@ -42,24 +46,25 @@ export function MeetingPointMap({
       />
       {homes.map((h) => (
         <Marker key={h.userId} position={[h.latitude, h.longitude]} icon={defaultMarkerIcon}>
-          <Popup>{h.displayName}&apos;s home</Popup>
+          <Popup>{h.displayName}{dict.proposals.homeSuffix}</Popup>
         </Marker>
       ))}
       {proposals.map((p) => (
         <Marker key={p.id} position={[p.latitude, p.longitude]} icon={defaultMarkerIcon}>
           <Popup>
             <strong>{p.title}</strong>
-            {p.isFairestPick && " — fairest pick"}
+            {p.isFairestPick && dict.proposals.fairestPickMapSuffix}
             {p.totalDistanceKm !== null && (
               <>
-                <br />~{p.totalDistanceKm.toFixed(1)} km total travel
+                <br />
+                {interpolate(dict.proposals.totalTravel, { km: p.totalDistanceKm.toFixed(1) })}
                 <br />
                 <a
                   href={`https://www.google.com/maps/dir/?api=1&destination=${p.latitude},${p.longitude}`}
                   target="_blank"
                   rel="noreferrer"
                 >
-                  Directions
+                  {dict.common.directions}
                 </a>
               </>
             )}

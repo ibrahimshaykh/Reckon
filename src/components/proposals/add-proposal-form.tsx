@@ -4,10 +4,11 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createProposal } from "@/lib/actions/proposals";
 import { toCents } from "@/lib/money";
+import type { Dictionary } from "@/lib/dictionary";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
-export function AddProposalForm({ groupId }: { groupId: string }) {
+export function AddProposalForm({ groupId, dict }: { groupId: string; dict: Dictionary }) {
   const router = useRouter();
   const [title, setTitle] = useState("");
   const [cost, setCost] = useState("");
@@ -40,7 +41,7 @@ export function AddProposalForm({ groupId }: { groupId: string }) {
       setLongitude("");
       router.refresh();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong.");
+      setError(err instanceof Error ? err.message : dict.common.somethingWrong);
     } finally {
       setPending(false);
     }
@@ -51,7 +52,7 @@ export function AddProposalForm({ groupId }: { groupId: string }) {
       <Input
         value={title}
         onChange={(e) => setTitle(e.target.value)}
-        placeholder="e.g. Pizza night at Mario's"
+        placeholder={dict.proposals.titlePlaceholder}
         required
       />
       <Input
@@ -60,12 +61,12 @@ export function AddProposalForm({ groupId }: { groupId: string }) {
         min="0"
         value={cost}
         onChange={(e) => setCost(e.target.value)}
-        placeholder="Estimated cost per person (optional)"
+        placeholder={dict.proposals.costPlaceholder}
       />
       <Input
         value={dietaryTags}
         onChange={(e) => setDietaryTags(e.target.value)}
-        placeholder="Covers (comma-separated, e.g. vegetarian)"
+        placeholder={dict.proposals.dietaryPlaceholder}
       />
       <div className="flex gap-2">
         <Input
@@ -73,19 +74,19 @@ export function AddProposalForm({ groupId }: { groupId: string }) {
           step="any"
           value={latitude}
           onChange={(e) => setLatitude(e.target.value)}
-          placeholder="Location latitude (optional)"
+          placeholder={dict.proposals.latPlaceholder}
         />
         <Input
           type="number"
           step="any"
           value={longitude}
           onChange={(e) => setLongitude(e.target.value)}
-          placeholder="Location longitude (optional)"
+          placeholder={dict.proposals.lngPlaceholder}
         />
       </div>
       {error && <p className="text-sm text-destructive">{error}</p>}
       <Button type="submit" disabled={pending}>
-        {pending ? "Adding…" : "Add proposal"}
+        {pending ? dict.common.adding : dict.proposals.addButton}
       </Button>
     </form>
   );

@@ -2,8 +2,17 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import type { Dictionary } from "@/lib/dictionary";
 
-export function CopyRow({ label, value }: { label: string; value: string }) {
+export function CopyRow({
+  label,
+  value,
+  dict,
+}: {
+  label: string;
+  value: string;
+  dict: Dictionary;
+}) {
   const [copied, setCopied] = useState(false);
 
   async function onCopy() {
@@ -18,7 +27,7 @@ export function CopyRow({ label, value }: { label: string; value: string }) {
         {label}: {value}
       </span>
       <Button size="sm" variant="ghost" onClick={onCopy}>
-        {copied ? "Copied" : "Copy"}
+        {copied ? dict.common.copied : dict.common.copy}
       </Button>
     </div>
   );

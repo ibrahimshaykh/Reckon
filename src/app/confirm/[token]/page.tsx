@@ -2,6 +2,8 @@ import { notFound } from "next/navigation";
 import { getConfirmToken } from "@/lib/dal";
 import { db } from "@/lib/db";
 import { formatMoney } from "@/lib/money";
+import { getDictionary } from "@/lib/dictionary";
+import { interpolate } from "@/lib/i18n";
 import { ConfirmButton } from "@/components/settlements/confirm-button";
 
 export default async function ConfirmReceivedPage({
@@ -13,6 +15,7 @@ export default async function ConfirmReceivedPage({
   const settlement = await getConfirmToken(token);
   if (!settlement) notFound();
 
+  const dict = await getDictionary("en");
   const [fromUser, toUser, group] = await Promise.all([
     db.user.findUniqueOrThrow({ where: { id: settlement.fromUserId } }),
     db.user.findUniqueOrThrow({ where: { id: settlement.toUserId } }),
@@ -24,18 +27,21 @@ export default async function ConfirmReceivedPage({
 
   return (
     <div className="mx-auto flex w-full max-w-sm flex-col gap-4 p-6">
-      <h1 className="text-xl font-semibold">Confirm payment received</h1>
+      <h1 className="text-xl font-semibold">{dict.confirm.title}</h1>
       {alreadyConfirmed ? (
         <p className="text-sm text-muted-foreground">
-          Already confirmed — thanks! You told {fromUser.displayName} you got the {amount}.
+          {interpolate(dict.confirm.alreadyConfirmed, { name: fromUser.displayName, amount })}
         </p>
       ) : (
         <>
           <p className="text-sm text-muted-foreground">
-            Hi {toUser.displayName} — {fromUser.displayName} says they paid you {amount}. Did you
-            receive it?
+            {interpolate(dict.confirm.askConfirm, {
+              toName: toUser.displayName,
+              fromName: fromUser.displayName,
+              amount,
+            })}
           </p>
-          <ConfirmButton token={token} />
+          <ConfirmButton token={token} dict={dict} />
         </>
       )}
     </div>

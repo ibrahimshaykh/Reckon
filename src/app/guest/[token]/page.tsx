@@ -3,6 +3,8 @@ import { getGuestSession } from "@/lib/dal";
 import { db } from "@/lib/db";
 import { buildPayLink } from "@/lib/pay-links";
 import { toCents, formatMoney } from "@/lib/money";
+import { getDictionary } from "@/lib/dictionary";
+import { interpolate } from "@/lib/i18n";
 import { CopyRow } from "@/components/copy-row";
 
 export default async function GuestExpensePage({
@@ -14,6 +16,7 @@ export default async function GuestExpensePage({
   const guestToken = await getGuestSession(token);
   if (!guestToken) notFound();
 
+  const dict = await getDictionary("en");
   const expense = await db.expense.findUniqueOrThrow({
     where: { id: guestToken.expenseId },
     include: {
@@ -36,8 +39,11 @@ export default async function GuestExpensePage({
     <div className="mx-auto flex w-full max-w-sm flex-col gap-4 p-6">
       <h1 className="text-xl font-semibold">{expense.title}</h1>
       <p className="text-sm text-muted-foreground">
-        Hi {guestToken.guestName} — {expense.paidBy.displayName} paid{" "}
-        {formatMoney(toCents(expense.totalAmount), currency)} for this.
+        {interpolate(dict.guest.greeting, {
+          guestName: guestToken.guestName,
+          payerName: expense.paidBy.displayName,
+          amount: formatMoney(toCents(expense.totalAmount), currency),
+        })}
       </p>
       <ul className="flex flex-col gap-1">
         {expense.items.flatMap((item) =>
@@ -59,16 +65,24 @@ export default async function GuestExpensePage({
             })}
             className="text-sm text-primary underline"
           >
-            Pay {payer.displayName} on Venmo
+            {interpolate(dict.guest.payOnVenmo, { name: payer.displayName })}
           </a>
         )}
-        {payer.easypaisaNumber && <CopyRow label="EasyPaisa" value={payer.easypaisaNumber} />}
-        {payer.jazzcashNumber && <CopyRow label="JazzCash" value={payer.jazzcashNumber} />}
-        {payer.nayapayHandle && <CopyRow label="NayaPay" value={payer.nayapayHandle} />}
-        {payer.bankDetails && <CopyRow label="Bank transfer" value={payer.bankDetails} />}
+        {payer.easypaisaNumber && (
+          <CopyRow label={dict.common.easypaisa} value={payer.easypaisaNumber} dict={dict} />
+        )}
+        {payer.jazzcashNumber && (
+          <CopyRow label={dict.common.jazzcash} value={payer.jazzcashNumber} dict={dict} />
+        )}
+        {payer.nayapayHandle && (
+          <CopyRow label={dict.common.nayapay} value={payer.nayapayHandle} dict={dict} />
+        )}
+        {payer.bankDetails && (
+          <CopyRow label={dict.common.bankTransfer} value={payer.bankDetails} dict={dict} />
+        )}
         {!hasAnyPaymentMethod && (
           <p className="text-sm text-muted-foreground">
-            {payer.displayName} hasn&apos;t added a payment method yet.
+            {interpolate(dict.common.noPaymentMethod, { name: payer.displayName })}
           </p>
         )}
       </div>

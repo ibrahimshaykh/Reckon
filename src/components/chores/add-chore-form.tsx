@@ -3,12 +3,13 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createChore } from "@/lib/actions/chores";
+import type { Dictionary } from "@/lib/dictionary";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 type Frequency = "DAILY" | "WEEKLY" | "BIWEEKLY" | "MONTHLY";
 
-export function AddChoreForm({ groupId }: { groupId: string }) {
+export function AddChoreForm({ groupId, dict }: { groupId: string; dict: Dictionary }) {
   const router = useRouter();
   const [name, setName] = useState("");
   const [effortWeight, setEffortWeight] = useState("1");
@@ -31,7 +32,7 @@ export function AddChoreForm({ groupId }: { groupId: string }) {
       setEffortWeight("1");
       router.refresh();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong.");
+      setError(err instanceof Error ? err.message : dict.common.somethingWrong);
     } finally {
       setPending(false);
     }
@@ -42,7 +43,7 @@ export function AddChoreForm({ groupId }: { groupId: string }) {
       <Input
         value={name}
         onChange={(e) => setName(e.target.value)}
-        placeholder="e.g. Take out trash"
+        placeholder={dict.chores.addNamePlaceholder}
         required
       />
       <div className="flex gap-2">
@@ -52,7 +53,7 @@ export function AddChoreForm({ groupId }: { groupId: string }) {
           step="1"
           value={effortWeight}
           onChange={(e) => setEffortWeight(e.target.value)}
-          placeholder="Effort"
+          placeholder={dict.chores.effortPlaceholder}
           className="w-24"
         />
         <select
@@ -60,15 +61,15 @@ export function AddChoreForm({ groupId }: { groupId: string }) {
           value={frequency}
           onChange={(e) => setFrequency(e.target.value as Frequency)}
         >
-          <option value="DAILY">Daily</option>
-          <option value="WEEKLY">Weekly</option>
-          <option value="BIWEEKLY">Biweekly</option>
-          <option value="MONTHLY">Monthly</option>
+          <option value="DAILY">{dict.chores.freqDaily}</option>
+          <option value="WEEKLY">{dict.chores.freqWeekly}</option>
+          <option value="BIWEEKLY">{dict.chores.freqBiweekly}</option>
+          <option value="MONTHLY">{dict.chores.freqMonthly}</option>
         </select>
       </div>
       {error && <p className="text-sm text-destructive">{error}</p>}
       <Button type="submit" disabled={pending}>
-        {pending ? "Adding…" : "Add chore"}
+        {pending ? dict.common.adding : dict.chores.addButton}
       </Button>
     </form>
   );

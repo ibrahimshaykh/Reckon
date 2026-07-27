@@ -9,6 +9,8 @@ import { formatMoney } from "@/lib/money";
 import type { ParsedReceipt } from "@/lib/gemini";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import type { Dictionary } from "@/lib/dictionary";
+import { interpolate } from "@/lib/i18n";
 
 type Member = { id: string; displayName: string };
 
@@ -29,11 +31,13 @@ export function ScanReceiptForm({
   members,
   currentUserId,
   currency,
+  dict,
 }: {
   groupId: string;
   members: Member[];
   currentUserId: string;
   currency: string;
+  dict: Dictionary;
 }) {
   const router = useRouter();
   const [base64, setBase64] = useState<string | null>(null);
@@ -66,7 +70,7 @@ export function ScanReceiptForm({
       setImageUrl(result.imageUrl);
       applyParsed(result.parsed);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Couldn't read that receipt.");
+      setError(err instanceof Error ? err.message : dict.expenses.couldntRead);
     } finally {
       setBusy(false);
     }
@@ -87,7 +91,7 @@ export function ScanReceiptForm({
       applyParsed(updated);
       setCorrection("");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Couldn't apply that correction.");
+      setError(err instanceof Error ? err.message : dict.expenses.couldntCorrect);
     } finally {
       setBusy(false);
     }
@@ -128,7 +132,7 @@ export function ScanReceiptForm({
       });
       router.push(`/groups/${groupId}`);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong.");
+      setError(err instanceof Error ? err.message : dict.common.somethingWrong);
       setBusy(false);
     }
   }
@@ -142,7 +146,7 @@ export function ScanReceiptForm({
         // eslint-disable-next-line @next/next/no-img-element
         <img
           src={imageUrl}
-          alt="Receipt"
+          alt={dict.expenses.receiptAlt}
           className="max-h-48 rounded-lg border object-contain"
         />
       )}
@@ -150,7 +154,9 @@ export function ScanReceiptForm({
         <div className="rounded-lg border p-3 text-sm">
           <p className="font-medium">{parsed.title}</p>
           <p className="text-muted-foreground">
-            Total: {formatMoney(parsed.totalCents, currency)}
+            {interpolate(dict.expenses.totalLabel, {
+              amount: formatMoney(parsed.totalCents, currency),
+            })}
           </p>
         </div>
       )}
@@ -159,17 +165,17 @@ export function ScanReceiptForm({
           <Input
             value={correction}
             onChange={(e) => setCorrection(e.target.value)}
-            placeholder="e.g. don't add the beer, Sam already paid for that"
+            placeholder={dict.expenses.correctionPlaceholder}
             disabled={busy}
           />
           <Button type="submit" disabled={busy || !correction.trim()}>
-            Fix
+            {dict.expenses.fixButton}
           </Button>
         </form>
       )}
       {parsed && (
         <>
-          <label className="text-sm text-muted-foreground">Paid by</label>
+          <label className="text-sm text-muted-foreground">{dict.common.paidBy}</label>
           <select
             className="rounded-md border bg-background p-2 text-sm"
             value={paidById}
@@ -182,7 +188,7 @@ export function ScanReceiptForm({
             ))}
           </select>
 
-          <p className="text-sm text-muted-foreground">Who had what — tap a name to toggle</p>
+          <p className="text-sm text-muted-foreground">{dict.expenses.whoHadWhat}</p>
           <ul className="flex flex-col gap-2">
             {parsed.items.map((item, i) => (
               <li key={i} className="rounded-lg border p-2">
@@ -209,25 +215,25 @@ export function ScanReceiptForm({
                   })}
                 </div>
                 {itemParticipants[i]?.length === 0 && (
-                  <p className="mt-1 text-xs text-destructive">Nobody's claimed this yet.</p>
+                  <p className="mt-1 text-xs text-destructive">{dict.expenses.nobodyClaimed}</p>
                 )}
               </li>
             ))}
           </ul>
           {parsed.totalCents > parsed.items.reduce((s, it) => s + it.amountCents, 0) && (
             <p className="text-xs text-muted-foreground">
-              The remaining{" "}
-              {formatMoney(
-                parsed.totalCents - parsed.items.reduce((s, it) => s + it.amountCents, 0),
-                currency,
-              )}{" "}
-              (tax/fees) will be split in proportion to what each person claimed above.
+              {interpolate(dict.expenses.remainderNote, {
+                amount: formatMoney(
+                  parsed.totalCents - parsed.items.reduce((s, it) => s + it.amountCents, 0),
+                  currency,
+                ),
+              })}
             </p>
           )}
 
           {error && <p className="text-sm text-destructive">{error}</p>}
           <Button onClick={onConfirm} disabled={busy || hasUnclaimedItem}>
-            {busy ? "Adding…" : "Add expense"}
+            {busy ? dict.common.adding : dict.expenses.addExpenseButton}
           </Button>
         </>
       )}

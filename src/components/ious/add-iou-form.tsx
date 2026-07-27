@@ -4,30 +4,26 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { addIOU } from "@/lib/actions/ious";
 import { toCents, formatMoney } from "@/lib/money";
+import type { Dictionary } from "@/lib/dictionary";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 type Member = { id: string; displayName: string };
 
 const AMOUNT_PRESETS = [5, 10, 20];
-const CATEGORY_CHIPS = [
-  { emoji: "☕", label: "Coffee" },
-  { emoji: "⛽", label: "Gas" },
-  { emoji: "🍕", label: "Food" },
-  { emoji: "🏠", label: "Rent" },
-  { emoji: "💸", label: "Misc" },
-];
 
 export function AddIOUForm({
   groupId,
   members,
   currentUserId,
   currency,
+  dict,
 }: {
   groupId: string;
   members: Member[];
   currentUserId: string;
   currency: string;
+  dict: Dictionary;
 }) {
   const router = useRouter();
   const others = members.filter((m) => m.id !== currentUserId);
@@ -36,6 +32,14 @@ export function AddIOUForm({
   const [note, setNote] = useState("");
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const categoryChips = [
+    { emoji: "☕", label: dict.ious.categoryCoffee },
+    { emoji: "⛽", label: dict.ious.categoryGas },
+    { emoji: "🍕", label: dict.ious.categoryFood },
+    { emoji: "🏠", label: dict.ious.categoryRent },
+    { emoji: "💸", label: dict.ious.categoryMisc },
+  ];
 
   function onPickCategory(emoji: string, label: string) {
     setNote((current) => (current ? current : `${emoji} ${label}`));
@@ -56,23 +60,19 @@ export function AddIOUForm({
       setNote("");
       router.refresh();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong.");
+      setError(err instanceof Error ? err.message : dict.common.somethingWrong);
     } finally {
       setPending(false);
     }
   }
 
   if (others.length === 0) {
-    return (
-      <p className="text-sm text-muted-foreground">
-        Add another member to the group before recording an IOU.
-      </p>
-    );
+    return <p className="text-sm text-muted-foreground">{dict.ious.needAnotherMember}</p>;
   }
 
   return (
     <form onSubmit={onSubmit} className="flex flex-col gap-2 max-w-sm">
-      <label className="text-sm text-muted-foreground">I lent</label>
+      <label className="text-sm text-muted-foreground">{dict.ious.iLent}</label>
       <select
         className="rounded-md border bg-background p-2 text-sm"
         value={owedByUserId}
@@ -91,7 +91,7 @@ export function AddIOUForm({
           min="0.01"
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
-          placeholder="Amount"
+          placeholder={dict.ious.amountPlaceholder}
           required
           className="flex-1"
         />
@@ -107,9 +107,13 @@ export function AddIOUForm({
           </Button>
         ))}
       </div>
-      <Input value={note} onChange={(e) => setNote(e.target.value)} placeholder="Note (optional)" />
+      <Input
+        value={note}
+        onChange={(e) => setNote(e.target.value)}
+        placeholder={dict.ious.notePlaceholder}
+      />
       <div className="flex flex-wrap gap-1">
-        {CATEGORY_CHIPS.map((c) => (
+        {categoryChips.map((c) => (
           <button
             key={c.label}
             type="button"
@@ -122,7 +126,7 @@ export function AddIOUForm({
       </div>
       {error && <p className="text-sm text-destructive">{error}</p>}
       <Button type="submit" disabled={pending}>
-        {pending ? "Adding…" : "Add IOU"}
+        {pending ? dict.common.adding : dict.ious.addButton}
       </Button>
     </form>
   );

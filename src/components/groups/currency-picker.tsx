@@ -4,11 +4,20 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { updateGroupCurrency } from "@/lib/actions/groups";
 import { CURRENCIES, COMMON_CURRENCY_CODES, findCurrency } from "@/lib/currencies";
+import type { Dictionary } from "@/lib/dictionary";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
-export function CurrencyPicker({ groupId, currency }: { groupId: string; currency: string }) {
+export function CurrencyPicker({
+  groupId,
+  currency,
+  dict,
+}: {
+  groupId: string;
+  currency: string;
+  dict: Dictionary;
+}) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
@@ -42,16 +51,16 @@ export function CurrencyPicker({ groupId, currency }: { groupId: string; currenc
       </Button>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Group currency</DialogTitle>
+          <DialogTitle>{dict.currencyPicker.title}</DialogTitle>
         </DialogHeader>
         <Input
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search by name or code…"
+          placeholder={dict.currencyPicker.searchPlaceholder}
           autoFocus
         />
         <p className="text-xs text-muted-foreground">
-          {search.trim() ? "Results" : "Common"}
+          {search.trim() ? dict.currencyPicker.results : dict.currencyPicker.commonLabel}
         </p>
         <ul className="flex max-h-64 flex-col gap-0.5 overflow-y-auto">
           {results.map((c) => (
@@ -71,7 +80,7 @@ export function CurrencyPicker({ groupId, currency }: { groupId: string; currenc
             </li>
           ))}
           {results.length === 0 && (
-            <p className="px-2 py-1.5 text-sm text-muted-foreground">No currencies match.</p>
+            <p className="px-2 py-1.5 text-sm text-muted-foreground">{dict.currencyPicker.noMatch}</p>
           )}
         </ul>
       </DialogContent>

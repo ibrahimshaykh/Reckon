@@ -3,10 +3,11 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { addMemberByEmail } from "@/lib/actions/groups";
+import type { Dictionary } from "@/lib/dictionary";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
-export function AddMemberForm({ groupId }: { groupId: string }) {
+export function AddMemberForm({ groupId, dict }: { groupId: string; dict: Dictionary }) {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [pending, setPending] = useState(false);
@@ -21,7 +22,7 @@ export function AddMemberForm({ groupId }: { groupId: string }) {
       setEmail("");
       router.refresh();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong.");
+      setError(err instanceof Error ? err.message : dict.common.somethingWrong);
     } finally {
       setPending(false);
     }
@@ -33,12 +34,12 @@ export function AddMemberForm({ groupId }: { groupId: string }) {
         type="email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-        placeholder="friend@example.com"
+        placeholder={dict.groupHub.addMemberPlaceholder}
         required
       />
       {error && <p className="text-sm text-destructive">{error}</p>}
       <Button type="submit" disabled={pending}>
-        {pending ? "Adding…" : "Add"}
+        {pending ? dict.common.adding : dict.groupHub.addMemberButton}
       </Button>
     </form>
   );

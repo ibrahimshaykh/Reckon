@@ -4,6 +4,8 @@ import { useState } from "react";
 import { getMonthlyRecap } from "@/lib/actions/recap";
 import { formatMoney } from "@/lib/money";
 import { Button } from "@/components/ui/button";
+import type { Dictionary } from "@/lib/dictionary";
+import { interpolate } from "@/lib/i18n";
 
 type Recap = {
   summaryText: string;
@@ -16,7 +18,15 @@ type Recap = {
   previousTotalSpentCents: number | null;
 };
 
-export function RecapView({ groupId, currency }: { groupId: string; currency: string }) {
+export function RecapView({
+  groupId,
+  currency,
+  dict,
+}: {
+  groupId: string;
+  currency: string;
+  dict: Dictionary;
+}) {
   const [recap, setRecap] = useState<Recap | null>(null);
   const [pending, setPending] = useState(false);
 
@@ -38,13 +48,13 @@ export function RecapView({ groupId, currency }: { groupId: string; currency: st
   return (
     <div className="flex flex-col gap-3">
       <Button onClick={onGenerate} disabled={pending}>
-        {pending ? "Generating…" : "Generate recap"}
+        {pending ? dict.recap.generating : dict.recap.generateButton}
       </Button>
 
       {recap && (
         <div className="flex flex-col gap-2">
           <div className="rounded-lg border p-4">
-            <p className="text-xs text-muted-foreground">Total spent</p>
+            <p className="text-xs text-muted-foreground">{dict.recap.totalSpent}</p>
             <p className="text-2xl font-semibold">{formatMoney(recap.totalSpentCents, currency)}</p>
             {delta !== null && (
               <p
@@ -56,15 +66,15 @@ export function RecapView({ groupId, currency }: { groupId: string; currency: st
                       : "text-muted-foreground"
                 }`}
               >
-                {delta === 0 ? "Same as" : delta > 0 ? "↑" : "↓"} {formatMoney(Math.abs(delta), currency)}{" "}
-                vs last month
+                {delta === 0 ? dict.recap.sameAs : delta > 0 ? "↑" : "↓"}{" "}
+                {formatMoney(Math.abs(delta), currency)} {dict.recap.vsLastMonth}
               </p>
             )}
           </div>
 
           {recap.topExpenses.length > 0 && (
             <div className="rounded-lg border p-3">
-              <p className="mb-1 text-xs text-muted-foreground">Top expenses</p>
+              <p className="mb-1 text-xs text-muted-foreground">{dict.recap.topExpenses}</p>
               <ul className="flex flex-col gap-0.5 text-sm">
                 {recap.topExpenses.map((e, i) => (
                   <li key={i}>
@@ -78,11 +88,11 @@ export function RecapView({ groupId, currency }: { groupId: string; currency: st
           <div className="grid grid-cols-2 gap-2">
             <div className="rounded-lg border p-3 text-center">
               <p className="text-xl font-semibold">{recap.choresCompleted}</p>
-              <p className="text-xs text-muted-foreground">chores done</p>
+              <p className="text-xs text-muted-foreground">{dict.recap.choresDone}</p>
             </div>
             <div className="rounded-lg border p-3 text-center">
               <p className="text-xl font-semibold">{recap.proposalsDecided}</p>
-              <p className="text-xs text-muted-foreground">plans decided</p>
+              <p className="text-xs text-muted-foreground">{dict.recap.plansDecided}</p>
             </div>
           </div>
 
@@ -90,12 +100,12 @@ export function RecapView({ groupId, currency }: { groupId: string; currency: st
             <div className="flex flex-wrap gap-2">
               {recap.choreMvpName && (
                 <span className="rounded-full bg-primary/10 px-2 py-1 text-xs text-primary">
-                  🏆 Chore MVP: {recap.choreMvpName}
+                  {interpolate(dict.recap.choreMvp, { name: recap.choreMvpName })}
                 </span>
               )}
               {recap.bigSpenderName && (
                 <span className="rounded-full bg-amber-500/10 px-2 py-1 text-xs text-amber-600 dark:text-amber-400">
-                  💳 Big Spender: {recap.bigSpenderName}
+                  {interpolate(dict.recap.bigSpender, { name: recap.bigSpenderName })}
                 </span>
               )}
             </div>

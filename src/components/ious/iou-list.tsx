@@ -4,6 +4,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { forgiveIOU } from "@/lib/actions/ious";
 import { formatMoney } from "@/lib/money";
+import type { Dictionary } from "@/lib/dictionary";
+import { interpolate } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
 
 type IOU = {
@@ -20,19 +22,21 @@ export function IOUList({
   ious,
   currentUserId,
   currency,
+  dict,
 }: {
   ious: IOU[];
   currentUserId: string;
   currency: string;
+  dict: Dictionary;
 }) {
   if (ious.length === 0) {
-    return <p className="text-sm text-muted-foreground">No IOUs yet.</p>;
+    return <p className="text-sm text-muted-foreground">{dict.ious.noIousYet}</p>;
   }
 
   return (
     <ul className="flex flex-col gap-1">
       {ious.map((i) => (
-        <IOURow key={i.id} iou={i} currentUserId={currentUserId} currency={currency} />
+        <IOURow key={i.id} iou={i} currentUserId={currentUserId} currency={currency} dict={dict} />
       ))}
     </ul>
   );
@@ -42,10 +46,12 @@ function IOURow({
   iou: i,
   currentUserId,
   currency,
+  dict,
 }: {
   iou: IOU;
   currentUserId: string;
   currency: string;
+  dict: Dictionary;
 }) {
   const router = useRouter();
   const [pending, setPending] = useState(false);
@@ -65,12 +71,15 @@ function IOURow({
       }`}
     >
       <p className={i.forgivenAt ? "line-through" : ""}>
-        <strong>{i.fromName}</strong> owes <strong>{i.toName}</strong>{" "}
-        {formatMoney(Math.round(i.amount * 100), currency)}
+        {interpolate(dict.ious.owesLine, {
+          fromName: i.fromName,
+          toName: i.toName,
+          amount: formatMoney(Math.round(i.amount * 100), currency),
+        })}
         {i.note && ` — ${i.note}`}
       </p>
       {i.forgivenAt ? (
-        <span className="shrink-0 text-xs text-muted-foreground">Forgiven</span>
+        <span className="shrink-0 text-xs text-muted-foreground">{dict.ious.forgiven}</span>
       ) : (
         canForgive && (
           <Button
@@ -80,7 +89,7 @@ function IOURow({
             onClick={onForgive}
             className="shrink-0"
           >
-            Forgive
+            {dict.ious.forgiveButton}
           </Button>
         )
       )}

@@ -4,18 +4,19 @@ import { useState } from "react";
 import { askGroupQuestion } from "@/lib/actions/ai-query";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import type { Dictionary } from "@/lib/dictionary";
+import { interpolate } from "@/lib/i18n";
 
 type SourceCounts = { expenses: number; chores: number; proposals: number; ious: number };
 type Turn = { question: string; answer: string; sourceCounts: SourceCounts };
 
-const SUGGESTED_QUESTIONS = [
-  "How much have we spent this month?",
-  "Who paid the most for groceries?",
-  "What chores are due this week?",
-  "Any dietary conflicts on open proposals?",
-];
-
-export function AskForm({ groupId }: { groupId: string }) {
+export function AskForm({ groupId, dict }: { groupId: string; dict: Dictionary }) {
+  const SUGGESTED_QUESTIONS = [
+    dict.ask.suggested1,
+    dict.ask.suggested2,
+    dict.ask.suggested3,
+    dict.ask.suggested4,
+  ];
   const [question, setQuestion] = useState("");
   const [turns, setTurns] = useState<Turn[]>([]);
   const [pending, setPending] = useState(false);
@@ -42,7 +43,7 @@ export function AskForm({ groupId }: { groupId: string }) {
     <div className="flex flex-col gap-3">
       {turns.length === 0 && (
         <div className="flex flex-col gap-1.5">
-          <p className="text-xs text-muted-foreground">Try asking:</p>
+          <p className="text-xs text-muted-foreground">{dict.ask.tryAsking}</p>
           <div className="flex flex-wrap gap-1.5">
             {SUGGESTED_QUESTIONS.map((s) => (
               <button
@@ -66,8 +67,12 @@ export function AskForm({ groupId }: { groupId: string }) {
               <p className="self-end rounded-lg bg-primary/10 px-3 py-1.5 text-sm">{t.question}</p>
               <p className="rounded-lg border p-3 text-sm">{t.answer}</p>
               <p className="text-[0.65rem] text-muted-foreground">
-                Based on {t.sourceCounts.expenses} expenses, {t.sourceCounts.chores} chores,{" "}
-                {t.sourceCounts.proposals} proposals, {t.sourceCounts.ious} IOUs
+                {interpolate(dict.ask.basedOn, {
+                  expenses: t.sourceCounts.expenses,
+                  chores: t.sourceCounts.chores,
+                  proposals: t.sourceCounts.proposals,
+                  ious: t.sourceCounts.ious,
+                })}
               </p>
             </div>
           ))}
@@ -78,11 +83,11 @@ export function AskForm({ groupId }: { groupId: string }) {
         <Input
           value={question}
           onChange={(e) => setQuestion(e.target.value)}
-          placeholder={turns.length === 0 ? "Ask about this group…" : "Ask a follow-up…"}
+          placeholder={turns.length === 0 ? dict.ask.placeholderFirst : dict.ask.placeholderFollowup}
           required
         />
         <Button type="submit" disabled={pending}>
-          {pending ? "Asking…" : "Ask"}
+          {pending ? dict.ask.asking : dict.ask.askButton}
         </Button>
       </form>
     </div>

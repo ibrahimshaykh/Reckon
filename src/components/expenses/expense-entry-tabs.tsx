@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { AddExpenseForm } from "@/components/expenses/add-expense-form";
 import { ScanReceiptForm } from "@/components/expenses/scan-receipt-form";
+import type { Dictionary } from "@/lib/dictionary";
 
 type Member = { id: string; displayName: string };
 
@@ -12,11 +13,13 @@ export function ExpenseEntryTabs({
   members,
   currentUserId,
   currency,
+  dict,
 }: {
   groupId: string;
   members: Member[];
   currentUserId: string;
   currency: string;
+  dict: Dictionary;
 }) {
   const [tab, setTab] = useState<"manual" | "scan">("scan");
 
@@ -28,14 +31,14 @@ export function ExpenseEntryTabs({
           size="sm"
           onClick={() => setTab("scan")}
         >
-          Scan receipt
+          {dict.expenses.scanTab}
         </Button>
         <Button
           variant={tab === "manual" ? "default" : "outline"}
           size="sm"
           onClick={() => setTab("manual")}
         >
-          Manual entry
+          {dict.expenses.manualTab}
         </Button>
       </div>
       {tab === "scan" ? (
@@ -44,6 +47,7 @@ export function ExpenseEntryTabs({
           members={members}
           currentUserId={currentUserId}
           currency={currency}
+          dict={dict}
         />
       ) : (
         <AddExpenseForm
@@ -51,6 +55,7 @@ export function ExpenseEntryTabs({
           members={members}
           currentUserId={currentUserId}
           currency={currency}
+          dict={dict}
         />
       )}
     </div>

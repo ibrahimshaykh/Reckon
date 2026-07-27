@@ -1,11 +1,11 @@
 type Bar = { userId: string; displayName: string; completedEffort: number; barPercent: number };
 
-export function FairnessBars({ bars }: { bars: Bar[] }) {
+export function FairnessBars({ bars, title }: { bars: Bar[]; title: string }) {
   if (bars.length === 0) return null;
 
   return (
     <div className="flex flex-col gap-1.5 rounded-lg border p-3">
-      <p className="text-xs font-medium text-muted-foreground">Who&apos;s done what (completed effort)</p>
+      <p className="text-xs font-medium text-muted-foreground">{title}</p>
       {bars.map((b) => (
         <div key={b.userId} className="flex items-center gap-2 text-xs">
           <span className="w-24 shrink-0 truncate">{b.displayName}</span>

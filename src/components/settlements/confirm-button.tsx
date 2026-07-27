@@ -3,8 +3,9 @@
 import { useState } from "react";
 import { confirmReceivedByToken } from "@/lib/actions/settlements";
 import { Button } from "@/components/ui/button";
+import type { Dictionary } from "@/lib/dictionary";
 
-export function ConfirmButton({ token }: { token: string }) {
+export function ConfirmButton({ token, dict }: { token: string; dict: Dictionary }) {
   const [state, setState] = useState<"idle" | "pending" | "done">("idle");
 
   async function onClick() {
@@ -14,12 +15,12 @@ export function ConfirmButton({ token }: { token: string }) {
   }
 
   if (state === "done") {
-    return <p className="text-sm text-muted-foreground">Thanks — marked as confirmed!</p>;
+    return <p className="text-sm text-muted-foreground">{dict.confirm.confirmedThanks}</p>;
   }
 
   return (
     <Button disabled={state === "pending"} onClick={onClick}>
-      Yes, I received this
+      {dict.confirm.yesReceived}
     </Button>
   );
 }

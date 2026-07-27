@@ -2,10 +2,17 @@
 
 import { useState } from "react";
 import { createGuestLink } from "@/lib/actions/guest";
+import type { Dictionary } from "@/lib/dictionary";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
-export function ShareExpenseButton({ expenseId }: { expenseId: string }) {
+export function ShareExpenseButton({
+  expenseId,
+  dict,
+}: {
+  expenseId: string;
+  dict: Dictionary;
+}) {
   const [guestName, setGuestName] = useState("");
   const [link, setLink] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
@@ -25,7 +32,7 @@ export function ShareExpenseButton({ expenseId }: { expenseId: string }) {
   if (!open) {
     return (
       <Button variant="ghost" size="sm" onClick={() => setOpen(true)}>
-        Share
+        {dict.expenses.shareButton}
       </Button>
     );
   }
@@ -37,10 +44,10 @@ export function ShareExpenseButton({ expenseId }: { expenseId: string }) {
           <Input
             value={guestName}
             onChange={(e) => setGuestName(e.target.value)}
-            placeholder="Guest's name"
+            placeholder={dict.expenses.guestNamePlaceholder}
           />
           <Button size="sm" disabled={pending} onClick={onGenerate}>
-            {pending ? "Creating…" : "Create link"}
+            {pending ? dict.expenses.creatingLink : dict.expenses.createLinkButton}
           </Button>
         </>
       ) : (

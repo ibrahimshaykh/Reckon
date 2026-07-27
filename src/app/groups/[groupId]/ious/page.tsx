@@ -1,6 +1,7 @@
 import { getGroup } from "@/lib/actions/groups";
 import { listIOUs } from "@/lib/actions/ious";
 import { requireSession } from "@/lib/dal";
+import { getDictionary } from "@/lib/dictionary";
 import { AddIOUForm } from "@/components/ious/add-iou-form";
 import { IOUList } from "@/components/ious/iou-list";
 import { HelpTip } from "@/components/help-tip";
@@ -16,18 +17,20 @@ export default async function IOUsPage({
     listIOUs(groupId),
     requireSession(),
   ]);
+  const dict = await getDictionary(session.locale);
 
   return (
     <div className="mx-auto flex w-full max-w-2xl flex-col gap-6 p-6">
-      <h1 className="text-xl font-semibold">IOUs</h1>
-      <HelpTip text="For debts outside any shared expense — they fold into the same settle-up total." />
+      <h1 className="text-xl font-semibold">{dict.ious.title}</h1>
+      <HelpTip text={dict.ious.helpTip} />
       <AddIOUForm
         groupId={groupId}
         members={group.members}
         currentUserId={session.id}
         currency={group.currency}
+        dict={dict}
       />
-      <IOUList ious={ious} currentUserId={session.id} currency={group.currency} />
+      <IOUList ious={ious} currentUserId={session.id} currency={group.currency} dict={dict} />
     </div>
   );
 }

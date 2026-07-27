@@ -13,6 +13,8 @@ import {
   assignColors,
   type EntryLike,
 } from "@/lib/availability-grid";
+import type { Dictionary } from "@/lib/dictionary";
+import { interpolate } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
 
 type Member = { id: string; displayName: string };
@@ -41,12 +43,14 @@ export function WeekGrid({
   members,
   entries,
   currentUserId,
+  dict,
 }: {
   groupId: string;
   startDate: string;
   members: Member[];
   entries: Entry[];
   currentUserId: string;
+  dict: Dictionary;
 }) {
   const router = useRouter();
   const [pending, setPending] = useState(false);
@@ -158,23 +162,27 @@ export function WeekGrid({
     <div className="flex flex-col gap-3">
       <div className="flex items-center justify-between gap-2">
         <Button size="sm" variant="outline" onClick={() => goToStart(new Date(days[0].getTime() - 7 * 86_400_000))}>
-          ← Previous week
+          {dict.availability.prevWeek}
         </Button>
         <div className="flex items-center gap-2">
           <p className="text-sm text-muted-foreground">
+            {/* Date range display is pinned to en-US regardless of UI
+                language, deliberately — see the note on formatMinuteOfDay's
+                caller below for why locale-dependent Intl formatting here
+                is a real hydration-mismatch risk this app already hit once. */}
             {days[0].toLocaleDateString("en-US", { month: "short", day: "numeric" })} –{" "}
             {days[6].toLocaleDateString("en-US", { month: "short", day: "numeric" })}
           </p>
           <input
             type="date"
-            aria-label="Jump to date"
+            aria-label={dict.availability.jumpToDate}
             className="rounded-md border bg-transparent px-1.5 py-0.5 text-xs text-muted-foreground"
             value={formatDateParam(days[0])}
             onChange={(e) => e.target.value && goToStart(parseDateParam(e.target.value, days[0]))}
           />
         </div>
         <Button size="sm" variant="outline" onClick={() => goToStart(new Date(days[0].getTime() + 7 * 86_400_000))}>
-          Next week →
+          {dict.availability.nextWeek}
         </Button>
       </div>
 
@@ -188,29 +196,33 @@ export function WeekGrid({
           ))}
         </div>
         <div className="flex items-center gap-1 text-xs">
-          <span className="text-muted-foreground">Adding:</span>
+          <span className="text-muted-foreground">{dict.availability.addingLabel}</span>
           <Button
             size="sm"
             variant={recurringMode ? "ghost" : "secondary"}
             onClick={() => setRecurringMode(false)}
           >
-            One-time
+            {dict.availability.oneTime}
           </Button>
           <Button
             size="sm"
             variant={recurringMode ? "secondary" : "ghost"}
             onClick={() => setRecurringMode(true)}
           >
-            Repeats weekly
+            {dict.availability.repeatsWeekly}
           </Button>
         </div>
       </div>
 
       {best && (
         <p className="text-sm text-amber-600 dark:text-amber-400">
-          ✨ Best time: {days[best.dayIndex].toLocaleDateString("en-US", { weekday: "long" })}{" "}
-          {formatMinuteOfDay(best.startMinute)}–{formatMinuteOfDay(best.endMinute)} · {best.count} of{" "}
-          {members.length} free
+          {interpolate(dict.availability.bestTime, {
+            weekday: days[best.dayIndex].toLocaleDateString("en-US", { weekday: "long" }),
+            start: formatMinuteOfDay(best.startMinute),
+            end: formatMinuteOfDay(best.endMinute),
+            count: best.count,
+            total: members.length,
+          })}
         </p>
       )}
 
@@ -282,7 +294,7 @@ export function WeekGrid({
                         }}
                         onPointerDown={(e) => e.stopPropagation()}
                         onClick={() => entry.userId === currentUserId && onRemove(entry.id)}
-                        title={entry.userId === currentUserId ? "Click to remove" : undefined}
+                        title={entry.userId === currentUserId ? dict.availability.clickToRemove : undefined}
                       />
                     )),
                 )}
@@ -320,18 +332,20 @@ export function WeekGrid({
           <p className="font-medium">{formatMinuteOfDay(hover.minute)}</p>
           {hoverNames.length > 0 ? (
             <p className="text-muted-foreground">
-              {hoverNames.join(", ")} free ({hoverNames.length} of {members.length})
+              {interpolate(dict.availability.freeNames, {
+                names: hoverNames.join(", "),
+                n: hoverNames.length,
+                total: members.length,
+              })}
             </p>
           ) : (
-            <p className="text-muted-foreground">Nobody free yet</p>
+            <p className="text-muted-foreground">{dict.availability.nobodyFree}</p>
           )}
         </div>
       )}
 
-      <p className="text-xs text-muted-foreground">
-        Dashed border = repeats every week. Drag to add, click your own bar to remove it.
-      </p>
-      {pending && <p className="text-xs text-muted-foreground">Saving…</p>}
+      <p className="text-xs text-muted-foreground">{dict.availability.legend}</p>
+      {pending && <p className="text-xs text-muted-foreground">{dict.availability.saving}</p>}
     </div>
   );
 }
