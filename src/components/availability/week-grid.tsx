@@ -96,8 +96,8 @@ export function WeekGrid({
           ← Previous week
         </Button>
         <p className="text-sm text-muted-foreground">
-          {days[0].toLocaleDateString(undefined, { month: "short", day: "numeric" })} –{" "}
-          {days[6].toLocaleDateString(undefined, { month: "short", day: "numeric" })}
+          {days[0].toLocaleDateString("en-US", { month: "short", day: "numeric" })} –{" "}
+          {days[6].toLocaleDateString("en-US", { month: "short", day: "numeric" })}
         </p>
         <Button
           size="sm"
@@ -126,7 +126,7 @@ export function WeekGrid({
                 key={i}
                 className="border-b border-neutral-800 py-1.5 text-center font-medium text-neutral-200"
               >
-                {day.toLocaleDateString(undefined, { weekday: "short" })}
+                {day.toLocaleDateString("en-US", { weekday: "short" })}
                 <br />
                 <span className="font-mono text-neutral-500">{day.getDate()}</span>
               </div>
