@@ -262,9 +262,10 @@ model AvailabilityEntry {
   group    Group    @relation(fields: [groupId], references: [id], onDelete: Cascade)
   userId   String
   user     User     @relation(fields: [userId], references: [id])
-  startsAt DateTime
-  endsAt   DateTime
-  label    String?
+  startsAt  DateTime
+  endsAt    DateTime
+  label     String?
+  recurring Boolean  @default(false)
 
   @@index([groupId, startsAt])
 }

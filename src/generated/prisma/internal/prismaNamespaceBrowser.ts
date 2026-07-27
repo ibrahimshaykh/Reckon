@@ -244,7 +244,8 @@ export const AvailabilityEntryScalarFieldEnum = {
   userId: 'userId',
   startsAt: 'startsAt',
   endsAt: 'endsAt',
-  label: 'label'
+  label: 'label',
+  recurring: 'recurring'
 } as const
 
 export type AvailabilityEntryScalarFieldEnum = (typeof AvailabilityEntryScalarFieldEnum)[keyof typeof AvailabilityEntryScalarFieldEnum]

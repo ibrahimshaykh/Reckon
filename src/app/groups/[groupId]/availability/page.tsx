@@ -1,6 +1,7 @@
 import { getGroup } from "@/lib/actions/groups";
 import { getGroupFreeTime } from "@/lib/actions/availability";
 import { requireSession } from "@/lib/dal";
+import { formatDateParam, getWeekDays, parseDateParam } from "@/lib/availability-grid";
 import { WeekGrid } from "@/components/availability/week-grid";
 import { FreeTimeList } from "@/components/availability/free-time-list";
 import { HelpTip } from "@/components/help-tip";
@@ -10,11 +11,11 @@ export default async function AvailabilityPage({
   searchParams,
 }: {
   params: Promise<{ groupId: string }>;
-  searchParams: Promise<{ week?: string }>;
+  searchParams: Promise<{ start?: string }>;
 }) {
   const { groupId } = await params;
-  const { week } = await searchParams;
-  const weekOffset = Number(week ?? 0) || 0;
+  const { start } = await searchParams;
+  const startDate = formatDateParam(getWeekDays(parseDateParam(start, new Date()))[0]);
 
   const [session, group, freeTime] = await Promise.all([
     requireSession(),
@@ -28,7 +29,7 @@ export default async function AvailabilityPage({
       <HelpTip text="Drag across the grid to mark yourself free. Where everyone's colors overlap, it glows brightest — that's when to plan something." />
       <WeekGrid
         groupId={groupId}
-        weekOffset={weekOffset}
+        startDate={startDate}
         members={group.members}
         entries={freeTime.entries}
         currentUserId={session.id}

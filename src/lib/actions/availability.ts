@@ -14,6 +14,7 @@ const addAvailabilitySchema = z.object({
   startsAt: z.string().min(1, "Start time is required."),
   endsAt: z.string().min(1, "End time is required."),
   label: z.string().trim().max(200).optional(),
+  recurring: z.boolean().optional(),
 });
 
 export async function addAvailability(input: {
@@ -21,6 +22,7 @@ export async function addAvailability(input: {
   startsAt: string;
   endsAt: string;
   label?: string;
+  recurring?: boolean;
 }) {
   const session = await requireSession();
   const valid = validate(addAvailabilitySchema, input);
@@ -42,6 +44,7 @@ export async function addAvailability(input: {
       startsAt,
       endsAt,
       label: valid.label,
+      recurring: valid.recurring ?? false,
     },
   });
 
@@ -57,6 +60,9 @@ export async function getGroupFreeTime(groupId: string) {
     include: { user: true },
   });
 
+  // Recurring entries aren't expanded across future weeks here — this list
+  // is the literal, definitive "everyone's actually free" overlap, and only
+  // the week-grid projects a recurring entry onto future occurrences.
   const entriesByUser: Record<string, { start: number; end: number }[]> = {};
   for (const entry of entries) {
     (entriesByUser[entry.userId] ??= []).push({
@@ -80,6 +86,7 @@ export async function getGroupFreeTime(groupId: string) {
       startsAt: e.startsAt.toISOString(),
       endsAt: e.endsAt.toISOString(),
       label: e.label,
+      recurring: e.recurring,
     })),
   };
 }
