@@ -1,4 +1,5 @@
 import { listProposals } from "@/lib/actions/proposals";
+import { getGroup } from "@/lib/actions/groups";
 import { AddProposalForm } from "@/components/proposals/add-proposal-form";
 import { ProposalList } from "@/components/proposals/proposal-list";
 import { MeetingPointMap } from "@/components/proposals/meeting-point-map-wrapper";
@@ -10,7 +11,10 @@ export default async function ProposalsPage({
   params: Promise<{ groupId: string }>;
 }) {
   const { groupId } = await params;
-  const { proposals, memberHomes } = await listProposals(groupId);
+  const [{ proposals, memberHomes }, group] = await Promise.all([
+    listProposals(groupId),
+    getGroup(groupId),
+  ]);
 
   const locatedProposals = proposals.filter(
     (p): p is typeof p & { latitude: number; longitude: number } =>
@@ -25,7 +29,7 @@ export default async function ProposalsPage({
       {memberHomes.length > 0 && (
         <MeetingPointMap homes={memberHomes} proposals={locatedProposals} />
       )}
-      <ProposalList proposals={proposals} />
+      <ProposalList proposals={proposals} currency={group.currency} />
     </div>
   );
 }

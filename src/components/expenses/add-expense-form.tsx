@@ -14,10 +14,12 @@ export function AddExpenseForm({
   groupId,
   members,
   currentUserId,
+  currency,
 }: {
   groupId: string;
   members: Member[];
   currentUserId: string;
+  currency: string;
 }) {
   const router = useRouter();
   const [title, setTitle] = useState("");
@@ -69,7 +71,7 @@ export function AddExpenseForm({
         min="0.01"
         value={amount}
         onChange={(e) => setAmount(e.target.value)}
-        placeholder="0.00"
+        placeholder={`0.00 ${currency}`}
         required
       />
       <label className="text-sm text-muted-foreground">Paid by</label>

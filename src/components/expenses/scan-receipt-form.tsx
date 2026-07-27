@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { uploadAndParseReceipt, correctReceipt } from "@/lib/actions/receipts";
 import { addItemizedExpense } from "@/lib/actions/expenses";
 import { buildItemizedShares } from "@/lib/receipt-split";
+import { formatMoney } from "@/lib/money";
 import type { ParsedReceipt } from "@/lib/gemini";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -27,10 +28,12 @@ export function ScanReceiptForm({
   groupId,
   members,
   currentUserId,
+  currency,
 }: {
   groupId: string;
   members: Member[];
   currentUserId: string;
+  currency: string;
 }) {
   const router = useRouter();
   const [base64, setBase64] = useState<string | null>(null);
@@ -147,7 +150,7 @@ export function ScanReceiptForm({
         <div className="rounded-lg border p-3 text-sm">
           <p className="font-medium">{parsed.title}</p>
           <p className="text-muted-foreground">
-            Total: ${(parsed.totalCents / 100).toFixed(2)}
+            Total: {formatMoney(parsed.totalCents, currency)}
           </p>
         </div>
       )}
@@ -184,7 +187,7 @@ export function ScanReceiptForm({
             {parsed.items.map((item, i) => (
               <li key={i} className="rounded-lg border p-2">
                 <p className="text-sm">
-                  {item.label} — ${(item.amountCents / 100).toFixed(2)}
+                  {item.label} — {formatMoney(item.amountCents, currency)}
                 </p>
                 <div className="mt-1 flex flex-wrap gap-1">
                   {members.map((m) => {
@@ -213,10 +216,11 @@ export function ScanReceiptForm({
           </ul>
           {parsed.totalCents > parsed.items.reduce((s, it) => s + it.amountCents, 0) && (
             <p className="text-xs text-muted-foreground">
-              The remaining ${(
-                (parsed.totalCents - parsed.items.reduce((s, it) => s + it.amountCents, 0)) /
-                100
-              ).toFixed(2)}{" "}
+              The remaining{" "}
+              {formatMoney(
+                parsed.totalCents - parsed.items.reduce((s, it) => s + it.amountCents, 0),
+                currency,
+              )}{" "}
               (tax/fees) will be split in proportion to what each person claimed above.
             </p>
           )}

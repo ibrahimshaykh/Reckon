@@ -11,10 +11,12 @@ export function ExpenseEntryTabs({
   groupId,
   members,
   currentUserId,
+  currency,
 }: {
   groupId: string;
   members: Member[];
   currentUserId: string;
+  currency: string;
 }) {
   const [tab, setTab] = useState<"manual" | "scan">("scan");
 
@@ -41,12 +43,14 @@ export function ExpenseEntryTabs({
           groupId={groupId}
           members={members}
           currentUserId={currentUserId}
+          currency={currency}
         />
       ) : (
         <AddExpenseForm
           groupId={groupId}
           members={members}
           currentUserId={currentUserId}
+          currency={currency}
         />
       )}
     </div>

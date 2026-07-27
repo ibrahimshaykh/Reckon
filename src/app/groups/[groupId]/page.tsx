@@ -1,8 +1,10 @@
 import Link from "next/link";
 import { getGroup } from "@/lib/actions/groups";
 import { listGroupExpenses } from "@/lib/actions/expenses";
+import { formatMoney } from "@/lib/money";
 import { AddMemberForm } from "@/components/groups/add-member-form";
 import { ShareExpenseButton } from "@/components/expenses/share-expense-button";
+import { CurrencyPicker } from "@/components/groups/currency-picker";
 import { Button } from "@/components/ui/button";
 
 export default async function GroupPage({
@@ -18,7 +20,10 @@ export default async function GroupPage({
 
   return (
     <div className="mx-auto flex w-full max-w-2xl flex-col gap-6 p-6">
-      <h1 className="text-xl font-semibold">{group.name}</h1>
+      <div className="flex items-center justify-between">
+        <h1 className="text-xl font-semibold">{group.name}</h1>
+        <CurrencyPicker groupId={group.id} currency={group.currency} />
+      </div>
       <section className="flex flex-col gap-2">
         <h2 className="text-sm font-medium text-muted-foreground">Members</h2>
         <ul className="flex flex-col gap-1">
@@ -112,8 +117,8 @@ export default async function GroupPage({
             <li key={e.id} className="rounded-lg border p-3 text-sm">
               <div className="flex items-center justify-between">
                 <span>
-                  <strong>{e.title}</strong> — ${e.totalAmount.toFixed(2)}, paid by{" "}
-                  {e.paidByName}
+                  <strong>{e.title}</strong> — {formatMoney(e.totalAmount * 100, group.currency)}, paid
+                  by {e.paidByName}
                 </span>
                 <ShareExpenseButton expenseId={e.id} />
               </div>

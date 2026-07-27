@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { forgiveIOU } from "@/lib/actions/ious";
+import { formatMoney } from "@/lib/money";
 import { Button } from "@/components/ui/button";
 
 type IOU = {
@@ -15,7 +16,15 @@ type IOU = {
   forgivenAt: string | null;
 };
 
-export function IOUList({ ious, currentUserId }: { ious: IOU[]; currentUserId: string }) {
+export function IOUList({
+  ious,
+  currentUserId,
+  currency,
+}: {
+  ious: IOU[];
+  currentUserId: string;
+  currency: string;
+}) {
   if (ious.length === 0) {
     return <p className="text-sm text-muted-foreground">No IOUs yet.</p>;
   }
@@ -23,13 +32,21 @@ export function IOUList({ ious, currentUserId }: { ious: IOU[]; currentUserId: s
   return (
     <ul className="flex flex-col gap-1">
       {ious.map((i) => (
-        <IOURow key={i.id} iou={i} currentUserId={currentUserId} />
+        <IOURow key={i.id} iou={i} currentUserId={currentUserId} currency={currency} />
       ))}
     </ul>
   );
 }
 
-function IOURow({ iou: i, currentUserId }: { iou: IOU; currentUserId: string }) {
+function IOURow({
+  iou: i,
+  currentUserId,
+  currency,
+}: {
+  iou: IOU;
+  currentUserId: string;
+  currency: string;
+}) {
   const router = useRouter();
   const [pending, setPending] = useState(false);
   const canForgive = i.toUserId === currentUserId && !i.forgivenAt;
@@ -48,8 +65,8 @@ function IOURow({ iou: i, currentUserId }: { iou: IOU; currentUserId: string }) 
       }`}
     >
       <p className={i.forgivenAt ? "line-through" : ""}>
-        <strong>{i.fromName}</strong> owes <strong>{i.toName}</strong> $
-        {i.amount.toFixed(2)}
+        <strong>{i.fromName}</strong> owes <strong>{i.toName}</strong>{" "}
+        {formatMoney(Math.round(i.amount * 100), currency)}
         {i.note && ` — ${i.note}`}
       </p>
       {i.forgivenAt ? (

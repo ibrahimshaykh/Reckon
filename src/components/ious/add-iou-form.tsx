@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { addIOU } from "@/lib/actions/ious";
-import { toCents } from "@/lib/money";
+import { toCents, formatMoney } from "@/lib/money";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
@@ -22,10 +22,12 @@ export function AddIOUForm({
   groupId,
   members,
   currentUserId,
+  currency,
 }: {
   groupId: string;
   members: Member[];
   currentUserId: string;
+  currency: string;
 }) {
   const router = useRouter();
   const others = members.filter((m) => m.id !== currentUserId);
@@ -89,7 +91,7 @@ export function AddIOUForm({
           min="0.01"
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
-          placeholder="Amount ($)"
+          placeholder="Amount"
           required
           className="flex-1"
         />
@@ -101,7 +103,7 @@ export function AddIOUForm({
             variant={amount === String(preset) ? "secondary" : "outline"}
             onClick={() => setAmount(String(preset))}
           >
-            ${preset}
+            {formatMoney(preset * 100, currency)}
           </Button>
         ))}
       </div>

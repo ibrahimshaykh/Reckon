@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import { getGuestSession } from "@/lib/dal";
 import { db } from "@/lib/db";
 import { buildPayLink } from "@/lib/pay-links";
-import { toCents } from "@/lib/money";
+import { toCents, formatMoney } from "@/lib/money";
 import { CopyRow } from "@/components/copy-row";
 
 export default async function GuestExpensePage({
@@ -18,9 +18,11 @@ export default async function GuestExpensePage({
     where: { id: guestToken.expenseId },
     include: {
       paidBy: true,
+      group: true,
       items: { include: { participants: { include: { user: true } } } },
     },
   });
+  const currency = expense.group.currency;
 
   const payer = expense.paidBy;
   const hasAnyPaymentMethod =
@@ -34,15 +36,15 @@ export default async function GuestExpensePage({
     <div className="mx-auto flex w-full max-w-sm flex-col gap-4 p-6">
       <h1 className="text-xl font-semibold">{expense.title}</h1>
       <p className="text-sm text-muted-foreground">
-        Hi {guestToken.guestName} — {expense.paidBy.displayName} paid $
-        {Number(expense.totalAmount).toFixed(2)} for this.
+        Hi {guestToken.guestName} — {expense.paidBy.displayName} paid{" "}
+        {formatMoney(toCents(expense.totalAmount), currency)} for this.
       </p>
       <ul className="flex flex-col gap-1">
         {expense.items.flatMap((item) =>
           item.participants.map((p) => (
             <li key={p.id} className="text-sm">
-              {p.user.displayName}: $
-              {((toCents(item.amount) * Number(p.shareRatio)) / 100).toFixed(2)}
+              {p.user.displayName}:{" "}
+              {formatMoney(Math.round(toCents(item.amount) * Number(p.shareRatio)), currency)}
             </li>
           )),
         )}

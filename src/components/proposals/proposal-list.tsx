@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { castVote } from "@/lib/actions/proposals";
+import { formatMoney } from "@/lib/money";
 import { Button } from "@/components/ui/button";
 
 type VoteChoice = "YES" | "IF_NEEDED" | "NO";
@@ -31,7 +32,13 @@ const CHOICE_LABEL: Record<VoteChoice, string> = {
   NO: "No",
 };
 
-export function ProposalList({ proposals }: { proposals: Proposal[] }) {
+export function ProposalList({
+  proposals,
+  currency,
+}: {
+  proposals: Proposal[];
+  currency: string;
+}) {
   if (proposals.length === 0) {
     return <p className="text-sm text-muted-foreground">No proposals yet.</p>;
   }
@@ -39,13 +46,13 @@ export function ProposalList({ proposals }: { proposals: Proposal[] }) {
   return (
     <ul className="flex flex-col gap-2">
       {proposals.map((p) => (
-        <ProposalRow key={p.id} proposal={p} />
+        <ProposalRow key={p.id} proposal={p} currency={currency} />
       ))}
     </ul>
   );
 }
 
-function ProposalRow({ proposal: p }: { proposal: Proposal }) {
+function ProposalRow({ proposal: p, currency }: { proposal: Proposal; currency: string }) {
   const router = useRouter();
   const [pending, setPending] = useState(false);
 
@@ -61,7 +68,7 @@ function ProposalRow({ proposal: p }: { proposal: Proposal }) {
       <p>
         <strong>{p.title}</strong> — proposed by {p.proposedByName}
         {p.estimatedCostPerPerson !== null &&
-          `, ~$${p.estimatedCostPerPerson.toFixed(2)}/person`}
+          `, ~${formatMoney(Math.round(p.estimatedCostPerPerson * 100), currency)}/person`}
         {p.isFairestPick && (
           <span className="ml-2 rounded bg-primary/10 px-1.5 py-0.5 text-xs text-primary">
             Fairest pick

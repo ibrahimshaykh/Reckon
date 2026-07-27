@@ -1,3 +1,5 @@
+import { formatMoney } from "@/lib/money";
+
 export type ProposalInput = {
   estimatedCostPerPersonCents: number | null;
   dietaryTags: string[];
@@ -20,6 +22,7 @@ export type ProposalFlag = {
 export function computeProposalFlags(
   proposal: ProposalInput,
   members: MemberConstraints[],
+  currency: string = "USD",
 ): ProposalFlag[] {
   const flags: ProposalFlag[] = [];
 
@@ -32,7 +35,7 @@ export function computeProposalFlags(
       flags.push({
         userId: member.userId,
         reason: "OVER_BUDGET",
-        detail: `Estimated $${(proposal.estimatedCostPerPersonCents / 100).toFixed(2)} per person exceeds their $${(member.budgetLimitCents / 100).toFixed(2)} limit.`,
+        detail: `Estimated ${formatMoney(proposal.estimatedCostPerPersonCents, currency)} per person exceeds their ${formatMoney(member.budgetLimitCents, currency)} limit.`,
       });
     }
 

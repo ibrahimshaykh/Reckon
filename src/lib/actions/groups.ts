@@ -79,12 +79,23 @@ export async function getGroup(groupId: string) {
   return {
     id: group.id,
     name: group.name,
+    currency: group.currency,
     members: group.members.map((m) => ({
       id: m.user.id,
       displayName: m.user.displayName,
       email: m.user.email,
     })),
   };
+}
+
+export async function updateGroupCurrency(groupId: string, currency: string) {
+  const session = await requireSession();
+  validate(cuid, groupId);
+  const validCurrency = validate(z.string().regex(/^[A-Z]{3}$/, "Not a valid currency code."), currency);
+  await assertMember(groupId, session.id);
+
+  await db.group.update({ where: { id: groupId }, data: { currency: validCurrency } });
+  revalidatePath(`/groups/${groupId}`);
 }
 
 export async function assertMember(groupId: string, userId: string) {

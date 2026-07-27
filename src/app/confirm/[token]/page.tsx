@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { getConfirmToken } from "@/lib/dal";
 import { db } from "@/lib/db";
+import { formatMoney } from "@/lib/money";
 import { ConfirmButton } from "@/components/settlements/confirm-button";
 
 export default async function ConfirmReceivedPage({
@@ -12,12 +13,13 @@ export default async function ConfirmReceivedPage({
   const settlement = await getConfirmToken(token);
   if (!settlement) notFound();
 
-  const [fromUser, toUser] = await Promise.all([
+  const [fromUser, toUser, group] = await Promise.all([
     db.user.findUniqueOrThrow({ where: { id: settlement.fromUserId } }),
     db.user.findUniqueOrThrow({ where: { id: settlement.toUserId } }),
+    db.group.findUniqueOrThrow({ where: { id: settlement.groupId } }),
   ]);
 
-  const amount = Number(settlement.amount).toFixed(2);
+  const amount = formatMoney(Math.round(Number(settlement.amount) * 100), group.currency);
   const alreadyConfirmed = settlement.status === "CONFIRMED";
 
   return (
@@ -25,13 +27,13 @@ export default async function ConfirmReceivedPage({
       <h1 className="text-xl font-semibold">Confirm payment received</h1>
       {alreadyConfirmed ? (
         <p className="text-sm text-muted-foreground">
-          Already confirmed — thanks! You told {fromUser.displayName} you got the ${amount}.
+          Already confirmed — thanks! You told {fromUser.displayName} you got the {amount}.
         </p>
       ) : (
         <>
           <p className="text-sm text-muted-foreground">
-            Hi {toUser.displayName} — {fromUser.displayName} says they paid you ${amount}. Did
-            you receive it?
+            Hi {toUser.displayName} — {fromUser.displayName} says they paid you {amount}. Did you
+            receive it?
           </p>
           <ConfirmButton token={token} />
         </>

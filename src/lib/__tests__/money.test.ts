@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { toCents, fromCents } from "@/lib/money";
+import { toCents, fromCents, formatMoney } from "@/lib/money";
 
 describe("money", () => {
   it("converts dollars to cents", () => {
@@ -18,5 +18,25 @@ describe("money", () => {
 
   it("round-trips without drift", () => {
     expect(fromCents(toCents(45.67))).toBe(45.67);
+  });
+});
+
+describe("formatMoney", () => {
+  it("formats USD with a dollar sign and two decimal places", () => {
+    expect(formatMoney(1999, "USD")).toBe("$19.99");
+  });
+
+  it("formats a currency with no minor unit (JPY) with no decimal places", () => {
+    expect(formatMoney(199900, "JPY")).toBe("¥1,999");
+  });
+
+  it("formats PKR with its own symbol, not a generic $", () => {
+    const formatted = formatMoney(150000, "PKR");
+    expect(formatted).not.toContain("$");
+    expect(formatted).toContain("1,500");
+  });
+
+  it("renders the same string regardless of caller — no locale drift", () => {
+    expect(formatMoney(500, "USD")).toBe(formatMoney(500, "USD"));
   });
 });

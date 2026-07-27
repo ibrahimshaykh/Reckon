@@ -60,7 +60,7 @@ export function AddProposalForm({ groupId }: { groupId: string }) {
         min="0"
         value={cost}
         onChange={(e) => setCost(e.target.value)}
-        placeholder="Estimated cost per person ($, optional)"
+        placeholder="Estimated cost per person (optional)"
       />
       <Input
         value={dietaryTags}

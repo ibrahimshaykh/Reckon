@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { getMonthlyRecap } from "@/lib/actions/recap";
+import { formatMoney } from "@/lib/money";
 import { Button } from "@/components/ui/button";
 
 type Recap = {
@@ -15,7 +16,7 @@ type Recap = {
   previousTotalSpentCents: number | null;
 };
 
-export function RecapView({ groupId }: { groupId: string }) {
+export function RecapView({ groupId, currency }: { groupId: string; currency: string }) {
   const [recap, setRecap] = useState<Recap | null>(null);
   const [pending, setPending] = useState(false);
 
@@ -44,7 +45,7 @@ export function RecapView({ groupId }: { groupId: string }) {
         <div className="flex flex-col gap-2">
           <div className="rounded-lg border p-4">
             <p className="text-xs text-muted-foreground">Total spent</p>
-            <p className="text-2xl font-semibold">${(recap.totalSpentCents / 100).toFixed(2)}</p>
+            <p className="text-2xl font-semibold">{formatMoney(recap.totalSpentCents, currency)}</p>
             {delta !== null && (
               <p
                 className={`text-xs ${
@@ -55,8 +56,8 @@ export function RecapView({ groupId }: { groupId: string }) {
                       : "text-muted-foreground"
                 }`}
               >
-                {delta === 0 ? "Same as" : delta > 0 ? "↑" : "↓"} $
-                {(Math.abs(delta) / 100).toFixed(2)} vs last month
+                {delta === 0 ? "Same as" : delta > 0 ? "↑" : "↓"} {formatMoney(Math.abs(delta), currency)}{" "}
+                vs last month
               </p>
             )}
           </div>
@@ -67,7 +68,7 @@ export function RecapView({ groupId }: { groupId: string }) {
               <ul className="flex flex-col gap-0.5 text-sm">
                 {recap.topExpenses.map((e, i) => (
                   <li key={i}>
-                    {e.title} — ${e.amount.toFixed(2)}
+                    {e.title} — {formatMoney(Math.round(e.amount * 100), currency)}
                   </li>
                 ))}
               </ul>

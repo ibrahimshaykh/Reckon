@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { markPaid, confirmReceived } from "@/lib/actions/settlements";
 import { createSafepayCheckout } from "@/lib/actions/safepay-checkout";
+import { formatMoney } from "@/lib/money";
 import { Button } from "@/components/ui/button";
 import { CopyRow } from "@/components/copy-row";
 import { buildPayLink, type PayProvider } from "@/lib/pay-links";
@@ -29,9 +30,11 @@ type Settlement = {
 export function SettlementList({
   settlements,
   currentUserId,
+  currency,
 }: {
   settlements: Settlement[];
   currentUserId: string;
+  currency: string;
 }) {
   if (settlements.length === 0) {
     return <p className="text-sm text-muted-foreground">Everyone&apos;s settled up.</p>;
@@ -40,7 +43,7 @@ export function SettlementList({
   return (
     <ul className="flex flex-col gap-3">
       {settlements.map((s) => (
-        <SettlementRow key={s.id} settlement={s} currentUserId={currentUserId} />
+        <SettlementRow key={s.id} settlement={s} currentUserId={currentUserId} currency={currency} />
       ))}
     </ul>
   );
@@ -49,16 +52,18 @@ export function SettlementList({
 function SettlementRow({
   settlement,
   currentUserId,
+  currency,
 }: {
   settlement: Settlement;
   currentUserId: string;
+  currency: string;
 }) {
   const router = useRouter();
   const [showMath, setShowMath] = useState(false);
   const [pending, setPending] = useState(false);
   const [safepayUnavailable, setSafepayUnavailable] = useState(false);
 
-  const amount = (settlement.amountCents / 100).toFixed(2);
+  const amount = formatMoney(settlement.amountCents, currency);
   const isPayer = settlement.fromUserId === currentUserId;
   const isPayee = settlement.toUserId === currentUserId;
 
@@ -116,7 +121,7 @@ function SettlementRow({
       <div className="flex items-center justify-between">
         <p className="text-sm">
           <strong>{settlement.fromName}</strong> owes{" "}
-          <strong>{settlement.toName}</strong> ${amount}
+          <strong>{settlement.toName}</strong> {amount}
         </p>
         <Button variant="ghost" size="sm" onClick={() => setShowMath((v) => !v)}>
           {showMath ? "Hide math" : "Show the math"}

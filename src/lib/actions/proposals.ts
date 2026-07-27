@@ -32,10 +32,13 @@ export async function createProposal(input: {
   const valid = validate(createProposalSchema, input);
   await assertMember(valid.groupId, session.id);
 
-  const members = await db.groupMember.findMany({
-    where: { groupId: valid.groupId },
-    include: { user: true },
-  });
+  const [members, group] = await Promise.all([
+    db.groupMember.findMany({
+      where: { groupId: valid.groupId },
+      include: { user: true },
+    }),
+    db.group.findUniqueOrThrow({ where: { id: valid.groupId } }),
+  ]);
 
   const flags = computeProposalFlags(
     {
@@ -47,6 +50,7 @@ export async function createProposal(input: {
       budgetLimitCents: m.user.budgetLimit === null ? null : toCents(m.user.budgetLimit),
       dietaryRestrictions: m.user.dietaryRestrictions,
     })),
+    group.currency,
   );
 
   await db.proposal.create({

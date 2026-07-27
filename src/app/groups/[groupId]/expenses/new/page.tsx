@@ -20,6 +20,7 @@ export default async function NewExpensePage({
         groupId={group.id}
         members={group.members}
         currentUserId={session.id}
+        currency={group.currency}
       />
     </div>
   );
