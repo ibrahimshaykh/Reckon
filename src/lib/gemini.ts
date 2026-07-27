@@ -55,33 +55,43 @@ export async function parseReceiptImage(
   return JSON.parse(response.text ?? "{}") as ParsedReceipt;
 }
 
-const CAPABILITY_PRIMER = `You can ask things like:
-- "How much have we spent this month?"
-- "Who paid the most for groceries?"
-- "What chores does Sam have this week?"
-- "Are there any dietary conflicts on the pizza proposal?"`;
-
-export function getCapabilityPrimer(): string {
-  return CAPABILITY_PRIMER;
-}
-
 export async function answerGroupQuestion(
   question: string,
   context: {
     today: string;
     expenses: { title: string; totalAmount: number; paidByName: string; createdAt: string }[];
     chores: { name: string; currentAssignee: string | null; periodEnd: string | null }[];
+    proposals: {
+      title: string;
+      status: string;
+      estimatedCostPerPerson: number | null;
+      dietaryTags: string[];
+      flags: { userName: string; reason: string; detail: string }[];
+    }[];
+    ious: { fromName: string; toName: string; amount: number; note: string | null }[];
+    history: { question: string; answer: string }[];
   },
 ): Promise<string> {
+  // A short sliding window of prior turns, not the full conversation — lets
+  // "what about last week" resolve against the previous answer without an
+  // unbounded prompt.
+  const historyText = context.history
+    .map((h) => `Q: ${h.question}\nA: ${h.answer}`)
+    .join("\n\n");
+
   const response = await ai.models.generateContent({
     model: "gemini-3.5-flash",
     contents: createUserContent([
       `Today's date is ${context.today}.`,
       `Group expenses: ${JSON.stringify(context.expenses)}.`,
       `Group chores: ${JSON.stringify(context.chores)}.`,
+      `Group proposals: ${JSON.stringify(context.proposals)}.`,
+      `Group IOUs: ${JSON.stringify(context.ious)}.`,
+      ...(historyText ? [`Earlier in this conversation:\n${historyText}`] : []),
       `Answer this question about the group in 1-3 short sentences, using ` +
         `only the data given. If the data doesn't cover it, say so plainly ` +
-        `instead of guessing: "${question}"`,
+        `instead of guessing. Use the earlier conversation only to resolve ` +
+        `follow-ups (like "what about" or "and them") — don't repeat it back: "${question}"`,
     ]),
   });
 
