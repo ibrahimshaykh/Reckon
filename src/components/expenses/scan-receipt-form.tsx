@@ -3,11 +3,11 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { uploadAndParseReceipt, correctReceipt } from "@/lib/actions/receipts";
-import { addManualExpense } from "@/lib/actions/expenses";
+import { addItemizedExpense } from "@/lib/actions/expenses";
+import { buildItemizedShares } from "@/lib/receipt-split";
 import type { ParsedReceipt } from "@/lib/gemini";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 
 type Member = { id: string; displayName: string };
 
@@ -39,11 +39,16 @@ export function ScanReceiptForm({
   const [parsed, setParsed] = useState<ParsedReceipt | null>(null);
   const [correction, setCorrection] = useState("");
   const [paidById, setPaidById] = useState(currentUserId);
-  const [participantIds, setParticipantIds] = useState<string[]>(
-    members.map((m) => m.id),
-  );
+  // One member-id array per parsed item — who's claiming that specific
+  // item, defaulting to everyone (matches the old flat-split default).
+  const [itemParticipants, setItemParticipants] = useState<string[][]>([]);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  function applyParsed(next: ParsedReceipt) {
+    setParsed(next);
+    setItemParticipants(next.items.map(() => members.map((m) => m.id)));
+  }
 
   async function onFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -56,7 +61,7 @@ export function ScanReceiptForm({
       setMimeType(file.type);
       const result = await uploadAndParseReceipt(b64, file.type, file.name);
       setImageUrl(result.imageUrl);
-      setParsed(result.parsed);
+      applyParsed(result.parsed);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Couldn't read that receipt.");
     } finally {
@@ -76,7 +81,7 @@ export function ScanReceiptForm({
         priorParse: parsed,
         correction,
       });
-      setParsed(updated);
+      applyParsed(updated);
       setCorrection("");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Couldn't apply that correction.");
@@ -85,26 +90,38 @@ export function ScanReceiptForm({
     }
   }
 
-  function toggleParticipant(id: string) {
-    setParticipantIds((prev) =>
-      prev.includes(id) ? prev.filter((p) => p !== id) : [...prev, id],
+  function toggleItemParticipant(itemIndex: number, memberId: string) {
+    setItemParticipants((prev) =>
+      prev.map((ids, i) =>
+        i !== itemIndex
+          ? ids
+          : ids.includes(memberId)
+            ? ids.filter((id) => id !== memberId)
+            : [...ids, memberId],
+      ),
     );
   }
 
+  const hasUnclaimedItem = itemParticipants.some((ids) => ids.length === 0);
+
   async function onConfirm() {
-    if (!parsed || !imageUrl) return;
+    if (!parsed || !imageUrl || hasUnclaimedItem) return;
     setBusy(true);
     setError(null);
     try {
-      await addManualExpense({
+      const claimed = parsed.items.map((item, i) => ({
+        label: item.label,
+        amountCents: item.amountCents,
+        participantIds: itemParticipants[i],
+      }));
+      const itemizedShares = buildItemizedShares(claimed, parsed.totalCents);
+
+      await addItemizedExpense({
         groupId,
         title: parsed.title,
-        totalCents: parsed.totalCents,
         paidById,
-        participantIds,
-        splitType: "EQUAL",
-        source: "RECEIPT_AI",
         receiptImageUrl: imageUrl,
+        items: itemizedShares,
       });
       router.push(`/groups/${groupId}`);
     } catch (err) {
@@ -132,13 +149,6 @@ export function ScanReceiptForm({
           <p className="text-muted-foreground">
             Total: ${(parsed.totalCents / 100).toFixed(2)}
           </p>
-          <ul className="mt-1 list-disc pl-5 text-xs text-muted-foreground">
-            {parsed.items.map((item, i) => (
-              <li key={i}>
-                {item.label} — ${(item.amountCents / 100).toFixed(2)}
-              </li>
-            ))}
-          </ul>
         </div>
       )}
       {parsed && (
@@ -168,20 +178,51 @@ export function ScanReceiptForm({
               </option>
             ))}
           </select>
-          <label className="text-sm text-muted-foreground">Split between</label>
-          <div className="flex flex-col gap-1">
-            {members.map((m) => (
-              <label key={m.id} className="flex items-center gap-2 text-sm">
-                <Checkbox
-                  checked={participantIds.includes(m.id)}
-                  onCheckedChange={() => toggleParticipant(m.id)}
-                />
-                {m.displayName}
-              </label>
+
+          <p className="text-sm text-muted-foreground">Who had what — tap a name to toggle</p>
+          <ul className="flex flex-col gap-2">
+            {parsed.items.map((item, i) => (
+              <li key={i} className="rounded-lg border p-2">
+                <p className="text-sm">
+                  {item.label} — ${(item.amountCents / 100).toFixed(2)}
+                </p>
+                <div className="mt-1 flex flex-wrap gap-1">
+                  {members.map((m) => {
+                    const claimed = itemParticipants[i]?.includes(m.id);
+                    return (
+                      <button
+                        key={m.id}
+                        type="button"
+                        onClick={() => toggleItemParticipant(i, m.id)}
+                        className={`rounded-full border px-2 py-0.5 text-xs ${
+                          claimed
+                            ? "border-primary bg-primary/10 text-primary"
+                            : "text-muted-foreground"
+                        }`}
+                      >
+                        {m.displayName}
+                      </button>
+                    );
+                  })}
+                </div>
+                {itemParticipants[i]?.length === 0 && (
+                  <p className="mt-1 text-xs text-destructive">Nobody's claimed this yet.</p>
+                )}
+              </li>
             ))}
-          </div>
+          </ul>
+          {parsed.totalCents > parsed.items.reduce((s, it) => s + it.amountCents, 0) && (
+            <p className="text-xs text-muted-foreground">
+              The remaining ${(
+                (parsed.totalCents - parsed.items.reduce((s, it) => s + it.amountCents, 0)) /
+                100
+              ).toFixed(2)}{" "}
+              (tax/fees) will be split in proportion to what each person claimed above.
+            </p>
+          )}
+
           {error && <p className="text-sm text-destructive">{error}</p>}
-          <Button onClick={onConfirm} disabled={busy}>
+          <Button onClick={onConfirm} disabled={busy || hasUnclaimedItem}>
             {busy ? "Adding…" : "Add expense"}
           </Button>
         </>

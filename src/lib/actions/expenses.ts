@@ -104,6 +104,75 @@ function splitToShareRatios(
   return shares;
 }
 
+const addItemizedExpenseSchema = z.object({
+  groupId: cuid,
+  title: shortText("Title", 150),
+  paidById: cuid,
+  receiptImageUrl: z.string().url().optional(),
+  items: z
+    .array(
+      z.object({
+        label: shortText("Item label", 150),
+        amountCents: positiveCents,
+        // Splitwise's own rule: refuse to save if a line item's shares
+        // don't add up to the whole item — catches a claim-assignment bug
+        // before it corrupts a shared ledger.
+        shares: z.record(z.string(), z.number()).refine(
+          (shares) =>
+            Object.keys(shares).length > 0 &&
+            Math.abs(Object.values(shares).reduce((a, b) => a + b, 0) - 1) < 0.001,
+          { message: "Each item's shares must add up to the whole item." },
+        ),
+      }),
+    )
+    .min(1, "Add at least one item."),
+});
+
+// Used by the receipt-scan flow once items have been claimed per-person —
+// unlike addManualExpense, each item gets its own participant list instead
+// of one flat split across the whole expense.
+export async function addItemizedExpense(input: {
+  groupId: string;
+  title: string;
+  paidById: string;
+  receiptImageUrl?: string;
+  items: { label: string; amountCents: number; shares: Record<string, number> }[];
+}) {
+  const session = await requireSession();
+  const valid = validate(addItemizedExpenseSchema, input);
+  await assertMember(valid.groupId, session.id);
+
+  const totalCents = valid.items.reduce((sum, item) => sum + item.amountCents, 0);
+
+  await db.expense.create({
+    data: {
+      groupId: valid.groupId,
+      paidById: valid.paidById,
+      title: valid.title,
+      totalAmount: fromCents(totalCents),
+      source: "RECEIPT_AI",
+      receiptImageUrl: valid.receiptImageUrl,
+      items: {
+        create: valid.items.map((item) => ({
+          label: item.label,
+          amount: fromCents(item.amountCents),
+          splitType: "CUSTOM",
+          participants: {
+            create: Object.entries(item.shares).map(([userId, shareRatio]) => ({
+              userId,
+              shareRatio,
+            })),
+          },
+        })),
+      },
+    },
+  });
+
+  await recalculateSettlements(valid.groupId);
+  revalidatePath(`/groups/${valid.groupId}`);
+  revalidatePath(`/groups/${valid.groupId}/settle`);
+}
+
 export async function listGroupExpenses(groupId: string) {
   const session = await requireSession();
   await assertMember(groupId, session.id);
