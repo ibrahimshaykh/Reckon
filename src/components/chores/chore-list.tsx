@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { rotateChores } from "@/lib/actions/chores";
+import { rotateChores, completeChore } from "@/lib/actions/chores";
 import { Button } from "@/components/ui/button";
 
 type Chore = {
@@ -13,6 +13,8 @@ type Chore = {
   currentAssignee: string | null;
   periodEnd: string | null;
   explanation: { steps: string[] } | null;
+  assignmentId: string | null;
+  completedAt: string | null;
 };
 
 export function ChoreList({ groupId, chores }: { groupId: string; chores: Chore[] }) {
@@ -55,21 +57,33 @@ export function ChoreList({ groupId, chores }: { groupId: string; chores: Chore[
 }
 
 function ChoreRow({ chore }: { chore: Chore }) {
+  const router = useRouter();
   const [showMath, setShowMath] = useState(false);
+  const [pending, setPending] = useState(false);
+
+  async function onComplete() {
+    if (!chore.assignmentId) return;
+    setPending(true);
+    await completeChore(chore.assignmentId);
+    setPending(false);
+    router.refresh();
+  }
 
   return (
     <li className="rounded-lg border p-3 text-sm">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-2">
         <p>
           <strong>{chore.name}</strong> (effort {chore.effortWeight},{" "}
           {chore.frequency.toLowerCase()}) —{" "}
           {chore.currentAssignee ? `assigned to ${chore.currentAssignee}` : "unassigned"}
         </p>
-        {chore.explanation && (
-          <Button variant="ghost" size="sm" onClick={() => setShowMath((v) => !v)}>
-            {showMath ? "Hide math" : "Show the math"}
-          </Button>
-        )}
+        <div className="flex shrink-0 items-center gap-1">
+          {chore.explanation && (
+            <Button variant="ghost" size="sm" onClick={() => setShowMath((v) => !v)}>
+              {showMath ? "Hide math" : "Show the math"}
+            </Button>
+          )}
+        </div>
       </div>
       {showMath && chore.explanation && (
         <ul className="mt-2 list-disc pl-5 text-xs text-muted-foreground">
@@ -77,6 +91,23 @@ function ChoreRow({ chore }: { chore: Chore }) {
             <li key={i}>{step}</li>
           ))}
         </ul>
+      )}
+      {chore.assignmentId && (
+        <div className="mt-2">
+          {chore.completedAt ? (
+            <p className="text-xs text-emerald-600 dark:text-emerald-400">
+              ✓ Done {new Date(chore.completedAt).toLocaleString("en-US", {
+                weekday: "short",
+                hour: "numeric",
+                minute: "2-digit",
+              })}
+            </p>
+          ) : (
+            <Button size="sm" variant="outline" disabled={pending} onClick={onComplete}>
+              Mark done
+            </Button>
+          )}
+        </div>
       )}
     </li>
   );

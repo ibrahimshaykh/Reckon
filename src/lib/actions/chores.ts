@@ -141,6 +141,55 @@ export async function listChores(groupId: string) {
       currentAssignee: current?.user.displayName ?? null,
       periodEnd: current?.periodEnd.toISOString() ?? null,
       explanation: (current?.explanation as { steps: string[] } | undefined) ?? null,
+      assignmentId: current?.id ?? null,
+      completedAt: current?.completedAt?.toISOString() ?? null,
     };
   });
+}
+
+// Any member can mark a chore done — in a small trusted household,
+// whoever notices it happened should be able to record it, not just
+// whoever it was assigned to.
+export async function completeChore(assignmentId: string) {
+  const session = await requireSession();
+  const assignment = await db.choreAssignment.findUniqueOrThrow({
+    where: { id: assignmentId },
+    include: { chore: true },
+  });
+  await assertMember(assignment.chore.groupId, session.id);
+
+  await db.choreAssignment.update({
+    where: { id: assignmentId },
+    data: { completedAt: new Date() },
+  });
+
+  revalidatePath(`/groups/${assignment.chore.groupId}/chores`);
+}
+
+// Cumulative effort of chores each member has actually COMPLETED (not just
+// been assigned) — the real "who's pulling their weight" signal, distinct
+// from the rotation algorithm's assignment-fairness bookkeeping.
+export async function getChoreFairness(groupId: string) {
+  const session = await requireSession();
+  await assertMember(groupId, session.id);
+
+  const [members, completedAssignments] = await Promise.all([
+    db.groupMember.findMany({ where: { groupId }, include: { user: true } }),
+    db.choreAssignment.findMany({
+      where: { chore: { groupId }, completedAt: { not: null } },
+      include: { chore: true },
+    }),
+  ]);
+
+  const effortByUser: Record<string, number> = {};
+  members.forEach((m) => (effortByUser[m.userId] = 0));
+  completedAssignments.forEach((a) => {
+    effortByUser[a.userId] = (effortByUser[a.userId] ?? 0) + a.chore.effortWeight;
+  });
+
+  return members.map((m) => ({
+    userId: m.userId,
+    displayName: m.user.displayName,
+    completedEffort: effortByUser[m.userId] ?? 0,
+  }));
 }
