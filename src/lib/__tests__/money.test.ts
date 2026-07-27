@@ -36,6 +36,17 @@ describe("formatMoney", () => {
     expect(formatted).toContain("1,500");
   });
 
+  // Regression test: Intl.NumberFormat's *default* fraction-digit count for
+  // PKR is resolved from the runtime's bundled ICU data, which genuinely
+  // disagreed between Node (SSR) and a browser (hydration) — Node rendered
+  // "Rs 5", the browser re-rendered "Rs 5.00", a real hydration mismatch.
+  // Digits are now pinned explicitly so this can't happen again.
+  it("always renders PKR with exactly two decimal places", () => {
+    // Intl.NumberFormat separates the "Rs" symbol from the number with a
+    // no-break space (U+00A0), not a regular space — intentional here.
+    expect(formatMoney(500, "PKR")).toBe("Rs 5.00");
+  });
+
   it("renders the same string regardless of caller — no locale drift", () => {
     expect(formatMoney(500, "USD")).toBe(formatMoney(500, "USD"));
   });

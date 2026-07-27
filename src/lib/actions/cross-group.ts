@@ -59,10 +59,18 @@ export async function getNetBalanceWithUser(otherUserId: string) {
       return sum;
     }, 0);
 
-    return { groupId: group.id, groupName: group.name, netCents };
+    return { groupId: group.id, groupName: group.name, netCents, currency: group.currency };
   });
 
-  const totalNetCents = groupBreakdown.reduce((sum, g) => sum + g.netCents, 0);
+  // A combined total only makes sense when every shared group uses the same
+  // currency — summing PKR and USD balances into one number would be
+  // meaningless. When they differ, the per-group breakdown still shows each
+  // amount in its own currency; there's just no single "overall" figure.
+  const currencies = new Set(groupBreakdown.map((g) => g.currency));
+  const commonCurrency = currencies.size === 1 ? groupBreakdown[0]?.currency ?? null : null;
+  const totalNetCents = commonCurrency
+    ? groupBreakdown.reduce((sum, g) => sum + g.netCents, 0)
+    : null;
 
-  return { otherUserName: otherUser.displayName, groupBreakdown, totalNetCents };
+  return { otherUserName: otherUser.displayName, groupBreakdown, totalNetCents, commonCurrency };
 }
