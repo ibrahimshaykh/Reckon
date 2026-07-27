@@ -112,6 +112,11 @@ export type Proposal = Prisma.ProposalModel
  */
 export type ProposalFlag = Prisma.ProposalFlagModel
 /**
+ * Model ProposalVote
+ * 
+ */
+export type ProposalVote = Prisma.ProposalVoteModel
+/**
  * Model Nudge
  * 
  */

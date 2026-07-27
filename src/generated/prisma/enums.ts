@@ -61,6 +61,15 @@ export const FlagReason = {
 export type FlagReason = (typeof FlagReason)[keyof typeof FlagReason]
 
 
+export const VoteChoice = {
+  YES: 'YES',
+  IF_NEEDED: 'IF_NEEDED',
+  NO: 'NO'
+} as const
+
+export type VoteChoice = (typeof VoteChoice)[keyof typeof VoteChoice]
+
+
 export const NudgeChannel = {
   EMAIL: 'EMAIL'
 } as const

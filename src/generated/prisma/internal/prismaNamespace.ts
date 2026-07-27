@@ -411,6 +411,7 @@ export const ModelName = {
   AvailabilityEntry: 'AvailabilityEntry',
   Proposal: 'Proposal',
   ProposalFlag: 'ProposalFlag',
+  ProposalVote: 'ProposalVote',
   Nudge: 'Nudge',
   ActivityEvent: 'ActivityEvent'
 } as const
@@ -428,7 +429,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "group" | "groupMember" | "guestToken" | "expense" | "expenseItem" | "expenseItemParticipant" | "settlement" | "iOU" | "chore" | "choreAssignment" | "availabilityEntry" | "proposal" | "proposalFlag" | "nudge" | "activityEvent"
+    modelProps: "user" | "group" | "groupMember" | "guestToken" | "expense" | "expenseItem" | "expenseItemParticipant" | "settlement" | "iOU" | "chore" | "choreAssignment" | "availabilityEntry" | "proposal" | "proposalFlag" | "proposalVote" | "nudge" | "activityEvent"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1468,6 +1469,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    ProposalVote: {
+      payload: Prisma.$ProposalVotePayload<ExtArgs>
+      fields: Prisma.ProposalVoteFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ProposalVoteFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProposalVotePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ProposalVoteFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProposalVotePayload>
+        }
+        findFirst: {
+          args: Prisma.ProposalVoteFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProposalVotePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ProposalVoteFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProposalVotePayload>
+        }
+        findMany: {
+          args: Prisma.ProposalVoteFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProposalVotePayload>[]
+        }
+        create: {
+          args: Prisma.ProposalVoteCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProposalVotePayload>
+        }
+        createMany: {
+          args: Prisma.ProposalVoteCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ProposalVoteCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProposalVotePayload>[]
+        }
+        delete: {
+          args: Prisma.ProposalVoteDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProposalVotePayload>
+        }
+        update: {
+          args: Prisma.ProposalVoteUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProposalVotePayload>
+        }
+        deleteMany: {
+          args: Prisma.ProposalVoteDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ProposalVoteUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ProposalVoteUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProposalVotePayload>[]
+        }
+        upsert: {
+          args: Prisma.ProposalVoteUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProposalVotePayload>
+        }
+        aggregate: {
+          args: Prisma.ProposalVoteAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateProposalVote>
+        }
+        groupBy: {
+          args: Prisma.ProposalVoteGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ProposalVoteGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ProposalVoteCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ProposalVoteCountAggregateOutputType> | number
+        }
+      }
+    }
     Nudge: {
       payload: Prisma.$NudgePayload<ExtArgs>
       fields: Prisma.NudgeFieldRefs
@@ -1848,6 +1923,17 @@ export const ProposalFlagScalarFieldEnum = {
 export type ProposalFlagScalarFieldEnum = (typeof ProposalFlagScalarFieldEnum)[keyof typeof ProposalFlagScalarFieldEnum]
 
 
+export const ProposalVoteScalarFieldEnum = {
+  id: 'id',
+  proposalId: 'proposalId',
+  userId: 'userId',
+  choice: 'choice',
+  createdAt: 'createdAt'
+} as const
+
+export type ProposalVoteScalarFieldEnum = (typeof ProposalVoteScalarFieldEnum)[keyof typeof ProposalVoteScalarFieldEnum]
+
+
 export const NudgeScalarFieldEnum = {
   id: 'id',
   settlementId: 'settlementId',
@@ -2091,6 +2177,20 @@ export type ListEnumFlagReasonFieldRefInput<$PrismaModel> = FieldRefInputType<$P
 
 
 /**
+ * Reference to a field of type 'VoteChoice'
+ */
+export type EnumVoteChoiceFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'VoteChoice'>
+    
+
+
+/**
+ * Reference to a field of type 'VoteChoice[]'
+ */
+export type ListEnumVoteChoiceFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'VoteChoice[]'>
+    
+
+
+/**
  * Reference to a field of type 'NudgeChannel'
  */
 export type EnumNudgeChannelFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'NudgeChannel'>
@@ -2282,6 +2382,7 @@ export type GlobalOmitConfig = {
   availabilityEntry?: Prisma.AvailabilityEntryOmit
   proposal?: Prisma.ProposalOmit
   proposalFlag?: Prisma.ProposalFlagOmit
+  proposalVote?: Prisma.ProposalVoteOmit
   nudge?: Prisma.NudgeOmit
   activityEvent?: Prisma.ActivityEventOmit
 }

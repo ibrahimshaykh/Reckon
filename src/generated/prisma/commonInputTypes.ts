@@ -409,6 +409,23 @@ export type EnumFlagReasonWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumFlagReasonFilter<$PrismaModel>
 }
 
+export type EnumVoteChoiceFilter<$PrismaModel = never> = {
+  equals?: $Enums.VoteChoice | Prisma.EnumVoteChoiceFieldRefInput<$PrismaModel>
+  in?: $Enums.VoteChoice[] | Prisma.ListEnumVoteChoiceFieldRefInput<$PrismaModel>
+  notIn?: $Enums.VoteChoice[] | Prisma.ListEnumVoteChoiceFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumVoteChoiceFilter<$PrismaModel> | $Enums.VoteChoice
+}
+
+export type EnumVoteChoiceWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.VoteChoice | Prisma.EnumVoteChoiceFieldRefInput<$PrismaModel>
+  in?: $Enums.VoteChoice[] | Prisma.ListEnumVoteChoiceFieldRefInput<$PrismaModel>
+  notIn?: $Enums.VoteChoice[] | Prisma.ListEnumVoteChoiceFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumVoteChoiceWithAggregatesFilter<$PrismaModel> | $Enums.VoteChoice
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumVoteChoiceFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumVoteChoiceFilter<$PrismaModel>
+}
+
 export type EnumNudgeChannelFilter<$PrismaModel = never> = {
   equals?: $Enums.NudgeChannel | Prisma.EnumNudgeChannelFieldRefInput<$PrismaModel>
   in?: $Enums.NudgeChannel[] | Prisma.ListEnumNudgeChannelFieldRefInput<$PrismaModel>
@@ -822,6 +839,23 @@ export type NestedEnumFlagReasonWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumFlagReasonFilter<$PrismaModel>
   _max?: Prisma.NestedEnumFlagReasonFilter<$PrismaModel>
+}
+
+export type NestedEnumVoteChoiceFilter<$PrismaModel = never> = {
+  equals?: $Enums.VoteChoice | Prisma.EnumVoteChoiceFieldRefInput<$PrismaModel>
+  in?: $Enums.VoteChoice[] | Prisma.ListEnumVoteChoiceFieldRefInput<$PrismaModel>
+  notIn?: $Enums.VoteChoice[] | Prisma.ListEnumVoteChoiceFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumVoteChoiceFilter<$PrismaModel> | $Enums.VoteChoice
+}
+
+export type NestedEnumVoteChoiceWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.VoteChoice | Prisma.EnumVoteChoiceFieldRefInput<$PrismaModel>
+  in?: $Enums.VoteChoice[] | Prisma.ListEnumVoteChoiceFieldRefInput<$PrismaModel>
+  notIn?: $Enums.VoteChoice[] | Prisma.ListEnumVoteChoiceFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumVoteChoiceWithAggregatesFilter<$PrismaModel> | $Enums.VoteChoice
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumVoteChoiceFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumVoteChoiceFilter<$PrismaModel>
 }
 
 export type NestedEnumNudgeChannelFilter<$PrismaModel = never> = {

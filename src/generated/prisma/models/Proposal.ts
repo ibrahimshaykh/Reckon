@@ -263,6 +263,7 @@ export type ProposalWhereInput = {
   group?: Prisma.XOR<Prisma.GroupScalarRelationFilter, Prisma.GroupWhereInput>
   proposedBy?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   flags?: Prisma.ProposalFlagListRelationFilter
+  votes?: Prisma.ProposalVoteListRelationFilter
 }
 
 export type ProposalOrderByWithRelationInput = {
@@ -279,6 +280,7 @@ export type ProposalOrderByWithRelationInput = {
   group?: Prisma.GroupOrderByWithRelationInput
   proposedBy?: Prisma.UserOrderByWithRelationInput
   flags?: Prisma.ProposalFlagOrderByRelationAggregateInput
+  votes?: Prisma.ProposalVoteOrderByRelationAggregateInput
 }
 
 export type ProposalWhereUniqueInput = Prisma.AtLeast<{
@@ -298,6 +300,7 @@ export type ProposalWhereUniqueInput = Prisma.AtLeast<{
   group?: Prisma.XOR<Prisma.GroupScalarRelationFilter, Prisma.GroupWhereInput>
   proposedBy?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   flags?: Prisma.ProposalFlagListRelationFilter
+  votes?: Prisma.ProposalVoteListRelationFilter
 }, "id">
 
 export type ProposalOrderByWithAggregationInput = {
@@ -346,6 +349,7 @@ export type ProposalCreateInput = {
   group: Prisma.GroupCreateNestedOneWithoutProposalsInput
   proposedBy: Prisma.UserCreateNestedOneWithoutProposalsCreatedInput
   flags?: Prisma.ProposalFlagCreateNestedManyWithoutProposalInput
+  votes?: Prisma.ProposalVoteCreateNestedManyWithoutProposalInput
 }
 
 export type ProposalUncheckedCreateInput = {
@@ -360,6 +364,7 @@ export type ProposalUncheckedCreateInput = {
   status?: $Enums.ProposalStatus
   createdAt?: Date | string
   flags?: Prisma.ProposalFlagUncheckedCreateNestedManyWithoutProposalInput
+  votes?: Prisma.ProposalVoteUncheckedCreateNestedManyWithoutProposalInput
 }
 
 export type ProposalUpdateInput = {
@@ -374,6 +379,7 @@ export type ProposalUpdateInput = {
   group?: Prisma.GroupUpdateOneRequiredWithoutProposalsNestedInput
   proposedBy?: Prisma.UserUpdateOneRequiredWithoutProposalsCreatedNestedInput
   flags?: Prisma.ProposalFlagUpdateManyWithoutProposalNestedInput
+  votes?: Prisma.ProposalVoteUpdateManyWithoutProposalNestedInput
 }
 
 export type ProposalUncheckedUpdateInput = {
@@ -388,6 +394,7 @@ export type ProposalUncheckedUpdateInput = {
   status?: Prisma.EnumProposalStatusFieldUpdateOperationsInput | $Enums.ProposalStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   flags?: Prisma.ProposalFlagUncheckedUpdateManyWithoutProposalNestedInput
+  votes?: Prisma.ProposalVoteUncheckedUpdateManyWithoutProposalNestedInput
 }
 
 export type ProposalCreateManyInput = {
@@ -602,6 +609,20 @@ export type ProposalUpdateOneRequiredWithoutFlagsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ProposalUpdateToOneWithWhereWithoutFlagsInput, Prisma.ProposalUpdateWithoutFlagsInput>, Prisma.ProposalUncheckedUpdateWithoutFlagsInput>
 }
 
+export type ProposalCreateNestedOneWithoutVotesInput = {
+  create?: Prisma.XOR<Prisma.ProposalCreateWithoutVotesInput, Prisma.ProposalUncheckedCreateWithoutVotesInput>
+  connectOrCreate?: Prisma.ProposalCreateOrConnectWithoutVotesInput
+  connect?: Prisma.ProposalWhereUniqueInput
+}
+
+export type ProposalUpdateOneRequiredWithoutVotesNestedInput = {
+  create?: Prisma.XOR<Prisma.ProposalCreateWithoutVotesInput, Prisma.ProposalUncheckedCreateWithoutVotesInput>
+  connectOrCreate?: Prisma.ProposalCreateOrConnectWithoutVotesInput
+  upsert?: Prisma.ProposalUpsertWithoutVotesInput
+  connect?: Prisma.ProposalWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ProposalUpdateToOneWithWhereWithoutVotesInput, Prisma.ProposalUpdateWithoutVotesInput>, Prisma.ProposalUncheckedUpdateWithoutVotesInput>
+}
+
 export type ProposalCreateWithoutProposedByInput = {
   id?: string
   title: string
@@ -613,6 +634,7 @@ export type ProposalCreateWithoutProposedByInput = {
   createdAt?: Date | string
   group: Prisma.GroupCreateNestedOneWithoutProposalsInput
   flags?: Prisma.ProposalFlagCreateNestedManyWithoutProposalInput
+  votes?: Prisma.ProposalVoteCreateNestedManyWithoutProposalInput
 }
 
 export type ProposalUncheckedCreateWithoutProposedByInput = {
@@ -626,6 +648,7 @@ export type ProposalUncheckedCreateWithoutProposedByInput = {
   status?: $Enums.ProposalStatus
   createdAt?: Date | string
   flags?: Prisma.ProposalFlagUncheckedCreateNestedManyWithoutProposalInput
+  votes?: Prisma.ProposalVoteUncheckedCreateNestedManyWithoutProposalInput
 }
 
 export type ProposalCreateOrConnectWithoutProposedByInput = {
@@ -681,6 +704,7 @@ export type ProposalCreateWithoutGroupInput = {
   createdAt?: Date | string
   proposedBy: Prisma.UserCreateNestedOneWithoutProposalsCreatedInput
   flags?: Prisma.ProposalFlagCreateNestedManyWithoutProposalInput
+  votes?: Prisma.ProposalVoteCreateNestedManyWithoutProposalInput
 }
 
 export type ProposalUncheckedCreateWithoutGroupInput = {
@@ -694,6 +718,7 @@ export type ProposalUncheckedCreateWithoutGroupInput = {
   status?: $Enums.ProposalStatus
   createdAt?: Date | string
   flags?: Prisma.ProposalFlagUncheckedCreateNestedManyWithoutProposalInput
+  votes?: Prisma.ProposalVoteUncheckedCreateNestedManyWithoutProposalInput
 }
 
 export type ProposalCreateOrConnectWithoutGroupInput = {
@@ -733,6 +758,7 @@ export type ProposalCreateWithoutFlagsInput = {
   createdAt?: Date | string
   group: Prisma.GroupCreateNestedOneWithoutProposalsInput
   proposedBy: Prisma.UserCreateNestedOneWithoutProposalsCreatedInput
+  votes?: Prisma.ProposalVoteCreateNestedManyWithoutProposalInput
 }
 
 export type ProposalUncheckedCreateWithoutFlagsInput = {
@@ -746,6 +772,7 @@ export type ProposalUncheckedCreateWithoutFlagsInput = {
   longitude?: number | null
   status?: $Enums.ProposalStatus
   createdAt?: Date | string
+  votes?: Prisma.ProposalVoteUncheckedCreateNestedManyWithoutProposalInput
 }
 
 export type ProposalCreateOrConnectWithoutFlagsInput = {
@@ -775,6 +802,7 @@ export type ProposalUpdateWithoutFlagsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   group?: Prisma.GroupUpdateOneRequiredWithoutProposalsNestedInput
   proposedBy?: Prisma.UserUpdateOneRequiredWithoutProposalsCreatedNestedInput
+  votes?: Prisma.ProposalVoteUpdateManyWithoutProposalNestedInput
 }
 
 export type ProposalUncheckedUpdateWithoutFlagsInput = {
@@ -788,6 +816,79 @@ export type ProposalUncheckedUpdateWithoutFlagsInput = {
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   status?: Prisma.EnumProposalStatusFieldUpdateOperationsInput | $Enums.ProposalStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  votes?: Prisma.ProposalVoteUncheckedUpdateManyWithoutProposalNestedInput
+}
+
+export type ProposalCreateWithoutVotesInput = {
+  id?: string
+  title: string
+  estimatedCostPerPerson?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  dietaryTags?: Prisma.ProposalCreatedietaryTagsInput | string[]
+  latitude?: number | null
+  longitude?: number | null
+  status?: $Enums.ProposalStatus
+  createdAt?: Date | string
+  group: Prisma.GroupCreateNestedOneWithoutProposalsInput
+  proposedBy: Prisma.UserCreateNestedOneWithoutProposalsCreatedInput
+  flags?: Prisma.ProposalFlagCreateNestedManyWithoutProposalInput
+}
+
+export type ProposalUncheckedCreateWithoutVotesInput = {
+  id?: string
+  groupId: string
+  proposedById: string
+  title: string
+  estimatedCostPerPerson?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  dietaryTags?: Prisma.ProposalCreatedietaryTagsInput | string[]
+  latitude?: number | null
+  longitude?: number | null
+  status?: $Enums.ProposalStatus
+  createdAt?: Date | string
+  flags?: Prisma.ProposalFlagUncheckedCreateNestedManyWithoutProposalInput
+}
+
+export type ProposalCreateOrConnectWithoutVotesInput = {
+  where: Prisma.ProposalWhereUniqueInput
+  create: Prisma.XOR<Prisma.ProposalCreateWithoutVotesInput, Prisma.ProposalUncheckedCreateWithoutVotesInput>
+}
+
+export type ProposalUpsertWithoutVotesInput = {
+  update: Prisma.XOR<Prisma.ProposalUpdateWithoutVotesInput, Prisma.ProposalUncheckedUpdateWithoutVotesInput>
+  create: Prisma.XOR<Prisma.ProposalCreateWithoutVotesInput, Prisma.ProposalUncheckedCreateWithoutVotesInput>
+  where?: Prisma.ProposalWhereInput
+}
+
+export type ProposalUpdateToOneWithWhereWithoutVotesInput = {
+  where?: Prisma.ProposalWhereInput
+  data: Prisma.XOR<Prisma.ProposalUpdateWithoutVotesInput, Prisma.ProposalUncheckedUpdateWithoutVotesInput>
+}
+
+export type ProposalUpdateWithoutVotesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  estimatedCostPerPerson?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  dietaryTags?: Prisma.ProposalUpdatedietaryTagsInput | string[]
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  status?: Prisma.EnumProposalStatusFieldUpdateOperationsInput | $Enums.ProposalStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  group?: Prisma.GroupUpdateOneRequiredWithoutProposalsNestedInput
+  proposedBy?: Prisma.UserUpdateOneRequiredWithoutProposalsCreatedNestedInput
+  flags?: Prisma.ProposalFlagUpdateManyWithoutProposalNestedInput
+}
+
+export type ProposalUncheckedUpdateWithoutVotesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  groupId?: Prisma.StringFieldUpdateOperationsInput | string
+  proposedById?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  estimatedCostPerPerson?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  dietaryTags?: Prisma.ProposalUpdatedietaryTagsInput | string[]
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  status?: Prisma.EnumProposalStatusFieldUpdateOperationsInput | $Enums.ProposalStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  flags?: Prisma.ProposalFlagUncheckedUpdateManyWithoutProposalNestedInput
 }
 
 export type ProposalCreateManyProposedByInput = {
@@ -813,6 +914,7 @@ export type ProposalUpdateWithoutProposedByInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   group?: Prisma.GroupUpdateOneRequiredWithoutProposalsNestedInput
   flags?: Prisma.ProposalFlagUpdateManyWithoutProposalNestedInput
+  votes?: Prisma.ProposalVoteUpdateManyWithoutProposalNestedInput
 }
 
 export type ProposalUncheckedUpdateWithoutProposedByInput = {
@@ -826,6 +928,7 @@ export type ProposalUncheckedUpdateWithoutProposedByInput = {
   status?: Prisma.EnumProposalStatusFieldUpdateOperationsInput | $Enums.ProposalStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   flags?: Prisma.ProposalFlagUncheckedUpdateManyWithoutProposalNestedInput
+  votes?: Prisma.ProposalVoteUncheckedUpdateManyWithoutProposalNestedInput
 }
 
 export type ProposalUncheckedUpdateManyWithoutProposedByInput = {
@@ -863,6 +966,7 @@ export type ProposalUpdateWithoutGroupInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   proposedBy?: Prisma.UserUpdateOneRequiredWithoutProposalsCreatedNestedInput
   flags?: Prisma.ProposalFlagUpdateManyWithoutProposalNestedInput
+  votes?: Prisma.ProposalVoteUpdateManyWithoutProposalNestedInput
 }
 
 export type ProposalUncheckedUpdateWithoutGroupInput = {
@@ -876,6 +980,7 @@ export type ProposalUncheckedUpdateWithoutGroupInput = {
   status?: Prisma.EnumProposalStatusFieldUpdateOperationsInput | $Enums.ProposalStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   flags?: Prisma.ProposalFlagUncheckedUpdateManyWithoutProposalNestedInput
+  votes?: Prisma.ProposalVoteUncheckedUpdateManyWithoutProposalNestedInput
 }
 
 export type ProposalUncheckedUpdateManyWithoutGroupInput = {
@@ -897,10 +1002,12 @@ export type ProposalUncheckedUpdateManyWithoutGroupInput = {
 
 export type ProposalCountOutputType = {
   flags: number
+  votes: number
 }
 
 export type ProposalCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   flags?: boolean | ProposalCountOutputTypeCountFlagsArgs
+  votes?: boolean | ProposalCountOutputTypeCountVotesArgs
 }
 
 /**
@@ -920,6 +1027,13 @@ export type ProposalCountOutputTypeCountFlagsArgs<ExtArgs extends runtime.Types.
   where?: Prisma.ProposalFlagWhereInput
 }
 
+/**
+ * ProposalCountOutputType without action
+ */
+export type ProposalCountOutputTypeCountVotesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ProposalVoteWhereInput
+}
+
 
 export type ProposalSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -935,6 +1049,7 @@ export type ProposalSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   group?: boolean | Prisma.GroupDefaultArgs<ExtArgs>
   proposedBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   flags?: boolean | Prisma.Proposal$flagsArgs<ExtArgs>
+  votes?: boolean | Prisma.Proposal$votesArgs<ExtArgs>
   _count?: boolean | Prisma.ProposalCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["proposal"]>
 
@@ -986,6 +1101,7 @@ export type ProposalInclude<ExtArgs extends runtime.Types.Extensions.InternalArg
   group?: boolean | Prisma.GroupDefaultArgs<ExtArgs>
   proposedBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   flags?: boolean | Prisma.Proposal$flagsArgs<ExtArgs>
+  votes?: boolean | Prisma.Proposal$votesArgs<ExtArgs>
   _count?: boolean | Prisma.ProposalCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ProposalIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1003,6 +1119,7 @@ export type $ProposalPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     group: Prisma.$GroupPayload<ExtArgs>
     proposedBy: Prisma.$UserPayload<ExtArgs>
     flags: Prisma.$ProposalFlagPayload<ExtArgs>[]
+    votes: Prisma.$ProposalVotePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1412,6 +1529,7 @@ export interface Prisma__ProposalClient<T, Null = never, ExtArgs extends runtime
   group<T extends Prisma.GroupDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.GroupDefaultArgs<ExtArgs>>): Prisma.Prisma__GroupClient<runtime.Types.Result.GetResult<Prisma.$GroupPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   proposedBy<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   flags<T extends Prisma.Proposal$flagsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Proposal$flagsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProposalFlagPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  votes<T extends Prisma.Proposal$votesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Proposal$votesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProposalVotePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1873,6 +1991,30 @@ export type Proposal$flagsArgs<ExtArgs extends runtime.Types.Extensions.Internal
   take?: number
   skip?: number
   distinct?: Prisma.ProposalFlagScalarFieldEnum | Prisma.ProposalFlagScalarFieldEnum[]
+}
+
+/**
+ * Proposal.votes
+ */
+export type Proposal$votesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ProposalVote
+   */
+  select?: Prisma.ProposalVoteSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ProposalVote
+   */
+  omit?: Prisma.ProposalVoteOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProposalVoteInclude<ExtArgs> | null
+  where?: Prisma.ProposalVoteWhereInput
+  orderBy?: Prisma.ProposalVoteOrderByWithRelationInput | Prisma.ProposalVoteOrderByWithRelationInput[]
+  cursor?: Prisma.ProposalVoteWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ProposalVoteScalarFieldEnum | Prisma.ProposalVoteScalarFieldEnum[]
 }
 
 /**

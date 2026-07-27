@@ -9,6 +9,7 @@ import { toCents } from "@/lib/money";
 import { validate, cuid, shortText, latitude, longitude } from "@/lib/validation";
 import { computeProposalFlags } from "@/lib/constraint-check";
 import { pickFairestMeetingPoint, totalTravelDistanceKm } from "@/lib/fair-meeting-point";
+import { tallyVotes, computeProposalOutcome, type VoteChoice } from "@/lib/proposal-votes";
 
 const createProposalSchema = z.object({
   groupId: cuid,
@@ -80,7 +81,11 @@ export async function listProposals(groupId: string) {
   const [proposals, members] = await Promise.all([
     db.proposal.findMany({
       where: { groupId },
-      include: { proposedBy: true, flags: { include: { user: true } } },
+      include: {
+        proposedBy: true,
+        flags: { include: { user: true } },
+        votes: { include: { user: true } },
+      },
       orderBy: { createdAt: "desc" },
     }),
     db.groupMember.findMany({ where: { groupId }, include: { user: true } }),
@@ -118,6 +123,12 @@ export async function listProposals(groupId: string) {
         ? totalTravelDistanceKm({ latitude: p.latitude!, longitude: p.longitude! }, homes)
         : null;
 
+    // Blind, simultaneous voting: your own choice never leaks anyone else's
+    // until you've cast yours (or the proposal is already decided) — a
+    // trusted friend group can still anchor on whoever votes first.
+    const myVote = p.votes.find((v) => v.userId === session.id)?.choice ?? null;
+    const revealed = myVote !== null || p.status !== "PROPOSED";
+
     return {
       id: p.id,
       title: p.title,
@@ -134,8 +145,41 @@ export async function listProposals(groupId: string) {
         reason: f.reason,
         detail: f.detail,
       })),
+      status: p.status,
+      myVote: myVote as VoteChoice | null,
+      totalMembers: members.length,
+      tally: revealed ? tallyVotes(p.votes) : null,
+      voterBreakdown: revealed
+        ? p.votes.map((v) => ({ userName: v.user.displayName, choice: v.choice as VoteChoice }))
+        : null,
     };
   });
 
   return { proposals: mappedProposals, memberHomes };
+}
+
+export async function castVote(proposalId: string, choice: VoteChoice) {
+  const session = await requireSession();
+  const proposal = await db.proposal.findUniqueOrThrow({ where: { id: proposalId } });
+  await assertMember(proposal.groupId, session.id);
+
+  await db.proposalVote.upsert({
+    where: { proposalId_userId: { proposalId, userId: session.id } },
+    update: { choice },
+    create: { proposalId, userId: session.id, choice },
+  });
+
+  if (proposal.status === "PROPOSED") {
+    const [votes, memberCount] = await Promise.all([
+      db.proposalVote.findMany({ where: { proposalId } }),
+      db.groupMember.count({ where: { groupId: proposal.groupId } }),
+    ]);
+
+    const outcome = computeProposalOutcome(votes, memberCount);
+    if (outcome) {
+      await db.proposal.update({ where: { id: proposalId }, data: { status: outcome } });
+    }
+  }
+
+  revalidatePath(`/groups/${proposal.groupId}/proposals`);
 }

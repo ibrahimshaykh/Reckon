@@ -47,6 +47,12 @@ enum FlagReason {
   DIETARY_CONFLICT
 }
 
+enum VoteChoice {
+  YES
+  IF_NEEDED
+  NO
+}
+
 enum NudgeChannel {
   EMAIL
 }
@@ -93,6 +99,7 @@ model User {
   availabilityEntries   AvailabilityEntry[]
   proposalsCreated      Proposal[]               @relation("ProposalCreator")
   proposalFlags         ProposalFlag[]
+  proposalVotes         ProposalVote[]
 
   @@index([email])
 }
@@ -285,6 +292,7 @@ model Proposal {
   createdAt              DateTime       @default(now())
 
   flags ProposalFlag[]
+  votes ProposalVote[]
 
   @@index([groupId])
 }
@@ -298,6 +306,19 @@ model ProposalFlag {
   reason     FlagReason
   detail     String
 
+  @@index([proposalId])
+}
+
+model ProposalVote {
+  id         String     @id @default(cuid())
+  proposalId String
+  proposal   Proposal   @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+  userId     String
+  user       User       @relation(fields: [userId], references: [id])
+  choice     VoteChoice
+  createdAt  DateTime   @default(now())
+
+  @@unique([proposalId, userId])
   @@index([proposalId])
 }
 

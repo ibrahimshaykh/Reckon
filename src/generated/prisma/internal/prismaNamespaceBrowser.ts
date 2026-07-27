@@ -65,6 +65,7 @@ export const ModelName = {
   AvailabilityEntry: 'AvailabilityEntry',
   Proposal: 'Proposal',
   ProposalFlag: 'ProposalFlag',
+  ProposalVote: 'ProposalVote',
   Nudge: 'Nudge',
   ActivityEvent: 'ActivityEvent'
 } as const
@@ -276,6 +277,17 @@ export const ProposalFlagScalarFieldEnum = {
 } as const
 
 export type ProposalFlagScalarFieldEnum = (typeof ProposalFlagScalarFieldEnum)[keyof typeof ProposalFlagScalarFieldEnum]
+
+
+export const ProposalVoteScalarFieldEnum = {
+  id: 'id',
+  proposalId: 'proposalId',
+  userId: 'userId',
+  choice: 'choice',
+  createdAt: 'createdAt'
+} as const
+
+export type ProposalVoteScalarFieldEnum = (typeof ProposalVoteScalarFieldEnum)[keyof typeof ProposalVoteScalarFieldEnum]
 
 
 export const NudgeScalarFieldEnum = {
