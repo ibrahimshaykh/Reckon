@@ -1,0 +1,32 @@
+{
+  "nav": {
+    "appName": "Reckon",
+    "settings": "Settings",
+    "signIn": "Sign in"
+  },
+  "settings": {
+    "title": "Settings",
+    "language": "Language",
+    "languageEnglish": "English",
+    "languageUrdu": "Urdu",
+    "languageSpanish": "Spanish",
+    "budgetLabel": "Monthly budget limit per proposal (optional)",
+    "dietaryLabel": "Dietary restrictions (comma-separated, e.g. vegetarian, gluten-free)",
+    "dietaryPlaceholder": "vegetarian, nut-free",
+    "homeLabel": "Home coordinates (optional, used for the fair meeting point feature)",
+    "latitudePlaceholder": "Latitude",
+    "longitudePlaceholder": "Longitude",
+    "paymentHandlesLabel": "Payment handles (optional — used for one-tap settle-up links)",
+    "venmoPlaceholder": "Venmo handle",
+    "paypalPlaceholder": "PayPal.me handle",
+    "cashappPlaceholder": "Cash App $cashtag",
+    "pakistaniPaymentsLabel": "Pakistani payment methods (optional)",
+    "easypaisaPlaceholder": "EasyPaisa number",
+    "jazzcashPlaceholder": "JazzCash number",
+    "nayapayPlaceholder": "NayaPay handle",
+    "bankDetailsPlaceholder": "Bank name, account title, IBAN",
+    "save": "Save",
+    "saving": "Saving…",
+    "saved": "Saved."
+  }
+}

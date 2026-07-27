@@ -1822,6 +1822,7 @@ export const UserScalarFieldEnum = {
   jazzcashNumber: 'jazzcashNumber',
   nayapayHandle: 'nayapayHandle',
   bankDetails: 'bankDetails',
+  locale: 'locale',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

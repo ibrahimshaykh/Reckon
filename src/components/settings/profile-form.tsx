@@ -3,10 +3,12 @@
 import { useState } from "react";
 import { updateProfile } from "@/lib/actions/profile";
 import { toCents, fromCents } from "@/lib/money";
+import type { Dictionary } from "@/lib/dictionary";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 export function ProfileForm({
+  dict,
   initialBudgetLimit,
   initialDietaryRestrictions,
   initialHomeLatitude,
@@ -19,6 +21,7 @@ export function ProfileForm({
   initialNayapayHandle,
   initialBankDetails,
 }: {
+  dict: Dictionary["settings"];
   initialBudgetLimit: number | null;
   initialDietaryRestrictions: string[];
   initialHomeLatitude: number | null;
@@ -79,9 +82,7 @@ export function ProfileForm({
 
   return (
     <form onSubmit={onSubmit} className="flex flex-col gap-3 max-w-sm">
-      <label className="text-sm text-muted-foreground">
-        Monthly budget limit per proposal ($, optional)
-      </label>
+      <label className="text-sm text-muted-foreground">{dict.budgetLabel}</label>
       <Input
         type="number"
         step="0.01"
@@ -90,78 +91,70 @@ export function ProfileForm({
         onChange={(e) => setBudget(e.target.value)}
         placeholder="e.g. 25"
       />
-      <label className="text-sm text-muted-foreground">
-        Dietary restrictions (comma-separated, e.g. vegetarian, gluten-free)
-      </label>
+      <label className="text-sm text-muted-foreground">{dict.dietaryLabel}</label>
       <Input
         value={restrictions}
         onChange={(e) => setRestrictions(e.target.value)}
-        placeholder="vegetarian, nut-free"
+        placeholder={dict.dietaryPlaceholder}
       />
-      <label className="text-sm text-muted-foreground">
-        Home coordinates (optional, used for the fair meeting point feature)
-      </label>
+      <label className="text-sm text-muted-foreground">{dict.homeLabel}</label>
       <div className="flex gap-2">
         <Input
           type="number"
           step="any"
           value={homeLatitude}
           onChange={(e) => setHomeLatitude(e.target.value)}
-          placeholder="Latitude"
+          placeholder={dict.latitudePlaceholder}
         />
         <Input
           type="number"
           step="any"
           value={homeLongitude}
           onChange={(e) => setHomeLongitude(e.target.value)}
-          placeholder="Longitude"
+          placeholder={dict.longitudePlaceholder}
         />
       </div>
-      <label className="text-sm text-muted-foreground">
-        Payment handles (optional — used for one-tap settle-up links)
-      </label>
+      <label className="text-sm text-muted-foreground">{dict.paymentHandlesLabel}</label>
       <Input
         value={venmoHandle}
         onChange={(e) => setVenmoHandle(e.target.value)}
-        placeholder="Venmo handle"
+        placeholder={dict.venmoPlaceholder}
       />
       <Input
         value={paypalHandle}
         onChange={(e) => setPaypalHandle(e.target.value)}
-        placeholder="PayPal.me handle"
+        placeholder={dict.paypalPlaceholder}
       />
       <Input
         value={cashappHandle}
         onChange={(e) => setCashappHandle(e.target.value)}
-        placeholder="Cash App $cashtag"
+        placeholder={dict.cashappPlaceholder}
       />
-      <label className="text-sm text-muted-foreground">
-        Pakistani payment methods (optional)
-      </label>
+      <label className="text-sm text-muted-foreground">{dict.pakistaniPaymentsLabel}</label>
       <Input
         value={easypaisaNumber}
         onChange={(e) => setEasypaisaNumber(e.target.value)}
-        placeholder="EasyPaisa number"
+        placeholder={dict.easypaisaPlaceholder}
       />
       <Input
         value={jazzcashNumber}
         onChange={(e) => setJazzcashNumber(e.target.value)}
-        placeholder="JazzCash number"
+        placeholder={dict.jazzcashPlaceholder}
       />
       <Input
         value={nayapayHandle}
         onChange={(e) => setNayapayHandle(e.target.value)}
-        placeholder="NayaPay handle"
+        placeholder={dict.nayapayPlaceholder}
       />
       <Input
         value={bankDetails}
         onChange={(e) => setBankDetails(e.target.value)}
-        placeholder="Bank name, account title, IBAN"
+        placeholder={dict.bankDetailsPlaceholder}
       />
       <Button type="submit" disabled={pending}>
-        {pending ? "Saving…" : "Save"}
+        {pending ? dict.saving : dict.save}
       </Button>
-      {saved && <p className="text-sm text-muted-foreground">Saved.</p>}
+      {saved && <p className="text-sm text-muted-foreground">{dict.saved}</p>}
     </form>
   );
 }

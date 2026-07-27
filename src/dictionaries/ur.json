@@ -1,0 +1,32 @@
+{
+  "nav": {
+    "appName": "Reckon",
+    "settings": "ترتیبات",
+    "signIn": "سائن ان کریں"
+  },
+  "settings": {
+    "title": "ترتیبات",
+    "language": "زبان",
+    "languageEnglish": "انگریزی",
+    "languageUrdu": "اردو",
+    "languageSpanish": "ہسپانوی",
+    "budgetLabel": "ہر تجویز کے لیے ماہانہ بجٹ کی حد (اختیاری)",
+    "dietaryLabel": "غذائی پابندیاں (کاما سے الگ کریں، مثلاً ویجیٹیرین، گلوٹن فری)",
+    "dietaryPlaceholder": "ویجیٹیرین، میوہ جات سے پاک",
+    "homeLabel": "گھر کے احداثیات (اختیاری، منصفانہ ملاقات کی جگہ کی خصوصیت کے لیے استعمال ہوتے ہیں)",
+    "latitudePlaceholder": "عرض بلد",
+    "longitudePlaceholder": "طول بلد",
+    "paymentHandlesLabel": "ادائیگی کے ہینڈلز (اختیاری — ایک ٹیپ سیٹل اپ لنکس کے لیے استعمال ہوتے ہیں)",
+    "venmoPlaceholder": "وینمو ہینڈل",
+    "paypalPlaceholder": "پے پال ہینڈل",
+    "cashappPlaceholder": "کیش ایپ $کیش ٹیگ",
+    "pakistaniPaymentsLabel": "پاکستانی ادائیگی کے طریقے (اختیاری)",
+    "easypaisaPlaceholder": "ایزی پیسہ نمبر",
+    "jazzcashPlaceholder": "جاز کیش نمبر",
+    "nayapayPlaceholder": "نیا پے ہینڈل",
+    "bankDetailsPlaceholder": "بینک کا نام، اکاؤنٹ ٹائٹل، آئی بی اے این",
+    "save": "محفوظ کریں",
+    "saving": "محفوظ ہو رہا ہے…",
+    "saved": "محفوظ ہو گیا۔"
+  }
+}

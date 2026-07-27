@@ -54,6 +54,7 @@ export type UserMinAggregateOutputType = {
   jazzcashNumber: string | null
   nayapayHandle: string | null
   bankDetails: string | null
+  locale: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -74,6 +75,7 @@ export type UserMaxAggregateOutputType = {
   jazzcashNumber: string | null
   nayapayHandle: string | null
   bankDetails: string | null
+  locale: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -95,6 +97,7 @@ export type UserCountAggregateOutputType = {
   jazzcashNumber: number
   nayapayHandle: number
   bankDetails: number
+  locale: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -129,6 +132,7 @@ export type UserMinAggregateInputType = {
   jazzcashNumber?: true
   nayapayHandle?: true
   bankDetails?: true
+  locale?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -149,6 +153,7 @@ export type UserMaxAggregateInputType = {
   jazzcashNumber?: true
   nayapayHandle?: true
   bankDetails?: true
+  locale?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -170,6 +175,7 @@ export type UserCountAggregateInputType = {
   jazzcashNumber?: true
   nayapayHandle?: true
   bankDetails?: true
+  locale?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -278,6 +284,7 @@ export type UserGroupByOutputType = {
   jazzcashNumber: string | null
   nayapayHandle: string | null
   bankDetails: string | null
+  locale: string
   createdAt: Date
   updatedAt: Date
   _count: UserCountAggregateOutputType | null
@@ -322,6 +329,7 @@ export type UserWhereInput = {
   jazzcashNumber?: Prisma.StringNullableFilter<"User"> | string | null
   nayapayHandle?: Prisma.StringNullableFilter<"User"> | string | null
   bankDetails?: Prisma.StringNullableFilter<"User"> | string | null
+  locale?: Prisma.StringFilter<"User"> | string
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   groupMemberships?: Prisma.GroupMemberListRelationFilter
@@ -356,6 +364,7 @@ export type UserOrderByWithRelationInput = {
   jazzcashNumber?: Prisma.SortOrderInput | Prisma.SortOrder
   nayapayHandle?: Prisma.SortOrderInput | Prisma.SortOrder
   bankDetails?: Prisma.SortOrderInput | Prisma.SortOrder
+  locale?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   groupMemberships?: Prisma.GroupMemberOrderByRelationAggregateInput
@@ -393,6 +402,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   jazzcashNumber?: Prisma.StringNullableFilter<"User"> | string | null
   nayapayHandle?: Prisma.StringNullableFilter<"User"> | string | null
   bankDetails?: Prisma.StringNullableFilter<"User"> | string | null
+  locale?: Prisma.StringFilter<"User"> | string
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   groupMemberships?: Prisma.GroupMemberListRelationFilter
@@ -427,6 +437,7 @@ export type UserOrderByWithAggregationInput = {
   jazzcashNumber?: Prisma.SortOrderInput | Prisma.SortOrder
   nayapayHandle?: Prisma.SortOrderInput | Prisma.SortOrder
   bankDetails?: Prisma.SortOrderInput | Prisma.SortOrder
+  locale?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
@@ -456,6 +467,7 @@ export type UserScalarWhereWithAggregatesInput = {
   jazzcashNumber?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   nayapayHandle?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   bankDetails?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  locale?: Prisma.StringWithAggregatesFilter<"User"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
 }
@@ -477,6 +489,7 @@ export type UserCreateInput = {
   jazzcashNumber?: string | null
   nayapayHandle?: string | null
   bankDetails?: string | null
+  locale?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   groupMemberships?: Prisma.GroupMemberCreateNestedManyWithoutUserInput
@@ -511,6 +524,7 @@ export type UserUncheckedCreateInput = {
   jazzcashNumber?: string | null
   nayapayHandle?: string | null
   bankDetails?: string | null
+  locale?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   groupMemberships?: Prisma.GroupMemberUncheckedCreateNestedManyWithoutUserInput
@@ -545,6 +559,7 @@ export type UserUpdateInput = {
   jazzcashNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nayapayHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bankDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   groupMemberships?: Prisma.GroupMemberUpdateManyWithoutUserNestedInput
@@ -579,6 +594,7 @@ export type UserUncheckedUpdateInput = {
   jazzcashNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nayapayHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bankDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   groupMemberships?: Prisma.GroupMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -613,6 +629,7 @@ export type UserCreateManyInput = {
   jazzcashNumber?: string | null
   nayapayHandle?: string | null
   bankDetails?: string | null
+  locale?: string
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -634,6 +651,7 @@ export type UserUpdateManyMutationInput = {
   jazzcashNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nayapayHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bankDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -655,6 +673,7 @@ export type UserUncheckedUpdateManyInput = {
   jazzcashNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nayapayHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bankDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -684,6 +703,7 @@ export type UserCountOrderByAggregateInput = {
   jazzcashNumber?: Prisma.SortOrder
   nayapayHandle?: Prisma.SortOrder
   bankDetails?: Prisma.SortOrder
+  locale?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -710,6 +730,7 @@ export type UserMaxOrderByAggregateInput = {
   jazzcashNumber?: Prisma.SortOrder
   nayapayHandle?: Prisma.SortOrder
   bankDetails?: Prisma.SortOrder
+  locale?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -730,6 +751,7 @@ export type UserMinOrderByAggregateInput = {
   jazzcashNumber?: Prisma.SortOrder
   nayapayHandle?: Prisma.SortOrder
   bankDetails?: Prisma.SortOrder
+  locale?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -981,6 +1003,7 @@ export type UserCreateWithoutCreatedGroupsInput = {
   jazzcashNumber?: string | null
   nayapayHandle?: string | null
   bankDetails?: string | null
+  locale?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   groupMemberships?: Prisma.GroupMemberCreateNestedManyWithoutUserInput
@@ -1014,6 +1037,7 @@ export type UserUncheckedCreateWithoutCreatedGroupsInput = {
   jazzcashNumber?: string | null
   nayapayHandle?: string | null
   bankDetails?: string | null
+  locale?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   groupMemberships?: Prisma.GroupMemberUncheckedCreateNestedManyWithoutUserInput
@@ -1063,6 +1087,7 @@ export type UserUpdateWithoutCreatedGroupsInput = {
   jazzcashNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nayapayHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bankDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   groupMemberships?: Prisma.GroupMemberUpdateManyWithoutUserNestedInput
@@ -1096,6 +1121,7 @@ export type UserUncheckedUpdateWithoutCreatedGroupsInput = {
   jazzcashNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nayapayHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bankDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   groupMemberships?: Prisma.GroupMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -1129,6 +1155,7 @@ export type UserCreateWithoutGroupMembershipsInput = {
   jazzcashNumber?: string | null
   nayapayHandle?: string | null
   bankDetails?: string | null
+  locale?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   createdGroups?: Prisma.GroupCreateNestedManyWithoutCreatedByInput
@@ -1162,6 +1189,7 @@ export type UserUncheckedCreateWithoutGroupMembershipsInput = {
   jazzcashNumber?: string | null
   nayapayHandle?: string | null
   bankDetails?: string | null
+  locale?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   createdGroups?: Prisma.GroupUncheckedCreateNestedManyWithoutCreatedByInput
@@ -1211,6 +1239,7 @@ export type UserUpdateWithoutGroupMembershipsInput = {
   jazzcashNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nayapayHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bankDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdGroups?: Prisma.GroupUpdateManyWithoutCreatedByNestedInput
@@ -1244,6 +1273,7 @@ export type UserUncheckedUpdateWithoutGroupMembershipsInput = {
   jazzcashNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nayapayHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bankDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdGroups?: Prisma.GroupUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -1277,6 +1307,7 @@ export type UserCreateWithoutPaidExpensesInput = {
   jazzcashNumber?: string | null
   nayapayHandle?: string | null
   bankDetails?: string | null
+  locale?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   groupMemberships?: Prisma.GroupMemberCreateNestedManyWithoutUserInput
@@ -1310,6 +1341,7 @@ export type UserUncheckedCreateWithoutPaidExpensesInput = {
   jazzcashNumber?: string | null
   nayapayHandle?: string | null
   bankDetails?: string | null
+  locale?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   groupMemberships?: Prisma.GroupMemberUncheckedCreateNestedManyWithoutUserInput
@@ -1359,6 +1391,7 @@ export type UserUpdateWithoutPaidExpensesInput = {
   jazzcashNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nayapayHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bankDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   groupMemberships?: Prisma.GroupMemberUpdateManyWithoutUserNestedInput
@@ -1392,6 +1425,7 @@ export type UserUncheckedUpdateWithoutPaidExpensesInput = {
   jazzcashNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nayapayHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bankDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   groupMemberships?: Prisma.GroupMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -1425,6 +1459,7 @@ export type UserCreateWithoutExpenseParticipationsInput = {
   jazzcashNumber?: string | null
   nayapayHandle?: string | null
   bankDetails?: string | null
+  locale?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   groupMemberships?: Prisma.GroupMemberCreateNestedManyWithoutUserInput
@@ -1458,6 +1493,7 @@ export type UserUncheckedCreateWithoutExpenseParticipationsInput = {
   jazzcashNumber?: string | null
   nayapayHandle?: string | null
   bankDetails?: string | null
+  locale?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   groupMemberships?: Prisma.GroupMemberUncheckedCreateNestedManyWithoutUserInput
@@ -1507,6 +1543,7 @@ export type UserUpdateWithoutExpenseParticipationsInput = {
   jazzcashNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nayapayHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bankDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   groupMemberships?: Prisma.GroupMemberUpdateManyWithoutUserNestedInput
@@ -1540,6 +1577,7 @@ export type UserUncheckedUpdateWithoutExpenseParticipationsInput = {
   jazzcashNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nayapayHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bankDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   groupMemberships?: Prisma.GroupMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -1573,6 +1611,7 @@ export type UserCreateWithoutSettlementsOwedInput = {
   jazzcashNumber?: string | null
   nayapayHandle?: string | null
   bankDetails?: string | null
+  locale?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   groupMemberships?: Prisma.GroupMemberCreateNestedManyWithoutUserInput
@@ -1606,6 +1645,7 @@ export type UserUncheckedCreateWithoutSettlementsOwedInput = {
   jazzcashNumber?: string | null
   nayapayHandle?: string | null
   bankDetails?: string | null
+  locale?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   groupMemberships?: Prisma.GroupMemberUncheckedCreateNestedManyWithoutUserInput
@@ -1644,6 +1684,7 @@ export type UserCreateWithoutSettlementsReceivedInput = {
   jazzcashNumber?: string | null
   nayapayHandle?: string | null
   bankDetails?: string | null
+  locale?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   groupMemberships?: Prisma.GroupMemberCreateNestedManyWithoutUserInput
@@ -1677,6 +1718,7 @@ export type UserUncheckedCreateWithoutSettlementsReceivedInput = {
   jazzcashNumber?: string | null
   nayapayHandle?: string | null
   bankDetails?: string | null
+  locale?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   groupMemberships?: Prisma.GroupMemberUncheckedCreateNestedManyWithoutUserInput
@@ -1726,6 +1768,7 @@ export type UserUpdateWithoutSettlementsOwedInput = {
   jazzcashNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nayapayHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bankDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   groupMemberships?: Prisma.GroupMemberUpdateManyWithoutUserNestedInput
@@ -1759,6 +1802,7 @@ export type UserUncheckedUpdateWithoutSettlementsOwedInput = {
   jazzcashNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nayapayHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bankDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   groupMemberships?: Prisma.GroupMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -1803,6 +1847,7 @@ export type UserUpdateWithoutSettlementsReceivedInput = {
   jazzcashNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nayapayHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bankDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   groupMemberships?: Prisma.GroupMemberUpdateManyWithoutUserNestedInput
@@ -1836,6 +1881,7 @@ export type UserUncheckedUpdateWithoutSettlementsReceivedInput = {
   jazzcashNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nayapayHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bankDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   groupMemberships?: Prisma.GroupMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -1869,6 +1915,7 @@ export type UserCreateWithoutIousOwedInput = {
   jazzcashNumber?: string | null
   nayapayHandle?: string | null
   bankDetails?: string | null
+  locale?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   groupMemberships?: Prisma.GroupMemberCreateNestedManyWithoutUserInput
@@ -1902,6 +1949,7 @@ export type UserUncheckedCreateWithoutIousOwedInput = {
   jazzcashNumber?: string | null
   nayapayHandle?: string | null
   bankDetails?: string | null
+  locale?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   groupMemberships?: Prisma.GroupMemberUncheckedCreateNestedManyWithoutUserInput
@@ -1940,6 +1988,7 @@ export type UserCreateWithoutIousLentInput = {
   jazzcashNumber?: string | null
   nayapayHandle?: string | null
   bankDetails?: string | null
+  locale?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   groupMemberships?: Prisma.GroupMemberCreateNestedManyWithoutUserInput
@@ -1973,6 +2022,7 @@ export type UserUncheckedCreateWithoutIousLentInput = {
   jazzcashNumber?: string | null
   nayapayHandle?: string | null
   bankDetails?: string | null
+  locale?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   groupMemberships?: Prisma.GroupMemberUncheckedCreateNestedManyWithoutUserInput
@@ -2022,6 +2072,7 @@ export type UserUpdateWithoutIousOwedInput = {
   jazzcashNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nayapayHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bankDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   groupMemberships?: Prisma.GroupMemberUpdateManyWithoutUserNestedInput
@@ -2055,6 +2106,7 @@ export type UserUncheckedUpdateWithoutIousOwedInput = {
   jazzcashNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nayapayHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bankDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   groupMemberships?: Prisma.GroupMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -2099,6 +2151,7 @@ export type UserUpdateWithoutIousLentInput = {
   jazzcashNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nayapayHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bankDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   groupMemberships?: Prisma.GroupMemberUpdateManyWithoutUserNestedInput
@@ -2132,6 +2185,7 @@ export type UserUncheckedUpdateWithoutIousLentInput = {
   jazzcashNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nayapayHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bankDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   groupMemberships?: Prisma.GroupMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -2165,6 +2219,7 @@ export type UserCreateWithoutChoreAssignmentsInput = {
   jazzcashNumber?: string | null
   nayapayHandle?: string | null
   bankDetails?: string | null
+  locale?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   groupMemberships?: Prisma.GroupMemberCreateNestedManyWithoutUserInput
@@ -2198,6 +2253,7 @@ export type UserUncheckedCreateWithoutChoreAssignmentsInput = {
   jazzcashNumber?: string | null
   nayapayHandle?: string | null
   bankDetails?: string | null
+  locale?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   groupMemberships?: Prisma.GroupMemberUncheckedCreateNestedManyWithoutUserInput
@@ -2247,6 +2303,7 @@ export type UserUpdateWithoutChoreAssignmentsInput = {
   jazzcashNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nayapayHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bankDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   groupMemberships?: Prisma.GroupMemberUpdateManyWithoutUserNestedInput
@@ -2280,6 +2337,7 @@ export type UserUncheckedUpdateWithoutChoreAssignmentsInput = {
   jazzcashNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nayapayHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bankDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   groupMemberships?: Prisma.GroupMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -2313,6 +2371,7 @@ export type UserCreateWithoutAvailabilityEntriesInput = {
   jazzcashNumber?: string | null
   nayapayHandle?: string | null
   bankDetails?: string | null
+  locale?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   groupMemberships?: Prisma.GroupMemberCreateNestedManyWithoutUserInput
@@ -2346,6 +2405,7 @@ export type UserUncheckedCreateWithoutAvailabilityEntriesInput = {
   jazzcashNumber?: string | null
   nayapayHandle?: string | null
   bankDetails?: string | null
+  locale?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   groupMemberships?: Prisma.GroupMemberUncheckedCreateNestedManyWithoutUserInput
@@ -2395,6 +2455,7 @@ export type UserUpdateWithoutAvailabilityEntriesInput = {
   jazzcashNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nayapayHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bankDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   groupMemberships?: Prisma.GroupMemberUpdateManyWithoutUserNestedInput
@@ -2428,6 +2489,7 @@ export type UserUncheckedUpdateWithoutAvailabilityEntriesInput = {
   jazzcashNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nayapayHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bankDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   groupMemberships?: Prisma.GroupMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -2461,6 +2523,7 @@ export type UserCreateWithoutProposalsCreatedInput = {
   jazzcashNumber?: string | null
   nayapayHandle?: string | null
   bankDetails?: string | null
+  locale?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   groupMemberships?: Prisma.GroupMemberCreateNestedManyWithoutUserInput
@@ -2494,6 +2557,7 @@ export type UserUncheckedCreateWithoutProposalsCreatedInput = {
   jazzcashNumber?: string | null
   nayapayHandle?: string | null
   bankDetails?: string | null
+  locale?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   groupMemberships?: Prisma.GroupMemberUncheckedCreateNestedManyWithoutUserInput
@@ -2543,6 +2607,7 @@ export type UserUpdateWithoutProposalsCreatedInput = {
   jazzcashNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nayapayHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bankDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   groupMemberships?: Prisma.GroupMemberUpdateManyWithoutUserNestedInput
@@ -2576,6 +2641,7 @@ export type UserUncheckedUpdateWithoutProposalsCreatedInput = {
   jazzcashNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nayapayHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bankDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   groupMemberships?: Prisma.GroupMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -2609,6 +2675,7 @@ export type UserCreateWithoutProposalFlagsInput = {
   jazzcashNumber?: string | null
   nayapayHandle?: string | null
   bankDetails?: string | null
+  locale?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   groupMemberships?: Prisma.GroupMemberCreateNestedManyWithoutUserInput
@@ -2642,6 +2709,7 @@ export type UserUncheckedCreateWithoutProposalFlagsInput = {
   jazzcashNumber?: string | null
   nayapayHandle?: string | null
   bankDetails?: string | null
+  locale?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   groupMemberships?: Prisma.GroupMemberUncheckedCreateNestedManyWithoutUserInput
@@ -2691,6 +2759,7 @@ export type UserUpdateWithoutProposalFlagsInput = {
   jazzcashNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nayapayHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bankDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   groupMemberships?: Prisma.GroupMemberUpdateManyWithoutUserNestedInput
@@ -2724,6 +2793,7 @@ export type UserUncheckedUpdateWithoutProposalFlagsInput = {
   jazzcashNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nayapayHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bankDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   groupMemberships?: Prisma.GroupMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -2757,6 +2827,7 @@ export type UserCreateWithoutProposalVotesInput = {
   jazzcashNumber?: string | null
   nayapayHandle?: string | null
   bankDetails?: string | null
+  locale?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   groupMemberships?: Prisma.GroupMemberCreateNestedManyWithoutUserInput
@@ -2790,6 +2861,7 @@ export type UserUncheckedCreateWithoutProposalVotesInput = {
   jazzcashNumber?: string | null
   nayapayHandle?: string | null
   bankDetails?: string | null
+  locale?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   groupMemberships?: Prisma.GroupMemberUncheckedCreateNestedManyWithoutUserInput
@@ -2839,6 +2911,7 @@ export type UserUpdateWithoutProposalVotesInput = {
   jazzcashNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nayapayHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bankDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   groupMemberships?: Prisma.GroupMemberUpdateManyWithoutUserNestedInput
@@ -2872,6 +2945,7 @@ export type UserUncheckedUpdateWithoutProposalVotesInput = {
   jazzcashNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nayapayHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bankDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   groupMemberships?: Prisma.GroupMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -3044,6 +3118,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   jazzcashNumber?: boolean
   nayapayHandle?: boolean
   bankDetails?: boolean
+  locale?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   groupMemberships?: boolean | Prisma.User$groupMembershipsArgs<ExtArgs>
@@ -3079,6 +3154,7 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   jazzcashNumber?: boolean
   nayapayHandle?: boolean
   bankDetails?: boolean
+  locale?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["user"]>
@@ -3100,6 +3176,7 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   jazzcashNumber?: boolean
   nayapayHandle?: boolean
   bankDetails?: boolean
+  locale?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["user"]>
@@ -3121,11 +3198,12 @@ export type UserSelectScalar = {
   jazzcashNumber?: boolean
   nayapayHandle?: boolean
   bankDetails?: boolean
+  locale?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "clerkId" | "email" | "displayName" | "avatarUrl" | "budgetLimit" | "dietaryRestrictions" | "homeLatitude" | "homeLongitude" | "venmoHandle" | "paypalHandle" | "cashappHandle" | "easypaisaNumber" | "jazzcashNumber" | "nayapayHandle" | "bankDetails" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "clerkId" | "email" | "displayName" | "avatarUrl" | "budgetLimit" | "dietaryRestrictions" | "homeLatitude" | "homeLongitude" | "venmoHandle" | "paypalHandle" | "cashappHandle" | "easypaisaNumber" | "jazzcashNumber" | "nayapayHandle" | "bankDetails" | "locale" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   groupMemberships?: boolean | Prisma.User$groupMembershipsArgs<ExtArgs>
   createdGroups?: boolean | Prisma.User$createdGroupsArgs<ExtArgs>
@@ -3179,6 +3257,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     jazzcashNumber: string | null
     nayapayHandle: string | null
     bankDetails: string | null
+    locale: string
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["user"]>
@@ -3633,6 +3712,7 @@ export interface UserFieldRefs {
   readonly jazzcashNumber: Prisma.FieldRef<"User", 'String'>
   readonly nayapayHandle: Prisma.FieldRef<"User", 'String'>
   readonly bankDetails: Prisma.FieldRef<"User", 'String'>
+  readonly locale: Prisma.FieldRef<"User", 'String'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"User", 'DateTime'>
 }

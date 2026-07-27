@@ -9,6 +9,8 @@ import {
 } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
 import { getSession } from "@/lib/dal";
+import { isRtl } from "@/lib/i18n";
+import { getDictionary } from "@/lib/dictionary";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -34,18 +36,21 @@ export default async function RootLayout({
   // Lazily upserts the local User row from Clerk on every authenticated
   // request — there's no webhook, since one needs a public URL to reach
   // localhost in dev.
-  await getSession();
+  const session = await getSession();
+  const locale = session?.locale ?? "en";
+  const dict = await getDictionary(locale);
 
   return (
     <ClerkProvider>
       <html
-        lang="en"
+        lang={locale}
+        dir={isRtl(locale) ? "rtl" : "ltr"}
         className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
       >
         <body className="min-h-full flex flex-col">
           <header className="flex items-center justify-between border-b px-6 py-3">
             <Link href="/" className="font-semibold">
-              Reckon
+              {dict.nav.appName}
             </Link>
             <div className="flex items-center gap-3">
               <Show when="signed-in">
@@ -55,13 +60,13 @@ export default async function RootLayout({
                   variant="ghost"
                   size="sm"
                 >
-                  Settings
+                  {dict.nav.settings}
                 </Button>
                 <UserButton />
               </Show>
               <Show when="signed-out">
                 <SignInButton mode="modal">
-                  <Button size="sm">Sign in</Button>
+                  <Button size="sm">{dict.nav.signIn}</Button>
                 </SignInButton>
               </Show>
             </div>

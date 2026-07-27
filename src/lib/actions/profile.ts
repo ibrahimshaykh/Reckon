@@ -6,6 +6,7 @@ import { db } from "@/lib/db";
 import { requireSession } from "@/lib/dal";
 import { fromCents } from "@/lib/money";
 import { validate, latitude, longitude } from "@/lib/validation";
+import { isLocale } from "@/lib/i18n";
 
 const handle = z.string().trim().max(50).optional().or(z.literal(""));
 const bankDetailsText = z.string().trim().max(300).optional().or(z.literal(""));
@@ -59,4 +60,16 @@ export async function updateProfile(input: {
   });
 
   revalidatePath("/settings");
+}
+
+export async function updateUserLocale(locale: string) {
+  const session = await requireSession();
+  if (!isLocale(locale)) {
+    throw new Error("Unsupported language.");
+  }
+
+  await db.user.update({ where: { id: session.id }, data: { locale } });
+  // The nav (language-dependent) lives in the root layout, which wraps
+  // every route — not just /settings.
+  revalidatePath("/", "layout");
 }
