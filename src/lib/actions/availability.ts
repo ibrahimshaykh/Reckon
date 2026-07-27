@@ -74,5 +74,22 @@ export async function getGroupFreeTime(groupId: string) {
       startsAt: new Date(w.start).toISOString(),
       endsAt: new Date(w.end).toISOString(),
     })),
+    entries: entries.map((e) => ({
+      id: e.id,
+      userId: e.userId,
+      startsAt: e.startsAt.toISOString(),
+      endsAt: e.endsAt.toISOString(),
+      label: e.label,
+    })),
   };
+}
+
+export async function removeAvailability(entryId: string) {
+  const session = await requireSession();
+  const entry = await db.availabilityEntry.findUniqueOrThrow({ where: { id: entryId } });
+  if (entry.userId !== session.id) {
+    throw new ApiError(403, "You can only remove your own availability.");
+  }
+  await db.availabilityEntry.delete({ where: { id: entryId } });
+  revalidatePath(`/groups/${entry.groupId}/availability`);
 }
