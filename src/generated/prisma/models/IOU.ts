@@ -41,6 +41,7 @@ export type IOUMinAggregateOutputType = {
   toUserId: string | null
   amount: runtime.Decimal | null
   note: string | null
+  forgivenAt: Date | null
   createdAt: Date | null
 }
 
@@ -51,6 +52,7 @@ export type IOUMaxAggregateOutputType = {
   toUserId: string | null
   amount: runtime.Decimal | null
   note: string | null
+  forgivenAt: Date | null
   createdAt: Date | null
 }
 
@@ -61,6 +63,7 @@ export type IOUCountAggregateOutputType = {
   toUserId: number
   amount: number
   note: number
+  forgivenAt: number
   createdAt: number
   _all: number
 }
@@ -81,6 +84,7 @@ export type IOUMinAggregateInputType = {
   toUserId?: true
   amount?: true
   note?: true
+  forgivenAt?: true
   createdAt?: true
 }
 
@@ -91,6 +95,7 @@ export type IOUMaxAggregateInputType = {
   toUserId?: true
   amount?: true
   note?: true
+  forgivenAt?: true
   createdAt?: true
 }
 
@@ -101,6 +106,7 @@ export type IOUCountAggregateInputType = {
   toUserId?: true
   amount?: true
   note?: true
+  forgivenAt?: true
   createdAt?: true
   _all?: true
 }
@@ -198,6 +204,7 @@ export type IOUGroupByOutputType = {
   toUserId: string
   amount: runtime.Decimal
   note: string | null
+  forgivenAt: Date | null
   createdAt: Date
   _count: IOUCountAggregateOutputType | null
   _avg: IOUAvgAggregateOutputType | null
@@ -231,6 +238,7 @@ export type IOUWhereInput = {
   toUserId?: Prisma.StringFilter<"IOU"> | string
   amount?: Prisma.DecimalFilter<"IOU"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   note?: Prisma.StringNullableFilter<"IOU"> | string | null
+  forgivenAt?: Prisma.DateTimeNullableFilter<"IOU"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"IOU"> | Date | string
   group?: Prisma.XOR<Prisma.GroupScalarRelationFilter, Prisma.GroupWhereInput>
   fromUser?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -244,6 +252,7 @@ export type IOUOrderByWithRelationInput = {
   toUserId?: Prisma.SortOrder
   amount?: Prisma.SortOrder
   note?: Prisma.SortOrderInput | Prisma.SortOrder
+  forgivenAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   group?: Prisma.GroupOrderByWithRelationInput
   fromUser?: Prisma.UserOrderByWithRelationInput
@@ -260,6 +269,7 @@ export type IOUWhereUniqueInput = Prisma.AtLeast<{
   toUserId?: Prisma.StringFilter<"IOU"> | string
   amount?: Prisma.DecimalFilter<"IOU"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   note?: Prisma.StringNullableFilter<"IOU"> | string | null
+  forgivenAt?: Prisma.DateTimeNullableFilter<"IOU"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"IOU"> | Date | string
   group?: Prisma.XOR<Prisma.GroupScalarRelationFilter, Prisma.GroupWhereInput>
   fromUser?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -273,6 +283,7 @@ export type IOUOrderByWithAggregationInput = {
   toUserId?: Prisma.SortOrder
   amount?: Prisma.SortOrder
   note?: Prisma.SortOrderInput | Prisma.SortOrder
+  forgivenAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.IOUCountOrderByAggregateInput
   _avg?: Prisma.IOUAvgOrderByAggregateInput
@@ -291,6 +302,7 @@ export type IOUScalarWhereWithAggregatesInput = {
   toUserId?: Prisma.StringWithAggregatesFilter<"IOU"> | string
   amount?: Prisma.DecimalWithAggregatesFilter<"IOU"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   note?: Prisma.StringNullableWithAggregatesFilter<"IOU"> | string | null
+  forgivenAt?: Prisma.DateTimeNullableWithAggregatesFilter<"IOU"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"IOU"> | Date | string
 }
 
@@ -298,6 +310,7 @@ export type IOUCreateInput = {
   id?: string
   amount: runtime.Decimal | runtime.DecimalJsLike | number | string
   note?: string | null
+  forgivenAt?: Date | string | null
   createdAt?: Date | string
   group: Prisma.GroupCreateNestedOneWithoutIousInput
   fromUser: Prisma.UserCreateNestedOneWithoutIousOwedInput
@@ -311,6 +324,7 @@ export type IOUUncheckedCreateInput = {
   toUserId: string
   amount: runtime.Decimal | runtime.DecimalJsLike | number | string
   note?: string | null
+  forgivenAt?: Date | string | null
   createdAt?: Date | string
 }
 
@@ -318,6 +332,7 @@ export type IOUUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  forgivenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   group?: Prisma.GroupUpdateOneRequiredWithoutIousNestedInput
   fromUser?: Prisma.UserUpdateOneRequiredWithoutIousOwedNestedInput
@@ -331,6 +346,7 @@ export type IOUUncheckedUpdateInput = {
   toUserId?: Prisma.StringFieldUpdateOperationsInput | string
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  forgivenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -341,6 +357,7 @@ export type IOUCreateManyInput = {
   toUserId: string
   amount: runtime.Decimal | runtime.DecimalJsLike | number | string
   note?: string | null
+  forgivenAt?: Date | string | null
   createdAt?: Date | string
 }
 
@@ -348,6 +365,7 @@ export type IOUUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  forgivenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -358,6 +376,7 @@ export type IOUUncheckedUpdateManyInput = {
   toUserId?: Prisma.StringFieldUpdateOperationsInput | string
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  forgivenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -378,6 +397,7 @@ export type IOUCountOrderByAggregateInput = {
   toUserId?: Prisma.SortOrder
   amount?: Prisma.SortOrder
   note?: Prisma.SortOrder
+  forgivenAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -392,6 +412,7 @@ export type IOUMaxOrderByAggregateInput = {
   toUserId?: Prisma.SortOrder
   amount?: Prisma.SortOrder
   note?: Prisma.SortOrder
+  forgivenAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -402,6 +423,7 @@ export type IOUMinOrderByAggregateInput = {
   toUserId?: Prisma.SortOrder
   amount?: Prisma.SortOrder
   note?: Prisma.SortOrder
+  forgivenAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -539,6 +561,7 @@ export type IOUCreateWithoutFromUserInput = {
   id?: string
   amount: runtime.Decimal | runtime.DecimalJsLike | number | string
   note?: string | null
+  forgivenAt?: Date | string | null
   createdAt?: Date | string
   group: Prisma.GroupCreateNestedOneWithoutIousInput
   toUser: Prisma.UserCreateNestedOneWithoutIousLentInput
@@ -550,6 +573,7 @@ export type IOUUncheckedCreateWithoutFromUserInput = {
   toUserId: string
   amount: runtime.Decimal | runtime.DecimalJsLike | number | string
   note?: string | null
+  forgivenAt?: Date | string | null
   createdAt?: Date | string
 }
 
@@ -567,6 +591,7 @@ export type IOUCreateWithoutToUserInput = {
   id?: string
   amount: runtime.Decimal | runtime.DecimalJsLike | number | string
   note?: string | null
+  forgivenAt?: Date | string | null
   createdAt?: Date | string
   group: Prisma.GroupCreateNestedOneWithoutIousInput
   fromUser: Prisma.UserCreateNestedOneWithoutIousOwedInput
@@ -578,6 +603,7 @@ export type IOUUncheckedCreateWithoutToUserInput = {
   fromUserId: string
   amount: runtime.Decimal | runtime.DecimalJsLike | number | string
   note?: string | null
+  forgivenAt?: Date | string | null
   createdAt?: Date | string
 }
 
@@ -617,6 +643,7 @@ export type IOUScalarWhereInput = {
   toUserId?: Prisma.StringFilter<"IOU"> | string
   amount?: Prisma.DecimalFilter<"IOU"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   note?: Prisma.StringNullableFilter<"IOU"> | string | null
+  forgivenAt?: Prisma.DateTimeNullableFilter<"IOU"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"IOU"> | Date | string
 }
 
@@ -640,6 +667,7 @@ export type IOUCreateWithoutGroupInput = {
   id?: string
   amount: runtime.Decimal | runtime.DecimalJsLike | number | string
   note?: string | null
+  forgivenAt?: Date | string | null
   createdAt?: Date | string
   fromUser: Prisma.UserCreateNestedOneWithoutIousOwedInput
   toUser: Prisma.UserCreateNestedOneWithoutIousLentInput
@@ -651,6 +679,7 @@ export type IOUUncheckedCreateWithoutGroupInput = {
   toUserId: string
   amount: runtime.Decimal | runtime.DecimalJsLike | number | string
   note?: string | null
+  forgivenAt?: Date | string | null
   createdAt?: Date | string
 }
 
@@ -686,6 +715,7 @@ export type IOUCreateManyFromUserInput = {
   toUserId: string
   amount: runtime.Decimal | runtime.DecimalJsLike | number | string
   note?: string | null
+  forgivenAt?: Date | string | null
   createdAt?: Date | string
 }
 
@@ -695,6 +725,7 @@ export type IOUCreateManyToUserInput = {
   fromUserId: string
   amount: runtime.Decimal | runtime.DecimalJsLike | number | string
   note?: string | null
+  forgivenAt?: Date | string | null
   createdAt?: Date | string
 }
 
@@ -702,6 +733,7 @@ export type IOUUpdateWithoutFromUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  forgivenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   group?: Prisma.GroupUpdateOneRequiredWithoutIousNestedInput
   toUser?: Prisma.UserUpdateOneRequiredWithoutIousLentNestedInput
@@ -713,6 +745,7 @@ export type IOUUncheckedUpdateWithoutFromUserInput = {
   toUserId?: Prisma.StringFieldUpdateOperationsInput | string
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  forgivenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -722,6 +755,7 @@ export type IOUUncheckedUpdateManyWithoutFromUserInput = {
   toUserId?: Prisma.StringFieldUpdateOperationsInput | string
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  forgivenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -729,6 +763,7 @@ export type IOUUpdateWithoutToUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  forgivenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   group?: Prisma.GroupUpdateOneRequiredWithoutIousNestedInput
   fromUser?: Prisma.UserUpdateOneRequiredWithoutIousOwedNestedInput
@@ -740,6 +775,7 @@ export type IOUUncheckedUpdateWithoutToUserInput = {
   fromUserId?: Prisma.StringFieldUpdateOperationsInput | string
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  forgivenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -749,6 +785,7 @@ export type IOUUncheckedUpdateManyWithoutToUserInput = {
   fromUserId?: Prisma.StringFieldUpdateOperationsInput | string
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  forgivenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -758,6 +795,7 @@ export type IOUCreateManyGroupInput = {
   toUserId: string
   amount: runtime.Decimal | runtime.DecimalJsLike | number | string
   note?: string | null
+  forgivenAt?: Date | string | null
   createdAt?: Date | string
 }
 
@@ -765,6 +803,7 @@ export type IOUUpdateWithoutGroupInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  forgivenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   fromUser?: Prisma.UserUpdateOneRequiredWithoutIousOwedNestedInput
   toUser?: Prisma.UserUpdateOneRequiredWithoutIousLentNestedInput
@@ -776,6 +815,7 @@ export type IOUUncheckedUpdateWithoutGroupInput = {
   toUserId?: Prisma.StringFieldUpdateOperationsInput | string
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  forgivenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -785,6 +825,7 @@ export type IOUUncheckedUpdateManyWithoutGroupInput = {
   toUserId?: Prisma.StringFieldUpdateOperationsInput | string
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  forgivenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -797,6 +838,7 @@ export type IOUSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = ru
   toUserId?: boolean
   amount?: boolean
   note?: boolean
+  forgivenAt?: boolean
   createdAt?: boolean
   group?: boolean | Prisma.GroupDefaultArgs<ExtArgs>
   fromUser?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -810,6 +852,7 @@ export type IOUSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extension
   toUserId?: boolean
   amount?: boolean
   note?: boolean
+  forgivenAt?: boolean
   createdAt?: boolean
   group?: boolean | Prisma.GroupDefaultArgs<ExtArgs>
   fromUser?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -823,6 +866,7 @@ export type IOUSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extension
   toUserId?: boolean
   amount?: boolean
   note?: boolean
+  forgivenAt?: boolean
   createdAt?: boolean
   group?: boolean | Prisma.GroupDefaultArgs<ExtArgs>
   fromUser?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -836,10 +880,11 @@ export type IOUSelectScalar = {
   toUserId?: boolean
   amount?: boolean
   note?: boolean
+  forgivenAt?: boolean
   createdAt?: boolean
 }
 
-export type IOUOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "groupId" | "fromUserId" | "toUserId" | "amount" | "note" | "createdAt", ExtArgs["result"]["iOU"]>
+export type IOUOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "groupId" | "fromUserId" | "toUserId" | "amount" | "note" | "forgivenAt" | "createdAt", ExtArgs["result"]["iOU"]>
 export type IOUInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   group?: boolean | Prisma.GroupDefaultArgs<ExtArgs>
   fromUser?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -870,6 +915,7 @@ export type $IOUPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
     toUserId: string
     amount: runtime.Decimal
     note: string | null
+    forgivenAt: Date | null
     createdAt: Date
   }, ExtArgs["result"]["iOU"]>
   composites: {}
@@ -1303,6 +1349,7 @@ export interface IOUFieldRefs {
   readonly toUserId: Prisma.FieldRef<"IOU", 'String'>
   readonly amount: Prisma.FieldRef<"IOU", 'Decimal'>
   readonly note: Prisma.FieldRef<"IOU", 'String'>
+  readonly forgivenAt: Prisma.FieldRef<"IOU", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"IOU", 'DateTime'>
 }
     

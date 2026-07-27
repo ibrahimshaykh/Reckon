@@ -228,9 +228,10 @@ model IOU {
   fromUser   User     @relation("IOUFrom", fields: [fromUserId], references: [id])
   toUserId   String
   toUser     User     @relation("IOUTo", fields: [toUserId], references: [id])
-  amount     Decimal  @db.Decimal(10, 2)
+  amount     Decimal   @db.Decimal(10, 2)
   note       String?
-  createdAt  DateTime @default(now())
+  forgivenAt DateTime?
+  createdAt  DateTime  @default(now())
 
   @@index([groupId])
 }

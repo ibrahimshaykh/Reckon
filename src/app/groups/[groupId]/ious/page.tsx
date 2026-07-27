@@ -22,7 +22,7 @@ export default async function IOUsPage({
       <h1 className="text-xl font-semibold">IOUs</h1>
       <HelpTip text="For debts outside any shared expense — they fold into the same settle-up total." />
       <AddIOUForm groupId={groupId} members={group.members} currentUserId={session.id} />
-      <IOUList ious={ious} />
+      <IOUList ious={ious} currentUserId={session.id} />
     </div>
   );
 }

@@ -57,10 +57,28 @@ export async function listIOUs(groupId: string) {
 
   return ious.map((i) => ({
     id: i.id,
+    toUserId: i.toUserId,
     fromName: i.fromUser.displayName,
     toName: i.toUser.displayName,
     amount: Number(i.amount),
     note: i.note,
     createdAt: i.createdAt.toISOString(),
+    forgivenAt: i.forgivenAt?.toISOString() ?? null,
   }));
+}
+
+// Only the person owed can forgive a debt — dimmed/struck-through in the
+// list rather than deleted, so the history stays visible instead of
+// silently vanishing.
+export async function forgiveIOU(iouId: string) {
+  const session = await requireSession();
+  const iou = await db.iOU.findUniqueOrThrow({ where: { id: iouId } });
+  if (iou.toUserId !== session.id) {
+    throw new ApiError(403, "Only the person owed can forgive this.");
+  }
+
+  await db.iOU.update({ where: { id: iouId }, data: { forgivenAt: new Date() } });
+  await recalculateSettlements(iou.groupId);
+  revalidatePath(`/groups/${iou.groupId}/ious`);
+  revalidatePath(`/groups/${iou.groupId}/settle`);
 }

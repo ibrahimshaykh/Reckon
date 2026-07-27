@@ -22,7 +22,9 @@ export async function recalculateSettlements(groupId: string) {
       where: { groupId },
       include: { items: { include: { participants: true } } },
     }),
-    db.iOU.findMany({ where: { groupId } }),
+    // Forgiven IOUs are excluded — a forgiven debt shouldn't still count
+    // against the person who owed it.
+    db.iOU.findMany({ where: { groupId, forgivenAt: null } }),
   ]);
 
   const flattened = expenses.flatMap((expense) =>

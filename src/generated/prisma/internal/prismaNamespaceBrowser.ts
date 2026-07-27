@@ -208,6 +208,7 @@ export const IOUScalarFieldEnum = {
   toUserId: 'toUserId',
   amount: 'amount',
   note: 'note',
+  forgivenAt: 'forgivenAt',
   createdAt: 'createdAt'
 } as const
 
