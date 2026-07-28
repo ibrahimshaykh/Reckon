@@ -4,6 +4,12 @@ import { useEffect, useRef, useState } from "react";
 
 type Pt = { x: number; y: number };
 
+// Where the graphite point sits within the 32×32 pencil drawing. The pencil is
+// drawn nib-first at the top-left and body trailing down-right, matching how a
+// normal arrow cursor works — the hotspot is the corner you point with.
+const TIP_X = 2.5;
+const TIP_Y = 2.5;
+
 // A pencil that follows the pointer, trailing graphite that fades. The trail
 // is drawn to a canvas rather than as DOM nodes — one element and one paint
 // per frame, instead of dozens of divs being created and garbage collected
@@ -55,9 +61,14 @@ export function PencilCursor() {
       const { x, y } = point.current;
 
       if (nib.current) {
-        nib.current.style.transform = `translate3d(${x}px, ${y}px, 0) rotate(${
-          pressed.current ? -18 : -8
-        }deg) scale(${pressed.current ? 0.86 : 1})`;
+        // TIP_X/TIP_Y are where the graphite point sits inside the SVG. Sub-
+        // tracting them puts that point exactly on the pointer coordinate, so
+        // what you click is what the pencil appears to be touching. Rotation
+        // pivots about the same point (see transform-origin below), otherwise
+        // tilting on press would swing the nib away from the target.
+        nib.current.style.transform = `translate3d(${x - TIP_X}px, ${y - TIP_Y}px, 0) rotate(${
+          pressed.current ? 9 : 0
+        }deg) scale(${pressed.current ? 0.92 : 1})`;
       }
 
       // Only extend the tail once the pointer has actually travelled, so a
@@ -121,28 +132,47 @@ export function PencilCursor() {
         ref={nib}
         aria-hidden
         className="pointer-events-none fixed left-0 top-0 z-[9999] will-change-transform"
+        // Tilting on press must rotate about the nib, not the middle of the
+        // drawing, or the point would swing off whatever it's pointing at.
+        style={{ transformOrigin: `${TIP_X}px ${TIP_Y}px` }}
       >
-        <svg width="30" height="30" viewBox="0 0 30 30" fill="none">
-          {/* shaft */}
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+          {/* Graphite point — the tip of this triangle is the hotspot. */}
           <path
-            d="M6 24 L20 5 L25 8.5 L11 27.5 Z"
-            className="fill-warm-surface stroke-foreground"
-            strokeWidth="1.6"
+            d="M2.5 2.5 L10 5.5 L5.5 10 Z"
+            className="fill-foreground stroke-foreground"
+            strokeWidth="1.2"
             strokeLinejoin="round"
           />
-          {/* the sharpened end, pointing at the hotspot in the corner */}
+          {/* Sharpened wood collar, just behind the graphite. */}
           <path
-            d="M6 24 L11 27.5 L3.5 29.5 Z"
-            className="fill-foreground stroke-foreground"
+            d="M10 5.5 L13 8.5 L8.5 13 L5.5 10 Z"
+            className="fill-warm-surface stroke-foreground"
             strokeWidth="1.4"
             strokeLinejoin="round"
           />
-          {/* ferrule */}
+          {/* Barrel, running away from the hand's point of contact. */}
           <path
-            d="M18.5 7 L23.5 10.5"
+            d="M13 8.5 L24 19.5 L19.5 24 L8.5 13 Z"
+            style={{ fill: "var(--pencil-sunshine)" }}
+            className="stroke-foreground"
+            strokeWidth="1.5"
+            strokeLinejoin="round"
+          />
+          {/* Ferrule. */}
+          <path
+            d="M24 19.5 L26.5 22 L22 26.5 L19.5 24 Z"
+            className="fill-muted stroke-foreground"
+            strokeWidth="1.4"
+            strokeLinejoin="round"
+          />
+          {/* Eraser at the far end. */}
+          <path
+            d="M26.5 22 L29.5 25 L25 29.5 L22 26.5 Z"
+            style={{ fill: "var(--pencil-cherry)" }}
             className="stroke-foreground"
             strokeWidth="1.4"
-            strokeLinecap="round"
+            strokeLinejoin="round"
           />
         </svg>
       </div>
