@@ -158,12 +158,12 @@
     "fairestPickMapSuffix": " — opción más justa"
   },
   "ask": {
-    "title": "Pregunta sobre este grupo",
-    "helpTip": "Las respuestas se basan únicamente en los datos reales de este grupo — lo dirá claramente si algo no está cubierto. Las preguntas de seguimiento recuerdan lo que acabas de preguntar.",
+    "title": "Pregúntale a Reckon",
+    "helpTip": "Pregunta por los gastos, tareas, planes y deudas de este grupo — las respuestas salen de sus datos reales. También puedes preguntar cómo funciona Reckon, o cualquier otra cosa.",
     "suggested1": "¿Cuánto hemos gastado este mes?",
     "suggested2": "¿Quién pagó más por las compras?",
     "suggested3": "¿Qué tareas hay que hacer esta semana?",
-    "suggested4": "¿Hay algún conflicto alimentario en las propuestas abiertas?",
+    "suggested4": "¿Cómo se mantiene justo el turno de tareas?",
     "tryAsking": "Prueba a preguntar:",
     "basedOn": "Basado en {expenses} gastos, {chores} tareas, {proposals} propuestas, {ious} deudas",
     "placeholderFirst": "Pregunta sobre este grupo…",

@@ -158,12 +158,12 @@
     "fairestPickMapSuffix": " — fairest pick"
   },
   "ask": {
-    "title": "Ask about this group",
-    "helpTip": "Answers are grounded only in this group's real data — it'll say so if something isn't covered. Follow-up questions remember what you just asked.",
+    "title": "Ask Reckon",
+    "helpTip": "Ask about this group's expenses, chores, plans and IOUs — answers come straight from its real data. You can also ask how Reckon works, or anything else.",
     "suggested1": "How much have we spent this month?",
     "suggested2": "Who paid the most for groceries?",
     "suggested3": "What chores are due this week?",
-    "suggested4": "Any dietary conflicts on open proposals?",
+    "suggested4": "How does the chore rotation stay fair?",
     "tryAsking": "Try asking:",
     "basedOn": "Based on {expenses} expenses, {chores} chores, {proposals} proposals, {ious} IOUs",
     "placeholderFirst": "Ask about this group…",
