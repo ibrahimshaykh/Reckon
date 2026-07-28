@@ -1,5 +1,11 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Space_Grotesk } from "next/font/google";
+import {
+  Geist,
+  Geist_Mono,
+  Space_Grotesk,
+  Patrick_Hand,
+  Architects_Daughter,
+} from "next/font/google";
 import Link from "next/link";
 import {
   ClerkProvider,
@@ -15,6 +21,7 @@ import { SmoothScroll } from "@/components/motion/smooth-scroll";
 import { AppNav } from "@/components/app-nav";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { SkinController } from "@/components/skin-controller";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -31,6 +38,21 @@ const spaceGrotesk = Space_Grotesk({
   variable: "--font-space-grotesk",
   subsets: ["latin"],
   weight: ["500", "600", "700"],
+});
+
+// The app's sketch skin runs on these two: Patrick Hand for body copy, since
+// it stays legible at small sizes, and Architects Daughter for headings,
+// which is scratchier and reads like a marker on paper.
+const patrickHand = Patrick_Hand({
+  variable: "--font-hand",
+  subsets: ["latin"],
+  weight: ["400"],
+});
+
+const architectsDaughter = Architects_Daughter({
+  variable: "--font-hand-display",
+  subsets: ["latin"],
+  weight: ["400"],
 });
 
 export const metadata: Metadata = {
@@ -55,11 +77,12 @@ export default async function RootLayout({
       <html
         lang={locale}
         dir={isRtl(locale) ? "rtl" : "ltr"}
-        className={`${geistSans.variable} ${geistMono.variable} ${spaceGrotesk.variable} h-full antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${spaceGrotesk.variable} ${patrickHand.variable} ${architectsDaughter.variable} h-full antialiased`}
         suppressHydrationWarning
       >
         <body className="min-h-full flex flex-col">
           <ThemeProvider>
+          <SkinController />
           <SmoothScroll />
           <header className="sticky top-0 z-50 flex items-center gap-6 border-b border-rule bg-background/75 px-6 py-3 backdrop-blur-xl">
             <Link

@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { SketchHeading } from "@/components/sketch/sketch-ui";
 
 // Editorial page header used across every screen: a small mono eyebrow that
 // names the context the page sits in, a display-face title, and an optional
@@ -24,7 +25,12 @@ export function PageHeader({
             {eyebrow}
           </p>
         )}
-        <h1 className="text-4xl font-semibold md:text-5xl">{title}</h1>
+        <h1 className="text-4xl font-semibold md:text-5xl">
+          <span className="hidden sketch:inline">
+            <SketchHeading>{title}</SketchHeading>
+          </span>
+          <span className="sketch:hidden">{title}</span>
+        </h1>
         {description && (
           <p className="max-w-prose text-[0.9375rem] leading-relaxed text-muted-foreground">
             {description}

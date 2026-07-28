@@ -4,12 +4,18 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* Lets any component opt a style into the hand-drawn skin without needing to
+   know which route it is on — e.g. `sketch:rotate-1`. */
+@custom-variant sketch (&:is(:root[data-skin="sketch"] *));
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --font-heading: var(--font-space-grotesk);
+  --font-hand: var(--font-hand);
+  --font-hand-display: var(--font-hand-display);
   --color-ledger: var(--ledger);
   --color-ledger-foreground: var(--ledger-foreground);
   --color-rule: var(--rule);
@@ -236,5 +242,237 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+}
+/* ============================================================
+   SKETCH SKIN — "fancy pencil" / stickman-flash-game theme.
+
+   Scoped to [data-skin="sketch"], which SkinController puts on <html>
+   for every route except the landing page, so the marketing page keeps
+   its own identity while the app becomes a notebook doodle.
+   ============================================================ */
+
+:root[data-skin="sketch"] {
+  /* Ink on paper: charcoal, pencil lead, and a warm off-white sheet.
+     Colour is spent only on the marker accents below. */
+  --background: oklch(0.973 0.011 90);
+  --foreground: oklch(0.22 0.012 265);
+  --card: oklch(0.995 0.006 90);
+  --card-foreground: oklch(0.22 0.012 265);
+  --popover: oklch(0.995 0.006 90);
+  --popover-foreground: oklch(0.22 0.012 265);
+
+  /* Marker red — the one colour that says "press this". */
+  --primary: oklch(0.55 0.22 27);
+  --primary-foreground: oklch(0.99 0.01 90);
+
+  --secondary: oklch(0.93 0.012 90);
+  --secondary-foreground: oklch(0.28 0.012 265);
+  --muted: oklch(0.93 0.012 90);
+  --muted-foreground: oklch(0.48 0.014 265);
+  --accent: oklch(0.9 0.05 230);
+  --accent-foreground: oklch(0.3 0.12 250);
+  --destructive: oklch(0.55 0.22 27);
+
+  --border: oklch(0.28 0.012 265);
+  --input: oklch(0.28 0.012 265);
+  --ring: oklch(0.55 0.22 27);
+
+  --ledger: oklch(0.955 0.016 90);
+  --ledger-foreground: oklch(0.38 0.012 265);
+  --rule: oklch(0.45 0.012 265 / 45%);
+  --positive: oklch(0.5 0.15 150);
+  --negative: oklch(0.55 0.22 27);
+  --warm: oklch(0.58 0.16 55);
+  --warm-surface: oklch(0.94 0.05 85);
+
+  /* Biro blue, pencil green, highlighter — used for the per-feature hues
+     so each area still reads as a different pen from the pot. */
+  --feature-money: oklch(0.45 0.18 260);
+  --feature-chores: oklch(0.55 0.15 60);
+  --feature-availability: oklch(0.47 0.15 230);
+  --feature-ious: oklch(0.48 0.13 155);
+  --feature-proposals: oklch(0.5 0.18 350);
+  --feature-ask: oklch(0.48 0.12 200);
+  --feature-recap: oklch(0.55 0.17 35);
+}
+
+:root[data-skin="sketch"].dark {
+  /* Chalk on a blackboard rather than a lit page. */
+  --background: oklch(0.21 0.014 265);
+  --foreground: oklch(0.94 0.012 90);
+  --card: oklch(0.25 0.016 265);
+  --card-foreground: oklch(0.94 0.012 90);
+  --popover: oklch(0.25 0.016 265);
+  --popover-foreground: oklch(0.94 0.012 90);
+
+  --primary: oklch(0.68 0.19 30);
+  --primary-foreground: oklch(0.17 0.02 30);
+  --secondary: oklch(0.3 0.016 265);
+  --secondary-foreground: oklch(0.94 0.012 90);
+  --muted: oklch(0.3 0.016 265);
+  --muted-foreground: oklch(0.75 0.014 265);
+  --accent: oklch(0.34 0.06 235);
+  --accent-foreground: oklch(0.88 0.09 235);
+
+  --border: oklch(0.93 0.012 90);
+  --input: oklch(0.93 0.012 90);
+  --ring: oklch(0.68 0.19 30);
+
+  --ledger: oklch(0.27 0.018 265);
+  --ledger-foreground: oklch(0.8 0.014 265);
+  --rule: oklch(0.95 0.01 90 / 40%);
+  --positive: oklch(0.72 0.15 155);
+  --negative: oklch(0.68 0.19 30);
+  --warm: oklch(0.75 0.15 60);
+  --warm-surface: oklch(0.3 0.05 60);
+
+  --feature-money: oklch(0.72 0.15 262);
+  --feature-chores: oklch(0.78 0.14 65);
+  --feature-availability: oklch(0.72 0.13 232);
+  --feature-ious: oklch(0.74 0.13 155);
+  --feature-proposals: oklch(0.74 0.15 350);
+  --feature-ask: oklch(0.76 0.11 200);
+  --feature-recap: oklch(0.76 0.15 38);
+}
+
+/* Ruled notebook paper: faint blue horizontal lines plus a red margin
+   rule, with a graph grid underneath. Fixed, so the page slides over the
+   sheet rather than dragging it along. */
+:root[data-skin="sketch"] body::before {
+  background-image:
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0 27px,
+      color-mix(in oklab, var(--feature-availability) 22%, transparent) 27px 28px
+    ),
+    repeating-linear-gradient(
+      to right,
+      transparent 0 27px,
+      color-mix(in oklab, var(--foreground) 5%, transparent) 27px 28px
+    );
+  opacity: 0.55;
+}
+
+@layer base {
+  :root[data-skin="sketch"] body {
+    font-family: var(--font-hand), ui-rounded, system-ui, sans-serif;
+    font-size: 1.0625rem;
+    letter-spacing: 0.01em;
+  }
+
+  :root[data-skin="sketch"] h1,
+  :root[data-skin="sketch"] h2,
+  :root[data-skin="sketch"] h3 {
+    font-family: var(--font-hand-display), var(--font-hand), sans-serif;
+    letter-spacing: 0.005em;
+  }
+
+  /* Mono is used for eyebrows and figures; keeping a real mono here means
+     numbers still line up in the ledger columns even in the sketch skin. */
+  :root[data-skin="sketch"] .font-mono,
+  :root[data-skin="sketch"] .tabular {
+    font-family: var(--font-geist-mono), ui-monospace, monospace;
+  }
+}
+
+/* Defined as @utility, not @layer components, so Tailwind can generate
+   variants for them — `sketch:sketch-box` only works if the base is a real
+   utility. The asymmetric radii are what stop these reading as CSS boxes.
+   Two variants alternate so adjacent panels aren't the same shape, the way
+   two hand-drawn boxes never are. */
+@utility sketch-box {
+  border: 2px solid var(--border);
+  border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+  box-shadow: 4px 4px 0 0 var(--border);
+}
+
+@utility sketch-box-alt {
+  border: 2px solid var(--border);
+  border-radius: 15px 225px 15px 255px / 255px 15px 225px 15px;
+  box-shadow: 4px 4px 0 0 var(--border);
+}
+
+/* Pill-ish scribble, for buttons and chips. */
+@utility sketch-pill {
+  border: 2px solid var(--border);
+  border-radius: 24px 44px 20px 40px / 40px 20px 44px 24px;
+  box-shadow: 3px 3px 0 0 var(--border);
+}
+
+/* Pressing something drawn in pencil should look like pressing paper: it
+   slides into its own shadow rather than glowing. */
+@utility sketch-press {
+  transition:
+    transform 0.08s ease-out,
+    box-shadow 0.08s ease-out;
+
+  &:hover {
+    transform: translate(1px, 1px);
+    box-shadow: 2px 2px 0 0 var(--border);
+  }
+  &:active {
+    transform: translate(3px, 3px);
+    box-shadow: 0 0 0 0 var(--border);
+  }
+}
+
+@layer components {
+  /* Underline that looks drawn rather than ruled. */
+  .sketch-underline {
+    background-image: linear-gradient(
+      to right,
+      transparent 2%,
+      currentColor 8%,
+      currentColor 92%,
+      transparent 98%
+    );
+    background-repeat: no-repeat;
+    background-position: 0 100%;
+    background-size: 100% 2px;
+    padding-bottom: 2px;
+  }
+}
+
+/* In the sketch skin every bordered surface picks up the wobble, so the
+   existing components inherit the look without being rewritten one by one. */
+:root[data-skin="sketch"] .rounded-lg,
+:root[data-skin="sketch"] .rounded-xl,
+:root[data-skin="sketch"] .rounded-md {
+  border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+}
+
+:root[data-skin="sketch"] .rounded-full {
+  border-radius: 9999px;
+}
+
+/* Inputs get the notebook treatment: a drawn baseline, no filled box. */
+:root[data-skin="sketch"] input:not([type="checkbox"]):not([type="radio"]),
+:root[data-skin="sketch"] select,
+:root[data-skin="sketch"] textarea {
+  border: 2px solid var(--border);
+  border-radius: 18px 40px 16px 36px / 36px 16px 40px 18px;
+  background: color-mix(in oklab, var(--card) 88%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sketch-press:hover,
+  .sketch-press:active {
+    transform: none;
+  }
+}
+
+@theme inline {
+  --animate-marquee: marquee var(--duration, 32s) linear infinite;
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  /* One full copy plus the gap that follows it — that offset is what makes
+     the second rendered copy line up exactly where the first began. */
+  to {
+    transform: translateX(calc(-100% - var(--gap, 2.5rem)));
   }
 }

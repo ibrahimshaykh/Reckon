@@ -12,6 +12,7 @@ import { CurrencyPicker } from "@/components/groups/currency-picker";
 import { Button } from "@/components/ui/button";
 import { PageHeader, SectionHeading } from "@/components/page-header";
 import { Reveal } from "@/components/motion/reveal";
+import { StickmanParade } from "@/components/sketch/sketch-ui";
 
 export default async function GroupPage({
   params,
@@ -77,7 +78,8 @@ export default async function GroupPage({
         </ul>
         <AddMemberForm groupId={group.id} dict={dict} />
       </section>
-      <nav className="grid grid-cols-2 gap-px overflow-hidden rounded-lg border border-rule bg-rule sm:grid-cols-3">
+      <StickmanParade />
+      <nav className="grid grid-cols-2 gap-px overflow-hidden rounded-lg border border-rule bg-rule sm:grid-cols-3 sketch:gap-3 sketch:border-0 sketch:bg-transparent">
         {[
           { href: "chores", label: dict.groupHub.chores, tone: "var(--feature-chores)" },
           { href: "availability", label: dict.groupHub.availability, tone: "var(--feature-availability)" },
@@ -90,7 +92,7 @@ export default async function GroupPage({
             key={item.href}
             href={`/groups/${group.id}/${item.href}`}
             style={{ "--tone": item.tone } as React.CSSProperties}
-            className="group/nav relative flex items-center gap-3 bg-card px-4 py-3.5 text-sm font-medium transition-colors before:absolute before:inset-y-0 before:start-0 before:w-[3px] before:bg-[var(--tone)] before:opacity-60 before:transition-opacity hover:bg-[color-mix(in_oklab,var(--tone)_12%,var(--card))] hover:before:opacity-100"
+            className="group/nav relative flex items-center gap-3 bg-card px-4 py-3.5 text-sm font-medium transition-colors before:absolute before:inset-y-0 before:start-0 before:w-[3px] before:bg-[var(--tone)] before:opacity-60 before:transition-opacity hover:bg-[color-mix(in_oklab,var(--tone)_12%,var(--card))] hover:before:opacity-100 sketch:sketch-box sketch:sketch-press sketch:border-[var(--tone)] sketch:before:hidden"
           >
             <span
               aria-hidden
