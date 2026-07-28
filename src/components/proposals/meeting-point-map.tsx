@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import L from "leaflet";
 import { useTheme } from "next-themes";
-import { Expand, Locate, Minimize2, Search } from "lucide-react";
+import { Expand, Hand, Locate, Minimize2, Search } from "lucide-react";
 import type { Dictionary } from "@/lib/dictionary";
 import { interpolate } from "@/lib/i18n";
 import "leaflet/dist/leaflet.css";
@@ -160,28 +160,80 @@ function WheelControl({ zoomMode }: { zoomMode: boolean }) {
   return null;
 }
 
+// Collapsed to a single chip by default so it never covers the map, and
+// opens on hover or focus. Each row names the gesture and what it does —
+// drag leads because it's the only one that moves in any direction.
+function ControlsHint({ zoomMode }: { zoomMode: boolean }) {
+  const [open, setOpen] = useState(false);
+
+  const rows = zoomMode
+    ? ([
+        ["Scroll", "Zoom in and out"],
+        ["Drag", "Move any direction"],
+      ] as const)
+    : ([
+        ["Drag", "Move any direction"],
+        ["Scroll", "Move up and down"],
+        ["Shift + scroll", "Move side to side"],
+        ["⌘ / Ctrl + scroll", "Zoom in and out"],
+      ] as const);
+
+  return (
+    <div className="absolute left-3 top-3 z-[400]">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        aria-expanded={open}
+        className="flex items-center gap-1.5 rounded-lg border border-rule bg-card/85 px-2.5 py-1.5 font-mono text-[0.625rem] uppercase tracking-[0.14em] text-muted-foreground shadow-lg backdrop-blur transition-colors hover:text-foreground"
+      >
+        <Hand className="size-3" />
+        How to move
+      </button>
+
+      {open && (
+        <dl className="mt-1.5 w-max rounded-lg border border-rule bg-card/95 p-2.5 shadow-xl backdrop-blur">
+          {rows.map(([gesture, does]) => (
+            <div key={gesture} className="flex items-baseline gap-2.5 py-0.5">
+              <dt className="min-w-[8.5rem] font-mono text-[0.625rem] uppercase tracking-[0.12em] text-primary">
+                {gesture}
+              </dt>
+              <dd className="text-xs text-foreground">{does}</dd>
+            </div>
+          ))}
+        </dl>
+      )}
+    </div>
+  );
+}
+
+// Rendered as a sibling of the map, never inside it: controls placed within
+// the Leaflet container have their mousedown swallowed by Leaflet's drag
+// handler, and the usual disableClickPropagation cure stops the event
+// reaching React's root delegation too, so the buttons fire only by luck.
 function MapActions({
+  map,
   points,
   expanded,
   onToggleExpand,
   zoomMode,
   onToggleZoomMode,
 }: {
+  map: L.Map | null;
   points: [number, number][];
   expanded: boolean;
   onToggleExpand: () => void;
   zoomMode: boolean;
   onToggleZoomMode: () => void;
 }) {
-  const map = useMap();
-
   useEffect(() => {
     // The container changed size — Leaflet needs telling, or tiles grey out.
-    const id = setTimeout(() => map.invalidateSize(), 260);
+    if (!map) return;
+    const id = setTimeout(() => map.invalidateSize(), 320);
     return () => clearTimeout(id);
   }, [map, expanded]);
 
   const fit = () => {
+    if (!map) return;
     if (points.length === 1) map.setView(points[0], 13);
     else map.fitBounds(L.latLngBounds(points), { padding: [42, 42], maxZoom: 14 });
   };
@@ -236,6 +288,7 @@ export function MeetingPointMap({
   const { resolvedTheme } = useTheme();
   const [expanded, setExpanded] = useState(false);
   const [zoomMode, setZoomMode] = useState(false);
+  const [mapRef, setMapRef] = useState<L.Map | null>(null);
 
   const points = useMemo(
     () => [
@@ -257,17 +310,20 @@ export function MeetingPointMap({
   return (
     <figure className="flex flex-col gap-2">
       <div className="relative overflow-hidden rounded-xl border border-rule [&_.leaflet-grab]:cursor-grab [&_.leaflet-dragging_.leaflet-grab]:cursor-grabbing">
+        {/* The height lives on this wrapper, not on MapContainer: react-leaflet
+            freezes MapContainer's props at mount, so a style change there is
+            silently ignored and the expand button appears to do nothing. */}
+        <div
+          style={{ height: expanded ? 520 : 300 }}
+          className="w-full transition-[height] duration-300 ease-[cubic-bezier(.22,1,.36,1)]"
+        >
         <MapContainer
           center={points[0]}
           zoom={11}
           zoomControl={false}
           scrollWheelZoom={false}
-          style={{
-            height: expanded ? 520 : 300,
-            width: "100%",
-            transition: "height .25s cubic-bezier(.22,1,.36,1)",
-            background: "transparent",
-          }}
+          ref={setMapRef}
+          style={{ height: "100%", width: "100%", background: "transparent" }}
         >
           <TileLayer
             key={dark ? "dark" : "light"}
@@ -276,13 +332,6 @@ export function MeetingPointMap({
           />
           <FitBounds points={points} />
           <WheelControl zoomMode={zoomMode} />
-          <MapActions
-            points={points}
-            expanded={expanded}
-            onToggleExpand={() => setExpanded((v) => !v)}
-            zoomMode={zoomMode}
-            onToggleZoomMode={() => setZoomMode((v) => !v)}
-          />
 
           {homes.map((h) => (
             <Marker
@@ -335,12 +384,17 @@ export function MeetingPointMap({
             </Marker>
           ))}
         </MapContainer>
+        </div>
 
-        <p className="pointer-events-none absolute left-3 top-3 z-[400] rounded-lg border border-rule bg-card/85 px-2.5 py-1.5 font-mono text-[0.625rem] uppercase tracking-[0.14em] text-muted-foreground shadow-lg backdrop-blur">
-          {zoomMode
-            ? "Scroll to zoom"
-            : "Scroll to move · shift for sideways · ⌘/ctrl to zoom"}
-        </p>
+        <MapActions
+          map={mapRef}
+          points={points}
+          expanded={expanded}
+          onToggleExpand={() => setExpanded((v) => !v)}
+          zoomMode={zoomMode}
+          onToggleZoomMode={() => setZoomMode((v) => !v)}
+        />
+        <ControlsHint zoomMode={zoomMode} />
       </div>
 
       <figcaption className="flex flex-wrap items-center gap-x-4 gap-y-1 font-mono text-[0.625rem] uppercase tracking-[0.14em] text-muted-foreground">
