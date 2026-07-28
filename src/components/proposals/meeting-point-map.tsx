@@ -71,11 +71,25 @@ function WheelControl({ zoomMode }: { zoomMode: boolean }) {
   useEffect(() => {
     const el = map.getContainer();
 
+    // Leaflet rounds the offset it's given, so a diagonal swipe's smaller
+    // axis (often well under 1px per event) was being floored to zero and
+    // the gesture collapsed onto whichever axis dominated. Carrying the
+    // fractional remainder between events keeps both axes alive, so any
+    // angle pans at that angle instead of snapping to up/down/left/right.
+    let carryX = 0;
+    let carryY = 0;
+
+    // Deltas arrive in different units depending on the device; normalise
+    // line- and page-based wheels to something comparable to pixels.
+    const toPixels = (value: number, mode: number) =>
+      mode === 1 ? value * 16 : mode === 2 ? value * 400 : value;
+
     const onWheel = (e: WheelEvent) => {
       e.preventDefault();
       e.stopPropagation();
 
       if (zoomMode || e.ctrlKey || e.metaKey) {
+        carryX = carryY = 0;
         const point = map.mouseEventToContainerPoint(e);
         const direction = e.deltaY < 0 ? 1 : -1;
         map.setZoomAround(
@@ -86,14 +100,26 @@ function WheelControl({ zoomMode }: { zoomMode: boolean }) {
         return;
       }
 
+      let dx = toPixels(e.deltaX, e.deltaMode);
+      let dy = toPixels(e.deltaY, e.deltaMode);
+
       // Shift redirects a wheel's single vertical axis onto the horizontal
       // one, so a plain mouse can pan sideways as well.
-      if (e.shiftKey) {
-        map.panBy([e.deltaY || e.deltaX, 0], { animate: false });
-        return;
+      if (e.shiftKey && !e.deltaX) {
+        dx = dy;
+        dy = 0;
       }
 
-      map.panBy([e.deltaX, e.deltaY], { animate: false });
+      carryX += dx;
+      carryY += dy;
+
+      const stepX = Math.trunc(carryX);
+      const stepY = Math.trunc(carryY);
+      if (!stepX && !stepY) return;
+
+      carryX -= stepX;
+      carryY -= stepY;
+      map.panBy([stepX, stepY], { animate: false });
     };
 
     // Non-passive so preventDefault actually holds, and capture so the
@@ -103,83 +129,6 @@ function WheelControl({ zoomMode }: { zoomMode: boolean }) {
   }, [map, zoomMode]);
 
   return null;
-}
-
-// A mouse wheel only reports vertical movement, so a wheel alone can never
-// express a diagonal. This puck does: drag it any direction and the map
-// glides that way, faster the further you push.
-function PanPuck() {
-  const map = useMap();
-  const [active, setActive] = useState(false);
-  const [knob, setKnob] = useState({ x: 0, y: 0 });
-  const vector = useRef({ x: 0, y: 0 });
-  const frame = useRef<number | null>(null);
-
-  const RADIUS = 26;
-
-  useEffect(() => {
-    if (!active) return;
-
-    const step = () => {
-      const { x, y } = vector.current;
-      if (x || y) map.panBy([x * 0.35, y * 0.35], { animate: false });
-      frame.current = requestAnimationFrame(step);
-    };
-    frame.current = requestAnimationFrame(step);
-
-    return () => {
-      if (frame.current) cancelAnimationFrame(frame.current);
-    };
-  }, [active, map]);
-
-  const track = (e: React.PointerEvent<HTMLDivElement>) => {
-    const box = e.currentTarget.getBoundingClientRect();
-    let dx = e.clientX - (box.left + box.width / 2);
-    let dy = e.clientY - (box.top + box.height / 2);
-
-    const dist = Math.hypot(dx, dy);
-    if (dist > RADIUS) {
-      dx = (dx / dist) * RADIUS;
-      dy = (dy / dist) * RADIUS;
-    }
-    setKnob({ x: dx, y: dy });
-    vector.current = { x: dx, y: dy };
-  };
-
-  const release = (e: React.PointerEvent<HTMLDivElement>) => {
-    e.currentTarget.releasePointerCapture?.(e.pointerId);
-    setActive(false);
-    setKnob({ x: 0, y: 0 });
-    vector.current = { x: 0, y: 0 };
-  };
-
-  return (
-    <div
-      role="application"
-      aria-label="Drag to pan the map in any direction"
-      onPointerDown={(e) => {
-        e.currentTarget.setPointerCapture(e.pointerId);
-        setActive(true);
-        track(e);
-      }}
-      onPointerMove={(e) => active && track(e)}
-      onPointerUp={release}
-      onPointerCancel={release}
-      className="absolute bottom-3 left-3 z-[400] grid size-[72px] cursor-grab touch-none place-items-center rounded-full border border-rule bg-card/80 shadow-lg backdrop-blur active:cursor-grabbing"
-    >
-      <span
-        aria-hidden
-        className="pointer-events-none absolute inset-2 rounded-full border border-dashed border-rule"
-      />
-      <span
-        aria-hidden
-        style={{ transform: `translate(${knob.x}px, ${knob.y}px)` }}
-        className={`pointer-events-none size-6 rounded-full bg-primary shadow-md ${
-          active ? "" : "transition-transform duration-200"
-        }`}
-      />
-    </div>
-  );
 }
 
 function MapActions({
@@ -298,7 +247,6 @@ export function MeetingPointMap({
           />
           <FitBounds points={points} />
           <WheelControl zoomMode={zoomMode} />
-          <PanPuck />
           <MapActions
             points={points}
             expanded={expanded}
