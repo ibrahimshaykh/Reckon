@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { PencilCursor } from "@/components/sketch/pencil-cursor";
 import { DoodleBackdrop } from "@/components/sketch/doodle-backdrop";
+import { LivingBackground } from "@/components/sketch/living-background";
+import { PageWrapper } from "@/components/sketch/page-wrapper";
 
 // The landing page keeps the polished violet identity that sells the product;
 // everything behind the sign-in gets the hand-drawn skin. Setting the flag on
@@ -25,7 +27,11 @@ export function SkinController() {
 
   return (
     <>
+      {/* Paper, rules and ambient scribbles — the sheet itself. */}
       <DoodleBackdrop />
+      {/* The HUD drawn on that sheet: where you've been, what you've kept. */}
+      <PageWrapper />
+      <LivingBackground />
       <PencilCursor />
     </>
   );

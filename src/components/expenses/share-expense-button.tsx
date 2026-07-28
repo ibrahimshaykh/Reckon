@@ -5,14 +5,18 @@ import { createGuestLink } from "@/lib/actions/guest";
 import type { Dictionary } from "@/lib/dictionary";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useSketchpad } from "@/lib/stores/sketchpad";
 
 export function ShareExpenseButton({
   expenseId,
+  expenseTitle,
   dict,
 }: {
   expenseId: string;
+  expenseTitle?: string;
   dict: Dictionary;
 }) {
+  const pin = useSketchpad((s) => s.pin);
   const [guestName, setGuestName] = useState("");
   const [link, setLink] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
@@ -24,6 +28,13 @@ export function ShareExpenseButton({
     try {
       const path = await createGuestLink({ expenseId, guestName });
       setLink(`${window.location.origin}${path}`);
+      // Throw a record of it into the margin — sharing is exactly the kind of
+      // thing you want to still see evidence of three screens later.
+      pin({
+        kind: "expense",
+        label: expenseTitle ?? dict.expenses.shareButton,
+        detail: `shared with ${guestName.trim()}`,
+      });
     } finally {
       setPending(false);
     }

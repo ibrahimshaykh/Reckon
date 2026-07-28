@@ -154,7 +154,7 @@ export default async function GroupPage({
                   <span className="tabular ml-auto shrink-0 text-sm font-semibold">
                     {formatMoney(e.totalAmount * 100, group.currency)}
                   </span>
-                  <ShareExpenseButton expenseId={e.id} dict={dict} />
+                  <ShareExpenseButton expenseId={e.id} expenseTitle={e.title} dict={dict} />
                   {e.paidById === session.id && (
                     <DeleteExpenseButton expenseId={e.id} title={e.title} dict={dict} />
                   )}

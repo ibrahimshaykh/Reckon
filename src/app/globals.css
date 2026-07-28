@@ -598,3 +598,52 @@
     cursor: auto;
   }
 }
+
+/* ============================================================
+   THE PENCIL TIN
+   A small, deliberately playful set. Every background doodle picks one of
+   these rather than defaulting to black, so the margin reads as somebody's
+   colouring pencils rather than printer ink.
+   ============================================================ */
+:root[data-skin="sketch"] {
+  --pencil-indigo: oklch(0.45 0.17 265);
+  --pencil-cherry: oklch(0.55 0.21 25);
+  --pencil-sunshine: oklch(0.72 0.16 85);
+  --pencil-forest: oklch(0.48 0.14 150);
+  --pencil-graphite: oklch(0.42 0.012 265);
+}
+
+:root[data-skin="sketch"].dark {
+  /* Lifted and desaturated a touch so coloured pencil still reads on slate
+     without glowing like neon. */
+  --pencil-indigo: oklch(0.72 0.14 265);
+  --pencil-cherry: oklch(0.72 0.16 25);
+  --pencil-sunshine: oklch(0.82 0.14 85);
+  --pencil-forest: oklch(0.72 0.12 150);
+  --pencil-graphite: oklch(0.75 0.012 265);
+}
+
+/* The page-turn: a sheet sweeps across and lifts away, revealing the next
+   section underneath. Skewing it slightly makes it read as paper being
+   dragged rather than a rectangle sliding. */
+@keyframes page-turn {
+  0% {
+    transform: translateX(-110%) skewX(-8deg);
+    opacity: 1;
+  }
+  55% {
+    transform: translateX(0%) skewX(-4deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(115%) skewX(6deg);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-turn-sheet {
+    animation: none !important;
+    display: none !important;
+  }
+}
