@@ -10,6 +10,8 @@ import { CopyRow } from "@/components/copy-row";
 import { buildPayLink, type PayProvider } from "@/lib/pay-links";
 import type { Dictionary } from "@/lib/dictionary";
 import { interpolate } from "@/lib/i18n";
+import { Reveal } from "@/components/motion/reveal";
+import { AnimatePresence, motion } from "motion/react";
 
 type Settlement = {
   id: string;
@@ -41,19 +43,24 @@ export function SettlementList({
   dict: Dictionary;
 }) {
   if (settlements.length === 0) {
-    return <p className="text-sm text-muted-foreground">{dict.settle.settledUp}</p>;
+    return (
+      <div className="ledger-panel rounded-r-lg px-5 py-8 text-center">
+        <p className="text-sm text-ledger-foreground">{dict.settle.settledUp}</p>
+      </div>
+    );
   }
 
   return (
     <ul className="flex flex-col gap-3">
-      {settlements.map((s) => (
-        <SettlementRow
-          key={s.id}
-          settlement={s}
-          currentUserId={currentUserId}
-          currency={currency}
-          dict={dict}
-        />
+      {settlements.map((s, i) => (
+        <Reveal key={s.id} delay={i * 0.06}>
+          <SettlementRow
+            settlement={s}
+            currentUserId={currentUserId}
+            currency={currency}
+            dict={dict}
+          />
+        </Reveal>
       ))}
     </ul>
   );
@@ -119,6 +126,11 @@ function SettlementRow({
     window.location.href = result.url;
   }
 
+  const canAct =
+    (isPayer && settlement.status === "PENDING") ||
+    (isPayee && settlement.status === "PAY_MARKED") ||
+    (settlement.status === "PAY_MARKED" && !isPayee);
+
   const hasAnyPaymentMethod =
     settlement.toVenmoHandle ||
     settlement.toPaypalHandle ||
@@ -129,32 +141,54 @@ function SettlementRow({
     settlement.toBankDetails;
 
   return (
-    <li className="rounded-lg border p-3">
-      <div className="flex items-center justify-between">
-        <p className="text-sm">
-          {interpolate(dict.settle.owesLine, {
-            fromName: settlement.fromName,
-            toName: settlement.toName,
-            amount,
-          })}
+    <li className="ledger-panel overflow-hidden rounded-r-lg transition-colors hover:bg-accent/40">
+      <div className="flex flex-col gap-3 p-4 sm:flex-row sm:items-start sm:justify-between sm:gap-6">
+        <div className="flex min-w-0 flex-col gap-1.5">
+          <p className="text-sm leading-snug text-foreground">
+            {interpolate(dict.settle.owesPair, {
+              fromName: settlement.fromName,
+              toName: settlement.toName,
+            })}
+          </p>
+          <button
+            type="button"
+            onClick={() => setShowMath((v) => !v)}
+            className="w-fit font-mono text-[0.6875rem] uppercase tracking-[0.14em] text-muted-foreground underline-offset-4 transition-colors hover:text-primary hover:underline"
+          >
+            {showMath ? dict.common.hideMath : dict.common.showMath}
+          </button>
+        </div>
+        <p className="tabular shrink-0 text-2xl font-semibold leading-none text-foreground sm:text-right">
+          {amount}
         </p>
-        <Button variant="ghost" size="sm" onClick={() => setShowMath((v) => !v)}>
-          {showMath ? dict.common.hideMath : dict.common.showMath}
-        </Button>
       </div>
-      {showMath && (
-        <ul className="mt-2 list-disc pl-5 text-xs text-muted-foreground">
-          {settlement.explanation.steps.map((step, i) => (
-            <li key={i}>{step}</li>
-          ))}
-        </ul>
-      )}
+      <AnimatePresence initial={false}>
+        {showMath && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+            className="overflow-hidden"
+          >
+            <ul className="flex flex-col gap-1.5 border-t border-rule px-4 py-3">
+              {settlement.explanation.steps.map((step, i) => (
+                <li key={i} className="ledger-step tabular text-xs leading-relaxed">
+                  {step}
+                </li>
+              ))}
+            </ul>
+          </motion.div>
+        )}
+      </AnimatePresence>
       {settlement.status === "CONFIRMED" ? (
-        <p className="mt-2 text-sm text-muted-foreground">{dict.settle.settledBadge}</p>
-      ) : (
-        <>
+        <p className="border-t border-rule px-4 py-3 font-mono text-[0.6875rem] uppercase tracking-[0.14em] text-positive">
+          {dict.settle.settledBadge}
+        </p>
+      ) : (isPayer || canAct) && (
+        <div className="flex flex-col gap-3 border-t border-rule px-4 py-3">
           {isPayer && (
-            <div className="mt-2 flex flex-col gap-2">
+            <div className="flex flex-col gap-2">
               <div className="flex items-center gap-2">
                 {settlement.toVenmoHandle && (
                   <Button size="sm" onClick={() => pay("venmo")}>{dict.settle.venmoButton}</Button>
@@ -195,7 +229,8 @@ function SettlementRow({
               )}
             </div>
           )}
-          <div className="mt-2 flex gap-2">
+          {canAct && (
+          <div className="flex flex-wrap items-center gap-2">
             {isPayer && settlement.status === "PENDING" && (
               <Button size="sm" variant="outline" disabled={pending} onClick={onMarkPaid}>
                 {dict.settle.markAsPaid}
@@ -207,10 +242,13 @@ function SettlementRow({
               </Button>
             )}
             {settlement.status === "PAY_MARKED" && !isPayee && (
-              <p className="text-xs text-muted-foreground">{dict.settle.waitingConfirmation}</p>
+              <p className="font-mono text-[0.6875rem] uppercase tracking-[0.14em] text-muted-foreground">
+                {dict.settle.waitingConfirmation}
+              </p>
             )}
           </div>
-        </>
+          )}
+        </div>
       )}
     </li>
   );

@@ -207,6 +207,7 @@
     "helpTip": "This is the fewest payments needed to clear every debt — expand a row to see the math.",
     "settledUp": "Everyone's settled up.",
     "owesLine": "{fromName} owes {toName} {amount}",
+    "owesPair": "{fromName} owes {toName}",
     "settledBadge": "✓ Settled",
     "venmoButton": "Venmo",
     "paypalButton": "PayPal",

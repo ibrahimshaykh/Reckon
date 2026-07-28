@@ -207,6 +207,7 @@
     "helpTip": "Este es el menor número de pagos necesarios para saldar cada deuda — despliega una fila para ver el cálculo.",
     "settledUp": "Todos están al día.",
     "owesLine": "{fromName} le debe a {toName} {amount}",
+    "owesPair": "{fromName} le debe a {toName}",
     "settledBadge": "✓ Saldado",
     "venmoButton": "Venmo",
     "paypalButton": "PayPal",

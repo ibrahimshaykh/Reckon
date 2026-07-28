@@ -207,6 +207,7 @@
     "helpTip": "یہ ہر قرض چکانے کے لیے درکار کم سے کم ادائیگیاں ہیں — حساب دیکھنے کے لیے قطار کھولیں۔",
     "settledUp": "سب حساب برابر ہو چکا ہے۔",
     "owesLine": "{fromName} پر {toName} کا {amount} واجب ہے",
+    "owesPair": "{fromName} پر {toName} کا واجب ہے",
     "settledBadge": "✓ حساب برابر",
     "venmoButton": "وینمو",
     "paypalButton": "پے پال",

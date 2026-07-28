@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Space_Grotesk } from "next/font/google";
 import Link from "next/link";
 import {
   ClerkProvider,
@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { getSession } from "@/lib/dal";
 import { isRtl } from "@/lib/i18n";
 import { getDictionary } from "@/lib/dictionary";
+import { SmoothScroll } from "@/components/motion/smooth-scroll";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -21,6 +22,12 @@ const geistSans = Geist({
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+});
+
+const spaceGrotesk = Space_Grotesk({
+  variable: "--font-space-grotesk",
+  subsets: ["latin"],
+  weight: ["500", "600", "700"],
 });
 
 export const metadata: Metadata = {
@@ -45,11 +52,15 @@ export default async function RootLayout({
       <html
         lang={locale}
         dir={isRtl(locale) ? "rtl" : "ltr"}
-        className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${spaceGrotesk.variable} h-full antialiased`}
       >
         <body className="min-h-full flex flex-col">
-          <header className="flex items-center justify-between border-b px-6 py-3">
-            <Link href="/" className="font-semibold">
+          <SmoothScroll />
+          <header className="sticky top-0 z-50 flex items-center justify-between border-b border-rule bg-background/80 px-6 py-3 backdrop-blur-md">
+            <Link
+              href="/"
+              className="font-heading text-[0.9375rem] font-semibold tracking-[-0.01em]"
+            >
               {dict.nav.appName}
             </Link>
             <div className="flex items-center gap-3">
