@@ -7,6 +7,63 @@ import {
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
+// Gemini reports failures as a JSON blob inside the Error message rather than
+// structured fields, so both classifiers read the raw text.
+function errorText(error: unknown): string {
+  return error instanceof Error ? error.message : String(error);
+}
+
+// 503/UNAVAILABLE means the model is momentarily oversubscribed — the same
+// request usually succeeds a second later, so it's worth retrying.
+export function isTransientAiError(error: unknown): boolean {
+  const text = errorText(error);
+  return text.includes('"code":503') || text.includes("UNAVAILABLE");
+}
+
+// 429/RESOURCE_EXHAUSTED is the daily free-tier cap (20 requests/day on
+// gemini-3.5-flash). Retrying can't help; the caller must say so plainly.
+export function isQuotaExhaustedError(error: unknown): boolean {
+  const text = errorText(error);
+  return text.includes('"code":429') || text.includes("RESOURCE_EXHAUSTED");
+}
+
+export class AiUnavailableError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "AiUnavailableError";
+  }
+}
+
+// Retries only the transient case, with a short backoff, and converts the
+// two known failure modes into one error type the UI can show verbatim.
+async function withAiRetry<T>(run: () => Promise<T>, attempts = 3): Promise<T> {
+  let lastError: unknown;
+
+  for (let attempt = 0; attempt < attempts; attempt++) {
+    try {
+      return await run();
+    } catch (error) {
+      lastError = error;
+
+      if (isQuotaExhaustedError(error)) {
+        throw new AiUnavailableError(
+          "The AI has hit today's free usage limit. It'll work again tomorrow — everything else in Reckon still works.",
+        );
+      }
+      if (!isTransientAiError(error) || attempt === attempts - 1) break;
+
+      await new Promise((resolve) => setTimeout(resolve, 600 * 2 ** attempt));
+    }
+  }
+
+  if (isTransientAiError(lastError)) {
+    throw new AiUnavailableError(
+      "The AI is busy right now. Give it a moment and ask again.",
+    );
+  }
+  throw lastError;
+}
+
 export type ParsedReceipt = {
   title: string;
   totalCents: number;
@@ -37,7 +94,7 @@ export async function parseReceiptImage(
   base64: string,
   mimeType: string,
 ): Promise<ParsedReceipt> {
-  const response = await ai.models.generateContent({
+  const response = await withAiRetry(() => ai.models.generateContent({
     model: "gemini-3.5-flash",
     contents: createUserContent([
       "Read this receipt photo. Extract a short title (store name, or " +
@@ -50,7 +107,7 @@ export async function parseReceiptImage(
       responseMimeType: "application/json",
       responseSchema: receiptSchema,
     },
-  });
+  }));
 
   return JSON.parse(response.text ?? "{}") as ParsedReceipt;
 }
@@ -79,7 +136,7 @@ export async function answerGroupQuestion(
     .map((h) => `Q: ${h.question}\nA: ${h.answer}`)
     .join("\n\n");
 
-  const response = await ai.models.generateContent({
+  const response = await withAiRetry(() => ai.models.generateContent({
     model: "gemini-3.5-flash",
     contents: createUserContent([
       `Today's date is ${context.today}.`,
@@ -123,7 +180,7 @@ export async function answerGroupQuestion(
         `conversation only to resolve follow-ups (like "what about" or "and ` +
         `them") — don't repeat it back: "${question}"`,
     ]),
-  });
+  }));
 
   return response.text ?? "I couldn't come up with an answer for that.";
 }
@@ -135,7 +192,7 @@ export async function generateMonthlyRecap(context: {
   choresCompleted: number;
   proposalsDecided: number;
 }): Promise<string> {
-  const response = await ai.models.generateContent({
+  const response = await withAiRetry(() => ai.models.generateContent({
     model: "gemini-3.5-flash",
     contents: createUserContent([
       `Write a short (3-4 sentence), friendly recap of this group's ${context.month} for a roommate/friend-group app. ` +
@@ -144,7 +201,7 @@ export async function generateMonthlyRecap(context: {
         `${context.choresCompleted} chores completed, ${context.proposalsDecided} proposals decided. ` +
         `Use only this data — don't invent specifics it doesn't cover.`,
     ]),
-  });
+  }));
 
   return response.text ?? "Couldn't generate a recap right now.";
 }
@@ -155,7 +212,7 @@ export async function correctReceiptParse(
   priorParse: ParsedReceipt,
   correction: string,
 ): Promise<ParsedReceipt> {
-  const response = await ai.models.generateContent({
+  const response = await withAiRetry(() => ai.models.generateContent({
     model: "gemini-3.5-flash",
     contents: createUserContent([
       `Here is a receipt photo and a previous extraction attempt: ${JSON.stringify(priorParse)}.`,
@@ -169,7 +226,7 @@ export async function correctReceiptParse(
       responseMimeType: "application/json",
       responseSchema: receiptSchema,
     },
-  });
+  }));
 
   return JSON.parse(response.text ?? "{}") as ParsedReceipt;
 }

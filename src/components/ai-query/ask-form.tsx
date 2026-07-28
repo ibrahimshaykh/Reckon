@@ -8,7 +8,9 @@ import type { Dictionary } from "@/lib/dictionary";
 import { interpolate } from "@/lib/i18n";
 
 type SourceCounts = { expenses: number; chores: number; proposals: number; ious: number };
-type Turn = { question: string; answer: string; sourceCounts: SourceCounts };
+// sourceCounts is null when the turn is an error rather than a real answer —
+// "based on 3 expenses" under a quota message would be nonsense.
+type Turn = { question: string; answer: string; sourceCounts: SourceCounts | null };
 
 export function AskForm({ groupId, dict }: { groupId: string; dict: Dictionary }) {
   const SUGGESTED_QUESTIONS = [
@@ -29,6 +31,21 @@ export function AskForm({ groupId, dict }: { groupId: string; dict: Dictionary }
       const history = turns.map((t) => ({ question: t.question, answer: t.answer }));
       const result = await askGroupQuestion(groupId, q, history);
       setTurns((prev) => [...prev, { question: q, answer: result.answer, sourceCounts: result.sourceCounts }]);
+    } catch (error) {
+      // Without this the question simply vanished on failure — no answer and
+      // no explanation. Running out of the daily AI quota is a normal thing
+      // to hit, so it has to be said out loud rather than swallowed.
+      setTurns((prev) => [
+        ...prev,
+        {
+          question: q,
+          answer:
+            error instanceof Error && error.message
+              ? error.message
+              : dict.common.somethingWrong,
+          sourceCounts: null,
+        },
+      ]);
     } finally {
       setPending(false);
     }
@@ -65,15 +82,23 @@ export function AskForm({ groupId, dict }: { groupId: string; dict: Dictionary }
           {turns.map((t, i) => (
             <div key={i} className="flex flex-col gap-1">
               <p className="self-end rounded-lg bg-primary/10 px-3 py-1.5 text-sm">{t.question}</p>
-              <p className="rounded-lg border p-3 text-sm">{t.answer}</p>
-              <p className="text-[0.65rem] text-muted-foreground">
-                {interpolate(dict.ask.basedOn, {
-                  expenses: t.sourceCounts.expenses,
-                  chores: t.sourceCounts.chores,
-                  proposals: t.sourceCounts.proposals,
-                  ious: t.sourceCounts.ious,
-                })}
+              <p
+                className={`rounded-lg border p-3 text-sm ${
+                  t.sourceCounts ? "" : "border-warm/40 bg-warm-surface/40 text-foreground"
+                }`}
+              >
+                {t.answer}
               </p>
+              {t.sourceCounts && (
+                <p className="text-[0.65rem] text-muted-foreground">
+                  {interpolate(dict.ask.basedOn, {
+                    expenses: t.sourceCounts.expenses,
+                    chores: t.sourceCounts.chores,
+                    proposals: t.sourceCounts.proposals,
+                    ious: t.sourceCounts.ious,
+                  })}
+                </p>
+              )}
             </div>
           ))}
         </div>
