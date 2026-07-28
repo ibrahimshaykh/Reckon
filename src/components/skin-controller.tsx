@@ -1,7 +1,9 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
+import { PencilCursor } from "@/components/sketch/pencil-cursor";
+import { DoodleBackdrop } from "@/components/sketch/doodle-backdrop";
 
 // The landing page keeps the polished violet identity that sells the product;
 // everything behind the sign-in gets the hand-drawn skin. Setting the flag on
@@ -9,11 +11,22 @@ import { usePathname } from "next/navigation";
 // than each component having to know which skin it's in.
 export function SkinController() {
   const pathname = usePathname();
+  const sketch = pathname !== "/";
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    const marketing = pathname === "/";
-    document.documentElement.dataset.skin = marketing ? "plain" : "sketch";
-  }, [pathname]);
+    document.documentElement.dataset.skin = sketch ? "sketch" : "plain";
+    setMounted(true);
+  }, [sketch]);
 
-  return null;
+  // The cursor and backdrop are pure decoration and touch window/pointer APIs,
+  // so they only mount client-side, and only where the doodle skin is on.
+  if (!mounted || !sketch) return null;
+
+  return (
+    <>
+      <DoodleBackdrop />
+      <PencilCursor />
+    </>
+  );
 }

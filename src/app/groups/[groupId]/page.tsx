@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { PageHeader, SectionHeading } from "@/components/page-header";
 import { Reveal } from "@/components/motion/reveal";
 import { StickmanParade } from "@/components/sketch/sketch-ui";
+import { Shavings, Thumbtacked } from "@/components/sketch/scribble";
 
 export default async function GroupPage({
   params,
@@ -88,24 +89,27 @@ export default async function GroupPage({
           { href: "ask", label: dict.groupHub.askAi, tone: "var(--feature-ask)" },
           { href: "recap", label: dict.groupHub.monthlyRecap, tone: "var(--feature-recap)" },
         ].map((item) => (
-          <Link
-            key={item.href}
-            href={`/groups/${group.id}/${item.href}`}
-            style={{ "--tone": item.tone } as React.CSSProperties}
-            className="group/nav relative flex items-center gap-3 bg-card px-4 py-3.5 text-sm font-medium transition-colors before:absolute before:inset-y-0 before:start-0 before:w-[3px] before:bg-[var(--tone)] before:opacity-60 before:transition-opacity hover:bg-[color-mix(in_oklab,var(--tone)_12%,var(--card))] hover:before:opacity-100 sketch:sketch-box sketch:sketch-press sketch:border-[var(--tone)] sketch:before:hidden"
-          >
-            <span
-              aria-hidden
-              className="size-1.5 shrink-0 rounded-full bg-[var(--tone)]"
-            />
-            <span>{item.label}</span>
-            <span
-              aria-hidden
-              className="ml-auto font-mono text-[var(--tone)] transition-transform group-hover/nav:translate-x-0.5"
-            >
-              →
-            </span>
-          </Link>
+          <Thumbtacked key={item.href} tilt={4}>
+            <Shavings className="w-full">
+              <Link
+                href={`/groups/${group.id}/${item.href}`}
+                style={{ "--tone": item.tone } as React.CSSProperties}
+                className="group/nav relative flex w-full items-center gap-3 bg-card px-4 py-3.5 text-sm font-medium transition-colors before:absolute before:inset-y-0 before:start-0 before:w-[3px] before:bg-[var(--tone)] before:opacity-60 before:transition-opacity hover:bg-[color-mix(in_oklab,var(--tone)_12%,var(--card))] hover:before:opacity-100 sketch:sketch-box sketch:sketch-press sketch:border-[var(--tone)] sketch:before:hidden"
+              >
+                <span
+                  aria-hidden
+                  className="size-1.5 shrink-0 rounded-full bg-[var(--tone)]"
+                />
+                <span>{item.label}</span>
+                <span
+                  aria-hidden
+                  className="ml-auto font-mono text-[var(--tone)] transition-transform group-hover/nav:translate-x-0.5"
+                >
+                  →
+                </span>
+              </Link>
+            </Shavings>
+          </Thumbtacked>
         ))}
       </nav>
       <section className="flex flex-col gap-3">

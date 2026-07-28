@@ -476,3 +476,125 @@
     transform: translateX(calc(-100% - var(--gap, 2.5rem)));
   }
 }
+
+/* ============================================================
+   SQUIGGLEVISION — the "boiling line" effect.
+
+   Hand-drawn animation never traces the same line twice, so a static
+   wobble still reads as a computer imitating a drawing. Cycling through
+   three slightly different radii on a stepped timing function gives the
+   flipbook judder of a redrawn frame rather than a smooth morph.
+   ============================================================ */
+
+@keyframes boil {
+  0% {
+    border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+  }
+  33% {
+    border-radius: 225px 20px 255px 12px / 20px 255px 12px 225px;
+  }
+  66% {
+    border-radius: 245px 12px 235px 18px / 12px 235px 18px 245px;
+  }
+  100% {
+    border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+  }
+}
+
+@keyframes boil-pill {
+  0% {
+    border-radius: 24px 44px 20px 40px / 40px 20px 44px 24px;
+  }
+  33% {
+    border-radius: 30px 38px 26px 34px / 34px 26px 38px 30px;
+  }
+  66% {
+    border-radius: 20px 48px 18px 44px / 44px 18px 48px 20px;
+  }
+  100% {
+    border-radius: 24px 44px 20px 40px / 40px 20px 44px 24px;
+  }
+}
+
+/* A whole-element twitch, as if the frame were re-inked a shade off-register. */
+@keyframes judder {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  25% { transform: translate(0.4px, -0.3px) rotate(0.12deg); }
+  50% { transform: translate(-0.3px, 0.4px) rotate(-0.1deg); }
+  75% { transform: translate(0.3px, 0.3px) rotate(0.08deg); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+}
+
+/* Pen drawing itself along a path. */
+@keyframes draw-on {
+  from { stroke-dashoffset: var(--len, 400); }
+  to { stroke-dashoffset: 0; }
+}
+
+@utility boil {
+  animation: boil 0.55s steps(1, end) infinite;
+}
+
+@utility boil-slow {
+  animation: boil 0.9s steps(1, end) infinite;
+}
+
+@utility boil-pill {
+  animation: boil-pill 0.5s steps(1, end) infinite;
+}
+
+@utility judder {
+  animation: judder 0.42s steps(1, end) infinite;
+}
+
+/* Everything drawn on the page boils by default in the sketch skin. Staggered
+   durations stop the whole page pulsing in lockstep, which would read as one
+   machine effect rather than many separate drawings. */
+:root[data-skin="sketch"] .sketch-box,
+:root[data-skin="sketch"] .sketch-box-alt {
+  animation: boil 0.6s steps(1, end) infinite;
+}
+:root[data-skin="sketch"] .sketch-box-alt {
+  animation-duration: 0.75s;
+  animation-delay: -0.2s;
+}
+:root[data-skin="sketch"] .sketch-pill {
+  animation: boil-pill 0.5s steps(1, end) infinite;
+}
+:root[data-skin="sketch"] nav a:nth-child(even) .sketch-box,
+:root[data-skin="sketch"] li:nth-child(odd) .sketch-box {
+  animation-duration: 0.8s;
+  animation-delay: -0.35s;
+}
+
+/* The pencil replaces the pointer, but only where there's a real pointer to
+   replace — never on touch, where there's no cursor to begin with. */
+@media (pointer: fine) {
+  :root[data-skin="sketch"] body,
+  :root[data-skin="sketch"] a,
+  :root[data-skin="sketch"] button,
+  :root[data-skin="sketch"] input,
+  :root[data-skin="sketch"] select,
+  :root[data-skin="sketch"] textarea {
+    cursor: none;
+  }
+}
+
+/* Boiling is the signature, but it's also constant motion on every surface —
+   the first thing to go when someone asks for less. */
+@media (prefers-reduced-motion: reduce) {
+  :root[data-skin="sketch"] .sketch-box,
+  :root[data-skin="sketch"] .sketch-box-alt,
+  :root[data-skin="sketch"] .sketch-pill,
+  .boil,
+  .boil-slow,
+  .boil-pill,
+  .judder {
+    animation: none !important;
+  }
+  :root[data-skin="sketch"] body,
+  :root[data-skin="sketch"] a,
+  :root[data-skin="sketch"] button {
+    cursor: auto;
+  }
+}
