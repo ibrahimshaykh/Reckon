@@ -9,6 +9,7 @@ import { ApiError } from "@/lib/api-error";
 import { fromCents } from "@/lib/money";
 import { validate, cuid, positiveCents, shortText } from "@/lib/validation";
 import { recalculateSettlements } from "@/lib/actions/settlements";
+import { asActionResult, type ActionResult } from "@/lib/action-result";
 
 type AddManualExpenseInput = {
   groupId: string;
@@ -34,45 +35,47 @@ const addManualExpenseSchema = z.object({
   receiptImageUrl: z.string().url().optional(),
 });
 
-export async function addManualExpense(input: AddManualExpenseInput) {
-  const session = await requireSession();
-  const valid = validate(addManualExpenseSchema, input);
-  await assertMember(valid.groupId, session.id);
+export async function addManualExpense(input: AddManualExpenseInput): Promise<ActionResult<void>> {
+  return asActionResult(async () => {
+    const session = await requireSession();
+    const valid = validate(addManualExpenseSchema, input);
+    await assertMember(valid.groupId, session.id);
 
-  const shares = splitToShareRatios(
-    valid.totalCents,
-    valid.participantIds,
-    valid.splitType,
-    valid.customCents,
-  );
+    const shares = splitToShareRatios(
+      valid.totalCents,
+      valid.participantIds,
+      valid.splitType,
+      valid.customCents,
+    );
 
-  await db.expense.create({
-    data: {
-      groupId: valid.groupId,
-      paidById: valid.paidById,
-      title: valid.title,
-      totalAmount: fromCents(valid.totalCents),
-      source: valid.source ?? "MANUAL",
-      receiptImageUrl: valid.receiptImageUrl,
-      items: {
-        create: {
-          label: valid.title,
-          amount: fromCents(valid.totalCents),
-          splitType: valid.splitType,
-          participants: {
-            create: valid.participantIds.map((userId) => ({
-              userId,
-              shareRatio: shares[userId],
-            })),
+    await db.expense.create({
+      data: {
+        groupId: valid.groupId,
+        paidById: valid.paidById,
+        title: valid.title,
+        totalAmount: fromCents(valid.totalCents),
+        source: valid.source ?? "MANUAL",
+        receiptImageUrl: valid.receiptImageUrl,
+        items: {
+          create: {
+            label: valid.title,
+            amount: fromCents(valid.totalCents),
+            splitType: valid.splitType,
+            participants: {
+              create: valid.participantIds.map((userId) => ({
+                userId,
+                shareRatio: shares[userId],
+              })),
+            },
           },
         },
       },
-    },
-  });
+    });
 
-  await recalculateSettlements(input.groupId);
-  revalidatePath(`/groups/${input.groupId}`);
-  revalidatePath(`/groups/${input.groupId}/settle`);
+    await recalculateSettlements(input.groupId);
+    revalidatePath(`/groups/${input.groupId}`);
+    revalidatePath(`/groups/${input.groupId}/settle`);
+  });
 }
 
 // Ratios (not raw cents) are what's stored, since the schema's
@@ -137,40 +140,42 @@ export async function addItemizedExpense(input: {
   paidById: string;
   receiptImageUrl?: string;
   items: { label: string; amountCents: number; shares: Record<string, number> }[];
-}) {
-  const session = await requireSession();
-  const valid = validate(addItemizedExpenseSchema, input);
-  await assertMember(valid.groupId, session.id);
+}): Promise<ActionResult<void>> {
+  return asActionResult(async () => {
+    const session = await requireSession();
+    const valid = validate(addItemizedExpenseSchema, input);
+    await assertMember(valid.groupId, session.id);
 
-  const totalCents = valid.items.reduce((sum, item) => sum + item.amountCents, 0);
+    const totalCents = valid.items.reduce((sum, item) => sum + item.amountCents, 0);
 
-  await db.expense.create({
-    data: {
-      groupId: valid.groupId,
-      paidById: valid.paidById,
-      title: valid.title,
-      totalAmount: fromCents(totalCents),
-      source: "RECEIPT_AI",
-      receiptImageUrl: valid.receiptImageUrl,
-      items: {
-        create: valid.items.map((item) => ({
-          label: item.label,
-          amount: fromCents(item.amountCents),
-          splitType: "CUSTOM",
-          participants: {
-            create: Object.entries(item.shares).map(([userId, shareRatio]) => ({
-              userId,
-              shareRatio,
-            })),
-          },
-        })),
+    await db.expense.create({
+      data: {
+        groupId: valid.groupId,
+        paidById: valid.paidById,
+        title: valid.title,
+        totalAmount: fromCents(totalCents),
+        source: "RECEIPT_AI",
+        receiptImageUrl: valid.receiptImageUrl,
+        items: {
+          create: valid.items.map((item) => ({
+            label: item.label,
+            amount: fromCents(item.amountCents),
+            splitType: "CUSTOM",
+            participants: {
+              create: Object.entries(item.shares).map(([userId, shareRatio]) => ({
+                userId,
+                shareRatio,
+              })),
+            },
+          })),
+        },
       },
-    },
-  });
+    });
 
-  await recalculateSettlements(valid.groupId);
-  revalidatePath(`/groups/${valid.groupId}`);
-  revalidatePath(`/groups/${valid.groupId}/settle`);
+    await recalculateSettlements(valid.groupId);
+    revalidatePath(`/groups/${valid.groupId}`);
+    revalidatePath(`/groups/${valid.groupId}/settle`);
+  });
 }
 
 // Deleting is restricted to whoever paid, matching forgiveIOU — a money
@@ -180,25 +185,27 @@ export async function addItemizedExpense(input: {
 // This is a hard delete: Prisma cascades clear the items, their participants
 // and any guest tokens pointing at the expense, so nothing dangles. A wrong
 // amount should genuinely leave the maths rather than linger hidden.
-export async function deleteExpense(expenseId: string) {
-  const session = await requireSession();
-  const validExpenseId = validate(cuid, expenseId);
+export async function deleteExpense(expenseId: string): Promise<ActionResult<void>> {
+  return asActionResult(async () => {
+    const session = await requireSession();
+    const validExpenseId = validate(cuid, expenseId);
 
-  const expense = await db.expense.findUniqueOrThrow({
-    where: { id: validExpenseId },
-    select: { id: true, groupId: true, paidById: true },
+    const expense = await db.expense.findUniqueOrThrow({
+      where: { id: validExpenseId },
+      select: { id: true, groupId: true, paidById: true },
+    });
+
+    await assertMember(expense.groupId, session.id);
+    if (expense.paidById !== session.id) {
+      throw new ApiError(403, "Only the person who paid can delete this expense.");
+    }
+
+    await db.expense.delete({ where: { id: expense.id } });
+    await recalculateSettlements(expense.groupId);
+
+    revalidatePath(`/groups/${expense.groupId}`);
+    revalidatePath(`/groups/${expense.groupId}/settle`);
   });
-
-  await assertMember(expense.groupId, session.id);
-  if (expense.paidById !== session.id) {
-    throw new ApiError(403, "Only the person who paid can delete this expense.");
-  }
-
-  await db.expense.delete({ where: { id: expense.id } });
-  await recalculateSettlements(expense.groupId);
-
-  revalidatePath(`/groups/${expense.groupId}`);
-  revalidatePath(`/groups/${expense.groupId}/settle`);
 }
 
 export async function listGroupExpenses(groupId: string) {

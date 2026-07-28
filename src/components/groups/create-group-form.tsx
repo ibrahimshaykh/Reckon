@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createGroup } from "@/lib/actions/groups";
+import { isActionError } from "@/lib/action-result";
 import type { Dictionary } from "@/lib/dictionary";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -17,12 +18,12 @@ export function CreateGroupForm({ dict }: { dict: Dictionary }) {
     e.preventDefault();
     setPending(true);
     setError(null);
-    try {
-      const group = await createGroup(name);
-      router.push(`/groups/${group.id}`);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : dict.common.somethingWrong);
+    const result = await createGroup(name);
+    if (isActionError(result)) {
+      setError(result.error);
       setPending(false);
+    } else {
+      router.push(`/groups/${result.id}`);
     }
   }
 

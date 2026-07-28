@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { forgiveIOU } from "@/lib/actions/ious";
+import { isActionError } from "@/lib/action-result";
 import { formatMoney } from "@/lib/money";
 import type { Dictionary } from "@/lib/dictionary";
 import { interpolate } from "@/lib/i18n";
@@ -55,13 +56,19 @@ function IOURow({
 }) {
   const router = useRouter();
   const [pending, setPending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const canForgive = i.toUserId === currentUserId && !i.forgivenAt;
 
   async function onForgive() {
     setPending(true);
-    await forgiveIOU(i.id);
+    setError(null);
+    const result = await forgiveIOU(i.id);
     setPending(false);
-    router.refresh();
+    if (isActionError(result)) {
+      setError(result.error);
+    } else {
+      router.refresh();
+    }
   }
 
   return (
@@ -78,6 +85,7 @@ function IOURow({
         })}
         {i.note && ` — ${i.note}`}
       </p>
+      {error && <span className="shrink-0 text-xs text-destructive">{error}</span>}
       {i.forgivenAt ? (
         <span className="shrink-0 text-xs text-muted-foreground">{dict.ious.forgiven}</span>
       ) : (

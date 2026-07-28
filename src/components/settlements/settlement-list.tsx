@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { markPaid, confirmReceived } from "@/lib/actions/settlements";
 import { createSafepayCheckout } from "@/lib/actions/safepay-checkout";
+import { isActionError } from "@/lib/action-result";
 import { formatMoney } from "@/lib/money";
 import { Button } from "@/components/ui/button";
 import { CopyRow } from "@/components/copy-row";
@@ -81,6 +82,7 @@ function SettlementRow({
   const [showMath, setShowMath] = useState(false);
   const [pending, setPending] = useState(false);
   const [safepayUnavailable, setSafepayUnavailable] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const amount = formatMoney(settlement.amountCents, currency);
   const isPayer = settlement.fromUserId === currentUserId;
@@ -105,19 +107,37 @@ function SettlementRow({
 
   async function onMarkPaid() {
     setPending(true);
-    await markPaid(settlement.id);
-    router.refresh();
+    setError(null);
+    const result = await markPaid(settlement.id);
+    if (isActionError(result)) {
+      setError(result.error);
+      setPending(false);
+    } else {
+      router.refresh();
+    }
   }
 
   async function onConfirmReceived() {
     setPending(true);
-    await confirmReceived(settlement.id);
-    router.refresh();
+    setError(null);
+    const result = await confirmReceived(settlement.id);
+    if (isActionError(result)) {
+      setError(result.error);
+      setPending(false);
+    } else {
+      router.refresh();
+    }
   }
 
   async function onPayBySafepay() {
     setPending(true);
+    setError(null);
     const result = await createSafepayCheckout(settlement.id);
+    if (isActionError(result)) {
+      setError(result.error);
+      setPending(false);
+      return;
+    }
     if ("unavailable" in result) {
       setSafepayUnavailable(true);
       setPending(false);
@@ -248,6 +268,7 @@ function SettlementRow({
             )}
           </div>
           )}
+          {error && <p className="text-xs text-destructive">{error}</p>}
         </div>
       )}
     </li>

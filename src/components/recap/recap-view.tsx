@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { getMonthlyRecap } from "@/lib/actions/recap";
+import { isActionError } from "@/lib/action-result";
 import { formatMoney } from "@/lib/money";
 import { Button } from "@/components/ui/button";
 import type { Dictionary } from "@/lib/dictionary";
@@ -29,15 +30,18 @@ export function RecapView({
 }) {
   const [recap, setRecap] = useState<Recap | null>(null);
   const [pending, setPending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   async function onGenerate() {
     setPending(true);
-    try {
-      const result = await getMonthlyRecap(groupId);
+    setError(null);
+    const result = await getMonthlyRecap(groupId);
+    if (isActionError(result)) {
+      setError(result.error);
+    } else {
       setRecap(result);
-    } finally {
-      setPending(false);
     }
+    setPending(false);
   }
 
   const delta =
@@ -50,6 +54,10 @@ export function RecapView({
       <Button onClick={onGenerate} disabled={pending}>
         {pending ? dict.recap.generating : dict.recap.generateButton}
       </Button>
+
+      {error && (
+        <p className="rounded-lg border border-warm/40 bg-warm-surface/40 p-3 text-sm">{error}</p>
+      )}
 
       {recap && (
         <div className="flex flex-col gap-2">

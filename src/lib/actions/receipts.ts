@@ -9,28 +9,31 @@ import {
   type ParsedReceipt,
 } from "@/lib/gemini";
 import { enforceRateLimit } from "@/lib/rate-limit";
+import { asActionResult, type ActionResult } from "@/lib/action-result";
 
 export async function uploadAndParseReceipt(
   base64: string,
   mimeType: string,
   filename: string,
-) {
-  const session = await requireSession();
-  await enforceRateLimit(`receipt:${session.id}`, 15, 60);
-  if (!mimeType.startsWith("image/")) {
-    throw new ApiError(400, "File must be an image.");
-  }
+): Promise<ActionResult<{ imageUrl: string; parsed: ParsedReceipt }>> {
+  return asActionResult(async () => {
+    const session = await requireSession();
+    await enforceRateLimit(`receipt:${session.id}`, 15, 60);
+    if (!mimeType.startsWith("image/")) {
+      throw new ApiError(400, "File must be an image.");
+    }
 
-  const buffer = Buffer.from(base64, "base64");
-  const blob = await put(`receipts/${Date.now()}-${filename}`, buffer, {
-    access: "public",
-    contentType: mimeType,
-    addRandomSuffix: true,
+    const buffer = Buffer.from(base64, "base64");
+    const blob = await put(`receipts/${Date.now()}-${filename}`, buffer, {
+      access: "public",
+      contentType: mimeType,
+      addRandomSuffix: true,
+    });
+
+    const parsed = await parseReceiptImage(base64, mimeType);
+
+    return { imageUrl: blob.url, parsed };
   });
-
-  const parsed = await parseReceiptImage(base64, mimeType);
-
-  return { imageUrl: blob.url, parsed };
 }
 
 export async function correctReceipt(input: {
@@ -38,13 +41,15 @@ export async function correctReceipt(input: {
   mimeType: string;
   priorParse: ParsedReceipt;
   correction: string;
-}) {
-  const session = await requireSession();
-  await enforceRateLimit(`receipt:${session.id}`, 15, 60);
-  return correctReceiptParse(
-    input.base64,
-    input.mimeType,
-    input.priorParse,
-    input.correction,
-  );
+}): Promise<ActionResult<ParsedReceipt>> {
+  return asActionResult(async () => {
+    const session = await requireSession();
+    await enforceRateLimit(`receipt:${session.id}`, 15, 60);
+    return correctReceiptParse(
+      input.base64,
+      input.mimeType,
+      input.priorParse,
+      input.correction,
+    );
+  });
 }

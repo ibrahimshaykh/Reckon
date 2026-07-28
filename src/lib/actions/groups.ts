@@ -7,45 +7,53 @@ import { db } from "@/lib/db";
 import { requireSession } from "@/lib/dal";
 import { ApiError } from "@/lib/api-error";
 import { validate, cuid, shortText } from "@/lib/validation";
+import { asActionResult, type ActionResult } from "@/lib/action-result";
 
-export async function createGroup(name: string) {
-  const session = await requireSession();
-  const validName = validate(shortText("Group name", 100), name);
+export async function createGroup(name: string): Promise<ActionResult<{ id: string; name: string }>> {
+  return asActionResult(async () => {
+    const session = await requireSession();
+    const validName = validate(shortText("Group name", 100), name);
 
-  const group = await db.group.create({
-    data: {
-      name: validName,
-      createdById: session.id,
-      members: { create: { userId: session.id } },
-    },
+    const group = await db.group.create({
+      data: {
+        name: validName,
+        createdById: session.id,
+        members: { create: { userId: session.id } },
+      },
+    });
+
+    revalidatePath("/groups");
+    return { id: group.id, name: group.name };
   });
-
-  revalidatePath("/groups");
-  return { id: group.id, name: group.name };
 }
 
-export async function addMemberByEmail(groupId: string, email: string) {
-  const session = await requireSession();
-  validate(cuid, groupId);
-  const validEmail = validate(z.string().trim().email("Enter a valid email address."), email);
-  await assertMember(groupId, session.id);
+export async function addMemberByEmail(
+  groupId: string,
+  email: string,
+): Promise<ActionResult<{ id: string; displayName: string; email: string }>> {
+  return asActionResult(async () => {
+    const session = await requireSession();
+    validate(cuid, groupId);
+    const validEmail = validate(z.string().trim().email("Enter a valid email address."), email);
+    await assertMember(groupId, session.id);
 
-  const user = await db.user.findUnique({ where: { email: validEmail } });
-  if (!user) {
-    throw new ApiError(
-      404,
-      "No Reckon account with that email yet — ask them to sign up first.",
-    );
-  }
+    const user = await db.user.findUnique({ where: { email: validEmail } });
+    if (!user) {
+      throw new ApiError(
+        404,
+        "No Reckon account with that email yet — ask them to sign up first.",
+      );
+    }
 
-  const existing = await db.groupMember.findUnique({
-    where: { groupId_userId: { groupId, userId: user.id } },
+    const existing = await db.groupMember.findUnique({
+      where: { groupId_userId: { groupId, userId: user.id } },
+    });
+    if (existing) throw new ApiError(409, "Already a member of this group.");
+
+    await db.groupMember.create({ data: { groupId, userId: user.id } });
+    revalidatePath(`/groups/${groupId}`);
+    return { id: user.id, displayName: user.displayName, email: user.email };
   });
-  if (existing) throw new ApiError(409, "Already a member of this group.");
-
-  await db.groupMember.create({ data: { groupId, userId: user.id } });
-  revalidatePath(`/groups/${groupId}`);
-  return { id: user.id, displayName: user.displayName, email: user.email };
 }
 
 export async function listMyGroups() {

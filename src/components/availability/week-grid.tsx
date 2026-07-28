@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { addAvailability, removeAvailability } from "@/lib/actions/availability";
+import { isActionError } from "@/lib/action-result";
 import {
   getWeekDays,
   formatDateParam,
@@ -54,6 +55,7 @@ export function WeekGrid({
 }) {
   const router = useRouter();
   const [pending, setPending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [recurringMode, setRecurringMode] = useState(false);
   const [drag, setDrag] = useState<{ dayIndex: number; startMinute: number; currentMinute: number } | null>(
     null,
@@ -114,14 +116,19 @@ export function WeekGrid({
     const startsAt = new Date(day.getTime() + lo * 60_000);
     const endsAt = new Date(day.getTime() + hi * 60_000);
     setPending(true);
-    await addAvailability({
+    setError(null);
+    const result = await addAvailability({
       groupId,
       startsAt: startsAt.toISOString(),
       endsAt: endsAt.toISOString(),
       recurring: recurringMode,
     });
     setPending(false);
-    router.refresh();
+    if (isActionError(result)) {
+      setError(result.error);
+    } else {
+      router.refresh();
+    }
   }
 
   function onMouseMove(dayIndex: number, e: React.MouseEvent<HTMLDivElement>) {
@@ -132,9 +139,14 @@ export function WeekGrid({
 
   async function onRemove(entryId: string) {
     setPending(true);
-    await removeAvailability(entryId);
+    setError(null);
+    const result = await removeAvailability(entryId);
     setPending(false);
-    router.refresh();
+    if (isActionError(result)) {
+      setError(result.error);
+    } else {
+      router.refresh();
+    }
   }
 
   function goToStart(next: Date) {
@@ -365,6 +377,7 @@ export function WeekGrid({
 
       <p className="text-xs text-muted-foreground">{dict.availability.legend}</p>
       {pending && <p className="text-xs text-muted-foreground">{dict.availability.saving}</p>}
+      {error && <p className="text-xs text-destructive">{error}</p>}
     </div>
   );
 }

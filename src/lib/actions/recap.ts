@@ -6,6 +6,7 @@ import { requireSession } from "@/lib/dal";
 import { generateMonthlyRecap } from "@/lib/gemini";
 import { enforceRateLimit } from "@/lib/rate-limit";
 import type { Recap } from "@/generated/prisma/client";
+import { asActionResult, type ActionResult } from "@/lib/action-result";
 
 type TopExpense = { title: string; amount: number };
 
@@ -30,7 +31,10 @@ async function getPreviousTotal(groupId: string, monthStart: Date) {
   return prev?.totalSpentCents ?? null;
 }
 
-export async function getMonthlyRecap(groupId: string) {
+export async function getMonthlyRecap(
+  groupId: string,
+): Promise<ActionResult<ReturnType<typeof mapRecap>>> {
+  return asActionResult(async () => {
   const session = await requireSession();
   await assertMember(groupId, session.id);
 
@@ -109,6 +113,7 @@ export async function getMonthlyRecap(groupId: string) {
   });
 
   return mapRecap(created, await getPreviousTotal(groupId, monthStart));
+  });
 }
 
 export async function listPastRecaps(groupId: string) {

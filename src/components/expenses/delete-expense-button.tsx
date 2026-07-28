@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Trash2 } from "lucide-react";
 import { deleteExpense } from "@/lib/actions/expenses";
+import { isActionError } from "@/lib/action-result";
 import { useSketchpad } from "@/lib/stores/sketchpad";
 import type { Dictionary } from "@/lib/dictionary";
 import { interpolate } from "@/lib/i18n";
@@ -30,14 +31,14 @@ export function DeleteExpenseButton({
   async function onDelete() {
     setPending(true);
     setError(null);
-    try {
-      await deleteExpense(expenseId);
-      jot(`Deleted "${title}"`);
-      router.refresh();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : dict.common.somethingWrong);
+    const result = await deleteExpense(expenseId);
+    if (isActionError(result)) {
+      setError(result.error);
       setPending(false);
       setArmed(false);
+    } else {
+      jot(`Deleted "${title}"`);
+      router.refresh();
     }
   }
 

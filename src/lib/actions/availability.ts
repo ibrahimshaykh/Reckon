@@ -8,6 +8,7 @@ import { requireSession } from "@/lib/dal";
 import { ApiError } from "@/lib/api-error";
 import { validate, cuid } from "@/lib/validation";
 import { findGroupFreeTime } from "@/lib/availability";
+import { asActionResult, type ActionResult } from "@/lib/action-result";
 
 const addAvailabilitySchema = z.object({
   groupId: cuid,
@@ -23,32 +24,34 @@ export async function addAvailability(input: {
   endsAt: string;
   label?: string;
   recurring?: boolean;
-}) {
-  const session = await requireSession();
-  const valid = validate(addAvailabilitySchema, input);
-  await assertMember(valid.groupId, session.id);
+}): Promise<ActionResult<void>> {
+  return asActionResult(async () => {
+    const session = await requireSession();
+    const valid = validate(addAvailabilitySchema, input);
+    await assertMember(valid.groupId, session.id);
 
-  const startsAt = new Date(valid.startsAt);
-  const endsAt = new Date(valid.endsAt);
-  if (Number.isNaN(startsAt.getTime()) || Number.isNaN(endsAt.getTime())) {
-    throw new ApiError(400, "Enter valid start and end times.");
-  }
-  if (endsAt <= startsAt) {
-    throw new ApiError(400, "End time must be after start time.");
-  }
+    const startsAt = new Date(valid.startsAt);
+    const endsAt = new Date(valid.endsAt);
+    if (Number.isNaN(startsAt.getTime()) || Number.isNaN(endsAt.getTime())) {
+      throw new ApiError(400, "Enter valid start and end times.");
+    }
+    if (endsAt <= startsAt) {
+      throw new ApiError(400, "End time must be after start time.");
+    }
 
-  await db.availabilityEntry.create({
-    data: {
-      groupId: valid.groupId,
-      userId: session.id,
-      startsAt,
-      endsAt,
-      label: valid.label,
-      recurring: valid.recurring ?? false,
-    },
+    await db.availabilityEntry.create({
+      data: {
+        groupId: valid.groupId,
+        userId: session.id,
+        startsAt,
+        endsAt,
+        label: valid.label,
+        recurring: valid.recurring ?? false,
+      },
+    });
+
+    revalidatePath(`/groups/${input.groupId}/availability`);
   });
-
-  revalidatePath(`/groups/${input.groupId}/availability`);
 }
 
 export async function getGroupFreeTime(groupId: string) {
@@ -91,12 +94,14 @@ export async function getGroupFreeTime(groupId: string) {
   };
 }
 
-export async function removeAvailability(entryId: string) {
-  const session = await requireSession();
-  const entry = await db.availabilityEntry.findUniqueOrThrow({ where: { id: entryId } });
-  if (entry.userId !== session.id) {
-    throw new ApiError(403, "You can only remove your own availability.");
-  }
-  await db.availabilityEntry.delete({ where: { id: entryId } });
-  revalidatePath(`/groups/${entry.groupId}/availability`);
+export async function removeAvailability(entryId: string): Promise<ActionResult<void>> {
+  return asActionResult(async () => {
+    const session = await requireSession();
+    const entry = await db.availabilityEntry.findUniqueOrThrow({ where: { id: entryId } });
+    if (entry.userId !== session.id) {
+      throw new ApiError(403, "You can only remove your own availability.");
+    }
+    await db.availabilityEntry.delete({ where: { id: entryId } });
+    revalidatePath(`/groups/${entry.groupId}/availability`);
+  });
 }

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { uploadAndParseReceipt, correctReceipt } from "@/lib/actions/receipts";
 import { addItemizedExpense } from "@/lib/actions/expenses";
+import { isActionError } from "@/lib/action-result";
 import { buildItemizedShares } from "@/lib/receipt-split";
 import { formatMoney } from "@/lib/money";
 import type { ParsedReceipt } from "@/lib/gemini";
@@ -67,9 +68,14 @@ export function ScanReceiptForm({
       setBase64(b64);
       setMimeType(file.type);
       const result = await uploadAndParseReceipt(b64, file.type, file.name);
-      setImageUrl(result.imageUrl);
-      applyParsed(result.parsed);
+      if (isActionError(result)) {
+        setError(result.error);
+      } else {
+        setImageUrl(result.imageUrl);
+        applyParsed(result.parsed);
+      }
     } catch (err) {
+      // fileToBase64 (FileReader) can still reject outside the action call.
       setError(err instanceof Error ? err.message : dict.expenses.couldntRead);
     } finally {
       setBusy(false);
@@ -81,20 +87,19 @@ export function ScanReceiptForm({
     if (!base64 || !mimeType || !parsed || !correction.trim()) return;
     setBusy(true);
     setError(null);
-    try {
-      const updated = await correctReceipt({
-        base64,
-        mimeType,
-        priorParse: parsed,
-        correction,
-      });
+    const updated = await correctReceipt({
+      base64,
+      mimeType,
+      priorParse: parsed,
+      correction,
+    });
+    if (isActionError(updated)) {
+      setError(updated.error);
+    } else {
       applyParsed(updated);
       setCorrection("");
-    } catch (err) {
-      setError(err instanceof Error ? err.message : dict.expenses.couldntCorrect);
-    } finally {
-      setBusy(false);
     }
+    setBusy(false);
   }
 
   function toggleItemParticipant(itemIndex: number, memberId: string) {
@@ -115,25 +120,25 @@ export function ScanReceiptForm({
     if (!parsed || !imageUrl || hasUnclaimedItem) return;
     setBusy(true);
     setError(null);
-    try {
-      const claimed = parsed.items.map((item, i) => ({
-        label: item.label,
-        amountCents: item.amountCents,
-        participantIds: itemParticipants[i],
-      }));
-      const itemizedShares = buildItemizedShares(claimed, parsed.totalCents);
+    const claimed = parsed.items.map((item, i) => ({
+      label: item.label,
+      amountCents: item.amountCents,
+      participantIds: itemParticipants[i],
+    }));
+    const itemizedShares = buildItemizedShares(claimed, parsed.totalCents);
 
-      await addItemizedExpense({
-        groupId,
-        title: parsed.title,
-        paidById,
-        receiptImageUrl: imageUrl,
-        items: itemizedShares,
-      });
-      router.push(`/groups/${groupId}`);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : dict.common.somethingWrong);
+    const result = await addItemizedExpense({
+      groupId,
+      title: parsed.title,
+      paidById,
+      receiptImageUrl: imageUrl,
+      items: itemizedShares,
+    });
+    if (isActionError(result)) {
+      setError(result.error);
       setBusy(false);
+    } else {
+      router.push(`/groups/${groupId}`);
     }
   }
 

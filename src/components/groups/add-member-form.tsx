@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { addMemberByEmail } from "@/lib/actions/groups";
+import { isActionError } from "@/lib/action-result";
 import type { Dictionary } from "@/lib/dictionary";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -17,15 +18,14 @@ export function AddMemberForm({ groupId, dict }: { groupId: string; dict: Dictio
     e.preventDefault();
     setPending(true);
     setError(null);
-    try {
-      await addMemberByEmail(groupId, email);
+    const result = await addMemberByEmail(groupId, email);
+    if (isActionError(result)) {
+      setError(result.error);
+    } else {
       setEmail("");
       router.refresh();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : dict.common.somethingWrong);
-    } finally {
-      setPending(false);
     }
+    setPending(false);
   }
 
   return (

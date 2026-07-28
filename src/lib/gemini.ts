@@ -4,6 +4,7 @@ import {
   createUserContent,
   createPartFromBase64,
 } from "@google/genai";
+import { ApiError } from "@/lib/api-error";
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
@@ -27,9 +28,13 @@ export function isQuotaExhaustedError(error: unknown): boolean {
   return text.includes('"code":429') || text.includes("RESOURCE_EXHAUSTED");
 }
 
-export class AiUnavailableError extends Error {
+// Extends ApiError, not Error, specifically so it's caught by the same
+// asActionResult() boundary as every other expected/safe-to-show error — a
+// second special-cased class here would mean a second place that needs
+// remembering when wiring up a new action.
+export class AiUnavailableError extends ApiError {
   constructor(message: string) {
-    super(message);
+    super(503, message);
     this.name = "AiUnavailableError";
   }
 }

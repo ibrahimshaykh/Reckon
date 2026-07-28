@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { addManualExpense } from "@/lib/actions/expenses";
+import { isActionError } from "@/lib/action-result";
 import { toCents } from "@/lib/money";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -44,19 +45,19 @@ export function AddExpenseForm({
     e.preventDefault();
     setPending(true);
     setError(null);
-    try {
-      await addManualExpense({
-        groupId,
-        title,
-        totalCents: toCents(Number(amount)),
-        paidById,
-        participantIds,
-        splitType: "EQUAL",
-      });
-      router.push(`/groups/${groupId}`);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : dict.common.somethingWrong);
+    const result = await addManualExpense({
+      groupId,
+      title,
+      totalCents: toCents(Number(amount)),
+      paidById,
+      participantIds,
+      splitType: "EQUAL",
+    });
+    if (isActionError(result)) {
+      setError(result.error);
       setPending(false);
+    } else {
+      router.push(`/groups/${groupId}`);
     }
   }
 

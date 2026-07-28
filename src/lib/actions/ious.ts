@@ -9,6 +9,7 @@ import { ApiError } from "@/lib/api-error";
 import { fromCents } from "@/lib/money";
 import { validate, cuid, positiveCents } from "@/lib/validation";
 import { recalculateSettlements } from "@/lib/actions/settlements";
+import { asActionResult, type ActionResult } from "@/lib/action-result";
 
 const addIOUSchema = z.object({
   groupId: cuid,
@@ -22,27 +23,29 @@ export async function addIOU(input: {
   owedByUserId: string;
   amountCents: number;
   note?: string;
-}) {
-  const session = await requireSession();
-  const valid = validate(addIOUSchema, input);
-  await assertMember(valid.groupId, session.id);
-  if (valid.owedByUserId === session.id) {
-    throw new ApiError(400, "You can't lend to yourself.");
-  }
+}): Promise<ActionResult<void>> {
+  return asActionResult(async () => {
+    const session = await requireSession();
+    const valid = validate(addIOUSchema, input);
+    await assertMember(valid.groupId, session.id);
+    if (valid.owedByUserId === session.id) {
+      throw new ApiError(400, "You can't lend to yourself.");
+    }
 
-  await db.iOU.create({
-    data: {
-      groupId: valid.groupId,
-      fromUserId: valid.owedByUserId,
-      toUserId: session.id,
-      amount: fromCents(valid.amountCents),
-      note: valid.note,
-    },
+    await db.iOU.create({
+      data: {
+        groupId: valid.groupId,
+        fromUserId: valid.owedByUserId,
+        toUserId: session.id,
+        amount: fromCents(valid.amountCents),
+        note: valid.note,
+      },
+    });
+
+    await recalculateSettlements(input.groupId);
+    revalidatePath(`/groups/${input.groupId}/ious`);
+    revalidatePath(`/groups/${input.groupId}/settle`);
   });
-
-  await recalculateSettlements(input.groupId);
-  revalidatePath(`/groups/${input.groupId}/ious`);
-  revalidatePath(`/groups/${input.groupId}/settle`);
 }
 
 export async function listIOUs(groupId: string) {
@@ -70,15 +73,17 @@ export async function listIOUs(groupId: string) {
 // Only the person owed can forgive a debt — dimmed/struck-through in the
 // list rather than deleted, so the history stays visible instead of
 // silently vanishing.
-export async function forgiveIOU(iouId: string) {
-  const session = await requireSession();
-  const iou = await db.iOU.findUniqueOrThrow({ where: { id: iouId } });
-  if (iou.toUserId !== session.id) {
-    throw new ApiError(403, "Only the person owed can forgive this.");
-  }
+export async function forgiveIOU(iouId: string): Promise<ActionResult<void>> {
+  return asActionResult(async () => {
+    const session = await requireSession();
+    const iou = await db.iOU.findUniqueOrThrow({ where: { id: iouId } });
+    if (iou.toUserId !== session.id) {
+      throw new ApiError(403, "Only the person owed can forgive this.");
+    }
 
-  await db.iOU.update({ where: { id: iouId }, data: { forgivenAt: new Date() } });
-  await recalculateSettlements(iou.groupId);
-  revalidatePath(`/groups/${iou.groupId}/ious`);
-  revalidatePath(`/groups/${iou.groupId}/settle`);
+    await db.iOU.update({ where: { id: iouId }, data: { forgivenAt: new Date() } });
+    await recalculateSettlements(iou.groupId);
+    revalidatePath(`/groups/${iou.groupId}/ious`);
+    revalidatePath(`/groups/${iou.groupId}/settle`);
+  });
 }

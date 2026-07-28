@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { addIOU } from "@/lib/actions/ious";
+import { isActionError } from "@/lib/action-result";
 import { toCents, formatMoney } from "@/lib/money";
 import type { Dictionary } from "@/lib/dictionary";
 import { Input } from "@/components/ui/input";
@@ -49,21 +50,20 @@ export function AddIOUForm({
     e.preventDefault();
     setPending(true);
     setError(null);
-    try {
-      await addIOU({
-        groupId,
-        owedByUserId,
-        amountCents: toCents(Number(amount)),
-        note: note || undefined,
-      });
+    const result = await addIOU({
+      groupId,
+      owedByUserId,
+      amountCents: toCents(Number(amount)),
+      note: note || undefined,
+    });
+    if (isActionError(result)) {
+      setError(result.error);
+    } else {
       setAmount("");
       setNote("");
       router.refresh();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : dict.common.somethingWrong);
-    } finally {
-      setPending(false);
     }
+    setPending(false);
   }
 
   if (others.length === 0) {
