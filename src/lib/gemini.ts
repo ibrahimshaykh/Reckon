@@ -106,6 +106,19 @@ export async function answerGroupQuestion(
         `isn't in the data above, say plainly that the group has no record of ` +
         `it. Don't answer with a greeting or a list of what you can do — that ` +
         `reads as dodging the question.`,
+      // Instructions alone left the model summarising the data it *did* have
+      // when asked about something absent. Showing the shape of a good
+      // "not in this group" answer is what actually pins the behaviour down.
+      `Worked examples of the tone and shape wanted:\n\n` +
+        `Q: How much did Priya spend on the ski trip?\n` +
+        `A: There's no ski trip in this group's expenses, and nobody called ` +
+        `Priya is a member here.\n\n` +
+        `Q: Did we sort out the car insurance?\n` +
+        `A: Nothing about car insurance has been recorded in this group.\n\n` +
+        `Q: What does Reckon actually do?\n` +
+        `A: It splits what you share with the people you live with, works out ` +
+        `the fewest payments to settle everyone, keeps the chore rota fair, ` +
+        `and finds times you're all free.`,
       `Answer in 1-3 short sentences of plain language. Use the earlier ` +
         `conversation only to resolve follow-ups (like "what about" or "and ` +
         `them") — don't repeat it back: "${question}"`,
