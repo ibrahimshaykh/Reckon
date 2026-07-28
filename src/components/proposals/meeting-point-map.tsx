@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import L from "leaflet";
 import { useTheme } from "next-themes";
-import { Expand, Locate, Minimize2 } from "lucide-react";
+import { Expand, Locate, Minimize2, Search } from "lucide-react";
 import type { Dictionary } from "@/lib/dictionary";
 import { interpolate } from "@/lib/i18n";
 import "leaflet/dist/leaflet.css";
@@ -61,21 +61,40 @@ function FitBounds({ points }: { points: [number, number][] }) {
   return null;
 }
 
-// Scroll-zoom stays off until the map is clicked, so scrolling the page over
-// a map doesn't trap the scroll — then it behaves like any modern map.
-function DeferredScrollZoom({ onActivate }: { onActivate: () => void }) {
+// Scrolling over the map moves the map, in whatever direction you scroll —
+// the pointer drags the world rather than the page. Zoom is deliberately not
+// on the wheel by default: it's behind the zoom toggle (or ctrl/⌘+scroll),
+// so a stray scroll can never blow the framing away.
+function WheelControl({ zoomMode }: { zoomMode: boolean }) {
   const map = useMap();
+
   useEffect(() => {
-    const enable = () => {
-      map.scrollWheelZoom.enable();
-      onActivate();
+    const el = map.getContainer();
+
+    const onWheel = (e: WheelEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      if (zoomMode || e.ctrlKey || e.metaKey) {
+        const point = map.mouseEventToContainerPoint(e);
+        const direction = e.deltaY < 0 ? 1 : -1;
+        map.setZoomAround(
+          map.containerPointToLatLng(point),
+          map.getZoom() + direction * 0.6,
+          { animate: true },
+        );
+        return;
+      }
+
+      map.panBy([e.deltaX, e.deltaY], { animate: false });
     };
-    map.on("click", enable);
-    map.on("mouseout", () => map.scrollWheelZoom.disable());
-    return () => {
-      map.off("click", enable);
-    };
-  }, [map, onActivate]);
+
+    // Non-passive so preventDefault actually holds, and capture so the
+    // page's smooth-scroll library doesn't claim the gesture first.
+    el.addEventListener("wheel", onWheel, { passive: false, capture: true });
+    return () => el.removeEventListener("wheel", onWheel, { capture: true });
+  }, [map, zoomMode]);
+
   return null;
 }
 
@@ -83,10 +102,14 @@ function MapActions({
   points,
   expanded,
   onToggleExpand,
+  zoomMode,
+  onToggleZoomMode,
 }: {
   points: [number, number][];
   expanded: boolean;
   onToggleExpand: () => void;
+  zoomMode: boolean;
+  onToggleZoomMode: () => void;
 }) {
   const map = useMap();
 
@@ -103,6 +126,20 @@ function MapActions({
 
   return (
     <div className="absolute right-3 top-3 z-[400] flex flex-col gap-1.5">
+      <button
+        type="button"
+        onClick={onToggleZoomMode}
+        title={zoomMode ? "Scroll pans the map" : "Scroll zooms the map"}
+        aria-label={zoomMode ? "Switch scroll to panning" : "Switch scroll to zooming"}
+        aria-pressed={zoomMode}
+        className={`grid size-9 place-items-center rounded-xl border shadow-lg backdrop-blur transition-colors ${
+          zoomMode
+            ? "border-primary bg-primary text-primary-foreground"
+            : "border-rule bg-card/85 text-foreground hover:bg-accent"
+        }`}
+      >
+        <Search className="size-4" />
+      </button>
       <button
         type="button"
         onClick={fit}
@@ -136,7 +173,7 @@ export function MeetingPointMap({
 }) {
   const { resolvedTheme } = useTheme();
   const [expanded, setExpanded] = useState(false);
-  const [interactive, setInteractive] = useState(false);
+  const [zoomMode, setZoomMode] = useState(false);
 
   const points = useMemo(
     () => [
@@ -176,11 +213,13 @@ export function MeetingPointMap({
             url={tileUrl}
           />
           <FitBounds points={points} />
-          <DeferredScrollZoom onActivate={() => setInteractive(true)} />
+          <WheelControl zoomMode={zoomMode} />
           <MapActions
             points={points}
             expanded={expanded}
             onToggleExpand={() => setExpanded((v) => !v)}
+            zoomMode={zoomMode}
+            onToggleZoomMode={() => setZoomMode((v) => !v)}
           />
 
           {homes.map((h) => (
@@ -235,11 +274,9 @@ export function MeetingPointMap({
           ))}
         </MapContainer>
 
-        {!interactive && (
-          <p className="pointer-events-none absolute left-3 top-3 z-[400] rounded-lg border border-rule bg-card/85 px-2.5 py-1.5 font-mono text-[0.625rem] uppercase tracking-[0.14em] text-muted-foreground shadow-lg backdrop-blur">
-            Click to zoom with scroll
-          </p>
-        )}
+        <p className="pointer-events-none absolute left-3 top-3 z-[400] rounded-lg border border-rule bg-card/85 px-2.5 py-1.5 font-mono text-[0.625rem] uppercase tracking-[0.14em] text-muted-foreground shadow-lg backdrop-blur">
+          {zoomMode ? "Scroll to zoom" : "Scroll to move · ⌘/ctrl to zoom"}
+        </p>
       </div>
 
       <figcaption className="flex flex-wrap items-center gap-x-4 gap-y-1 font-mono text-[0.625rem] uppercase tracking-[0.14em] text-muted-foreground">
