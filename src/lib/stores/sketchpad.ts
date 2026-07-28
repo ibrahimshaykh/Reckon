@@ -7,6 +7,9 @@ import { create } from "zustand";
 // sketchpad is a *record* of what happened, not a source of truth. Nothing
 // here should ever drive real behaviour — if this store were lost the app must
 // still work identically, only with a blank margin.
+//
+// The shape mirrors how you'd actually annotate a notebook: a heading for the
+// place you're in, and under it, a running list of what you did there.
 // ---------------------------------------------------------------------------
 
 /** The colored-pencil tin. Every doodle picks one of these. */
@@ -20,117 +23,107 @@ export const PENCILS = {
 
 export type Pencil = keyof typeof PENCILS;
 
-const PENCIL_CYCLE: Pencil[] = ["indigo", "cherry", "forest", "sunshine"];
+const PENCIL_CYCLE: Pencil[] = ["indigo", "forest", "cherry", "sunshine"];
 
-export type Crumb = {
+/** Something the reader did while they were on that page. */
+export type Jotting = {
   id: string;
-  /** What gets written in the margin, e.g. "Who owes who". */
-  label: string;
-  href: string;
-  /** How deep in the path this step sits — drives indent and size. */
-  depth: number;
-  pencil: Pencil;
-  /** Older steps get scribbled out rather than removed. */
-  struck: boolean;
+  text: string;
+  /** A tick reads as finished; a dash reads as noted-in-passing. */
+  done: boolean;
 };
 
-export type MarginItem = {
+export type Entry = {
   id: string;
-  kind: "expense" | "group" | "person" | "chore" | "note";
+  /** The heading, e.g. "Who owes who". */
   label: string;
-  detail?: string;
+  href: string;
+  depth: number;
   pencil: Pencil;
-  /** Placement in the margin, as a percentage of the viewport. */
-  x: number;
-  y: number;
-  rot: number;
-  /** How it's attached to the paper. */
-  fixing: "tape" | "pin" | "staple";
+  /** Left behind once you've moved on — crossed out, never deleted. */
+  struck: boolean;
+  jottings: Jotting[];
 };
 
 type SketchpadState = {
-  trail: Crumb[];
-  items: MarginItem[];
-  /** Bumped whenever the top-level section changes, to trigger a page turn. */
+  entries: Entry[];
   section: string;
   turnKey: number;
 
   visitRoute: (pathname: string, label: string, section: string) => void;
-  pin: (item: Pick<MarginItem, "kind" | "label" | "detail">) => void;
-  unpin: (id: string) => void;
+  /** Records an action under whichever page the reader is currently on. */
+  jot: (text: string, done?: boolean) => void;
   clear: () => void;
 };
 
 let seq = 0;
 const nextId = () => `sp-${++seq}`;
 
-// Margins only — the middle of the page belongs to the app. Items land in the
-// left or right gutter, biased away from the top where breadcrumbs live.
-function scatter(index: number) {
-  const rightSide = index % 2 === 1;
-  return {
-    x: rightSide ? 79 + ((index * 7) % 11) : 2 + ((index * 5) % 9),
-    y: 28 + ((index * 23) % 56),
-    rot: ((index * 37) % 16) - 8,
-  };
-}
-
-const FIXINGS: MarginItem["fixing"][] = ["tape", "pin", "staple"];
+// Four is enough to show a trail without the page becoming a wall of text —
+// and it's how many resting places the layout has around the edges.
+const MAX_ENTRIES = 4;
+const MAX_JOTTINGS = 4;
 
 export const useSketchpad = create<SketchpadState>((set) => ({
-  trail: [],
-  items: [],
+  entries: [],
   section: "",
   turnKey: 0,
 
   visitRoute: (pathname, label, section) =>
     set((state) => {
-      // Revisiting the same place shouldn't stack duplicates in the margin.
-      if (state.trail.at(-1)?.href === pathname) return state;
+      if (state.entries.at(-1)?.href === pathname) return state;
 
       const depth = Math.max(0, pathname.split("/").filter(Boolean).length - 1);
 
-      // Anything at the same depth or deeper is now historical — strike it
-      // through rather than deleting, so the page keeps a visible record of
-      // the route taken to get here.
-      const struckTrail = state.trail.map((c) =>
-        c.depth >= depth ? { ...c, struck: true } : c,
+      // Revisiting somewhere shouldn't write it twice. Drop the old copy and
+      // re-add it at the end, carrying its jottings across so the record of
+      // what you did there survives the round trip.
+      const previous = state.entries.find((e) => e.href === pathname);
+      const withoutDuplicate = state.entries.filter((e) => e.href !== pathname);
+
+      const struck = withoutDuplicate.map((e) =>
+        e.depth >= depth ? { ...e, struck: true } : e,
       );
 
-      const crumb: Crumb = {
-        id: nextId(),
+      const entry: Entry = {
+        id: previous?.id ?? nextId(),
         label,
         href: pathname,
         depth,
-        pencil: PENCIL_CYCLE[struckTrail.length % PENCIL_CYCLE.length],
+        pencil: previous?.pencil ?? PENCIL_CYCLE[struck.length % PENCIL_CYCLE.length],
         struck: false,
+        jottings: previous?.jottings ?? [],
       };
 
       const sectionChanged = state.section !== "" && section !== state.section;
 
       return {
-        // Six is about what fits down the margin before it turns to mush.
-        trail: [...struckTrail, crumb].slice(-6),
+        entries: [...struck, entry].slice(-MAX_ENTRIES),
         section,
         turnKey: sectionChanged ? state.turnKey + 1 : state.turnKey,
       };
     }),
 
-  pin: (item) =>
+  jot: (text, done = true) =>
     set((state) => {
-      const index = state.items.length;
-      const placed: MarginItem = {
-        ...item,
-        id: nextId(),
-        pencil: PENCIL_CYCLE[index % PENCIL_CYCLE.length],
-        fixing: FIXINGS[index % FIXINGS.length],
-        ...scatter(index),
+      if (state.entries.length === 0) return state;
+
+      const index = state.entries.length - 1;
+      const current = state.entries[index];
+
+      // Don't repeat the same note twice in a row — doing the same thing
+      // again should read as one line, not a stutter.
+      if (current.jottings.at(-1)?.text === text) return state;
+
+      const updated: Entry = {
+        ...current,
+        jottings: [...current.jottings, { id: nextId(), text, done }].slice(-MAX_JOTTINGS),
       };
-      // Cap it: past a point the margin is full and older notes get painted
-      // over, which is also what happens to a real notebook.
-      return { items: [...state.items, placed].slice(-8) };
+
+      const entries = [...state.entries];
+      entries[index] = updated;
+      return { entries };
     }),
 
-  unpin: (id) => set((state) => ({ items: state.items.filter((i) => i.id !== id) })),
-  clear: () => set({ trail: [], items: [] }),
+  clear: () => set({ entries: [], section: "", turnKey: 0 }),
 }));

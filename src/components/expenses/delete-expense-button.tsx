@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Trash2 } from "lucide-react";
 import { deleteExpense } from "@/lib/actions/expenses";
+import { useSketchpad } from "@/lib/stores/sketchpad";
 import type { Dictionary } from "@/lib/dictionary";
 import { interpolate } from "@/lib/i18n";
 
@@ -21,6 +22,7 @@ export function DeleteExpenseButton({
   dict: Dictionary;
 }) {
   const router = useRouter();
+  const jot = useSketchpad((s) => s.jot);
   const [armed, setArmed] = useState(false);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -30,6 +32,7 @@ export function DeleteExpenseButton({
     setError(null);
     try {
       await deleteExpense(expenseId);
+      jot(`Deleted "${title}"`);
       router.refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : dict.common.somethingWrong);

@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import type { Dictionary } from "@/lib/dictionary";
 import { interpolate } from "@/lib/i18n";
+import { useSketchpad } from "@/lib/stores/sketchpad";
 
 type SourceCounts = { expenses: number; chores: number; proposals: number; ious: number };
 // sourceCounts is null when the turn is an error rather than a real answer —
@@ -19,6 +20,7 @@ export function AskForm({ groupId, dict }: { groupId: string; dict: Dictionary }
     dict.ask.suggested3,
     dict.ask.suggested4,
   ];
+  const jot = useSketchpad((s) => s.jot);
   const [question, setQuestion] = useState("");
   const [turns, setTurns] = useState<Turn[]>([]);
   const [pending, setPending] = useState(false);
@@ -31,6 +33,9 @@ export function AskForm({ groupId, dict }: { groupId: string; dict: Dictionary }
       const history = turns.map((t) => ({ question: t.question, answer: t.answer }));
       const result = await askGroupQuestion(groupId, q, history);
       setTurns((prev) => [...prev, { question: q, answer: result.answer, sourceCounts: result.sourceCounts }]);
+      // The margin keeps the question, not the answer — it's the thing you'd
+      // want to glance back at to remember what you were chasing.
+      jot(q.length > 42 ? `${q.slice(0, 42).trimEnd()}…` : q);
     } catch (error) {
       // Without this the question simply vanished on failure — no answer and
       // no explanation. Running out of the daily AI quota is a normal thing

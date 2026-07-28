@@ -16,7 +16,7 @@ export function ShareExpenseButton({
   expenseTitle?: string;
   dict: Dictionary;
 }) {
-  const pin = useSketchpad((s) => s.pin);
+  const jot = useSketchpad((s) => s.jot);
   const [guestName, setGuestName] = useState("");
   const [link, setLink] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
@@ -28,13 +28,9 @@ export function ShareExpenseButton({
     try {
       const path = await createGuestLink({ expenseId, guestName });
       setLink(`${window.location.origin}${path}`);
-      // Throw a record of it into the margin — sharing is exactly the kind of
-      // thing you want to still see evidence of three screens later.
-      pin({
-        kind: "expense",
-        label: expenseTitle ?? dict.expenses.shareButton,
-        detail: `shared with ${guestName.trim()}`,
-      });
+      // Record it in the margin — sharing is exactly the sort of thing you
+      // want evidence of three screens later.
+      jot(`Shared "${expenseTitle ?? "expense"}" with ${guestName.trim()}`);
     } finally {
       setPending(false);
     }
