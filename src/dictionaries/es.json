@@ -2,7 +2,8 @@
   "nav": {
     "appName": "Reckon",
     "settings": "Configuración",
-    "signIn": "Iniciar sesión"
+    "signIn": "Iniciar sesión",
+    "toggleTheme": "Cambiar modo oscuro"
   },
   "settings": {
     "title": "Configuración",

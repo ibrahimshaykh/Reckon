@@ -13,6 +13,8 @@ import { isRtl } from "@/lib/i18n";
 import { getDictionary } from "@/lib/dictionary";
 import { SmoothScroll } from "@/components/motion/smooth-scroll";
 import { AppNav } from "@/components/app-nav";
+import { ThemeProvider } from "@/components/theme-provider";
+import { ThemeToggle } from "@/components/theme-toggle";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -54,8 +56,10 @@ export default async function RootLayout({
         lang={locale}
         dir={isRtl(locale) ? "rtl" : "ltr"}
         className={`${geistSans.variable} ${geistMono.variable} ${spaceGrotesk.variable} h-full antialiased`}
+        suppressHydrationWarning
       >
         <body className="min-h-full flex flex-col">
+          <ThemeProvider>
           <SmoothScroll />
           <header className="sticky top-0 z-50 flex items-center gap-6 border-b border-rule bg-background/75 px-6 py-3 backdrop-blur-xl">
             <Link
@@ -68,6 +72,7 @@ export default async function RootLayout({
               <AppNav dict={dict} />
             </Show>
             <div className="ml-auto flex shrink-0 items-center gap-3">
+              <ThemeToggle label={dict.nav.toggleTheme} />
               <Show when="signed-in">
                 <Button
                   render={<Link href="/settings" />}
@@ -87,6 +92,7 @@ export default async function RootLayout({
             </div>
           </header>
           <main className="flex flex-1 flex-col">{children}</main>
+          </ThemeProvider>
         </body>
       </html>
     </ClerkProvider>

@@ -2,7 +2,8 @@
   "nav": {
     "appName": "Reckon",
     "settings": "ترتیبات",
-    "signIn": "سائن ان کریں"
+    "signIn": "سائن ان کریں",
+    "toggleTheme": "ڈارک موڈ بدلیں"
   },
   "settings": {
     "title": "ترتیبات",
