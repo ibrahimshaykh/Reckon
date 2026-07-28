@@ -91,6 +91,16 @@
   --negative: oklch(0.6 0.2 28);
   --warm: oklch(0.66 0.19 32);
   --warm-surface: oklch(0.95 0.045 62);
+
+  /* Each feature area carries its own hue so the app reads as a set of
+     distinct places rather than one flat wash of the brand colour. */
+  --feature-money: oklch(0.53 0.235 297);
+  --feature-chores: oklch(0.62 0.16 70);
+  --feature-availability: oklch(0.55 0.16 225);
+  --feature-ious: oklch(0.56 0.15 165);
+  --feature-proposals: oklch(0.57 0.19 350);
+  --feature-ask: oklch(0.56 0.13 195);
+  --feature-recap: oklch(0.62 0.18 35);
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
   --sidebar-primary: oklch(0.205 0 0);
@@ -102,36 +112,47 @@
 }
 
 .dark {
-  --background: oklch(0.185 0.038 305);
-  --foreground: oklch(0.95 0.018 75);
-  --card: oklch(0.235 0.045 303);
-  --card-foreground: oklch(0.95 0.018 75);
-  --popover: oklch(0.235 0.045 303);
-  --popover-foreground: oklch(0.95 0.018 75);
+  /* The same deep plum the landing sits on — warm rather than black, and
+     the ember/violet wash on <body> lifts it further. Variety comes from
+     the per-feature hues below, not from tinting the surface itself. */
+  --background: oklch(0.192 0.042 303);
+  --foreground: oklch(0.96 0.014 85);
+  --card: oklch(0.242 0.048 301);
+  --card-foreground: oklch(0.96 0.014 85);
+  --popover: oklch(0.242 0.048 301);
+  --popover-foreground: oklch(0.96 0.014 85);
   --primary: oklch(0.72 0.185 300);
-  --primary-foreground: oklch(0.18 0.055 300);
-  --secondary: oklch(0.3 0.05 303);
-  --secondary-foreground: oklch(0.95 0.018 75);
-  --muted: oklch(0.3 0.05 303);
-  --muted-foreground: oklch(0.74 0.04 300);
-  --accent: oklch(0.34 0.08 300);
-  --accent-foreground: oklch(0.88 0.11 300);
+  --primary-foreground: oklch(0.17 0.03 300);
+  --secondary: oklch(0.305 0.05 300);
+  --secondary-foreground: oklch(0.96 0.014 85);
+  --muted: oklch(0.305 0.05 300);
+  --muted-foreground: oklch(0.77 0.03 300);
+  --accent: oklch(0.3 0.045 292);
+  --accent-foreground: oklch(0.88 0.1 300);
   --destructive: oklch(0.7 0.19 27);
-  --border: oklch(1 0 0 / 13%);
-  --input: oklch(1 0 0 / 16%);
+  --border: oklch(1 0 0 / 12%);
+  --input: oklch(1 0 0 / 15%);
   --ring: oklch(0.72 0.185 300);
   --chart-1: oklch(0.72 0.185 300);
   --chart-2: oklch(0.74 0.17 40);
   --chart-3: oklch(0.72 0.14 165);
   --chart-4: oklch(0.8 0.15 88);
   --chart-5: oklch(0.68 0.14 235);
-  --ledger: oklch(0.26 0.05 302);
-  --ledger-foreground: oklch(0.78 0.04 300);
-  --rule: oklch(1 0 0 / 15%);
+  --ledger: oklch(0.268 0.055 299);
+  --ledger-foreground: oklch(0.79 0.03 300);
+  --rule: oklch(1 0 0 / 14%);
   --positive: oklch(0.74 0.15 165);
   --negative: oklch(0.72 0.18 28);
-  --warm: oklch(0.75 0.17 40);
-  --warm-surface: oklch(0.3 0.06 45);
+  --warm: oklch(0.77 0.16 55);
+  --warm-surface: oklch(0.29 0.055 50);
+
+  --feature-money: oklch(0.74 0.17 300);
+  --feature-chores: oklch(0.79 0.15 70);
+  --feature-availability: oklch(0.75 0.14 225);
+  --feature-ious: oklch(0.76 0.14 165);
+  --feature-proposals: oklch(0.75 0.16 350);
+  --feature-ask: oklch(0.78 0.13 195);
+  --feature-recap: oklch(0.78 0.15 35);
   --sidebar: oklch(0.205 0 0);
   --sidebar-foreground: oklch(0.985 0 0);
   --sidebar-primary: oklch(0.488 0.243 264.376);
@@ -148,6 +169,21 @@
   }
   body {
     @apply bg-background text-foreground;
+    position: relative;
+  }
+
+  /* The same warm-ember-into-violet wash the landing hero uses, lifted to
+     every page so the app and the front page read as one product. Fixed so
+     it stays put while content scrolls over it. */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+      radial-gradient(60rem 34rem at 8% -6%, var(--warm-surface), transparent 62%),
+      radial-gradient(52rem 32rem at 96% 2%, var(--accent), transparent 64%);
   }
   html {
     @apply font-sans;

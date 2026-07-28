@@ -32,10 +32,6 @@ export function Landing() {
   return (
     <div className="flex flex-col">
       <section className="relative isolate overflow-hidden">
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(75rem_40rem_at_15%_-10%,var(--warm-surface),transparent_60%),radial-gradient(55rem_35rem_at_95%_10%,var(--accent),transparent_65%)]"
-        />
         <div className="mx-auto grid w-full max-w-6xl gap-12 px-6 py-20 md:py-28 lg:grid-cols-[1.05fr_1fr] lg:items-center lg:gap-16">
         <div className="flex flex-col gap-6">
           <p className="w-fit rounded-full border border-warm/30 bg-warm-surface px-3 py-1 font-mono text-[0.6875rem] uppercase tracking-[0.18em] text-warm">

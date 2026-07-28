@@ -78,22 +78,27 @@ export default async function GroupPage({
       </section>
       <nav className="grid grid-cols-2 gap-px overflow-hidden rounded-lg border border-rule bg-rule sm:grid-cols-3">
         {[
-          { href: "chores", label: dict.groupHub.chores },
-          { href: "availability", label: dict.groupHub.availability },
-          { href: "ious", label: dict.groupHub.ious },
-          { href: "proposals", label: dict.groupHub.proposals },
-          { href: "ask", label: dict.groupHub.askAi },
-          { href: "recap", label: dict.groupHub.monthlyRecap },
+          { href: "chores", label: dict.groupHub.chores, tone: "var(--feature-chores)" },
+          { href: "availability", label: dict.groupHub.availability, tone: "var(--feature-availability)" },
+          { href: "ious", label: dict.groupHub.ious, tone: "var(--feature-ious)" },
+          { href: "proposals", label: dict.groupHub.proposals, tone: "var(--feature-proposals)" },
+          { href: "ask", label: dict.groupHub.askAi, tone: "var(--feature-ask)" },
+          { href: "recap", label: dict.groupHub.monthlyRecap, tone: "var(--feature-recap)" },
         ].map((item) => (
           <Link
             key={item.href}
             href={`/groups/${group.id}/${item.href}`}
-            className="group/nav flex items-center justify-between gap-2 bg-card px-4 py-3.5 text-sm font-medium transition-colors hover:bg-accent"
+            style={{ "--tone": item.tone } as React.CSSProperties}
+            className="group/nav relative flex items-center gap-3 bg-card px-4 py-3.5 text-sm font-medium transition-colors before:absolute before:inset-y-0 before:start-0 before:w-[3px] before:bg-[var(--tone)] before:opacity-60 before:transition-opacity hover:bg-[color-mix(in_oklab,var(--tone)_12%,var(--card))] hover:before:opacity-100"
           >
+            <span
+              aria-hidden
+              className="size-1.5 shrink-0 rounded-full bg-[var(--tone)]"
+            />
             <span>{item.label}</span>
             <span
               aria-hidden
-              className="font-mono text-muted-foreground transition-transform group-hover/nav:translate-x-0.5 group-hover/nav:text-primary"
+              className="ml-auto font-mono text-[var(--tone)] transition-transform group-hover/nav:translate-x-0.5"
             >
               →
             </span>
