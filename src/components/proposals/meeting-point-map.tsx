@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import L from "leaflet";
 import { useTheme } from "next-themes";
@@ -86,6 +86,13 @@ function WheelControl({ zoomMode }: { zoomMode: boolean }) {
         return;
       }
 
+      // Shift redirects a wheel's single vertical axis onto the horizontal
+      // one, so a plain mouse can pan sideways as well.
+      if (e.shiftKey) {
+        map.panBy([e.deltaY || e.deltaX, 0], { animate: false });
+        return;
+      }
+
       map.panBy([e.deltaX, e.deltaY], { animate: false });
     };
 
@@ -96,6 +103,83 @@ function WheelControl({ zoomMode }: { zoomMode: boolean }) {
   }, [map, zoomMode]);
 
   return null;
+}
+
+// A mouse wheel only reports vertical movement, so a wheel alone can never
+// express a diagonal. This puck does: drag it any direction and the map
+// glides that way, faster the further you push.
+function PanPuck() {
+  const map = useMap();
+  const [active, setActive] = useState(false);
+  const [knob, setKnob] = useState({ x: 0, y: 0 });
+  const vector = useRef({ x: 0, y: 0 });
+  const frame = useRef<number | null>(null);
+
+  const RADIUS = 26;
+
+  useEffect(() => {
+    if (!active) return;
+
+    const step = () => {
+      const { x, y } = vector.current;
+      if (x || y) map.panBy([x * 0.35, y * 0.35], { animate: false });
+      frame.current = requestAnimationFrame(step);
+    };
+    frame.current = requestAnimationFrame(step);
+
+    return () => {
+      if (frame.current) cancelAnimationFrame(frame.current);
+    };
+  }, [active, map]);
+
+  const track = (e: React.PointerEvent<HTMLDivElement>) => {
+    const box = e.currentTarget.getBoundingClientRect();
+    let dx = e.clientX - (box.left + box.width / 2);
+    let dy = e.clientY - (box.top + box.height / 2);
+
+    const dist = Math.hypot(dx, dy);
+    if (dist > RADIUS) {
+      dx = (dx / dist) * RADIUS;
+      dy = (dy / dist) * RADIUS;
+    }
+    setKnob({ x: dx, y: dy });
+    vector.current = { x: dx, y: dy };
+  };
+
+  const release = (e: React.PointerEvent<HTMLDivElement>) => {
+    e.currentTarget.releasePointerCapture?.(e.pointerId);
+    setActive(false);
+    setKnob({ x: 0, y: 0 });
+    vector.current = { x: 0, y: 0 };
+  };
+
+  return (
+    <div
+      role="application"
+      aria-label="Drag to pan the map in any direction"
+      onPointerDown={(e) => {
+        e.currentTarget.setPointerCapture(e.pointerId);
+        setActive(true);
+        track(e);
+      }}
+      onPointerMove={(e) => active && track(e)}
+      onPointerUp={release}
+      onPointerCancel={release}
+      className="absolute bottom-3 left-3 z-[400] grid size-[72px] cursor-grab touch-none place-items-center rounded-full border border-rule bg-card/80 shadow-lg backdrop-blur active:cursor-grabbing"
+    >
+      <span
+        aria-hidden
+        className="pointer-events-none absolute inset-2 rounded-full border border-dashed border-rule"
+      />
+      <span
+        aria-hidden
+        style={{ transform: `translate(${knob.x}px, ${knob.y}px)` }}
+        className={`pointer-events-none size-6 rounded-full bg-primary shadow-md ${
+          active ? "" : "transition-transform duration-200"
+        }`}
+      />
+    </div>
+  );
 }
 
 function MapActions({
@@ -214,6 +298,7 @@ export function MeetingPointMap({
           />
           <FitBounds points={points} />
           <WheelControl zoomMode={zoomMode} />
+          <PanPuck />
           <MapActions
             points={points}
             expanded={expanded}
