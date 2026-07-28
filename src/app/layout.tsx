@@ -12,6 +12,7 @@ import { getSession } from "@/lib/dal";
 import { isRtl } from "@/lib/i18n";
 import { getDictionary } from "@/lib/dictionary";
 import { SmoothScroll } from "@/components/motion/smooth-scroll";
+import { AppNav } from "@/components/app-nav";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -56,14 +57,17 @@ export default async function RootLayout({
       >
         <body className="min-h-full flex flex-col">
           <SmoothScroll />
-          <header className="sticky top-0 z-50 flex items-center justify-between border-b border-rule bg-background/80 px-6 py-3 backdrop-blur-md">
+          <header className="sticky top-0 z-50 flex items-center gap-6 border-b border-rule bg-background/75 px-6 py-3 backdrop-blur-xl">
             <Link
               href="/"
-              className="font-heading text-[0.9375rem] font-semibold tracking-[-0.01em]"
+              className="shrink-0 font-heading text-[0.9375rem] font-semibold tracking-[-0.01em]"
             >
               {dict.nav.appName}
             </Link>
-            <div className="flex items-center gap-3">
+            <Show when="signed-in">
+              <AppNav dict={dict} />
+            </Show>
+            <div className="ml-auto flex shrink-0 items-center gap-3">
               <Show when="signed-in">
                 <Button
                   render={<Link href="/settings" />}

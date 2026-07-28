@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Reveal } from "@/components/motion/reveal";
+import { TextReveal } from "@/components/motion/text-reveal";
+import { CountUp } from "@/components/motion/count-up";
 import { SettleDemo } from "@/components/landing/settle-demo";
 
 // Each pillar is labelled by what it actually computes — the label carries
@@ -40,9 +42,9 @@ export function Landing() {
             For people who share a roof
           </p>
           <h1 className="text-5xl font-semibold leading-[0.95] md:text-6xl lg:text-7xl">
-            Five debts.
+            <TextReveal text="Five debts." delay={0.05} />
             <br />
-            <span className="text-primary">Two payments.</span>
+            <TextReveal text="Two payments." accentFrom={0} delay={0.2} />
           </h1>
           <p className="max-w-prose text-lg leading-relaxed text-muted-foreground">
             Reckon works out the fewest transfers that settle everyone, then
@@ -67,7 +69,30 @@ export function Landing() {
         </div>
       </section>
 
-      <section className="border-y border-rule bg-card">
+      <section className="border-y border-rule bg-card/60">
+        <dl className="mx-auto grid w-full max-w-6xl gap-px bg-rule sm:grid-cols-3">
+          {[
+            { value: 60, suffix: "s", label: "to set a group up", tone: "var(--primary)" },
+            { value: 4, suffix: "", label: "ways to pay, all yours already", tone: "var(--warm)" },
+            { value: 0, suffix: "", label: "accounts needed to see what you owe", tone: "var(--positive)" },
+          ].map((stat, i) => (
+            <Reveal key={stat.label} delay={i * 0.08}>
+              <div className="flex h-full flex-col gap-1 bg-card p-6 sm:p-8">
+                <dt className="sr-only">{stat.label}</dt>
+                <dd
+                  className="font-heading text-5xl font-semibold"
+                  style={{ color: stat.tone }}
+                >
+                  <CountUp to={stat.value} suffix={stat.suffix} />
+                </dd>
+                <p className="text-sm text-muted-foreground">{stat.label}</p>
+              </div>
+            </Reveal>
+          ))}
+        </dl>
+      </section>
+
+      <section className="border-b border-rule bg-card">
         <div className="mx-auto flex w-full max-w-6xl flex-col gap-10 px-6 py-20 md:py-24 lg:flex-row lg:gap-16">
           <Reveal className="lg:w-[38%]">
             <h2 className="text-3xl font-semibold md:text-4xl">

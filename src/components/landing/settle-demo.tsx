@@ -1,7 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { AnimatePresence, motion } from "motion/react";
+import {
+  AnimatePresence,
+  motion,
+  useMotionValueEvent,
+  useScroll,
+} from "motion/react";
 
 // The thesis of the whole product, animated: a tangle of who-paid-what
 // collapsing into the fewest transfers that clear everyone. These are the
@@ -22,21 +27,38 @@ const RESOLVED = [
 export function SettleDemo() {
   const [resolved, setResolved] = useState(false);
   const [still, setStill] = useState(false);
+  const [manual, setManual] = useState(false);
+
+  // Scrolling through the hero performs the reckoning: the tangle holds while
+  // the headline is being read, then collapses as the section leaves. Tapping
+  // the panel takes over so it never feels locked to the scrollbar.
+  const { scrollYProgress } = useScroll();
+
+  useMotionValueEvent(scrollYProgress, "change", (v) => {
+    if (manual || still) return;
+    setResolved(v > 0.045);
+  });
 
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       setStill(true);
       setResolved(true);
-      return;
     }
-    const id = setInterval(() => setResolved((v) => !v), 3400);
-    return () => clearInterval(id);
   }, []);
 
   const rows = resolved ? RESOLVED : TANGLED;
 
   return (
-    <div className="ledger-panel w-full rounded-r-xl p-5 sm:p-6">
+    <button
+      type="button"
+      onClick={() => {
+        if (still) return;
+        setManual(true);
+        setResolved((v) => !v);
+      }}
+      aria-label={resolved ? "Show the debts before reckoning" : "Reckon these debts"}
+      className="ledger-panel group/demo w-full cursor-pointer rounded-r-xl p-5 text-left shadow-[0_1px_0_var(--rule),0_18px_50px_-28px_var(--primary)] transition-shadow hover:shadow-[0_1px_0_var(--rule),0_26px_60px_-24px_var(--primary)] sm:p-6"
+    >
       {/* The whole panel swaps as one unit — the state label, the row count
           and the rows themselves must never disagree on screen. */}
       <AnimatePresence mode="wait" initial={false}>
@@ -87,11 +109,14 @@ export function SettleDemo() {
             ))}
           </ul>
 
-          <p className="border-t border-rule pt-3 font-mono text-[0.6875rem] uppercase tracking-[0.14em] text-muted-foreground">
-            {resolved ? "Nobody is left out of pocket" : "Before reckoning"}
+          <p className="flex items-center justify-between gap-3 border-t border-rule pt-3 font-mono text-[0.6875rem] uppercase tracking-[0.14em] text-muted-foreground">
+            <span>{resolved ? "Nobody is left out of pocket" : "Before reckoning"}</span>
+            <span className="opacity-0 transition-opacity group-hover/demo:opacity-100">
+              {resolved ? "Undo" : "Reckon"}
+            </span>
           </p>
         </motion.div>
       </AnimatePresence>
-    </div>
+    </button>
   );
 }
