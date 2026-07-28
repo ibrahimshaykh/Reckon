@@ -71,13 +71,43 @@ function WheelControl({ zoomMode }: { zoomMode: boolean }) {
   useEffect(() => {
     const el = map.getContainer();
 
-    // Leaflet rounds the offset it's given, so a diagonal swipe's smaller
-    // axis (often well under 1px per event) was being floored to zero and
-    // the gesture collapsed onto whichever axis dominated. Carrying the
-    // fractional remainder between events keeps both axes alive, so any
-    // angle pans at that angle instead of snapping to up/down/left/right.
+    // Touchpads rarely report a clean diagonal: Windows precision pads tend
+    // to emit alternating axis-pure events (one horizontal, the next
+    // vertical) rather than one event carrying both. Panning per-event
+    // therefore reads as a cardinal zigzag. Feeding deltas into a velocity
+    // that decays over a few frames blends those alternating events back
+    // into the diagonal the fingers actually described — and gives the pan
+    // some weight as a side effect.
+    let velX = 0;
+    let velY = 0;
     let carryX = 0;
     let carryY = 0;
+    let frame: number | null = null;
+
+    const glide = () => {
+      // Sub-pixel remainder is carried between frames, since Leaflet rounds
+      // whatever offset it's handed and would otherwise discard slow drift.
+      carryX += velX * 0.28;
+      carryY += velY * 0.28;
+
+      const stepX = Math.trunc(carryX);
+      const stepY = Math.trunc(carryY);
+      if (stepX || stepY) {
+        carryX -= stepX;
+        carryY -= stepY;
+        map.panBy([stepX, stepY], { animate: false });
+      }
+
+      velX *= 0.86;
+      velY *= 0.86;
+
+      if (Math.abs(velX) > 0.05 || Math.abs(velY) > 0.05) {
+        frame = requestAnimationFrame(glide);
+      } else {
+        velX = velY = 0;
+        frame = null;
+      }
+    };
 
     // Deltas arrive in different units depending on the device; normalise
     // line- and page-based wheels to something comparable to pixels.
@@ -89,7 +119,7 @@ function WheelControl({ zoomMode }: { zoomMode: boolean }) {
       e.stopPropagation();
 
       if (zoomMode || e.ctrlKey || e.metaKey) {
-        carryX = carryY = 0;
+        velX = velY = carryX = carryY = 0;
         const point = map.mouseEventToContainerPoint(e);
         const direction = e.deltaY < 0 ? 1 : -1;
         map.setZoomAround(
@@ -110,22 +140,18 @@ function WheelControl({ zoomMode }: { zoomMode: boolean }) {
         dy = 0;
       }
 
-      carryX += dx;
-      carryY += dy;
-
-      const stepX = Math.trunc(carryX);
-      const stepY = Math.trunc(carryY);
-      if (!stepX && !stepY) return;
-
-      carryX -= stepX;
-      carryY -= stepY;
-      map.panBy([stepX, stepY], { animate: false });
+      velX += dx;
+      velY += dy;
+      if (frame === null) frame = requestAnimationFrame(glide);
     };
 
     // Non-passive so preventDefault actually holds, and capture so the
     // page's smooth-scroll library doesn't claim the gesture first.
     el.addEventListener("wheel", onWheel, { passive: false, capture: true });
-    return () => el.removeEventListener("wheel", onWheel, { capture: true });
+    return () => {
+      el.removeEventListener("wheel", onWheel, { capture: true });
+      if (frame !== null) cancelAnimationFrame(frame);
+    };
   }, [map, zoomMode]);
 
   return null;
@@ -308,7 +334,7 @@ export function MeetingPointMap({
         </MapContainer>
 
         <p className="pointer-events-none absolute left-3 top-3 z-[400] rounded-lg border border-rule bg-card/85 px-2.5 py-1.5 font-mono text-[0.625rem] uppercase tracking-[0.14em] text-muted-foreground shadow-lg backdrop-blur">
-          {zoomMode ? "Scroll to zoom" : "Drag to move any way · ⌘/ctrl+scroll to zoom"}
+          {zoomMode ? "Scroll to zoom" : "Two-finger scroll to move · ⌘/ctrl to zoom"}
         </p>
       </div>
 
