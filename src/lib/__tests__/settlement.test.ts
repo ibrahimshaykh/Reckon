@@ -96,3 +96,49 @@ describe("applyIOUs", () => {
     expect(result).toEqual({ A: 3500, B: -3500 });
   });
 });
+
+// Deleting an expense re-derives balances from whatever remains, so these
+// pin the behaviour the delete action depends on: the removed expense must
+// leave no trace in the maths.
+describe("recomputing after an expense is removed", () => {
+  const groceries = {
+    paidById: "A",
+    totalCents: 3000,
+    participants: [
+      { userId: "A", shareRatio: 1 / 2 },
+      { userId: "B", shareRatio: 1 / 2 },
+    ],
+  };
+  const mistake = {
+    paidById: "B",
+    totalCents: 9999,
+    participants: [
+      { userId: "A", shareRatio: 1 / 2 },
+      { userId: "B", shareRatio: 1 / 2 },
+    ],
+  };
+
+  it("drops the removed expense's contribution entirely", () => {
+    const withMistake = computeBalances([groceries, mistake]);
+    const afterDelete = computeBalances([groceries]);
+
+    expect(withMistake).not.toEqual(afterDelete);
+    expect(afterDelete).toEqual({ A: 1500, B: -1500 });
+    expect(computeSettlements(afterDelete)).toEqual([
+      expect.objectContaining({ fromUserId: "B", toUserId: "A", amountCents: 1500 }),
+    ]);
+  });
+
+  it("leaves nobody owing anything once the only expense is removed", () => {
+    expect(computeSettlements(computeBalances([]))).toEqual([]);
+  });
+
+  it("keeps an unrelated IOU intact when an expense is deleted", () => {
+    const balances = applyIOUs(computeBalances([]), [
+      { fromUserId: "B", toUserId: "A", amountCents: 500 },
+    ]);
+    expect(computeSettlements(balances)).toEqual([
+      expect.objectContaining({ fromUserId: "B", toUserId: "A", amountCents: 500 }),
+    ]);
+  });
+});

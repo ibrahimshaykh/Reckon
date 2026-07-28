@@ -7,6 +7,7 @@ import { getDictionary } from "@/lib/dictionary";
 import { interpolate } from "@/lib/i18n";
 import { AddMemberForm } from "@/components/groups/add-member-form";
 import { ShareExpenseButton } from "@/components/expenses/share-expense-button";
+import { DeleteExpenseButton } from "@/components/expenses/delete-expense-button";
 import { CurrencyPicker } from "@/components/groups/currency-picker";
 import { Button } from "@/components/ui/button";
 import { PageHeader, SectionHeading } from "@/components/page-header";
@@ -148,6 +149,9 @@ export default async function GroupPage({
                     {formatMoney(e.totalAmount * 100, group.currency)}
                   </span>
                   <ShareExpenseButton expenseId={e.id} dict={dict} />
+                  {e.paidById === session.id && (
+                    <DeleteExpenseButton expenseId={e.id} title={e.title} dict={dict} />
+                  )}
                 </li>
               </Reveal>
             ))}

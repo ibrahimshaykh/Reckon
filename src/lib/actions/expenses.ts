@@ -173,6 +173,34 @@ export async function addItemizedExpense(input: {
   revalidatePath(`/groups/${valid.groupId}/settle`);
 }
 
+// Deleting is restricted to whoever paid, matching forgiveIOU — a money
+// record belongs to the person who put the money in, and letting any member
+// erase someone else's expense would quietly rewrite what everyone owes.
+//
+// This is a hard delete: Prisma cascades clear the items, their participants
+// and any guest tokens pointing at the expense, so nothing dangles. A wrong
+// amount should genuinely leave the maths rather than linger hidden.
+export async function deleteExpense(expenseId: string) {
+  const session = await requireSession();
+  const validExpenseId = validate(cuid, expenseId);
+
+  const expense = await db.expense.findUniqueOrThrow({
+    where: { id: validExpenseId },
+    select: { id: true, groupId: true, paidById: true },
+  });
+
+  await assertMember(expense.groupId, session.id);
+  if (expense.paidById !== session.id) {
+    throw new ApiError(403, "Only the person who paid can delete this expense.");
+  }
+
+  await db.expense.delete({ where: { id: expense.id } });
+  await recalculateSettlements(expense.groupId);
+
+  revalidatePath(`/groups/${expense.groupId}`);
+  revalidatePath(`/groups/${expense.groupId}/settle`);
+}
+
 export async function listGroupExpenses(groupId: string) {
   const session = await requireSession();
   await assertMember(groupId, session.id);
@@ -188,6 +216,9 @@ export async function listGroupExpenses(groupId: string) {
     title: e.title,
     totalAmount: Number(e.totalAmount),
     paidByName: e.paidBy.displayName,
+    // The row needs this to decide whether to offer a delete control, since
+    // only the payer may remove it.
+    paidById: e.paidById,
     createdAt: e.createdAt.toISOString(),
   }));
 }

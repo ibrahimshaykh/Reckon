@@ -43,7 +43,8 @@
     "noPaymentMethod": "{name} todavía no ha agregado un método de pago.",
     "paidBy": "Pagado por",
     "copy": "Copiar",
-    "copied": "Copiado"
+    "copied": "Copiado",
+    "cancel": "Cancelar"
   },
   "groupHub": {
     "members": "Miembros",
@@ -69,7 +70,10 @@
     "memberCountOne": "1 miembro",
     "memberCountMany": "{count} miembros",
     "trackedOne": "{amount} registrado en 1 gasto",
-    "trackedMany": "{amount} registrado en {count} gastos"
+    "trackedMany": "{amount} registrado en {count} gastos",
+    "deleteExpense": "Eliminar",
+    "confirmDeleteExpense": "¿Eliminar \"{title}\"? Esto cambia lo que cada quien debe.",
+    "deleting": "Eliminando…"
   },
   "chores": {
     "title": "Tareas",

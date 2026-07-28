@@ -43,7 +43,8 @@
     "noPaymentMethod": "{name} نے ابھی تک ادائیگی کا طریقہ شامل نہیں کیا۔",
     "paidBy": "ادا کنندہ",
     "copy": "کاپی کریں",
-    "copied": "کاپی ہو گیا"
+    "copied": "کاپی ہو گیا",
+    "cancel": "منسوخ کریں"
   },
   "groupHub": {
     "members": "ارکان",
@@ -69,7 +70,10 @@
     "memberCountOne": "1 رکن",
     "memberCountMany": "{count} ارکان",
     "trackedOne": "1 خرچ میں {amount} درج ہے",
-    "trackedMany": "{count} اخراجات میں {amount} درج ہے"
+    "trackedMany": "{count} اخراجات میں {amount} درج ہے",
+    "deleteExpense": "حذف کریں",
+    "confirmDeleteExpense": "\"{title}\" حذف کریں؟ اس سے سب کے واجبات بدل جائیں گے۔",
+    "deleting": "حذف ہو رہا ہے…"
   },
   "chores": {
     "title": "کام",

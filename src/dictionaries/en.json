@@ -43,7 +43,8 @@
     "noPaymentMethod": "{name} hasn't added a payment method yet.",
     "paidBy": "Paid by",
     "copy": "Copy",
-    "copied": "Copied"
+    "copied": "Copied",
+    "cancel": "Cancel"
   },
   "groupHub": {
     "members": "Members",
@@ -69,7 +70,10 @@
     "memberCountOne": "1 member",
     "memberCountMany": "{count} members",
     "trackedOne": "{amount} tracked across 1 expense",
-    "trackedMany": "{amount} tracked across {count} expenses"
+    "trackedMany": "{amount} tracked across {count} expenses",
+    "deleteExpense": "Delete",
+    "confirmDeleteExpense": "Delete \"{title}\"? This changes what everyone owes.",
+    "deleting": "Deleting…"
   },
   "chores": {
     "title": "Chores",
