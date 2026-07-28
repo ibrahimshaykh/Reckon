@@ -71,13 +71,16 @@ function WheelControl({ zoomMode }: { zoomMode: boolean }) {
   useEffect(() => {
     const el = map.getContainer();
 
-    // Touchpads rarely report a clean diagonal: Windows precision pads tend
-    // to emit alternating axis-pure events (one horizontal, the next
-    // vertical) rather than one event carrying both. Panning per-event
-    // therefore reads as a cardinal zigzag. Feeding deltas into a velocity
-    // that decays over a few frames blends those alternating events back
-    // into the diagonal the fingers actually described — and gives the pan
-    // some weight as a side effect.
+    // Deltas feed a velocity that decays over a few frames rather than
+    // panning per event: touchpads report in very small increments (0.8px
+    // per event is typical) and one-to-one panning at that scale feels
+    // sluggish and stuttery. This also blends whatever axes do arrive into
+    // a single smooth vector, and gives the pan some weight.
+    //
+    // Worth knowing: many touchpads never report deltaX at all — the
+    // horizontal axis simply isn't sent to the browser — so a diagonal
+    // two-finger swipe can arrive as pure vertical no matter what this
+    // code does. Shift+scroll below is the fallback for sideways movement.
     let velX = 0;
     let velY = 0;
     let carryX = 0;
@@ -87,8 +90,8 @@ function WheelControl({ zoomMode }: { zoomMode: boolean }) {
     const glide = () => {
       // Sub-pixel remainder is carried between frames, since Leaflet rounds
       // whatever offset it's handed and would otherwise discard slow drift.
-      carryX += velX * 0.28;
-      carryY += velY * 0.28;
+      carryX += velX * 0.9;
+      carryY += velY * 0.9;
 
       const stepX = Math.trunc(carryX);
       const stepY = Math.trunc(carryY);
@@ -334,7 +337,9 @@ export function MeetingPointMap({
         </MapContainer>
 
         <p className="pointer-events-none absolute left-3 top-3 z-[400] rounded-lg border border-rule bg-card/85 px-2.5 py-1.5 font-mono text-[0.625rem] uppercase tracking-[0.14em] text-muted-foreground shadow-lg backdrop-blur">
-          {zoomMode ? "Scroll to zoom" : "Two-finger scroll to move · ⌘/ctrl to zoom"}
+          {zoomMode
+            ? "Scroll to zoom"
+            : "Scroll to move · shift for sideways · ⌘/ctrl to zoom"}
         </p>
       </div>
 
