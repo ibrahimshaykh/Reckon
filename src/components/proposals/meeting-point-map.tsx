@@ -227,7 +227,7 @@ export function MeetingPointMap({
 
   return (
     <figure className="flex flex-col gap-2">
-      <div className="relative overflow-hidden rounded-xl border border-rule">
+      <div className="relative overflow-hidden rounded-xl border border-rule [&_.leaflet-grab]:cursor-grab [&_.leaflet-dragging_.leaflet-grab]:cursor-grabbing">
         <MapContainer
           center={points[0]}
           zoom={11}
@@ -308,7 +308,7 @@ export function MeetingPointMap({
         </MapContainer>
 
         <p className="pointer-events-none absolute left-3 top-3 z-[400] rounded-lg border border-rule bg-card/85 px-2.5 py-1.5 font-mono text-[0.625rem] uppercase tracking-[0.14em] text-muted-foreground shadow-lg backdrop-blur">
-          {zoomMode ? "Scroll to zoom" : "Scroll to move · ⌘/ctrl to zoom"}
+          {zoomMode ? "Scroll to zoom" : "Drag to move any way · ⌘/ctrl+scroll to zoom"}
         </p>
       </div>
 
