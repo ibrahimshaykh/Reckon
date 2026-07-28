@@ -42,3 +42,13 @@ next-env.d.ts
 
 .vercel
 .env*
+
+# Planning docs, specs and agent notes — the thinking behind the build stays
+# local. Ignoring every markdown file rather than naming them one by one, so
+# new notes are covered automatically. AGENTS.md/CLAUDE.md are the exception:
+# they're functional project config (this repo's own breaking-API warning),
+# not private notes, so they're un-ignored below and stay tracked.
+*.md
+!AGENTS.md
+!CLAUDE.md
+docs/
