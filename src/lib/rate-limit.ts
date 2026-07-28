@@ -28,15 +28,29 @@ function getLimiter(limit: number, windowSeconds: number): Ratelimit | null {
   return limiter;
 }
 
+let warnedUnreachable = false;
+
 // Enforces a per-key limit on abusable/expensive actions (AI calls, uploads).
-// When Upstash isn't configured the call is a no-op — the app stays usable in
-// dev and only gains protection once keys exist, matching the Resend-nudge
-// degrade-open pattern established earlier.
+// When Upstash isn't configured OR is unreachable/misconfigured, the call is a
+// no-op — the app stays usable in dev and degrades open rather than taking
+// down every rate-limited feature if Upstash has an outage or a bad token.
 export async function enforceRateLimit(key: string, limit: number, windowSeconds: number) {
   const limiter = getLimiter(limit, windowSeconds);
   if (!limiter) return;
 
-  const { success } = await limiter.limit(key);
+  let success: boolean;
+  try {
+    ({ success } = await limiter.limit(key));
+  } catch (error) {
+    if (!warnedUnreachable) {
+      logger.warn("Upstash rate-limit call failed — degrading open (allowing the request).", {
+        error: error instanceof Error ? error.message : String(error),
+      });
+      warnedUnreachable = true;
+    }
+    return;
+  }
+
   if (!success) {
     throw new ApiError(429, "You're doing that too fast — give it a moment and try again.");
   }
