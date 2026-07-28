@@ -226,27 +226,40 @@ export function WeekGrid({
         </p>
       )}
 
-      <div className="overflow-x-auto rounded-lg border bg-neutral-950">
+      <div className="overflow-x-auto rounded-xl border border-rule bg-card">
         <div className="min-w-[640px]">
           <div className="grid grid-cols-[3rem_repeat(7,1fr)] text-xs">
             <div />
-            {days.map((day, i) => (
-              <div
-                key={i}
-                className="border-b border-neutral-800 py-1.5 text-center font-medium text-neutral-200"
-              >
-                {day.toLocaleDateString("en-US", { weekday: "short" })}
-                <br />
-                <span className="font-mono text-neutral-500">{day.getDate()}</span>
-              </div>
-            ))}
+            {days.map((day, i) => {
+              const isToday = day.toDateString() === new Date().toDateString();
+              return (
+                <div
+                  key={i}
+                  className={`border-b border-rule py-2 text-center font-medium ${
+                    isToday ? "text-primary" : "text-foreground"
+                  }`}
+                >
+                  {day.toLocaleDateString("en-US", { weekday: "short" })}
+                  <br />
+                  <span
+                    className={`font-mono ${
+                      isToday
+                        ? "inline-grid size-5 place-items-center rounded-full bg-primary text-primary-foreground"
+                        : "text-muted-foreground"
+                    }`}
+                  >
+                    {day.getDate()}
+                  </span>
+                </div>
+              );
+            })}
           </div>
           <div className="grid grid-cols-[3rem_repeat(7,1fr)]">
             <div className="relative" style={{ height: gridHeight }}>
               {Array.from({ length: endHour - startHour }, (_, i) => (
                 <div
                   key={i}
-                  className="absolute left-0 right-0 -translate-y-1/2 pr-2 text-right font-mono text-[10px] text-neutral-500"
+                  className="absolute left-0 right-0 -translate-y-1/2 pr-2 text-right font-mono text-[10px] text-muted-foreground"
                   style={{ top: i * HOUR_PX }}
                 >
                   {String(startHour + i).padStart(2, "0")}:00
@@ -256,7 +269,7 @@ export function WeekGrid({
             {days.map((day, dayIndex) => (
               <div
                 key={dayIndex}
-                className="relative touch-none border-l border-neutral-800"
+                className="relative touch-none border-l border-rule transition-colors hover:bg-accent/25"
                 style={{ height: gridHeight }}
                 onPointerDown={(e) => onPointerDown(dayIndex, e)}
                 onPointerMove={onPointerMove}
@@ -267,7 +280,7 @@ export function WeekGrid({
                 {Array.from({ length: endHour - startHour }, (_, i) => (
                   <div
                     key={i}
-                    className="absolute left-0 right-0 border-t border-neutral-900"
+                    className="absolute left-0 right-0 border-t border-rule/50"
                     style={{ top: i * HOUR_PX }}
                   />
                 ))}
@@ -285,9 +298,15 @@ export function WeekGrid({
                     .map((seg, i) => (
                       <div
                         key={`${entry.id}-${i}`}
-                        className={`absolute left-0.5 right-0.5 rounded-sm ${colors[entry.userId].bar} mix-blend-screen ${
-                          entry.recurring ? "border-2 border-dashed border-white/50" : ""
-                        } ${entry.userId === currentUserId ? "cursor-pointer" : "pointer-events-none"}`}
+                        className={`absolute left-0.5 right-0.5 rounded-md ${colors[entry.userId].bar} mix-blend-multiply transition-opacity dark:mix-blend-screen ${
+                          entry.recurring
+                            ? "border-2 border-dashed border-foreground/40"
+                            : ""
+                        } ${
+                          entry.userId === currentUserId
+                            ? "cursor-pointer hover:opacity-70"
+                            : "pointer-events-none"
+                        }`}
                         style={{
                           top: minuteToPx(seg.startMinute),
                           height: Math.max(4, (seg.endMinute - seg.startMinute) * (HOUR_PX / 60)),
@@ -311,7 +330,7 @@ export function WeekGrid({
 
                 {drag?.dayIndex === dayIndex && (
                   <div
-                    className="absolute left-0.5 right-0.5 rounded-sm bg-white/40"
+                    className="absolute left-0.5 right-0.5 rounded-md border border-primary/60 bg-primary/30"
                     style={{
                       top: minuteToPx(Math.min(drag.startMinute, drag.currentMinute)),
                       height: Math.max(4, Math.abs(drag.currentMinute - drag.startMinute) * (HOUR_PX / 60)),
