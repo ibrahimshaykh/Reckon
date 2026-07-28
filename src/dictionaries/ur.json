@@ -64,7 +64,11 @@
     "createGroupPlaceholder": "مثلاً دی اپارٹمنٹ",
     "yourGroups": "آپ کے گروپس",
     "newGroup": "نیا گروپ",
-    "noGroupsYet": "ابھی تک کوئی گروپ نہیں — اخراجات تقسیم کرنا شروع کرنے کے لیے ایک بنائیں۔"
+    "noGroupsYet": "ابھی تک کوئی گروپ نہیں — اخراجات تقسیم کرنا شروع کرنے کے لیے ایک بنائیں۔",
+    "memberCountOne": "1 رکن",
+    "memberCountMany": "{count} ارکان",
+    "trackedOne": "1 خرچ میں {amount} درج ہے",
+    "trackedMany": "{count} اخراجات میں {amount} درج ہے"
   },
   "chores": {
     "title": "کام",
@@ -217,7 +221,9 @@
     "markAsPaid": "ادا شدہ نشان زد کریں",
     "confirmReceived": "موصولی کی تصدیق کریں",
     "waitingConfirmation": "تصدیق کا انتظار ہے…",
-    "payNote": "Reckon سیٹل اپ"
+    "payNote": "Reckon سیٹل اپ",
+    "remainingOne": "1 ادائیگی باقی ہے",
+    "remainingMany": "{count} ادائیگیاں باقی ہیں"
   },
   "friends": {
     "youAnd": "آپ اور {name}",

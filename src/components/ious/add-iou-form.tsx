@@ -71,7 +71,7 @@ export function AddIOUForm({
   }
 
   return (
-    <form onSubmit={onSubmit} className="flex flex-col gap-2 max-w-sm">
+    <form onSubmit={onSubmit} className="flex w-full flex-col gap-3 rounded-lg border border-rule bg-card p-4">
       <label className="text-sm text-muted-foreground">{dict.ious.iLent}</label>
       <select
         className="rounded-md border bg-background p-2 text-sm"

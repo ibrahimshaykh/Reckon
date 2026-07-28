@@ -27,7 +27,7 @@ export function CreateGroupForm({ dict }: { dict: Dictionary }) {
   }
 
   return (
-    <form onSubmit={onSubmit} className="flex flex-col gap-3 max-w-sm">
+    <form onSubmit={onSubmit} className="flex w-full flex-col gap-3 rounded-lg border border-rule bg-card p-4">
       <Input
         value={name}
         onChange={(e) => setName(e.target.value)}

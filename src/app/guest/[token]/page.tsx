@@ -36,7 +36,7 @@ export default async function GuestExpensePage({
     payer.bankDetails;
 
   return (
-    <div className="mx-auto flex w-full max-w-sm flex-col gap-4 p-6">
+    <div className="mx-auto flex w-full max-w-2xl flex-col gap-8 px-6 py-10 md:py-14">
       <h1 className="text-xl font-semibold">{expense.title}</h1>
       <p className="text-sm text-muted-foreground">
         {interpolate(dict.guest.greeting, {

@@ -9,6 +9,8 @@ import { AddMemberForm } from "@/components/groups/add-member-form";
 import { ShareExpenseButton } from "@/components/expenses/share-expense-button";
 import { CurrencyPicker } from "@/components/groups/currency-picker";
 import { Button } from "@/components/ui/button";
+import { PageHeader, SectionHeading } from "@/components/page-header";
+import { Reveal } from "@/components/motion/reveal";
 
 export default async function GroupPage({
   params,
@@ -23,116 +25,129 @@ export default async function GroupPage({
   ]);
   const dict = await getDictionary(session.locale);
 
+  const total = expenses.reduce((sum, e) => sum + e.totalAmount, 0);
+
   return (
-    <div className="mx-auto flex w-full max-w-2xl flex-col gap-6 p-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold">{group.name}</h1>
-        <CurrencyPicker groupId={group.id} currency={group.currency} dict={dict} />
-      </div>
-      <section className="flex flex-col gap-2">
-        <h2 className="text-sm font-medium text-muted-foreground">{dict.groupHub.members}</h2>
-        <ul className="flex flex-col gap-1">
+    <div className="mx-auto flex w-full max-w-2xl flex-col gap-8 px-6 py-10 md:py-14">
+      <PageHeader
+        eyebrow={
+          group.members.length === 1
+            ? dict.groupHub.memberCountOne
+            : interpolate(dict.groupHub.memberCountMany, {
+                count: String(group.members.length),
+              })
+        }
+        title={group.name}
+        meta={
+          expenses.length > 0 ? (
+            <p className="tabular font-mono text-xs text-muted-foreground">
+              {expenses.length === 1
+                ? interpolate(dict.groupHub.trackedOne, {
+                    amount: formatMoney(total * 100, group.currency),
+                  })
+                : interpolate(dict.groupHub.trackedMany, {
+                    amount: formatMoney(total * 100, group.currency),
+                    count: String(expenses.length),
+                  })}
+            </p>
+          ) : undefined
+        }
+        action={
+          <CurrencyPicker groupId={group.id} currency={group.currency} dict={dict} />
+        }
+      />
+      <section className="flex flex-col gap-3">
+        <SectionHeading>{dict.groupHub.members}</SectionHeading>
+        <ul className="flex flex-col">
           {group.members.map((m) => (
-            <li key={m.id} className="text-sm">
-              <Link href={`/friends/${m.id}`} className="hover:underline">
+            <li
+              key={m.id}
+              className="flex flex-wrap items-baseline gap-x-2 border-b border-rule/60 py-2 last:border-0"
+            >
+              <Link
+                href={`/friends/${m.id}`}
+                className="text-sm font-medium underline-offset-4 transition-colors hover:text-primary hover:underline"
+              >
                 {m.displayName}
-              </Link>{" "}
-              ({m.email})
+              </Link>
+              <span className="font-mono text-xs text-muted-foreground">{m.email}</span>
             </li>
           ))}
         </ul>
         <AddMemberForm groupId={group.id} dict={dict} />
       </section>
-      <nav className="flex gap-2">
-        <Button
-          render={<Link href={`/groups/${group.id}/chores`} />}
-          nativeButton={false}
-          variant="outline"
-          size="sm"
-        >
-          {dict.groupHub.chores}
-        </Button>
-        <Button
-          render={<Link href={`/groups/${group.id}/availability`} />}
-          nativeButton={false}
-          variant="outline"
-          size="sm"
-        >
-          {dict.groupHub.availability}
-        </Button>
-        <Button
-          render={<Link href={`/groups/${group.id}/ious`} />}
-          nativeButton={false}
-          variant="outline"
-          size="sm"
-        >
-          {dict.groupHub.ious}
-        </Button>
-        <Button
-          render={<Link href={`/groups/${group.id}/proposals`} />}
-          nativeButton={false}
-          variant="outline"
-          size="sm"
-        >
-          {dict.groupHub.proposals}
-        </Button>
-        <Button
-          render={<Link href={`/groups/${group.id}/ask`} />}
-          nativeButton={false}
-          variant="outline"
-          size="sm"
-        >
-          {dict.groupHub.askAi}
-        </Button>
-        <Button
-          render={<Link href={`/groups/${group.id}/recap`} />}
-          nativeButton={false}
-          variant="outline"
-          size="sm"
-        >
-          {dict.groupHub.monthlyRecap}
-        </Button>
+      <nav className="grid grid-cols-2 gap-px overflow-hidden rounded-lg border border-rule bg-rule sm:grid-cols-3">
+        {[
+          { href: "chores", label: dict.groupHub.chores },
+          { href: "availability", label: dict.groupHub.availability },
+          { href: "ious", label: dict.groupHub.ious },
+          { href: "proposals", label: dict.groupHub.proposals },
+          { href: "ask", label: dict.groupHub.askAi },
+          { href: "recap", label: dict.groupHub.monthlyRecap },
+        ].map((item) => (
+          <Link
+            key={item.href}
+            href={`/groups/${group.id}/${item.href}`}
+            className="group/nav flex items-center justify-between gap-2 bg-card px-4 py-3.5 text-sm font-medium transition-colors hover:bg-accent"
+          >
+            <span>{item.label}</span>
+            <span
+              aria-hidden
+              className="font-mono text-muted-foreground transition-transform group-hover/nav:translate-x-0.5 group-hover/nav:text-primary"
+            >
+              →
+            </span>
+          </Link>
+        ))}
       </nav>
-      <section className="flex flex-col gap-2">
-        <div className="flex items-center justify-between">
-          <h2 className="text-sm font-medium text-muted-foreground">{dict.groupHub.expenses}</h2>
-          <div className="flex gap-2">
-            <Button
-              render={<Link href={`/groups/${group.id}/expenses/new`} />}
-              nativeButton={false}
-              size="sm"
-            >
-              {dict.groupHub.addExpense}
-            </Button>
-            <Button
-              render={<Link href={`/groups/${group.id}/settle`} />}
-              nativeButton={false}
-              variant="outline"
-              size="sm"
-            >
-              {dict.groupHub.whoOwesWho}
-            </Button>
+      <section className="flex flex-col gap-3">
+        <SectionHeading
+          action={
+            <div className="flex gap-2">
+              <Button
+                render={<Link href={`/groups/${group.id}/expenses/new`} />}
+                nativeButton={false}
+                size="sm"
+              >
+                {dict.groupHub.addExpense}
+              </Button>
+              <Button
+                render={<Link href={`/groups/${group.id}/settle`} />}
+                nativeButton={false}
+                variant="outline"
+                size="sm"
+              >
+                {dict.groupHub.whoOwesWho}
+              </Button>
+            </div>
+          }
+        >
+          {dict.groupHub.expenses}
+        </SectionHeading>
+        {expenses.length === 0 ? (
+          <div className="ledger-panel rounded-r-lg px-5 py-8 text-center">
+            <p className="text-sm text-ledger-foreground">{dict.groupHub.noExpensesYet}</p>
           </div>
-        </div>
-        {expenses.length === 0 && (
-          <p className="text-sm text-muted-foreground">{dict.groupHub.noExpensesYet}</p>
+        ) : (
+          <ul className="flex flex-col">
+            {expenses.map((e, i) => (
+              <Reveal key={e.id} delay={Math.min(i, 6) * 0.04}>
+                <li className="flex items-baseline gap-4 border-b border-rule/60 py-3 last:border-0">
+                  <div className="flex min-w-0 flex-col gap-0.5">
+                    <span className="truncate text-sm font-medium">{e.title}</span>
+                    <span className="font-mono text-xs text-muted-foreground">
+                      {dict.common.paidBy} {e.paidByName}
+                    </span>
+                  </div>
+                  <span className="tabular ml-auto shrink-0 text-sm font-semibold">
+                    {formatMoney(e.totalAmount * 100, group.currency)}
+                  </span>
+                  <ShareExpenseButton expenseId={e.id} dict={dict} />
+                </li>
+              </Reveal>
+            ))}
+          </ul>
         )}
-        <ul className="flex flex-col gap-1">
-          {expenses.map((e) => (
-            <li key={e.id} className="rounded-lg border p-3 text-sm">
-              <div className="flex items-center justify-between">
-                <span>
-                  <strong>{e.title}</strong>{" "}
-                  {interpolate(dict.groupHub.paidByLine, {
-                    amount: formatMoney(e.totalAmount * 100, group.currency),
-                    name: e.paidByName,
-                  })}
-                </span>
-                <ShareExpenseButton expenseId={e.id} dict={dict} />
-              </div>
-            </li>
-          ))}
-        </ul>
       </section>
     </div>
   );

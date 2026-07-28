@@ -138,7 +138,7 @@ export function ScanReceiptForm({
   }
 
   return (
-    <div className="flex flex-col gap-3 max-w-sm">
+    <div className="flex w-full flex-col gap-3 rounded-lg border border-rule bg-card p-4">
       {!imageUrl && (
         <Input type="file" accept="image/*" onChange={onFileChange} disabled={busy} />
       )}

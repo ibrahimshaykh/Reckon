@@ -9,7 +9,7 @@ export default async function SettingsPage() {
   const dict = await getDictionary(session.locale);
 
   return (
-    <div className="mx-auto flex w-full max-w-sm flex-col gap-4 p-6">
+    <div className="mx-auto flex w-full max-w-2xl flex-col gap-8 px-6 py-10 md:py-14">
       <h1 className="text-xl font-semibold">{dict.settings.title}</h1>
       <LanguagePicker locale={session.locale} label={dict.settings.language} />
       <ProfileForm

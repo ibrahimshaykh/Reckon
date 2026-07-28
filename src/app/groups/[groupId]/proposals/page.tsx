@@ -5,7 +5,7 @@ import { getDictionary } from "@/lib/dictionary";
 import { AddProposalForm } from "@/components/proposals/add-proposal-form";
 import { ProposalList } from "@/components/proposals/proposal-list";
 import { MeetingPointMap } from "@/components/proposals/meeting-point-map-wrapper";
-import { HelpTip } from "@/components/help-tip";
+import { PageHeader } from "@/components/page-header";
 
 export default async function ProposalsPage({
   params,
@@ -26,9 +26,12 @@ export default async function ProposalsPage({
   );
 
   return (
-    <div className="mx-auto flex w-full max-w-2xl flex-col gap-6 p-6">
-      <h1 className="text-xl font-semibold">{dict.proposals.title}</h1>
-      <HelpTip text={dict.proposals.helpTip} />
+    <div className="mx-auto flex w-full max-w-2xl flex-col gap-8 px-6 py-10 md:py-14">
+      <PageHeader
+        eyebrow={group.name}
+        title={dict.proposals.title}
+        description={dict.proposals.helpTip}
+      />
       <AddProposalForm groupId={groupId} dict={dict} />
       {memberHomes.length > 0 && (
         <MeetingPointMap homes={memberHomes} proposals={locatedProposals} dict={dict} />

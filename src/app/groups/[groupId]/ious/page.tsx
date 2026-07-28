@@ -4,7 +4,7 @@ import { requireSession } from "@/lib/dal";
 import { getDictionary } from "@/lib/dictionary";
 import { AddIOUForm } from "@/components/ious/add-iou-form";
 import { IOUList } from "@/components/ious/iou-list";
-import { HelpTip } from "@/components/help-tip";
+import { PageHeader } from "@/components/page-header";
 
 export default async function IOUsPage({
   params,
@@ -20,9 +20,12 @@ export default async function IOUsPage({
   const dict = await getDictionary(session.locale);
 
   return (
-    <div className="mx-auto flex w-full max-w-2xl flex-col gap-6 p-6">
-      <h1 className="text-xl font-semibold">{dict.ious.title}</h1>
-      <HelpTip text={dict.ious.helpTip} />
+    <div className="mx-auto flex w-full max-w-2xl flex-col gap-8 px-6 py-10 md:py-14">
+      <PageHeader
+        eyebrow={group.name}
+        title={dict.ious.title}
+        description={dict.ious.helpTip}
+      />
       <AddIOUForm
         groupId={groupId}
         members={group.members}

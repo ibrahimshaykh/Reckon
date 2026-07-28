@@ -5,7 +5,7 @@ import { formatDateParam, getWeekDays, parseDateParam } from "@/lib/availability
 import { getDictionary } from "@/lib/dictionary";
 import { WeekGrid } from "@/components/availability/week-grid";
 import { FreeTimeList } from "@/components/availability/free-time-list";
-import { HelpTip } from "@/components/help-tip";
+import { PageHeader } from "@/components/page-header";
 
 export default async function AvailabilityPage({
   params,
@@ -26,9 +26,12 @@ export default async function AvailabilityPage({
   const dict = await getDictionary(session.locale);
 
   return (
-    <div className="mx-auto flex w-full max-w-4xl flex-col gap-6 p-6">
-      <h1 className="text-xl font-semibold">{dict.availability.title}</h1>
-      <HelpTip text={dict.availability.helpTip} />
+    <div className="mx-auto flex w-full max-w-4xl flex-col gap-8 px-6 py-10 md:py-14">
+      <PageHeader
+        eyebrow={group.name}
+        title={dict.availability.title}
+        description={dict.availability.helpTip}
+      />
       <WeekGrid
         groupId={groupId}
         startDate={startDate}

@@ -5,7 +5,7 @@ import { getDictionary } from "@/lib/dictionary";
 import { AddChoreForm } from "@/components/chores/add-chore-form";
 import { ChoreList } from "@/components/chores/chore-list";
 import { FairnessBars } from "@/components/chores/fairness-bars";
-import { HelpTip } from "@/components/help-tip";
+import { PageHeader } from "@/components/page-header";
 
 export default async function ChoresPage({
   params,
@@ -22,9 +22,11 @@ export default async function ChoresPage({
   const bars = computeFairnessBars(fairness);
 
   return (
-    <div className="mx-auto flex w-full max-w-2xl flex-col gap-6 p-6">
-      <h1 className="text-xl font-semibold">{dict.chores.title}</h1>
-      <HelpTip text={dict.chores.helpTip} />
+    <div className="mx-auto flex w-full max-w-2xl flex-col gap-8 px-6 py-10 md:py-14">
+      <PageHeader
+        title={dict.chores.title}
+        description={dict.chores.helpTip}
+      />
       <AddChoreForm groupId={groupId} dict={dict} />
       <FairnessBars bars={bars} title={dict.chores.fairnessTitle} />
       <ChoreList groupId={groupId} chores={chores} dict={dict} />

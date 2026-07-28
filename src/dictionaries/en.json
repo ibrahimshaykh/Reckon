@@ -64,7 +64,11 @@
     "createGroupPlaceholder": "e.g. The Apartment",
     "yourGroups": "Your groups",
     "newGroup": "New group",
-    "noGroupsYet": "No groups yet — create one to start splitting expenses."
+    "noGroupsYet": "No groups yet — create one to start splitting expenses.",
+    "memberCountOne": "1 member",
+    "memberCountMany": "{count} members",
+    "trackedOne": "{amount} tracked across 1 expense",
+    "trackedMany": "{amount} tracked across {count} expenses"
   },
   "chores": {
     "title": "Chores",
@@ -217,7 +221,9 @@
     "markAsPaid": "Mark as paid",
     "confirmReceived": "Confirm received",
     "waitingConfirmation": "Waiting for confirmation…",
-    "payNote": "Reckon settle-up"
+    "payNote": "Reckon settle-up",
+    "remainingOne": "1 payment left to clear",
+    "remainingMany": "{count} payments left to clear"
   },
   "friends": {
     "youAnd": "You and {name}",

@@ -64,7 +64,11 @@
     "createGroupPlaceholder": "ej. El Apartamento",
     "yourGroups": "Tus grupos",
     "newGroup": "Nuevo grupo",
-    "noGroupsYet": "Todavía no hay grupos — crea uno para empezar a dividir gastos."
+    "noGroupsYet": "Todavía no hay grupos — crea uno para empezar a dividir gastos.",
+    "memberCountOne": "1 miembro",
+    "memberCountMany": "{count} miembros",
+    "trackedOne": "{amount} registrado en 1 gasto",
+    "trackedMany": "{amount} registrado en {count} gastos"
   },
   "chores": {
     "title": "Tareas",
@@ -217,7 +221,9 @@
     "markAsPaid": "Marcar como pagado",
     "confirmReceived": "Confirmar recibido",
     "waitingConfirmation": "Esperando confirmación…",
-    "payNote": "Saldo de Reckon"
+    "payNote": "Saldo de Reckon",
+    "remainingOne": "Queda 1 pago por saldar",
+    "remainingMany": "Quedan {count} pagos por saldar"
   },
   "friends": {
     "youAnd": "Tú y {name}",

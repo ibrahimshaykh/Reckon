@@ -2,7 +2,7 @@ import { listPastRecaps } from "@/lib/actions/recap";
 import { getGroup } from "@/lib/actions/groups";
 import { RecapView } from "@/components/recap/recap-view";
 import { PastRecaps } from "@/components/recap/past-recaps";
-import { HelpTip } from "@/components/help-tip";
+import { PageHeader } from "@/components/page-header";
 import { requireSession } from "@/lib/dal";
 import { getDictionary } from "@/lib/dictionary";
 
@@ -20,9 +20,12 @@ export default async function RecapPage({
   const dict = await getDictionary(session.locale);
 
   return (
-    <div className="mx-auto flex w-full max-w-md flex-col gap-4 p-6">
-      <h1 className="text-xl font-semibold">{dict.recap.title}</h1>
-      <HelpTip text={dict.recap.helpTip} />
+    <div className="mx-auto flex w-full max-w-2xl flex-col gap-8 px-6 py-10 md:py-14">
+      <PageHeader
+        eyebrow={group.name}
+        title={dict.recap.title}
+        description={dict.recap.helpTip}
+      />
       <RecapView groupId={groupId} currency={group.currency} dict={dict} />
       <PastRecaps recaps={pastRecaps} currency={group.currency} dict={dict} />
     </div>
