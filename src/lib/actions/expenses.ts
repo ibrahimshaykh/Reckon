@@ -404,7 +404,10 @@ export async function listGroupExpenses(groupId: string) {
         id: g.id,
         name: g.name,
         status: g.status,
+        hostIds: g.hosts.map((h) => h.userId),
         hostNames: g.hosts.map((h) => h.user.displayName),
+        // Lets the row admit the hosts were inferred rather than chosen.
+        hostsAssumed: g.hostsAssumed,
       })),
       // Guests can only ever be added to a single equally split item, so the
       // share control has to know whether this expense qualifies before

@@ -3,9 +3,15 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { X } from "lucide-react";
-import { confirmGuestPaid, refreshGuestLink, removeGuest } from "@/lib/actions/guest";
+import {
+  confirmGuestPaid,
+  refreshGuestLink,
+  removeGuest,
+  setGuestHosts,
+} from "@/lib/actions/guest";
 import { isActionError, type ActionResult } from "@/lib/action-result";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { useSketchpad } from "@/lib/stores/sketchpad";
 import type { Dictionary } from "@/lib/dictionary";
 
@@ -13,7 +19,9 @@ type Guest = {
   id: string;
   name: string;
   status: "UNDECIDED" | "PAYING" | "PAID" | "DECLINED";
+  hostIds: string[];
   hostNames: string[];
+  hostsAssumed: boolean;
 };
 
 // Guests attached to one expense, and where each of them stands. The status
@@ -21,10 +29,13 @@ type Guest = {
 // because this line is how the group finds out who's actually covering what.
 export function GuestList({
   guests,
+  participants,
   isPayer,
   dict,
 }: {
   guests: Guest[];
+  /** Only people in the split can be put down as covering a guest. */
+  participants: { id: string; name: string }[];
   /** Only the person who fronted the money can say it arrived. */
   isPayer: boolean;
   dict: Dictionary;
@@ -33,7 +44,8 @@ export function GuestList({
   const jot = useSketchpad((s) => s.jot);
   const [pendingId, setPendingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [freshLink, setFreshLink] = useState<{ id: string; url: string } | null>(null);
+  const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [editing, setEditing] = useState<{ id: string; hostIds: string[] } | null>(null);
 
   const statusLabel: Record<Guest["status"], string> = {
     UNDECIDED: dict.expenses.guestStatusUndecided,
@@ -63,83 +75,180 @@ export function GuestList({
     router.refresh();
   }
 
+  // Copies straight to the clipboard rather than revealing another link box.
+  // A second box sitting under the "create link" panel read as two competing
+  // ways to do the same thing.
+  async function copyLink(guest: Guest) {
+    setPendingId(guest.id);
+    setError(null);
+
+    const result = await refreshGuestLink(guest.id);
+
+    if (isActionError(result)) {
+      setError(result.error);
+      setPendingId(null);
+      return;
+    }
+
+    const url = `${window.location.origin}${result.url}`;
+    try {
+      await navigator.clipboard.writeText(url);
+      setCopiedId(guest.id);
+      window.setTimeout(() => setCopiedId(null), 2500);
+    } catch {
+      // Clipboard is blocked in some browsers unless the page is focused —
+      // falling back to a prompt beats silently doing nothing.
+      window.prompt(dict.expenses.guestLinkCopied, url);
+    }
+    setPendingId(null);
+  }
+
   return (
-    <div className="flex flex-col gap-1 ps-4">
-      {guests.map((g) => (
-        <div key={g.id} className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs">
-          <span className="text-muted-foreground">
-            <span className="font-medium text-foreground">{g.name}</span>{" "}
-            {statusLabel[g.status]}
-            {/* Who's on the hook is the whole point of hosts, so say it
-                rather than making people open the expense to find out. */}
-            {g.status !== "PAID" && g.hostNames.length > 0 && (
-              <> · covered by {g.hostNames.join(" & ")}</>
+    <div className="flex flex-col gap-2 border-s-2 border-rule/50 ps-3">
+      {guests.map((g) => {
+        const isEditing = editing?.id === g.id;
+
+        return (
+          <div key={g.id} className="flex flex-col gap-1 text-xs">
+            <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+              <span className="text-muted-foreground">
+                <span className="font-medium text-foreground">{g.name}</span>{" "}
+                {statusLabel[g.status]}
+                {/* Who's on the hook is the whole point of hosts, so say it
+                    rather than making people open the expense to find out. */}
+                {g.status !== "PAID" && g.hostNames.length > 0 && (
+                  <>
+                    {" · covered by "}
+                    {g.hostNames.join(" & ")}
+                    {/* Never dress up an inferred host as a decision. The
+                        leading space is load-bearing: without it the badge
+                        reads as "...example.comassumed" to a screen reader,
+                        which the visual margin hides. */}
+                    {g.hostsAssumed && (
+                      <>
+                        {" "}
+                        <span
+                          title={dict.expenses.guestAssumedHint}
+                          className="rounded-sm bg-warm-surface/60 px-1 py-px text-[0.65rem] text-muted-foreground"
+                        >
+                          {dict.expenses.guestHostsAssumed}
+                        </span>
+                      </>
+                    )}
+                  </>
+                )}
+              </span>
+
+              {isPayer && g.status === "PAYING" && (
+                <Button
+                  size="sm"
+                  variant="outline"
+                  disabled={pendingId === g.id}
+                  onClick={() =>
+                    run(g.id, () => confirmGuestPaid(g.id), () =>
+                      jot(`${g.name} paid up`),
+                    )
+                  }
+                >
+                  {dict.expenses.guestConfirmPaid}
+                </Button>
+              )}
+
+              {g.status !== "PAID" && (
+                <button
+                  type="button"
+                  disabled={pendingId === g.id}
+                  onClick={() =>
+                    setEditing(isEditing ? null : { id: g.id, hostIds: g.hostIds })
+                  }
+                  className="text-muted-foreground underline underline-offset-2 transition-colors hover:text-foreground disabled:opacity-50"
+                >
+                  {dict.expenses.guestChangeHosts}
+                </button>
+              )}
+
+              {/* Links expire after 30 days, and a guest who takes longer than
+                  that used to hit a dead page with no way back. */}
+              {g.status !== "PAID" && (
+                <button
+                  type="button"
+                  disabled={pendingId === g.id}
+                  onClick={() => copyLink(g)}
+                  className="text-muted-foreground underline underline-offset-2 transition-colors hover:text-foreground disabled:opacity-50"
+                >
+                  {copiedId === g.id
+                    ? dict.expenses.guestLinkCopiedShort
+                    : dict.expenses.guestGetLink}
+                </button>
+              )}
+
+              {g.status !== "PAYING" && g.status !== "PAID" && (
+                <button
+                  type="button"
+                  disabled={pendingId === g.id}
+                  aria-label={`${dict.expenses.guestRemove} ${g.name}`}
+                  title={dict.expenses.guestRemove}
+                  onClick={() =>
+                    run(g.id, () => removeGuest(g.id), () =>
+                      jot(`Removed guest ${g.name}`),
+                    )
+                  }
+                  className="rounded-md p-1 text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive disabled:opacity-50"
+                >
+                  <X className="size-3" />
+                </button>
+              )}
+            </div>
+
+            {isEditing && (
+              <div className="flex flex-col gap-1 rounded-md border border-rule bg-card p-2">
+                <p className="text-[0.7rem] text-muted-foreground">
+                  {g.hostsAssumed
+                    ? dict.expenses.guestAssumedHint
+                    : dict.expenses.guestHostsHint}
+                </p>
+                {participants.map((p) => (
+                  <label key={p.id} className="flex items-center gap-2">
+                    <Checkbox
+                      checked={editing.hostIds.includes(p.id)}
+                      onCheckedChange={() =>
+                        setEditing({
+                          id: g.id,
+                          hostIds: editing.hostIds.includes(p.id)
+                            ? editing.hostIds.filter((h) => h !== p.id)
+                            : [...editing.hostIds, p.id],
+                        })
+                      }
+                    />
+                    {p.name}
+                  </label>
+                ))}
+                <div className="flex gap-2">
+                  <Button
+                    size="sm"
+                    disabled={pendingId === g.id || editing.hostIds.length === 0}
+                    onClick={() =>
+                      run(
+                        g.id,
+                        () => setGuestHosts({ guestId: g.id, hostIds: editing.hostIds }),
+                        () => {
+                          jot(`Set who covers ${g.name}`);
+                          setEditing(null);
+                        },
+                      )
+                    }
+                  >
+                    {dict.expenses.guestSaveHosts}
+                  </Button>
+                  <Button size="sm" variant="outline" onClick={() => setEditing(null)}>
+                    {dict.common.cancel}
+                  </Button>
+                </div>
+              </div>
             )}
-          </span>
-
-          {isPayer && g.status === "PAYING" && (
-            <Button
-              size="sm"
-              variant="outline"
-              disabled={pendingId === g.id}
-              onClick={() =>
-                run(g.id, () => confirmGuestPaid(g.id), () =>
-                  jot(`${g.name} paid up`),
-                )
-              }
-            >
-              {dict.expenses.guestConfirmPaid}
-            </Button>
-          )}
-
-          {/* Links expire after 30 days, and a guest who takes longer than
-              that used to hit a dead page with no way back. */}
-          {g.status !== "PAID" && (
-            <button
-              type="button"
-              disabled={pendingId === g.id}
-              onClick={async () => {
-                setPendingId(g.id);
-                setError(null);
-                const result = await refreshGuestLink(g.id);
-                if (isActionError(result)) setError(result.error);
-                else setFreshLink({ id: g.id, url: `${window.location.origin}${result.url}` });
-                setPendingId(null);
-              }}
-              className="text-muted-foreground underline underline-offset-2 transition-colors hover:text-foreground disabled:opacity-50"
-            >
-              {dict.expenses.guestGetLink}
-            </button>
-          )}
-
-          {g.status !== "PAYING" && g.status !== "PAID" && (
-            <button
-              type="button"
-              disabled={pendingId === g.id}
-              aria-label={`${dict.expenses.guestRemove} ${g.name}`}
-              title={dict.expenses.guestRemove}
-              onClick={() =>
-                run(g.id, () => removeGuest(g.id), () =>
-                  jot(`Removed guest ${g.name}`),
-                )
-              }
-              className="rounded-md p-1 text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive disabled:opacity-50"
-            >
-              <X className="size-3" />
-            </button>
-          )}
-
-          {freshLink?.id === g.id && (
-            <input
-              readOnly
-              value={freshLink.url}
-              onFocus={(e) => e.currentTarget.select()}
-              aria-label={dict.expenses.guestLinkCopied}
-              className="w-full rounded-md border border-rule bg-background px-2 py-1 font-mono text-[0.7rem]"
-            />
-          )}
-        </div>
-      ))}
+          </div>
+        );
+      })}
 
       {error && <p className="text-xs text-destructive">{error}</p>}
     </div>

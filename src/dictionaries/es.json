@@ -234,7 +234,12 @@
     "guestRemove": "Quitar",
     "guestLockedNote": "Un invitado está pagando su parte de este gasto, así que el importe y el reparto están bloqueados.",
     "guestGetLink": "Obtener enlace",
-    "guestLinkCopied": "Enlace renovado — vuelve a enviarlo"
+    "guestLinkCopied": "Enlace renovado — vuelve a enviarlo",
+    "guestHostsAssumed": "supuesto",
+    "guestChangeHosts": "Cambiar quién lo cubre",
+    "guestSaveHosts": "Guardar",
+    "guestLinkCopiedShort": "Enlace copiado",
+    "guestAssumedHint": "Nadie eligió esto — viene de una versión anterior. Defínelo bien aquí."
   },
   "settle": {
     "title": "Quién le debe a quién",

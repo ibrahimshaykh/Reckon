@@ -218,6 +218,7 @@ export default async function GroupPage({
                   {e.guests.length > 0 && (
                     <GuestList
                       guests={e.guests}
+                      participants={e.participants}
                       isPayer={e.paidById === session.id}
                       dict={dict}
                     />

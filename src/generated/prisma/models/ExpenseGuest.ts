@@ -31,6 +31,7 @@ export type ExpenseGuestMinAggregateOutputType = {
   name: string | null
   email: string | null
   status: $Enums.GuestStatus | null
+  hostsAssumed: boolean | null
   resolvedAt: Date | null
   expiresAt: Date | null
   createdAt: Date | null
@@ -44,6 +45,7 @@ export type ExpenseGuestMaxAggregateOutputType = {
   name: string | null
   email: string | null
   status: $Enums.GuestStatus | null
+  hostsAssumed: boolean | null
   resolvedAt: Date | null
   expiresAt: Date | null
   createdAt: Date | null
@@ -57,6 +59,7 @@ export type ExpenseGuestCountAggregateOutputType = {
   name: number
   email: number
   status: number
+  hostsAssumed: number
   resolvedAt: number
   expiresAt: number
   createdAt: number
@@ -72,6 +75,7 @@ export type ExpenseGuestMinAggregateInputType = {
   name?: true
   email?: true
   status?: true
+  hostsAssumed?: true
   resolvedAt?: true
   expiresAt?: true
   createdAt?: true
@@ -85,6 +89,7 @@ export type ExpenseGuestMaxAggregateInputType = {
   name?: true
   email?: true
   status?: true
+  hostsAssumed?: true
   resolvedAt?: true
   expiresAt?: true
   createdAt?: true
@@ -98,6 +103,7 @@ export type ExpenseGuestCountAggregateInputType = {
   name?: true
   email?: true
   status?: true
+  hostsAssumed?: true
   resolvedAt?: true
   expiresAt?: true
   createdAt?: true
@@ -184,6 +190,7 @@ export type ExpenseGuestGroupByOutputType = {
   name: string
   email: string | null
   status: $Enums.GuestStatus
+  hostsAssumed: boolean
   resolvedAt: Date | null
   expiresAt: Date
   createdAt: Date
@@ -218,6 +225,7 @@ export type ExpenseGuestWhereInput = {
   name?: Prisma.StringFilter<"ExpenseGuest"> | string
   email?: Prisma.StringNullableFilter<"ExpenseGuest"> | string | null
   status?: Prisma.EnumGuestStatusFilter<"ExpenseGuest"> | $Enums.GuestStatus
+  hostsAssumed?: Prisma.BoolFilter<"ExpenseGuest"> | boolean
   resolvedAt?: Prisma.DateTimeNullableFilter<"ExpenseGuest"> | Date | string | null
   expiresAt?: Prisma.DateTimeFilter<"ExpenseGuest"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"ExpenseGuest"> | Date | string
@@ -233,6 +241,7 @@ export type ExpenseGuestOrderByWithRelationInput = {
   name?: Prisma.SortOrder
   email?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
+  hostsAssumed?: Prisma.SortOrder
   resolvedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -251,6 +260,7 @@ export type ExpenseGuestWhereUniqueInput = Prisma.AtLeast<{
   name?: Prisma.StringFilter<"ExpenseGuest"> | string
   email?: Prisma.StringNullableFilter<"ExpenseGuest"> | string | null
   status?: Prisma.EnumGuestStatusFilter<"ExpenseGuest"> | $Enums.GuestStatus
+  hostsAssumed?: Prisma.BoolFilter<"ExpenseGuest"> | boolean
   resolvedAt?: Prisma.DateTimeNullableFilter<"ExpenseGuest"> | Date | string | null
   expiresAt?: Prisma.DateTimeFilter<"ExpenseGuest"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"ExpenseGuest"> | Date | string
@@ -266,6 +276,7 @@ export type ExpenseGuestOrderByWithAggregationInput = {
   name?: Prisma.SortOrder
   email?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
+  hostsAssumed?: Prisma.SortOrder
   resolvedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -285,6 +296,7 @@ export type ExpenseGuestScalarWhereWithAggregatesInput = {
   name?: Prisma.StringWithAggregatesFilter<"ExpenseGuest"> | string
   email?: Prisma.StringNullableWithAggregatesFilter<"ExpenseGuest"> | string | null
   status?: Prisma.EnumGuestStatusWithAggregatesFilter<"ExpenseGuest"> | $Enums.GuestStatus
+  hostsAssumed?: Prisma.BoolWithAggregatesFilter<"ExpenseGuest"> | boolean
   resolvedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"ExpenseGuest"> | Date | string | null
   expiresAt?: Prisma.DateTimeWithAggregatesFilter<"ExpenseGuest"> | Date | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"ExpenseGuest"> | Date | string
@@ -297,6 +309,7 @@ export type ExpenseGuestCreateInput = {
   name: string
   email?: string | null
   status?: $Enums.GuestStatus
+  hostsAssumed?: boolean
   resolvedAt?: Date | string | null
   expiresAt: Date | string
   createdAt?: Date | string
@@ -312,6 +325,7 @@ export type ExpenseGuestUncheckedCreateInput = {
   name: string
   email?: string | null
   status?: $Enums.GuestStatus
+  hostsAssumed?: boolean
   resolvedAt?: Date | string | null
   expiresAt: Date | string
   createdAt?: Date | string
@@ -325,6 +339,7 @@ export type ExpenseGuestUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumGuestStatusFieldUpdateOperationsInput | $Enums.GuestStatus
+  hostsAssumed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -340,6 +355,7 @@ export type ExpenseGuestUncheckedUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumGuestStatusFieldUpdateOperationsInput | $Enums.GuestStatus
+  hostsAssumed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -354,6 +370,7 @@ export type ExpenseGuestCreateManyInput = {
   name: string
   email?: string | null
   status?: $Enums.GuestStatus
+  hostsAssumed?: boolean
   resolvedAt?: Date | string | null
   expiresAt: Date | string
   createdAt?: Date | string
@@ -366,6 +383,7 @@ export type ExpenseGuestUpdateManyMutationInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumGuestStatusFieldUpdateOperationsInput | $Enums.GuestStatus
+  hostsAssumed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -379,6 +397,7 @@ export type ExpenseGuestUncheckedUpdateManyInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumGuestStatusFieldUpdateOperationsInput | $Enums.GuestStatus
+  hostsAssumed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -392,6 +411,7 @@ export type ExpenseGuestCountOrderByAggregateInput = {
   name?: Prisma.SortOrder
   email?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  hostsAssumed?: Prisma.SortOrder
   resolvedAt?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -405,6 +425,7 @@ export type ExpenseGuestMaxOrderByAggregateInput = {
   name?: Prisma.SortOrder
   email?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  hostsAssumed?: Prisma.SortOrder
   resolvedAt?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -418,6 +439,7 @@ export type ExpenseGuestMinOrderByAggregateInput = {
   name?: Prisma.SortOrder
   email?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  hostsAssumed?: Prisma.SortOrder
   resolvedAt?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -441,6 +463,10 @@ export type ExpenseGuestOrderByRelationAggregateInput = {
 
 export type EnumGuestStatusFieldUpdateOperationsInput = {
   set?: $Enums.GuestStatus
+}
+
+export type BoolFieldUpdateOperationsInput = {
+  set?: boolean
 }
 
 export type NullableDateTimeFieldUpdateOperationsInput = {
@@ -509,6 +535,7 @@ export type ExpenseGuestCreateWithoutHostsInput = {
   name: string
   email?: string | null
   status?: $Enums.GuestStatus
+  hostsAssumed?: boolean
   resolvedAt?: Date | string | null
   expiresAt: Date | string
   createdAt?: Date | string
@@ -523,6 +550,7 @@ export type ExpenseGuestUncheckedCreateWithoutHostsInput = {
   name: string
   email?: string | null
   status?: $Enums.GuestStatus
+  hostsAssumed?: boolean
   resolvedAt?: Date | string | null
   expiresAt: Date | string
   createdAt?: Date | string
@@ -551,6 +579,7 @@ export type ExpenseGuestUpdateWithoutHostsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumGuestStatusFieldUpdateOperationsInput | $Enums.GuestStatus
+  hostsAssumed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -565,6 +594,7 @@ export type ExpenseGuestUncheckedUpdateWithoutHostsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumGuestStatusFieldUpdateOperationsInput | $Enums.GuestStatus
+  hostsAssumed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -577,6 +607,7 @@ export type ExpenseGuestCreateWithoutExpenseInput = {
   name: string
   email?: string | null
   status?: $Enums.GuestStatus
+  hostsAssumed?: boolean
   resolvedAt?: Date | string | null
   expiresAt: Date | string
   createdAt?: Date | string
@@ -590,6 +621,7 @@ export type ExpenseGuestUncheckedCreateWithoutExpenseInput = {
   name: string
   email?: string | null
   status?: $Enums.GuestStatus
+  hostsAssumed?: boolean
   resolvedAt?: Date | string | null
   expiresAt: Date | string
   createdAt?: Date | string
@@ -633,6 +665,7 @@ export type ExpenseGuestScalarWhereInput = {
   name?: Prisma.StringFilter<"ExpenseGuest"> | string
   email?: Prisma.StringNullableFilter<"ExpenseGuest"> | string | null
   status?: Prisma.EnumGuestStatusFilter<"ExpenseGuest"> | $Enums.GuestStatus
+  hostsAssumed?: Prisma.BoolFilter<"ExpenseGuest"> | boolean
   resolvedAt?: Prisma.DateTimeNullableFilter<"ExpenseGuest"> | Date | string | null
   expiresAt?: Prisma.DateTimeFilter<"ExpenseGuest"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"ExpenseGuest"> | Date | string
@@ -645,6 +678,7 @@ export type ExpenseGuestCreateManyExpenseInput = {
   name: string
   email?: string | null
   status?: $Enums.GuestStatus
+  hostsAssumed?: boolean
   resolvedAt?: Date | string | null
   expiresAt: Date | string
   createdAt?: Date | string
@@ -657,6 +691,7 @@ export type ExpenseGuestUpdateWithoutExpenseInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumGuestStatusFieldUpdateOperationsInput | $Enums.GuestStatus
+  hostsAssumed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -670,6 +705,7 @@ export type ExpenseGuestUncheckedUpdateWithoutExpenseInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumGuestStatusFieldUpdateOperationsInput | $Enums.GuestStatus
+  hostsAssumed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -683,6 +719,7 @@ export type ExpenseGuestUncheckedUpdateManyWithoutExpenseInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumGuestStatusFieldUpdateOperationsInput | $Enums.GuestStatus
+  hostsAssumed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -727,6 +764,7 @@ export type ExpenseGuestSelect<ExtArgs extends runtime.Types.Extensions.Internal
   name?: boolean
   email?: boolean
   status?: boolean
+  hostsAssumed?: boolean
   resolvedAt?: boolean
   expiresAt?: boolean
   createdAt?: boolean
@@ -743,6 +781,7 @@ export type ExpenseGuestSelectCreateManyAndReturn<ExtArgs extends runtime.Types.
   name?: boolean
   email?: boolean
   status?: boolean
+  hostsAssumed?: boolean
   resolvedAt?: boolean
   expiresAt?: boolean
   createdAt?: boolean
@@ -757,6 +796,7 @@ export type ExpenseGuestSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.
   name?: boolean
   email?: boolean
   status?: boolean
+  hostsAssumed?: boolean
   resolvedAt?: boolean
   expiresAt?: boolean
   createdAt?: boolean
@@ -771,13 +811,14 @@ export type ExpenseGuestSelectScalar = {
   name?: boolean
   email?: boolean
   status?: boolean
+  hostsAssumed?: boolean
   resolvedAt?: boolean
   expiresAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type ExpenseGuestOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "token" | "expenseId" | "name" | "email" | "status" | "resolvedAt" | "expiresAt" | "createdAt" | "updatedAt", ExtArgs["result"]["expenseGuest"]>
+export type ExpenseGuestOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "token" | "expenseId" | "name" | "email" | "status" | "hostsAssumed" | "resolvedAt" | "expiresAt" | "createdAt" | "updatedAt", ExtArgs["result"]["expenseGuest"]>
 export type ExpenseGuestInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   expense?: boolean | Prisma.ExpenseDefaultArgs<ExtArgs>
   hosts?: boolean | Prisma.ExpenseGuest$hostsArgs<ExtArgs>
@@ -803,6 +844,7 @@ export type $ExpenseGuestPayload<ExtArgs extends runtime.Types.Extensions.Intern
     name: string
     email: string | null
     status: $Enums.GuestStatus
+    hostsAssumed: boolean
     resolvedAt: Date | null
     expiresAt: Date
     createdAt: Date
@@ -1238,6 +1280,7 @@ export interface ExpenseGuestFieldRefs {
   readonly name: Prisma.FieldRef<"ExpenseGuest", 'String'>
   readonly email: Prisma.FieldRef<"ExpenseGuest", 'String'>
   readonly status: Prisma.FieldRef<"ExpenseGuest", 'GuestStatus'>
+  readonly hostsAssumed: Prisma.FieldRef<"ExpenseGuest", 'Boolean'>
   readonly resolvedAt: Prisma.FieldRef<"ExpenseGuest", 'DateTime'>
   readonly expiresAt: Prisma.FieldRef<"ExpenseGuest", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"ExpenseGuest", 'DateTime'>

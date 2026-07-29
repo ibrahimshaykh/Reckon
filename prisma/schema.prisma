@@ -162,6 +162,10 @@ model ExpenseGuest {
   name       String
   email      String?
   status     GuestStatus @default(UNDECIDED)
+  // True when nobody chose these hosts — the migration from GuestToken had to
+  // put the share somewhere, so it guessed. The UI says so rather than
+  // presenting a guess as a decision someone made.
+  hostsAssumed Boolean   @default(false)
   // When the guest last answered. Kept for the activity trail — status alone
   // can't say whether "undecided" means fresh or ignored for a fortnight.
   resolvedAt DateTime?

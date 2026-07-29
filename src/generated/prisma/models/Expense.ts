@@ -620,10 +620,6 @@ export type DecimalFieldUpdateOperationsInput = {
   divide?: runtime.Decimal | runtime.DecimalJsLike | number | string
 }
 
-export type BoolFieldUpdateOperationsInput = {
-  set?: boolean
-}
-
 export type EnumExpenseSourceFieldUpdateOperationsInput = {
   set?: $Enums.ExpenseSource
 }

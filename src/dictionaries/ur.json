@@ -234,7 +234,12 @@
     "guestRemove": "ہٹائیں",
     "guestLockedNote": "ایک مہمان اس خرچ کا اپنا حصہ ادا کر رہا ہے، اس لیے رقم اور تقسیم مقفل ہے۔",
     "guestGetLink": "لنک لیں",
-    "guestLinkCopied": "لنک تازہ ہو گیا — دوبارہ بھیجیں"
+    "guestLinkCopied": "لنک تازہ ہو گیا — دوبارہ بھیجیں",
+    "guestHostsAssumed": "اندازہ",
+    "guestChangeHosts": "کون کور کر رہا ہے، تبدیل کریں",
+    "guestSaveHosts": "محفوظ کریں",
+    "guestLinkCopiedShort": "لنک کاپی ہو گیا",
+    "guestAssumedHint": "یہ کسی نے منتخب نہیں کیا — پرانے ورژن سے منتقل ہوا ہے۔ یہاں درست کر لیں۔"
   },
   "settle": {
     "title": "کس پر کتنا واجب ہے",

@@ -234,7 +234,12 @@
     "guestRemove": "Remove",
     "guestLockedNote": "A guest is paying their share of this expense, so the amount and split are locked.",
     "guestGetLink": "Get link",
-    "guestLinkCopied": "Link refreshed — send it again"
+    "guestLinkCopied": "Link refreshed — send it again",
+    "guestHostsAssumed": "assumed",
+    "guestChangeHosts": "Change who covers them",
+    "guestSaveHosts": "Save",
+    "guestLinkCopiedShort": "Link copied",
+    "guestAssumedHint": "Nobody picked this — it was carried over from an older version. Set it properly here."
   },
   "settle": {
     "title": "Who owes who",

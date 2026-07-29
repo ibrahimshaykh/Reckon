@@ -89,7 +89,11 @@ export function ShareExpenseButton({
   }
 
   return (
-    <div className="relative mt-2 flex flex-col gap-2 rounded-lg border p-2 pe-8">
+    // Shadowed and clearly lifted off the row: this panel sits directly above
+    // the list of guests already on the expense, and without a hard edge the
+    // two read as one block — as though the checkboxes described the guest
+    // listed underneath rather than the new one being created.
+    <div className="relative mt-2 flex w-full flex-col gap-2 rounded-lg border-2 border-rule bg-card p-3 pe-8 shadow-md">
       {/* Once opened there was no way back out without reloading the page. */}
       <button
         type="button"
@@ -103,6 +107,7 @@ export function ShareExpenseButton({
 
       {!link ? (
         <>
+          <p className="text-xs font-medium">{dict.expenses.shareTooltip}</p>
           <Input
             value={guestName}
             onChange={(e) => setGuestName(e.target.value)}

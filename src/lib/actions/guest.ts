@@ -127,6 +127,64 @@ export async function removeGuest(guestId: string): Promise<ActionResult<void>> 
   });
 }
 
+const setHostsSchema = z.object({
+  guestId: cuid,
+  hostIds: z.array(cuid).min(1, "Pick who's covering this guest."),
+});
+
+// Changing who covers a guest. Deliberately allowed even while the expense is
+// locked: a guest's share is the bill divided by heads, so it doesn't depend
+// on who's carrying it. Moving that weight between members changes what they
+// owe each other, never what the guest was quoted.
+export async function setGuestHosts(input: {
+  guestId: string;
+  hostIds: string[];
+}): Promise<ActionResult<void>> {
+  return asActionResult(async () => {
+    const session = await requireSession();
+    const valid = validate(setHostsSchema, input);
+
+    const guest = await db.expenseGuest.findUniqueOrThrow({
+      where: { id: valid.guestId },
+      include: {
+        expense: {
+          select: {
+            groupId: true,
+            items: { select: { participants: { select: { userId: true } } } },
+          },
+        },
+      },
+    });
+    await assertMember(guest.expense.groupId, session.id);
+
+    const participantIds = new Set(
+      guest.expense.items.flatMap((i) => i.participants.map((p) => p.userId)),
+    );
+    if (valid.hostIds.some((id) => !participantIds.has(id))) {
+      throw new ApiError(
+        400,
+        "A guest can only be covered by someone who's part of this expense.",
+      );
+    }
+
+    await db.$transaction([
+      db.expenseGuestHost.deleteMany({ where: { guestId: guest.id } }),
+      db.expenseGuest.update({
+        where: { id: guest.id },
+        data: {
+          // Somebody has now actually chosen, so stop hedging in the UI.
+          hostsAssumed: false,
+          hosts: { create: valid.hostIds.map((userId) => ({ userId })) },
+        },
+      }),
+    ]);
+
+    await recalculateSettlements(guest.expense.groupId);
+    revalidatePath(`/groups/${guest.expense.groupId}`);
+    revalidatePath(`/groups/${guest.expense.groupId}/settle`);
+  });
+}
+
 // Guest links die after 30 days, and a guest who takes longer than that then
 // has no way back in — the link 404s and there was nothing anyone could do
 // about it. This hands the host a working link again, keeping the same token
