@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Pencil } from "lucide-react";
 import { getGroup } from "@/lib/actions/groups";
 import { listGroupExpenses } from "@/lib/actions/expenses";
 import { formatMoney } from "@/lib/money";
@@ -14,6 +15,41 @@ import { PageHeader, SectionHeading } from "@/components/page-header";
 import { Reveal } from "@/components/motion/reveal";
 import { StickmanParade } from "@/components/sketch/sketch-ui";
 import { Shavings, Thumbtacked } from "@/components/sketch/scribble";
+import { summariseExpense, joinNames } from "@/lib/expense-summary";
+import type { Dictionary } from "@/lib/dictionary";
+
+// Turns an expense into the sentence a person would actually say about it.
+// Falls back to the bare "Paid by X" line when there are no participants to
+// describe, so a malformed or legacy row still says something useful.
+function describeExpense(
+  expense: {
+    paidById: string;
+    paidByName: string;
+    participants: { id: string; name: string }[];
+  },
+  dict: Dictionary,
+) {
+  const summary = summariseExpense(
+    expense.paidById,
+    expense.paidByName,
+    expense.participants,
+  );
+  const and = dict.common.and;
+
+  switch (summary.kind) {
+    case "sharedBy":
+      return interpolate(dict.groupHub.sharedBy, { names: joinNames(summary.names, and) });
+    case "boughtFor":
+      return interpolate(dict.groupHub.boughtFor, {
+        payer: summary.payer,
+        names: joinNames(summary.names, and),
+      });
+    case "paidForSelf":
+      return interpolate(dict.groupHub.paidForSelf, { payer: summary.payer });
+    default:
+      return `${dict.common.paidBy} ${expense.paidByName}`;
+  }
+}
 
 export default async function GroupPage({
   params,
@@ -147,8 +183,8 @@ export default async function GroupPage({
                 <li className="flex items-baseline gap-4 border-b border-rule/60 py-3 last:border-0">
                   <div className="flex min-w-0 flex-col gap-0.5">
                     <span className="truncate text-sm font-medium">{e.title}</span>
-                    <span className="font-mono text-xs text-muted-foreground">
-                      {dict.common.paidBy} {e.paidByName}
+                    <span className="text-xs text-muted-foreground">
+                      {describeExpense(e, dict)}
                     </span>
                   </div>
                   <span className="tabular ml-auto shrink-0 text-sm font-semibold">
@@ -156,7 +192,17 @@ export default async function GroupPage({
                   </span>
                   <ShareExpenseButton expenseId={e.id} expenseTitle={e.title} dict={dict} />
                   {e.paidById === session.id && (
-                    <DeleteExpenseButton expenseId={e.id} title={e.title} dict={dict} />
+                    <>
+                      <Link
+                        href={`/groups/${group.id}/expenses/${e.id}/edit`}
+                        aria-label={dict.expenses.editTitle}
+                        title={dict.expenses.editExpense}
+                        className="shrink-0 rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-accent hover:text-primary"
+                      >
+                        <Pencil className="size-3.5" />
+                      </Link>
+                      <DeleteExpenseButton expenseId={e.id} title={e.title} dict={dict} />
+                    </>
                   )}
                 </li>
               </Reveal>

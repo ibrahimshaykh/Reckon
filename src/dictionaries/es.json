@@ -44,7 +44,8 @@
     "paidBy": "Pagado por",
     "copy": "Copiar",
     "copied": "Copiado",
-    "cancel": "Cancelar"
+    "cancel": "Cancelar",
+    "and": "y"
   },
   "groupHub": {
     "members": "Miembros",
@@ -73,7 +74,10 @@
     "trackedMany": "{amount} registrado en {count} gastos",
     "deleteExpense": "Eliminar",
     "confirmDeleteExpense": "¿Eliminar \"{title}\"? Esto cambia lo que cada quien debe.",
-    "deleting": "Eliminando…"
+    "deleting": "Eliminando…",
+    "sharedBy": "{names} compartieron esto",
+    "boughtFor": "{payer} compró esto para {names}",
+    "paidForSelf": "{payer} pagó lo suyo"
   },
   "chores": {
     "title": "Tareas",
@@ -209,7 +213,15 @@
     "shareButton": "Compartir",
     "guestNamePlaceholder": "Nombre del invitado",
     "creatingLink": "Creando…",
-    "createLinkButton": "Crear enlace"
+    "createLinkButton": "Crear enlace",
+    "shareTooltip": "Compartir con alguien que no tiene cuenta en Reckon",
+    "closeShare": "Cerrar",
+    "guestLinkReady": "Envíale este enlace",
+    "editExpense": "Editar",
+    "editTitle": "Editar gasto",
+    "saveChanges": "Guardar cambios",
+    "saving": "Guardando…",
+    "itemisedNote": "Esto vino de un recibo, así que el importe y el reparto siguen los artículos escaneados. Aún puedes cambiar el título y quién pagó."
   },
   "settle": {
     "title": "Quién le debe a quién",

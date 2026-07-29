@@ -178,6 +178,139 @@ export async function addItemizedExpense(input: {
   });
 }
 
+// Loads an expense for editing, and reports whether its amounts are safe to
+// change. A receipt-scanned expense has one item per line on the receipt with
+// its own claimed shares; rewriting that as a single equal split would throw
+// away who actually had what. So those stay title/payer-only.
+export async function getExpenseForEdit(expenseId: string): Promise<
+  ActionResult<{
+    id: string;
+    groupId: string;
+    title: string;
+    totalCents: number;
+    paidById: string;
+    participantIds: string[];
+    itemised: boolean;
+  }>
+> {
+  return asActionResult(async () => {
+    const session = await requireSession();
+    const validId = validate(cuid, expenseId);
+
+    const expense = await db.expense.findUniqueOrThrow({
+      where: { id: validId },
+      include: { items: { include: { participants: true } } },
+    });
+
+    await assertMember(expense.groupId, session.id);
+    if (expense.paidById !== session.id) {
+      throw new ApiError(403, "Only the person who paid can edit this expense.");
+    }
+
+    const participantIds = [
+      ...new Set(expense.items.flatMap((i) => i.participants.map((p) => p.userId))),
+    ];
+
+    return {
+      id: expense.id,
+      groupId: expense.groupId,
+      title: expense.title,
+      totalCents: Math.round(Number(expense.totalAmount) * 100),
+      paidById: expense.paidById,
+      participantIds,
+      itemised: expense.items.length > 1,
+    };
+  });
+}
+
+const updateExpenseSchema = z.object({
+  expenseId: cuid,
+  title: shortText("Title", 150),
+  paidById: cuid,
+  totalCents: positiveCents.optional(),
+  participantIds: z.array(cuid).min(1, "Pick at least one participant.").optional(),
+});
+
+export async function updateExpense(input: {
+  expenseId: string;
+  title: string;
+  paidById: string;
+  totalCents?: number;
+  participantIds?: string[];
+}): Promise<ActionResult<{ groupId: string }>> {
+  return asActionResult(async () => {
+    const session = await requireSession();
+    const valid = validate(updateExpenseSchema, input);
+
+    const expense = await db.expense.findUniqueOrThrow({
+      where: { id: valid.expenseId },
+      include: { items: true },
+    });
+
+    await assertMember(expense.groupId, session.id);
+    if (expense.paidById !== session.id) {
+      throw new ApiError(403, "Only the person who paid can edit this expense.");
+    }
+
+    const itemised = expense.items.length > 1;
+    const changingAmounts = valid.totalCents !== undefined || valid.participantIds !== undefined;
+    if (itemised && changingAmounts) {
+      throw new ApiError(
+        400,
+        "This expense came from a receipt, so its amounts follow the scanned items. You can change the title and who paid — to change the split, delete it and add it again.",
+      );
+    }
+
+    // Rewriting the single item is done in a transaction with the expense
+    // update: a half-applied edit would leave the total disagreeing with the
+    // shares, and the settlement engine would then compute a wrong balance.
+    await db.$transaction(async (tx) => {
+      await tx.expense.update({
+        where: { id: expense.id },
+        data: {
+          title: valid.title,
+          paidById: valid.paidById,
+          ...(valid.totalCents !== undefined
+            ? { totalAmount: fromCents(valid.totalCents) }
+            : {}),
+        },
+      });
+
+      if (!itemised && valid.totalCents !== undefined && valid.participantIds) {
+        const shares = splitToShareRatios(
+          valid.totalCents,
+          valid.participantIds,
+          "EQUAL",
+        );
+
+        // Replacing rather than patching: participants may have been added or
+        // removed, and the cascade clears the old rows cleanly.
+        await tx.expenseItem.deleteMany({ where: { expenseId: expense.id } });
+        await tx.expenseItem.create({
+          data: {
+            expenseId: expense.id,
+            label: valid.title,
+            amount: fromCents(valid.totalCents),
+            splitType: "EQUAL",
+            participants: {
+              create: valid.participantIds.map((userId) => ({
+                userId,
+                shareRatio: shares[userId],
+              })),
+            },
+          },
+        });
+      }
+    });
+
+    await recalculateSettlements(expense.groupId);
+    revalidatePath(`/groups/${expense.groupId}`);
+    revalidatePath(`/groups/${expense.groupId}/settle`);
+
+    return { groupId: expense.groupId };
+  });
+}
+
 // Deleting is restricted to whoever paid, matching forgiveIOU — a money
 // record belongs to the person who put the money in, and letting any member
 // erase someone else's expense would quietly rewrite what everyone owes.
@@ -214,18 +347,31 @@ export async function listGroupExpenses(groupId: string) {
 
   const expenses = await db.expense.findMany({
     where: { groupId },
-    include: { paidBy: true },
+    include: {
+      paidBy: true,
+      items: { include: { participants: { include: { user: true } } } },
+    },
     orderBy: { createdAt: "desc" },
   });
 
-  return expenses.map((e) => ({
-    id: e.id,
-    title: e.title,
-    totalAmount: Number(e.totalAmount),
-    paidByName: e.paidBy.displayName,
-    // The row needs this to decide whether to offer a delete control, since
-    // only the payer may remove it.
-    paidById: e.paidById,
-    createdAt: e.createdAt.toISOString(),
-  }));
+  return expenses.map((e) => {
+    // An expense can have several items, and a person can appear in more than
+    // one of them — dedupe so "shared by" names each person once.
+    const byId = new Map<string, string>();
+    for (const item of e.items) {
+      for (const p of item.participants) byId.set(p.userId, p.user.displayName);
+    }
+
+    return {
+      id: e.id,
+      title: e.title,
+      totalAmount: Number(e.totalAmount),
+      paidByName: e.paidBy.displayName,
+      // The row needs this to decide whether to offer a delete control, since
+      // only the payer may remove it.
+      paidById: e.paidById,
+      participants: [...byId].map(([id, name]) => ({ id, name })),
+      createdAt: e.createdAt.toISOString(),
+    };
+  });
 }

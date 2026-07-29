@@ -44,7 +44,8 @@
     "paidBy": "ادا کنندہ",
     "copy": "کاپی کریں",
     "copied": "کاپی ہو گیا",
-    "cancel": "منسوخ کریں"
+    "cancel": "منسوخ کریں",
+    "and": "اور"
   },
   "groupHub": {
     "members": "ارکان",
@@ -73,7 +74,10 @@
     "trackedMany": "{count} اخراجات میں {amount} درج ہے",
     "deleteExpense": "حذف کریں",
     "confirmDeleteExpense": "\"{title}\" حذف کریں؟ اس سے سب کے واجبات بدل جائیں گے۔",
-    "deleting": "حذف ہو رہا ہے…"
+    "deleting": "حذف ہو رہا ہے…",
+    "sharedBy": "{names} نے یہ مل کر لیا",
+    "boughtFor": "{payer} نے یہ {names} کے لیے خریدا",
+    "paidForSelf": "{payer} نے اپنے لیے ادا کیا"
   },
   "chores": {
     "title": "کام",
@@ -209,7 +213,15 @@
     "shareButton": "شیئر کریں",
     "guestNamePlaceholder": "مہمان کا نام",
     "creatingLink": "بن رہا ہے…",
-    "createLinkButton": "لنک بنائیں"
+    "createLinkButton": "لنک بنائیں",
+    "shareTooltip": "کسی ایسے شخص کے ساتھ شیئر کریں جس کا ریکن اکاؤنٹ نہیں",
+    "closeShare": "بند کریں",
+    "guestLinkReady": "انہیں یہ لنک بھیجیں",
+    "editExpense": "تبدیل کریں",
+    "editTitle": "خرچ میں تبدیلی",
+    "saveChanges": "تبدیلیاں محفوظ کریں",
+    "saving": "محفوظ ہو رہا ہے…",
+    "itemisedNote": "یہ رسید سے آیا ہے، اس لیے رقم اور تقسیم اسکین کی گئی اشیاء کے مطابق ہے۔ آپ عنوان اور ادا کرنے والا پھر بھی بدل سکتے ہیں۔"
   },
   "settle": {
     "title": "کس پر کتنا واجب ہے",

@@ -44,7 +44,8 @@
     "paidBy": "Paid by",
     "copy": "Copy",
     "copied": "Copied",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "and": "and"
   },
   "groupHub": {
     "members": "Members",
@@ -73,7 +74,10 @@
     "trackedMany": "{amount} tracked across {count} expenses",
     "deleteExpense": "Delete",
     "confirmDeleteExpense": "Delete \"{title}\"? This changes what everyone owes.",
-    "deleting": "Deleting…"
+    "deleting": "Deleting…",
+    "sharedBy": "{names} shared this",
+    "boughtFor": "{payer} bought this for {names}",
+    "paidForSelf": "{payer} paid for themselves"
   },
   "chores": {
     "title": "Chores",
@@ -209,7 +213,15 @@
     "shareButton": "Share",
     "guestNamePlaceholder": "Guest's name",
     "creatingLink": "Creating…",
-    "createLinkButton": "Create link"
+    "createLinkButton": "Create link",
+    "shareTooltip": "Share with someone who has no Reckon account",
+    "closeShare": "Close",
+    "guestLinkReady": "Send them this link",
+    "editExpense": "Edit",
+    "editTitle": "Edit expense",
+    "saveChanges": "Save changes",
+    "saving": "Saving…",
+    "itemisedNote": "This came from a receipt, so the amount and split follow the scanned items. You can still change the title and who paid."
   },
   "settle": {
     "title": "Who owes who",
