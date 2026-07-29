@@ -400,7 +400,8 @@ export const ModelName = {
   User: 'User',
   Group: 'Group',
   GroupMember: 'GroupMember',
-  GuestToken: 'GuestToken',
+  ExpenseGuest: 'ExpenseGuest',
+  ExpenseGuestHost: 'ExpenseGuestHost',
   Expense: 'Expense',
   ExpenseItem: 'ExpenseItem',
   ExpenseItemParticipant: 'ExpenseItemParticipant',
@@ -430,7 +431,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "group" | "groupMember" | "guestToken" | "expense" | "expenseItem" | "expenseItemParticipant" | "settlement" | "iOU" | "chore" | "choreAssignment" | "availabilityEntry" | "proposal" | "proposalFlag" | "proposalVote" | "nudge" | "recap" | "activityEvent"
+    modelProps: "user" | "group" | "groupMember" | "expenseGuest" | "expenseGuestHost" | "expense" | "expenseItem" | "expenseItemParticipant" | "settlement" | "iOU" | "chore" | "choreAssignment" | "availabilityEntry" | "proposal" | "proposalFlag" | "proposalVote" | "nudge" | "recap" | "activityEvent"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -656,77 +657,151 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
-    GuestToken: {
-      payload: Prisma.$GuestTokenPayload<ExtArgs>
-      fields: Prisma.GuestTokenFieldRefs
+    ExpenseGuest: {
+      payload: Prisma.$ExpenseGuestPayload<ExtArgs>
+      fields: Prisma.ExpenseGuestFieldRefs
       operations: {
         findUnique: {
-          args: Prisma.GuestTokenFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$GuestTokenPayload> | null
+          args: Prisma.ExpenseGuestFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExpenseGuestPayload> | null
         }
         findUniqueOrThrow: {
-          args: Prisma.GuestTokenFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$GuestTokenPayload>
+          args: Prisma.ExpenseGuestFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExpenseGuestPayload>
         }
         findFirst: {
-          args: Prisma.GuestTokenFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$GuestTokenPayload> | null
+          args: Prisma.ExpenseGuestFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExpenseGuestPayload> | null
         }
         findFirstOrThrow: {
-          args: Prisma.GuestTokenFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$GuestTokenPayload>
+          args: Prisma.ExpenseGuestFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExpenseGuestPayload>
         }
         findMany: {
-          args: Prisma.GuestTokenFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$GuestTokenPayload>[]
+          args: Prisma.ExpenseGuestFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExpenseGuestPayload>[]
         }
         create: {
-          args: Prisma.GuestTokenCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$GuestTokenPayload>
+          args: Prisma.ExpenseGuestCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExpenseGuestPayload>
         }
         createMany: {
-          args: Prisma.GuestTokenCreateManyArgs<ExtArgs>
+          args: Prisma.ExpenseGuestCreateManyArgs<ExtArgs>
           result: BatchPayload
         }
         createManyAndReturn: {
-          args: Prisma.GuestTokenCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$GuestTokenPayload>[]
+          args: Prisma.ExpenseGuestCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExpenseGuestPayload>[]
         }
         delete: {
-          args: Prisma.GuestTokenDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$GuestTokenPayload>
+          args: Prisma.ExpenseGuestDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExpenseGuestPayload>
         }
         update: {
-          args: Prisma.GuestTokenUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$GuestTokenPayload>
+          args: Prisma.ExpenseGuestUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExpenseGuestPayload>
         }
         deleteMany: {
-          args: Prisma.GuestTokenDeleteManyArgs<ExtArgs>
+          args: Prisma.ExpenseGuestDeleteManyArgs<ExtArgs>
           result: BatchPayload
         }
         updateMany: {
-          args: Prisma.GuestTokenUpdateManyArgs<ExtArgs>
+          args: Prisma.ExpenseGuestUpdateManyArgs<ExtArgs>
           result: BatchPayload
         }
         updateManyAndReturn: {
-          args: Prisma.GuestTokenUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$GuestTokenPayload>[]
+          args: Prisma.ExpenseGuestUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExpenseGuestPayload>[]
         }
         upsert: {
-          args: Prisma.GuestTokenUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$GuestTokenPayload>
+          args: Prisma.ExpenseGuestUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExpenseGuestPayload>
         }
         aggregate: {
-          args: Prisma.GuestTokenAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateGuestToken>
+          args: Prisma.ExpenseGuestAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateExpenseGuest>
         }
         groupBy: {
-          args: Prisma.GuestTokenGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.GuestTokenGroupByOutputType>[]
+          args: Prisma.ExpenseGuestGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ExpenseGuestGroupByOutputType>[]
         }
         count: {
-          args: Prisma.GuestTokenCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.GuestTokenCountAggregateOutputType> | number
+          args: Prisma.ExpenseGuestCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ExpenseGuestCountAggregateOutputType> | number
+        }
+      }
+    }
+    ExpenseGuestHost: {
+      payload: Prisma.$ExpenseGuestHostPayload<ExtArgs>
+      fields: Prisma.ExpenseGuestHostFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ExpenseGuestHostFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExpenseGuestHostPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ExpenseGuestHostFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExpenseGuestHostPayload>
+        }
+        findFirst: {
+          args: Prisma.ExpenseGuestHostFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExpenseGuestHostPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ExpenseGuestHostFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExpenseGuestHostPayload>
+        }
+        findMany: {
+          args: Prisma.ExpenseGuestHostFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExpenseGuestHostPayload>[]
+        }
+        create: {
+          args: Prisma.ExpenseGuestHostCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExpenseGuestHostPayload>
+        }
+        createMany: {
+          args: Prisma.ExpenseGuestHostCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ExpenseGuestHostCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExpenseGuestHostPayload>[]
+        }
+        delete: {
+          args: Prisma.ExpenseGuestHostDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExpenseGuestHostPayload>
+        }
+        update: {
+          args: Prisma.ExpenseGuestHostUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExpenseGuestHostPayload>
+        }
+        deleteMany: {
+          args: Prisma.ExpenseGuestHostDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ExpenseGuestHostUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ExpenseGuestHostUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExpenseGuestHostPayload>[]
+        }
+        upsert: {
+          args: Prisma.ExpenseGuestHostUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExpenseGuestHostPayload>
+        }
+        aggregate: {
+          args: Prisma.ExpenseGuestHostAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateExpenseGuestHost>
+        }
+        groupBy: {
+          args: Prisma.ExpenseGuestHostGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ExpenseGuestHostGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ExpenseGuestHostCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ExpenseGuestHostCountAggregateOutputType> | number
         }
       }
     }
@@ -1852,17 +1927,28 @@ export const GroupMemberScalarFieldEnum = {
 export type GroupMemberScalarFieldEnum = (typeof GroupMemberScalarFieldEnum)[keyof typeof GroupMemberScalarFieldEnum]
 
 
-export const GuestTokenScalarFieldEnum = {
+export const ExpenseGuestScalarFieldEnum = {
   id: 'id',
   token: 'token',
   expenseId: 'expenseId',
-  guestName: 'guestName',
-  guestEmail: 'guestEmail',
+  name: 'name',
+  email: 'email',
+  status: 'status',
+  resolvedAt: 'resolvedAt',
   expiresAt: 'expiresAt',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 } as const
 
-export type GuestTokenScalarFieldEnum = (typeof GuestTokenScalarFieldEnum)[keyof typeof GuestTokenScalarFieldEnum]
+export type ExpenseGuestScalarFieldEnum = (typeof ExpenseGuestScalarFieldEnum)[keyof typeof ExpenseGuestScalarFieldEnum]
+
+
+export const ExpenseGuestHostScalarFieldEnum = {
+  guestId: 'guestId',
+  userId: 'userId'
+} as const
+
+export type ExpenseGuestHostScalarFieldEnum = (typeof ExpenseGuestHostScalarFieldEnum)[keyof typeof ExpenseGuestHostScalarFieldEnum]
 
 
 export const ExpenseScalarFieldEnum = {
@@ -2149,6 +2235,20 @@ export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel
  * Reference to a field of type 'DateTime[]'
  */
 export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
+    
+
+
+/**
+ * Reference to a field of type 'GuestStatus'
+ */
+export type EnumGuestStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'GuestStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'GuestStatus[]'
+ */
+export type ListEnumGuestStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'GuestStatus[]'>
     
 
 
@@ -2466,7 +2566,8 @@ export type GlobalOmitConfig = {
   user?: Prisma.UserOmit
   group?: Prisma.GroupOmit
   groupMember?: Prisma.GroupMemberOmit
-  guestToken?: Prisma.GuestTokenOmit
+  expenseGuest?: Prisma.ExpenseGuestOmit
+  expenseGuestHost?: Prisma.ExpenseGuestHostOmit
   expense?: Prisma.ExpenseOmit
   expenseItem?: Prisma.ExpenseItemOmit
   expenseItemParticipant?: Prisma.ExpenseItemParticipantOmit

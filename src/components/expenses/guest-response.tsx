@@ -1,0 +1,276 @@
+"use client";
+
+import { useState } from "react";
+import { respondAsGuest } from "@/lib/actions/guest";
+import { isActionError } from "@/lib/action-result";
+import { buildPayLink } from "@/lib/pay-links";
+import { interpolate } from "@/lib/i18n";
+import { formatMoney } from "@/lib/money";
+import { Button } from "@/components/ui/button";
+import { CopyRow } from "@/components/copy-row";
+import type { GuestPayTo, GuestView } from "@/lib/actions/guest";
+import type { Dictionary } from "@/lib/dictionary";
+
+// One person's ways of being paid. Shared between "pay whoever fronted the
+// bill" and "pay the hosts who covered you", since those differ only in who
+// the money is going to.
+function PayMethods({
+  details,
+  name,
+  amountCents,
+  note,
+  dict,
+}: {
+  details: GuestPayTo;
+  name: string;
+  amountCents: number;
+  note: string;
+  dict: Dictionary;
+}) {
+  const hasAny =
+    details.venmoHandle ||
+    details.easypaisaNumber ||
+    details.jazzcashNumber ||
+    details.nayapayHandle ||
+    details.bankDetails;
+
+  return (
+    <div className="flex flex-col gap-2">
+      {details.venmoHandle && (
+        <a
+          href={buildPayLink("venmo", {
+            handle: details.venmoHandle,
+            // Their own share — the old page pre-filled Venmo with the entire
+            // expense total, so a guest who tapped through paid for everyone.
+            amountCents,
+            note,
+          })}
+          className="text-sm text-primary underline"
+        >
+          {interpolate(dict.guest.payOnVenmo, { name })}
+        </a>
+      )}
+      {details.easypaisaNumber && (
+        <CopyRow label={dict.common.easypaisa} value={details.easypaisaNumber} dict={dict} />
+      )}
+      {details.jazzcashNumber && (
+        <CopyRow label={dict.common.jazzcash} value={details.jazzcashNumber} dict={dict} />
+      )}
+      {details.nayapayHandle && (
+        <CopyRow label={dict.common.nayapay} value={details.nayapayHandle} dict={dict} />
+      )}
+      {details.bankDetails && (
+        <CopyRow label={dict.common.bankTransfer} value={details.bankDetails} dict={dict} />
+      )}
+      {!hasAny && (
+        <p className="text-sm text-muted-foreground">
+          {interpolate(dict.common.noPaymentMethod, { name })}
+        </p>
+      )}
+    </div>
+  );
+}
+
+// The guest's side of an expense. A guest can only say "I'll pay" or
+// "ignore" — marking the money as actually received is the payer's call,
+// since they're the one who'd know.
+export function GuestResponse({
+  token,
+  status,
+  payerName,
+  amount,
+  shareCents,
+  expenseTitle,
+  payTo,
+  covered,
+  hosts,
+  currency,
+  dict,
+}: {
+  token: string;
+  status: GuestView["status"];
+  payerName: string;
+  /** Pre-formatted for display. */
+  amount: string;
+  /** The same figure in cents, for building payment deep links. */
+  shareCents: number;
+  expenseTitle: string;
+  payTo: GuestView["payTo"];
+  covered: boolean;
+  hosts: GuestView["hosts"];
+  currency: string;
+  dict: Dictionary;
+}) {
+  const [current, setCurrent] = useState(status);
+  const [currentPayTo, setCurrentPayTo] = useState(payTo);
+  const [insisting, setInsisting] = useState(false);
+  const [pending, setPending] = useState<"PAYING" | "DECLINED" | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  async function respond(choice: "PAYING" | "DECLINED") {
+    setPending(choice);
+    setError(null);
+
+    const result = await respondAsGuest({ token, choice });
+
+    if (isActionError(result)) {
+      setError(result.error);
+      setPending(null);
+      return;
+    }
+
+    setCurrent(result.status);
+    setCurrentPayTo(result.payTo);
+    setPending(null);
+  }
+
+  if (current === "PAID") {
+    return (
+      <section className="flex flex-col gap-1 rounded-lg border border-rule bg-card p-4">
+        <p className="text-sm font-medium">{dict.guest.paidHeading}</p>
+        <p className="text-sm text-muted-foreground">
+          {interpolate(dict.guest.paidNote, { payerName, amount })}
+        </p>
+      </section>
+    );
+  }
+
+  // The hosts have already squared up, so this guest owes nobody. Being
+  // someone's guest means you aren't chased for the bill — but it stays
+  // their choice, so there's a quiet way to insist rather than a locked door.
+  if (covered) {
+    const hostNames = hosts.map((h) => h.name);
+    const owing = hosts.filter((h) => h.amountCents > 0);
+
+    if (!insisting) {
+      return (
+        <section className="flex flex-col gap-3 rounded-lg border border-rule bg-card p-4">
+          <div className="flex flex-col gap-1">
+            <p className="text-sm font-medium">{dict.guest.coveredHeading}</p>
+            <p className="text-sm text-muted-foreground">
+              {interpolate(dict.guest.coveredNote, {
+                hosts: hostNames.join(` ${dict.common.and} `),
+              })}
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => setInsisting(true)}
+            className="self-start text-xs text-muted-foreground underline underline-offset-4 transition-colors hover:text-foreground"
+          >
+            {dict.guest.insistLink}
+          </button>
+        </section>
+      );
+    }
+
+    return (
+      <section className="flex flex-col gap-3 rounded-lg border border-rule bg-card p-4">
+        <div className="flex flex-col gap-1">
+          <p className="text-sm font-medium">{dict.guest.insistHeading}</p>
+          {/* Deliberately doesn't name the payer. Paying them would hand money
+              to someone already made whole — but they're often a host too, and
+              "X has been paid back, so pay the hosts" reads as nonsense when X
+              is one of the hosts. */}
+          <p className="text-sm text-muted-foreground">{dict.guest.insistNote}</p>
+        </div>
+
+        {owing.map((host) => (
+          <div key={host.name} className="flex flex-col gap-1.5">
+            <p className="text-sm font-medium">
+              {interpolate(dict.guest.hostOwed, {
+                name: host.name,
+                amount: formatMoney(host.amountCents, currency),
+              })}
+            </p>
+            <PayMethods
+              details={host}
+              name={host.name}
+              amountCents={host.amountCents}
+              note={expenseTitle}
+              dict={dict}
+            />
+          </div>
+        ))}
+
+        <button
+          type="button"
+          onClick={() => setInsisting(false)}
+          className="self-start text-xs text-muted-foreground underline underline-offset-4 transition-colors hover:text-foreground"
+        >
+          {dict.guest.nevermind}
+        </button>
+      </section>
+    );
+  }
+
+  if (current === "DECLINED") {
+    return (
+      <section className="flex flex-col gap-3 rounded-lg border border-rule bg-card p-4">
+        <div className="flex flex-col gap-1">
+          <p className="text-sm font-medium">{dict.guest.declinedHeading}</p>
+          <p className="text-sm text-muted-foreground">
+            {interpolate(dict.guest.declinedNote, { payerName })}
+          </p>
+        </div>
+        {/* Declining isn't final — people change their minds, and the
+            alternative is a dead link they can't undo. */}
+        <Button
+          variant="outline"
+          size="sm"
+          disabled={pending !== null}
+          onClick={() => respond("PAYING")}
+        >
+          {dict.guest.changeMind}
+        </Button>
+        {error && <p className="text-sm text-destructive">{error}</p>}
+      </section>
+    );
+  }
+
+  if (current === "PAYING" && currentPayTo) {
+    return (
+      <section className="flex flex-col gap-3 rounded-lg border border-rule bg-card p-4">
+        <div className="flex flex-col gap-1">
+          <p className="text-sm font-medium">
+            {interpolate(dict.guest.payingHeading, { amount, payerName })}
+          </p>
+          <p className="text-sm text-muted-foreground">{dict.guest.payingNote}</p>
+        </div>
+        <PayMethods
+          details={currentPayTo}
+          name={payerName}
+          amountCents={shareCents}
+          note={expenseTitle}
+          dict={dict}
+        />
+      </section>
+    );
+  }
+
+  return (
+    <section className="flex flex-col gap-3">
+      <div className="flex flex-col gap-2 sm:flex-row">
+        <Button
+          className="flex-1"
+          disabled={pending !== null}
+          onClick={() => respond("PAYING")}
+        >
+          {dict.guest.illPay}
+        </Button>
+        <Button
+          className="flex-1"
+          variant="outline"
+          disabled={pending !== null}
+          onClick={() => respond("DECLINED")}
+        >
+          {dict.guest.ignoreIt}
+        </Button>
+      </div>
+      <p className="text-center text-xs text-muted-foreground">
+        {dict.guest.decidingNote}
+      </p>
+      {error && <p className="text-sm text-destructive">{error}</p>}
+    </section>
+  );
+}

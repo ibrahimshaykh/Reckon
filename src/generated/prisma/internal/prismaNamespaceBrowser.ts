@@ -54,7 +54,8 @@ export const ModelName = {
   User: 'User',
   Group: 'Group',
   GroupMember: 'GroupMember',
-  GuestToken: 'GuestToken',
+  ExpenseGuest: 'ExpenseGuest',
+  ExpenseGuestHost: 'ExpenseGuestHost',
   Expense: 'Expense',
   ExpenseItem: 'ExpenseItem',
   ExpenseItemParticipant: 'ExpenseItemParticipant',
@@ -134,17 +135,28 @@ export const GroupMemberScalarFieldEnum = {
 export type GroupMemberScalarFieldEnum = (typeof GroupMemberScalarFieldEnum)[keyof typeof GroupMemberScalarFieldEnum]
 
 
-export const GuestTokenScalarFieldEnum = {
+export const ExpenseGuestScalarFieldEnum = {
   id: 'id',
   token: 'token',
   expenseId: 'expenseId',
-  guestName: 'guestName',
-  guestEmail: 'guestEmail',
+  name: 'name',
+  email: 'email',
+  status: 'status',
+  resolvedAt: 'resolvedAt',
   expiresAt: 'expiresAt',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 } as const
 
-export type GuestTokenScalarFieldEnum = (typeof GuestTokenScalarFieldEnum)[keyof typeof GuestTokenScalarFieldEnum]
+export type ExpenseGuestScalarFieldEnum = (typeof ExpenseGuestScalarFieldEnum)[keyof typeof ExpenseGuestScalarFieldEnum]
+
+
+export const ExpenseGuestHostScalarFieldEnum = {
+  guestId: 'guestId',
+  userId: 'userId'
+} as const
+
+export type ExpenseGuestHostScalarFieldEnum = (typeof ExpenseGuestHostScalarFieldEnum)[keyof typeof ExpenseGuestHostScalarFieldEnum]
 
 
 export const ExpenseScalarFieldEnum = {

@@ -27,6 +27,7 @@ export function EditExpenseForm({
     paidById: string;
     participantIds: string[];
     itemised: boolean;
+    guestLock: "PAYING" | "PAID" | null;
   };
   members: Member[];
   currency: string;
@@ -40,6 +41,11 @@ export function EditExpenseForm({
   const [participantIds, setParticipantIds] = useState<string[]>(expense.participantIds);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Two separate reasons the money is fixed: a receipt's amounts follow its
+  // scanned items, and a guest's share can't move once they've been quoted
+  // it. Either way the title and payer stay editable.
+  const amountsFixed = expense.itemised || expense.guestLock !== null;
 
   function toggleParticipant(id: string) {
     setParticipantIds((prev) =>
@@ -56,9 +62,9 @@ export function EditExpenseForm({
       expenseId: expense.id,
       title,
       paidById,
-      // Omitted entirely for receipt expenses — sending them would be
+      // Omitted entirely when the amounts are fixed — sending them would be
       // rejected by the action, and the fields aren't shown either.
-      ...(expense.itemised
+      ...(amountsFixed
         ? {}
         : { totalCents: toCents(Number(amount)), participantIds }),
     });
@@ -84,9 +90,11 @@ export function EditExpenseForm({
         required
       />
 
-      {expense.itemised ? (
+      {amountsFixed ? (
         <p className="rounded-lg border border-warm/40 bg-warm-surface/40 p-2 text-xs">
-          {dict.expenses.itemisedNote}
+          {expense.itemised
+            ? dict.expenses.itemisedNote
+            : dict.expenses.guestLockedNote}
         </p>
       ) : (
         <Input
@@ -113,7 +121,7 @@ export function EditExpenseForm({
         ))}
       </select>
 
-      {!expense.itemised && (
+      {!amountsFixed && (
         <>
           <label className="text-sm text-muted-foreground">{dict.expenses.splitBetween}</label>
           <div className="flex flex-col gap-1">

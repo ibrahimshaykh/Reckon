@@ -676,10 +676,6 @@ export type IntFieldUpdateOperationsInput = {
   divide?: number
 }
 
-export type NullableDateTimeFieldUpdateOperationsInput = {
-  set?: Date | string | null
-}
-
 export type SettlementCreateNestedOneWithoutNudgesInput = {
   create?: Prisma.XOR<Prisma.SettlementCreateWithoutNudgesInput, Prisma.SettlementUncheckedCreateWithoutNudgesInput>
   connectOrCreate?: Prisma.SettlementCreateOrConnectWithoutNudgesInput

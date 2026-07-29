@@ -221,7 +221,20 @@
     "editTitle": "Editar gasto",
     "saveChanges": "Guardar cambios",
     "saving": "Guardando…",
-    "itemisedNote": "Esto vino de un recibo, así que el importe y el reparto siguen los artículos escaneados. Aún puedes cambiar el título y quién pagó."
+    "itemisedNote": "Esto vino de un recibo, así que el importe y el reparto siguen los artículos escaneados. Aún puedes cambiar el título y quién pagó.",
+    "guestHostsLabel": "¿Quién lo cubre?",
+    "guestHostsHint": "Si no paga, su parte se reparte entre las personas que elijas.",
+    "guestPickHostsFirst": "Elige al menos a una persona.",
+    "guestsHeading": "Invitados",
+    "guestStatusUndecided": "no ha respondido",
+    "guestStatusPaying": "dice que pagará",
+    "guestStatusPaid": "pagó",
+    "guestStatusDeclined": "no va a pagar",
+    "guestConfirmPaid": "Marcar recibido",
+    "guestRemove": "Quitar",
+    "guestLockedNote": "Un invitado está pagando su parte de este gasto, así que el importe y el reparto están bloqueados.",
+    "guestGetLink": "Obtener enlace",
+    "guestLinkCopied": "Enlace renovado — vuelve a enviarlo"
   },
   "settle": {
     "title": "Quién le debe a quién",
@@ -251,8 +264,27 @@
     "settled": "saldado"
   },
   "guest": {
-    "greeting": "Hola {guestName} — {payerName} pagó {amount} por esto.",
-    "payOnVenmo": "Pagar a {name} por Venmo"
+    "greeting": "Hola {guestName} — {payerName} pagó {title}.",
+    "payOnVenmo": "Pagar a {name} por Venmo",
+    "yourShare": "Tu parte",
+    "shareExplainer": "Dividido en partes iguales entre todos los presentes, tú incluido.",
+    "illPay": "Pagaré mi parte",
+    "ignoreIt": "Ignorar esto",
+    "decidingNote": "Sin presión — si lo ignoras, quienes te invitaron cubren tu parte.",
+    "payingHeading": "Envía {amount} a {payerName}",
+    "payingNote": "Lo confirmarán cuando llegue.",
+    "declinedHeading": "No pasa nada.",
+    "declinedNote": "{payerName} y los demás se encargan.",
+    "paidHeading": "Todo saldado.",
+    "paidNote": "{payerName} confirmó que llegaron tus {amount}.",
+    "changeMind": "Pensándolo bien, pago",
+    "coveredHeading": "Fuiste nuestro invitado.",
+    "coveredNote": "{hosts} ya cubrieron tu parte, así que no hay nada que pagar.",
+    "insistLink": "Aun así quiero pagar mi parte",
+    "insistHeading": "Envía tu parte a quien te cubrió",
+    "insistNote": "Esto va directo a quienes cubrieron tu parte, para que nadie salga perdiendo.",
+    "hostOwed": "{name} — {amount}",
+    "nevermind": "Déjalo"
   },
   "confirm": {
     "title": "Confirmar pago recibido",

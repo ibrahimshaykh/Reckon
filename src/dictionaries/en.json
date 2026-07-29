@@ -221,7 +221,20 @@
     "editTitle": "Edit expense",
     "saveChanges": "Save changes",
     "saving": "Saving…",
-    "itemisedNote": "This came from a receipt, so the amount and split follow the scanned items. You can still change the title and who paid."
+    "itemisedNote": "This came from a receipt, so the amount and split follow the scanned items. You can still change the title and who paid.",
+    "guestHostsLabel": "Who's covering them?",
+    "guestHostsHint": "If they don't pay, their share is split between the people you pick.",
+    "guestPickHostsFirst": "Pick at least one person to cover them.",
+    "guestsHeading": "Guests",
+    "guestStatusUndecided": "hasn't answered",
+    "guestStatusPaying": "says they'll pay",
+    "guestStatusPaid": "paid",
+    "guestStatusDeclined": "isn't paying",
+    "guestConfirmPaid": "Mark received",
+    "guestRemove": "Remove",
+    "guestLockedNote": "A guest is paying their share of this expense, so the amount and split are locked.",
+    "guestGetLink": "Get link",
+    "guestLinkCopied": "Link refreshed — send it again"
   },
   "settle": {
     "title": "Who owes who",
@@ -251,8 +264,27 @@
     "settled": "settled"
   },
   "guest": {
-    "greeting": "Hi {guestName} — {payerName} paid {amount} for this.",
-    "payOnVenmo": "Pay {name} on Venmo"
+    "greeting": "Hi {guestName} — {payerName} paid for {title}.",
+    "payOnVenmo": "Pay {name} on Venmo",
+    "yourShare": "Your share",
+    "shareExplainer": "Split evenly between everyone who was there, including you.",
+    "illPay": "I'll pay my share",
+    "ignoreIt": "Ignore this",
+    "decidingNote": "No pressure — if you ignore it, the people who invited you cover your share.",
+    "payingHeading": "Send {amount} to {payerName}",
+    "payingNote": "They'll confirm once it arrives.",
+    "declinedHeading": "No problem.",
+    "declinedNote": "{payerName} and the others have got it covered.",
+    "paidHeading": "All square.",
+    "paidNote": "{payerName} confirmed your {amount} arrived.",
+    "changeMind": "Actually, I'll pay",
+    "coveredHeading": "You were our guest.",
+    "coveredNote": "{hosts} have already covered your share, so there's nothing to pay.",
+    "insistLink": "I'd still like to pay my share",
+    "insistHeading": "Send your share to whoever covered you",
+    "insistNote": "This goes straight to whoever covered your share, so nobody is left out of pocket.",
+    "hostOwed": "{name} — {amount}",
+    "nevermind": "Never mind"
   },
   "confirm": {
     "title": "Confirm payment received",

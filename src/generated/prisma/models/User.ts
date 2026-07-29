@@ -345,6 +345,7 @@ export type UserWhereInput = {
   proposalsCreated?: Prisma.ProposalListRelationFilter
   proposalFlags?: Prisma.ProposalFlagListRelationFilter
   proposalVotes?: Prisma.ProposalVoteListRelationFilter
+  guestsHosted?: Prisma.ExpenseGuestHostListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -380,6 +381,7 @@ export type UserOrderByWithRelationInput = {
   proposalsCreated?: Prisma.ProposalOrderByRelationAggregateInput
   proposalFlags?: Prisma.ProposalFlagOrderByRelationAggregateInput
   proposalVotes?: Prisma.ProposalVoteOrderByRelationAggregateInput
+  guestsHosted?: Prisma.ExpenseGuestHostOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -418,6 +420,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   proposalsCreated?: Prisma.ProposalListRelationFilter
   proposalFlags?: Prisma.ProposalFlagListRelationFilter
   proposalVotes?: Prisma.ProposalVoteListRelationFilter
+  guestsHosted?: Prisma.ExpenseGuestHostListRelationFilter
 }, "id" | "clerkId" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -505,6 +508,7 @@ export type UserCreateInput = {
   proposalsCreated?: Prisma.ProposalCreateNestedManyWithoutProposedByInput
   proposalFlags?: Prisma.ProposalFlagCreateNestedManyWithoutUserInput
   proposalVotes?: Prisma.ProposalVoteCreateNestedManyWithoutUserInput
+  guestsHosted?: Prisma.ExpenseGuestHostCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -540,6 +544,7 @@ export type UserUncheckedCreateInput = {
   proposalsCreated?: Prisma.ProposalUncheckedCreateNestedManyWithoutProposedByInput
   proposalFlags?: Prisma.ProposalFlagUncheckedCreateNestedManyWithoutUserInput
   proposalVotes?: Prisma.ProposalVoteUncheckedCreateNestedManyWithoutUserInput
+  guestsHosted?: Prisma.ExpenseGuestHostUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -575,6 +580,7 @@ export type UserUpdateInput = {
   proposalsCreated?: Prisma.ProposalUpdateManyWithoutProposedByNestedInput
   proposalFlags?: Prisma.ProposalFlagUpdateManyWithoutUserNestedInput
   proposalVotes?: Prisma.ProposalVoteUpdateManyWithoutUserNestedInput
+  guestsHosted?: Prisma.ExpenseGuestHostUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -610,6 +616,7 @@ export type UserUncheckedUpdateInput = {
   proposalsCreated?: Prisma.ProposalUncheckedUpdateManyWithoutProposedByNestedInput
   proposalFlags?: Prisma.ProposalFlagUncheckedUpdateManyWithoutUserNestedInput
   proposalVotes?: Prisma.ProposalVoteUncheckedUpdateManyWithoutUserNestedInput
+  guestsHosted?: Prisma.ExpenseGuestHostUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -832,6 +839,20 @@ export type UserUpdateOneRequiredWithoutGroupMembershipsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutGroupMembershipsInput, Prisma.UserUpdateWithoutGroupMembershipsInput>, Prisma.UserUncheckedUpdateWithoutGroupMembershipsInput>
 }
 
+export type UserCreateNestedOneWithoutGuestsHostedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutGuestsHostedInput, Prisma.UserUncheckedCreateWithoutGuestsHostedInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutGuestsHostedInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutGuestsHostedNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutGuestsHostedInput, Prisma.UserUncheckedCreateWithoutGuestsHostedInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutGuestsHostedInput
+  upsert?: Prisma.UserUpsertWithoutGuestsHostedInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutGuestsHostedInput, Prisma.UserUpdateWithoutGuestsHostedInput>, Prisma.UserUncheckedUpdateWithoutGuestsHostedInput>
+}
+
 export type UserCreateNestedOneWithoutPaidExpensesInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutPaidExpensesInput, Prisma.UserUncheckedCreateWithoutPaidExpensesInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutPaidExpensesInput
@@ -1018,6 +1039,7 @@ export type UserCreateWithoutCreatedGroupsInput = {
   proposalsCreated?: Prisma.ProposalCreateNestedManyWithoutProposedByInput
   proposalFlags?: Prisma.ProposalFlagCreateNestedManyWithoutUserInput
   proposalVotes?: Prisma.ProposalVoteCreateNestedManyWithoutUserInput
+  guestsHosted?: Prisma.ExpenseGuestHostCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutCreatedGroupsInput = {
@@ -1052,6 +1074,7 @@ export type UserUncheckedCreateWithoutCreatedGroupsInput = {
   proposalsCreated?: Prisma.ProposalUncheckedCreateNestedManyWithoutProposedByInput
   proposalFlags?: Prisma.ProposalFlagUncheckedCreateNestedManyWithoutUserInput
   proposalVotes?: Prisma.ProposalVoteUncheckedCreateNestedManyWithoutUserInput
+  guestsHosted?: Prisma.ExpenseGuestHostUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutCreatedGroupsInput = {
@@ -1102,6 +1125,7 @@ export type UserUpdateWithoutCreatedGroupsInput = {
   proposalsCreated?: Prisma.ProposalUpdateManyWithoutProposedByNestedInput
   proposalFlags?: Prisma.ProposalFlagUpdateManyWithoutUserNestedInput
   proposalVotes?: Prisma.ProposalVoteUpdateManyWithoutUserNestedInput
+  guestsHosted?: Prisma.ExpenseGuestHostUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCreatedGroupsInput = {
@@ -1136,6 +1160,7 @@ export type UserUncheckedUpdateWithoutCreatedGroupsInput = {
   proposalsCreated?: Prisma.ProposalUncheckedUpdateManyWithoutProposedByNestedInput
   proposalFlags?: Prisma.ProposalFlagUncheckedUpdateManyWithoutUserNestedInput
   proposalVotes?: Prisma.ProposalVoteUncheckedUpdateManyWithoutUserNestedInput
+  guestsHosted?: Prisma.ExpenseGuestHostUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutGroupMembershipsInput = {
@@ -1170,6 +1195,7 @@ export type UserCreateWithoutGroupMembershipsInput = {
   proposalsCreated?: Prisma.ProposalCreateNestedManyWithoutProposedByInput
   proposalFlags?: Prisma.ProposalFlagCreateNestedManyWithoutUserInput
   proposalVotes?: Prisma.ProposalVoteCreateNestedManyWithoutUserInput
+  guestsHosted?: Prisma.ExpenseGuestHostCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutGroupMembershipsInput = {
@@ -1204,6 +1230,7 @@ export type UserUncheckedCreateWithoutGroupMembershipsInput = {
   proposalsCreated?: Prisma.ProposalUncheckedCreateNestedManyWithoutProposedByInput
   proposalFlags?: Prisma.ProposalFlagUncheckedCreateNestedManyWithoutUserInput
   proposalVotes?: Prisma.ProposalVoteUncheckedCreateNestedManyWithoutUserInput
+  guestsHosted?: Prisma.ExpenseGuestHostUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutGroupMembershipsInput = {
@@ -1254,6 +1281,7 @@ export type UserUpdateWithoutGroupMembershipsInput = {
   proposalsCreated?: Prisma.ProposalUpdateManyWithoutProposedByNestedInput
   proposalFlags?: Prisma.ProposalFlagUpdateManyWithoutUserNestedInput
   proposalVotes?: Prisma.ProposalVoteUpdateManyWithoutUserNestedInput
+  guestsHosted?: Prisma.ExpenseGuestHostUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutGroupMembershipsInput = {
@@ -1276,6 +1304,163 @@ export type UserUncheckedUpdateWithoutGroupMembershipsInput = {
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdGroups?: Prisma.GroupUncheckedUpdateManyWithoutCreatedByNestedInput
+  paidExpenses?: Prisma.ExpenseUncheckedUpdateManyWithoutPaidByNestedInput
+  expenseParticipations?: Prisma.ExpenseItemParticipantUncheckedUpdateManyWithoutUserNestedInput
+  settlementsOwed?: Prisma.SettlementUncheckedUpdateManyWithoutFromUserNestedInput
+  settlementsReceived?: Prisma.SettlementUncheckedUpdateManyWithoutToUserNestedInput
+  iousOwed?: Prisma.IOUUncheckedUpdateManyWithoutFromUserNestedInput
+  iousLent?: Prisma.IOUUncheckedUpdateManyWithoutToUserNestedInput
+  choreAssignments?: Prisma.ChoreAssignmentUncheckedUpdateManyWithoutUserNestedInput
+  availabilityEntries?: Prisma.AvailabilityEntryUncheckedUpdateManyWithoutUserNestedInput
+  proposalsCreated?: Prisma.ProposalUncheckedUpdateManyWithoutProposedByNestedInput
+  proposalFlags?: Prisma.ProposalFlagUncheckedUpdateManyWithoutUserNestedInput
+  proposalVotes?: Prisma.ProposalVoteUncheckedUpdateManyWithoutUserNestedInput
+  guestsHosted?: Prisma.ExpenseGuestHostUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutGuestsHostedInput = {
+  id?: string
+  clerkId: string
+  email: string
+  displayName: string
+  avatarUrl?: string | null
+  budgetLimit?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  dietaryRestrictions?: Prisma.UserCreatedietaryRestrictionsInput | string[]
+  homeLatitude?: number | null
+  homeLongitude?: number | null
+  venmoHandle?: string | null
+  paypalHandle?: string | null
+  cashappHandle?: string | null
+  easypaisaNumber?: string | null
+  jazzcashNumber?: string | null
+  nayapayHandle?: string | null
+  bankDetails?: string | null
+  locale?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  groupMemberships?: Prisma.GroupMemberCreateNestedManyWithoutUserInput
+  createdGroups?: Prisma.GroupCreateNestedManyWithoutCreatedByInput
+  paidExpenses?: Prisma.ExpenseCreateNestedManyWithoutPaidByInput
+  expenseParticipations?: Prisma.ExpenseItemParticipantCreateNestedManyWithoutUserInput
+  settlementsOwed?: Prisma.SettlementCreateNestedManyWithoutFromUserInput
+  settlementsReceived?: Prisma.SettlementCreateNestedManyWithoutToUserInput
+  iousOwed?: Prisma.IOUCreateNestedManyWithoutFromUserInput
+  iousLent?: Prisma.IOUCreateNestedManyWithoutToUserInput
+  choreAssignments?: Prisma.ChoreAssignmentCreateNestedManyWithoutUserInput
+  availabilityEntries?: Prisma.AvailabilityEntryCreateNestedManyWithoutUserInput
+  proposalsCreated?: Prisma.ProposalCreateNestedManyWithoutProposedByInput
+  proposalFlags?: Prisma.ProposalFlagCreateNestedManyWithoutUserInput
+  proposalVotes?: Prisma.ProposalVoteCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutGuestsHostedInput = {
+  id?: string
+  clerkId: string
+  email: string
+  displayName: string
+  avatarUrl?: string | null
+  budgetLimit?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  dietaryRestrictions?: Prisma.UserCreatedietaryRestrictionsInput | string[]
+  homeLatitude?: number | null
+  homeLongitude?: number | null
+  venmoHandle?: string | null
+  paypalHandle?: string | null
+  cashappHandle?: string | null
+  easypaisaNumber?: string | null
+  jazzcashNumber?: string | null
+  nayapayHandle?: string | null
+  bankDetails?: string | null
+  locale?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  groupMemberships?: Prisma.GroupMemberUncheckedCreateNestedManyWithoutUserInput
+  createdGroups?: Prisma.GroupUncheckedCreateNestedManyWithoutCreatedByInput
+  paidExpenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutPaidByInput
+  expenseParticipations?: Prisma.ExpenseItemParticipantUncheckedCreateNestedManyWithoutUserInput
+  settlementsOwed?: Prisma.SettlementUncheckedCreateNestedManyWithoutFromUserInput
+  settlementsReceived?: Prisma.SettlementUncheckedCreateNestedManyWithoutToUserInput
+  iousOwed?: Prisma.IOUUncheckedCreateNestedManyWithoutFromUserInput
+  iousLent?: Prisma.IOUUncheckedCreateNestedManyWithoutToUserInput
+  choreAssignments?: Prisma.ChoreAssignmentUncheckedCreateNestedManyWithoutUserInput
+  availabilityEntries?: Prisma.AvailabilityEntryUncheckedCreateNestedManyWithoutUserInput
+  proposalsCreated?: Prisma.ProposalUncheckedCreateNestedManyWithoutProposedByInput
+  proposalFlags?: Prisma.ProposalFlagUncheckedCreateNestedManyWithoutUserInput
+  proposalVotes?: Prisma.ProposalVoteUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutGuestsHostedInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutGuestsHostedInput, Prisma.UserUncheckedCreateWithoutGuestsHostedInput>
+}
+
+export type UserUpsertWithoutGuestsHostedInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutGuestsHostedInput, Prisma.UserUncheckedUpdateWithoutGuestsHostedInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutGuestsHostedInput, Prisma.UserUncheckedCreateWithoutGuestsHostedInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutGuestsHostedInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutGuestsHostedInput, Prisma.UserUncheckedUpdateWithoutGuestsHostedInput>
+}
+
+export type UserUpdateWithoutGuestsHostedInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  clerkId?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  budgetLimit?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  dietaryRestrictions?: Prisma.UserUpdatedietaryRestrictionsInput | string[]
+  homeLatitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  homeLongitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  venmoHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paypalHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cashappHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  easypaisaNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jazzcashNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nayapayHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  groupMemberships?: Prisma.GroupMemberUpdateManyWithoutUserNestedInput
+  createdGroups?: Prisma.GroupUpdateManyWithoutCreatedByNestedInput
+  paidExpenses?: Prisma.ExpenseUpdateManyWithoutPaidByNestedInput
+  expenseParticipations?: Prisma.ExpenseItemParticipantUpdateManyWithoutUserNestedInput
+  settlementsOwed?: Prisma.SettlementUpdateManyWithoutFromUserNestedInput
+  settlementsReceived?: Prisma.SettlementUpdateManyWithoutToUserNestedInput
+  iousOwed?: Prisma.IOUUpdateManyWithoutFromUserNestedInput
+  iousLent?: Prisma.IOUUpdateManyWithoutToUserNestedInput
+  choreAssignments?: Prisma.ChoreAssignmentUpdateManyWithoutUserNestedInput
+  availabilityEntries?: Prisma.AvailabilityEntryUpdateManyWithoutUserNestedInput
+  proposalsCreated?: Prisma.ProposalUpdateManyWithoutProposedByNestedInput
+  proposalFlags?: Prisma.ProposalFlagUpdateManyWithoutUserNestedInput
+  proposalVotes?: Prisma.ProposalVoteUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutGuestsHostedInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  clerkId?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  budgetLimit?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  dietaryRestrictions?: Prisma.UserUpdatedietaryRestrictionsInput | string[]
+  homeLatitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  homeLongitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  venmoHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paypalHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cashappHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  easypaisaNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jazzcashNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nayapayHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  groupMemberships?: Prisma.GroupMemberUncheckedUpdateManyWithoutUserNestedInput
   createdGroups?: Prisma.GroupUncheckedUpdateManyWithoutCreatedByNestedInput
   paidExpenses?: Prisma.ExpenseUncheckedUpdateManyWithoutPaidByNestedInput
   expenseParticipations?: Prisma.ExpenseItemParticipantUncheckedUpdateManyWithoutUserNestedInput
@@ -1322,6 +1507,7 @@ export type UserCreateWithoutPaidExpensesInput = {
   proposalsCreated?: Prisma.ProposalCreateNestedManyWithoutProposedByInput
   proposalFlags?: Prisma.ProposalFlagCreateNestedManyWithoutUserInput
   proposalVotes?: Prisma.ProposalVoteCreateNestedManyWithoutUserInput
+  guestsHosted?: Prisma.ExpenseGuestHostCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutPaidExpensesInput = {
@@ -1356,6 +1542,7 @@ export type UserUncheckedCreateWithoutPaidExpensesInput = {
   proposalsCreated?: Prisma.ProposalUncheckedCreateNestedManyWithoutProposedByInput
   proposalFlags?: Prisma.ProposalFlagUncheckedCreateNestedManyWithoutUserInput
   proposalVotes?: Prisma.ProposalVoteUncheckedCreateNestedManyWithoutUserInput
+  guestsHosted?: Prisma.ExpenseGuestHostUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutPaidExpensesInput = {
@@ -1406,6 +1593,7 @@ export type UserUpdateWithoutPaidExpensesInput = {
   proposalsCreated?: Prisma.ProposalUpdateManyWithoutProposedByNestedInput
   proposalFlags?: Prisma.ProposalFlagUpdateManyWithoutUserNestedInput
   proposalVotes?: Prisma.ProposalVoteUpdateManyWithoutUserNestedInput
+  guestsHosted?: Prisma.ExpenseGuestHostUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPaidExpensesInput = {
@@ -1440,6 +1628,7 @@ export type UserUncheckedUpdateWithoutPaidExpensesInput = {
   proposalsCreated?: Prisma.ProposalUncheckedUpdateManyWithoutProposedByNestedInput
   proposalFlags?: Prisma.ProposalFlagUncheckedUpdateManyWithoutUserNestedInput
   proposalVotes?: Prisma.ProposalVoteUncheckedUpdateManyWithoutUserNestedInput
+  guestsHosted?: Prisma.ExpenseGuestHostUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutExpenseParticipationsInput = {
@@ -1474,6 +1663,7 @@ export type UserCreateWithoutExpenseParticipationsInput = {
   proposalsCreated?: Prisma.ProposalCreateNestedManyWithoutProposedByInput
   proposalFlags?: Prisma.ProposalFlagCreateNestedManyWithoutUserInput
   proposalVotes?: Prisma.ProposalVoteCreateNestedManyWithoutUserInput
+  guestsHosted?: Prisma.ExpenseGuestHostCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutExpenseParticipationsInput = {
@@ -1508,6 +1698,7 @@ export type UserUncheckedCreateWithoutExpenseParticipationsInput = {
   proposalsCreated?: Prisma.ProposalUncheckedCreateNestedManyWithoutProposedByInput
   proposalFlags?: Prisma.ProposalFlagUncheckedCreateNestedManyWithoutUserInput
   proposalVotes?: Prisma.ProposalVoteUncheckedCreateNestedManyWithoutUserInput
+  guestsHosted?: Prisma.ExpenseGuestHostUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutExpenseParticipationsInput = {
@@ -1558,6 +1749,7 @@ export type UserUpdateWithoutExpenseParticipationsInput = {
   proposalsCreated?: Prisma.ProposalUpdateManyWithoutProposedByNestedInput
   proposalFlags?: Prisma.ProposalFlagUpdateManyWithoutUserNestedInput
   proposalVotes?: Prisma.ProposalVoteUpdateManyWithoutUserNestedInput
+  guestsHosted?: Prisma.ExpenseGuestHostUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutExpenseParticipationsInput = {
@@ -1592,6 +1784,7 @@ export type UserUncheckedUpdateWithoutExpenseParticipationsInput = {
   proposalsCreated?: Prisma.ProposalUncheckedUpdateManyWithoutProposedByNestedInput
   proposalFlags?: Prisma.ProposalFlagUncheckedUpdateManyWithoutUserNestedInput
   proposalVotes?: Prisma.ProposalVoteUncheckedUpdateManyWithoutUserNestedInput
+  guestsHosted?: Prisma.ExpenseGuestHostUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutSettlementsOwedInput = {
@@ -1626,6 +1819,7 @@ export type UserCreateWithoutSettlementsOwedInput = {
   proposalsCreated?: Prisma.ProposalCreateNestedManyWithoutProposedByInput
   proposalFlags?: Prisma.ProposalFlagCreateNestedManyWithoutUserInput
   proposalVotes?: Prisma.ProposalVoteCreateNestedManyWithoutUserInput
+  guestsHosted?: Prisma.ExpenseGuestHostCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutSettlementsOwedInput = {
@@ -1660,6 +1854,7 @@ export type UserUncheckedCreateWithoutSettlementsOwedInput = {
   proposalsCreated?: Prisma.ProposalUncheckedCreateNestedManyWithoutProposedByInput
   proposalFlags?: Prisma.ProposalFlagUncheckedCreateNestedManyWithoutUserInput
   proposalVotes?: Prisma.ProposalVoteUncheckedCreateNestedManyWithoutUserInput
+  guestsHosted?: Prisma.ExpenseGuestHostUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutSettlementsOwedInput = {
@@ -1699,6 +1894,7 @@ export type UserCreateWithoutSettlementsReceivedInput = {
   proposalsCreated?: Prisma.ProposalCreateNestedManyWithoutProposedByInput
   proposalFlags?: Prisma.ProposalFlagCreateNestedManyWithoutUserInput
   proposalVotes?: Prisma.ProposalVoteCreateNestedManyWithoutUserInput
+  guestsHosted?: Prisma.ExpenseGuestHostCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutSettlementsReceivedInput = {
@@ -1733,6 +1929,7 @@ export type UserUncheckedCreateWithoutSettlementsReceivedInput = {
   proposalsCreated?: Prisma.ProposalUncheckedCreateNestedManyWithoutProposedByInput
   proposalFlags?: Prisma.ProposalFlagUncheckedCreateNestedManyWithoutUserInput
   proposalVotes?: Prisma.ProposalVoteUncheckedCreateNestedManyWithoutUserInput
+  guestsHosted?: Prisma.ExpenseGuestHostUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutSettlementsReceivedInput = {
@@ -1783,6 +1980,7 @@ export type UserUpdateWithoutSettlementsOwedInput = {
   proposalsCreated?: Prisma.ProposalUpdateManyWithoutProposedByNestedInput
   proposalFlags?: Prisma.ProposalFlagUpdateManyWithoutUserNestedInput
   proposalVotes?: Prisma.ProposalVoteUpdateManyWithoutUserNestedInput
+  guestsHosted?: Prisma.ExpenseGuestHostUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSettlementsOwedInput = {
@@ -1817,6 +2015,7 @@ export type UserUncheckedUpdateWithoutSettlementsOwedInput = {
   proposalsCreated?: Prisma.ProposalUncheckedUpdateManyWithoutProposedByNestedInput
   proposalFlags?: Prisma.ProposalFlagUncheckedUpdateManyWithoutUserNestedInput
   proposalVotes?: Prisma.ProposalVoteUncheckedUpdateManyWithoutUserNestedInput
+  guestsHosted?: Prisma.ExpenseGuestHostUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserUpsertWithoutSettlementsReceivedInput = {
@@ -1862,6 +2061,7 @@ export type UserUpdateWithoutSettlementsReceivedInput = {
   proposalsCreated?: Prisma.ProposalUpdateManyWithoutProposedByNestedInput
   proposalFlags?: Prisma.ProposalFlagUpdateManyWithoutUserNestedInput
   proposalVotes?: Prisma.ProposalVoteUpdateManyWithoutUserNestedInput
+  guestsHosted?: Prisma.ExpenseGuestHostUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSettlementsReceivedInput = {
@@ -1896,6 +2096,7 @@ export type UserUncheckedUpdateWithoutSettlementsReceivedInput = {
   proposalsCreated?: Prisma.ProposalUncheckedUpdateManyWithoutProposedByNestedInput
   proposalFlags?: Prisma.ProposalFlagUncheckedUpdateManyWithoutUserNestedInput
   proposalVotes?: Prisma.ProposalVoteUncheckedUpdateManyWithoutUserNestedInput
+  guestsHosted?: Prisma.ExpenseGuestHostUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutIousOwedInput = {
@@ -1930,6 +2131,7 @@ export type UserCreateWithoutIousOwedInput = {
   proposalsCreated?: Prisma.ProposalCreateNestedManyWithoutProposedByInput
   proposalFlags?: Prisma.ProposalFlagCreateNestedManyWithoutUserInput
   proposalVotes?: Prisma.ProposalVoteCreateNestedManyWithoutUserInput
+  guestsHosted?: Prisma.ExpenseGuestHostCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutIousOwedInput = {
@@ -1964,6 +2166,7 @@ export type UserUncheckedCreateWithoutIousOwedInput = {
   proposalsCreated?: Prisma.ProposalUncheckedCreateNestedManyWithoutProposedByInput
   proposalFlags?: Prisma.ProposalFlagUncheckedCreateNestedManyWithoutUserInput
   proposalVotes?: Prisma.ProposalVoteUncheckedCreateNestedManyWithoutUserInput
+  guestsHosted?: Prisma.ExpenseGuestHostUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutIousOwedInput = {
@@ -2003,6 +2206,7 @@ export type UserCreateWithoutIousLentInput = {
   proposalsCreated?: Prisma.ProposalCreateNestedManyWithoutProposedByInput
   proposalFlags?: Prisma.ProposalFlagCreateNestedManyWithoutUserInput
   proposalVotes?: Prisma.ProposalVoteCreateNestedManyWithoutUserInput
+  guestsHosted?: Prisma.ExpenseGuestHostCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutIousLentInput = {
@@ -2037,6 +2241,7 @@ export type UserUncheckedCreateWithoutIousLentInput = {
   proposalsCreated?: Prisma.ProposalUncheckedCreateNestedManyWithoutProposedByInput
   proposalFlags?: Prisma.ProposalFlagUncheckedCreateNestedManyWithoutUserInput
   proposalVotes?: Prisma.ProposalVoteUncheckedCreateNestedManyWithoutUserInput
+  guestsHosted?: Prisma.ExpenseGuestHostUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutIousLentInput = {
@@ -2087,6 +2292,7 @@ export type UserUpdateWithoutIousOwedInput = {
   proposalsCreated?: Prisma.ProposalUpdateManyWithoutProposedByNestedInput
   proposalFlags?: Prisma.ProposalFlagUpdateManyWithoutUserNestedInput
   proposalVotes?: Prisma.ProposalVoteUpdateManyWithoutUserNestedInput
+  guestsHosted?: Prisma.ExpenseGuestHostUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutIousOwedInput = {
@@ -2121,6 +2327,7 @@ export type UserUncheckedUpdateWithoutIousOwedInput = {
   proposalsCreated?: Prisma.ProposalUncheckedUpdateManyWithoutProposedByNestedInput
   proposalFlags?: Prisma.ProposalFlagUncheckedUpdateManyWithoutUserNestedInput
   proposalVotes?: Prisma.ProposalVoteUncheckedUpdateManyWithoutUserNestedInput
+  guestsHosted?: Prisma.ExpenseGuestHostUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserUpsertWithoutIousLentInput = {
@@ -2166,6 +2373,7 @@ export type UserUpdateWithoutIousLentInput = {
   proposalsCreated?: Prisma.ProposalUpdateManyWithoutProposedByNestedInput
   proposalFlags?: Prisma.ProposalFlagUpdateManyWithoutUserNestedInput
   proposalVotes?: Prisma.ProposalVoteUpdateManyWithoutUserNestedInput
+  guestsHosted?: Prisma.ExpenseGuestHostUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutIousLentInput = {
@@ -2200,6 +2408,7 @@ export type UserUncheckedUpdateWithoutIousLentInput = {
   proposalsCreated?: Prisma.ProposalUncheckedUpdateManyWithoutProposedByNestedInput
   proposalFlags?: Prisma.ProposalFlagUncheckedUpdateManyWithoutUserNestedInput
   proposalVotes?: Prisma.ProposalVoteUncheckedUpdateManyWithoutUserNestedInput
+  guestsHosted?: Prisma.ExpenseGuestHostUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutChoreAssignmentsInput = {
@@ -2234,6 +2443,7 @@ export type UserCreateWithoutChoreAssignmentsInput = {
   proposalsCreated?: Prisma.ProposalCreateNestedManyWithoutProposedByInput
   proposalFlags?: Prisma.ProposalFlagCreateNestedManyWithoutUserInput
   proposalVotes?: Prisma.ProposalVoteCreateNestedManyWithoutUserInput
+  guestsHosted?: Prisma.ExpenseGuestHostCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutChoreAssignmentsInput = {
@@ -2268,6 +2478,7 @@ export type UserUncheckedCreateWithoutChoreAssignmentsInput = {
   proposalsCreated?: Prisma.ProposalUncheckedCreateNestedManyWithoutProposedByInput
   proposalFlags?: Prisma.ProposalFlagUncheckedCreateNestedManyWithoutUserInput
   proposalVotes?: Prisma.ProposalVoteUncheckedCreateNestedManyWithoutUserInput
+  guestsHosted?: Prisma.ExpenseGuestHostUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutChoreAssignmentsInput = {
@@ -2318,6 +2529,7 @@ export type UserUpdateWithoutChoreAssignmentsInput = {
   proposalsCreated?: Prisma.ProposalUpdateManyWithoutProposedByNestedInput
   proposalFlags?: Prisma.ProposalFlagUpdateManyWithoutUserNestedInput
   proposalVotes?: Prisma.ProposalVoteUpdateManyWithoutUserNestedInput
+  guestsHosted?: Prisma.ExpenseGuestHostUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutChoreAssignmentsInput = {
@@ -2352,6 +2564,7 @@ export type UserUncheckedUpdateWithoutChoreAssignmentsInput = {
   proposalsCreated?: Prisma.ProposalUncheckedUpdateManyWithoutProposedByNestedInput
   proposalFlags?: Prisma.ProposalFlagUncheckedUpdateManyWithoutUserNestedInput
   proposalVotes?: Prisma.ProposalVoteUncheckedUpdateManyWithoutUserNestedInput
+  guestsHosted?: Prisma.ExpenseGuestHostUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutAvailabilityEntriesInput = {
@@ -2386,6 +2599,7 @@ export type UserCreateWithoutAvailabilityEntriesInput = {
   proposalsCreated?: Prisma.ProposalCreateNestedManyWithoutProposedByInput
   proposalFlags?: Prisma.ProposalFlagCreateNestedManyWithoutUserInput
   proposalVotes?: Prisma.ProposalVoteCreateNestedManyWithoutUserInput
+  guestsHosted?: Prisma.ExpenseGuestHostCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutAvailabilityEntriesInput = {
@@ -2420,6 +2634,7 @@ export type UserUncheckedCreateWithoutAvailabilityEntriesInput = {
   proposalsCreated?: Prisma.ProposalUncheckedCreateNestedManyWithoutProposedByInput
   proposalFlags?: Prisma.ProposalFlagUncheckedCreateNestedManyWithoutUserInput
   proposalVotes?: Prisma.ProposalVoteUncheckedCreateNestedManyWithoutUserInput
+  guestsHosted?: Prisma.ExpenseGuestHostUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutAvailabilityEntriesInput = {
@@ -2470,6 +2685,7 @@ export type UserUpdateWithoutAvailabilityEntriesInput = {
   proposalsCreated?: Prisma.ProposalUpdateManyWithoutProposedByNestedInput
   proposalFlags?: Prisma.ProposalFlagUpdateManyWithoutUserNestedInput
   proposalVotes?: Prisma.ProposalVoteUpdateManyWithoutUserNestedInput
+  guestsHosted?: Prisma.ExpenseGuestHostUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAvailabilityEntriesInput = {
@@ -2504,6 +2720,7 @@ export type UserUncheckedUpdateWithoutAvailabilityEntriesInput = {
   proposalsCreated?: Prisma.ProposalUncheckedUpdateManyWithoutProposedByNestedInput
   proposalFlags?: Prisma.ProposalFlagUncheckedUpdateManyWithoutUserNestedInput
   proposalVotes?: Prisma.ProposalVoteUncheckedUpdateManyWithoutUserNestedInput
+  guestsHosted?: Prisma.ExpenseGuestHostUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutProposalsCreatedInput = {
@@ -2538,6 +2755,7 @@ export type UserCreateWithoutProposalsCreatedInput = {
   availabilityEntries?: Prisma.AvailabilityEntryCreateNestedManyWithoutUserInput
   proposalFlags?: Prisma.ProposalFlagCreateNestedManyWithoutUserInput
   proposalVotes?: Prisma.ProposalVoteCreateNestedManyWithoutUserInput
+  guestsHosted?: Prisma.ExpenseGuestHostCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutProposalsCreatedInput = {
@@ -2572,6 +2790,7 @@ export type UserUncheckedCreateWithoutProposalsCreatedInput = {
   availabilityEntries?: Prisma.AvailabilityEntryUncheckedCreateNestedManyWithoutUserInput
   proposalFlags?: Prisma.ProposalFlagUncheckedCreateNestedManyWithoutUserInput
   proposalVotes?: Prisma.ProposalVoteUncheckedCreateNestedManyWithoutUserInput
+  guestsHosted?: Prisma.ExpenseGuestHostUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutProposalsCreatedInput = {
@@ -2622,6 +2841,7 @@ export type UserUpdateWithoutProposalsCreatedInput = {
   availabilityEntries?: Prisma.AvailabilityEntryUpdateManyWithoutUserNestedInput
   proposalFlags?: Prisma.ProposalFlagUpdateManyWithoutUserNestedInput
   proposalVotes?: Prisma.ProposalVoteUpdateManyWithoutUserNestedInput
+  guestsHosted?: Prisma.ExpenseGuestHostUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutProposalsCreatedInput = {
@@ -2656,6 +2876,7 @@ export type UserUncheckedUpdateWithoutProposalsCreatedInput = {
   availabilityEntries?: Prisma.AvailabilityEntryUncheckedUpdateManyWithoutUserNestedInput
   proposalFlags?: Prisma.ProposalFlagUncheckedUpdateManyWithoutUserNestedInput
   proposalVotes?: Prisma.ProposalVoteUncheckedUpdateManyWithoutUserNestedInput
+  guestsHosted?: Prisma.ExpenseGuestHostUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutProposalFlagsInput = {
@@ -2690,6 +2911,7 @@ export type UserCreateWithoutProposalFlagsInput = {
   availabilityEntries?: Prisma.AvailabilityEntryCreateNestedManyWithoutUserInput
   proposalsCreated?: Prisma.ProposalCreateNestedManyWithoutProposedByInput
   proposalVotes?: Prisma.ProposalVoteCreateNestedManyWithoutUserInput
+  guestsHosted?: Prisma.ExpenseGuestHostCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutProposalFlagsInput = {
@@ -2724,6 +2946,7 @@ export type UserUncheckedCreateWithoutProposalFlagsInput = {
   availabilityEntries?: Prisma.AvailabilityEntryUncheckedCreateNestedManyWithoutUserInput
   proposalsCreated?: Prisma.ProposalUncheckedCreateNestedManyWithoutProposedByInput
   proposalVotes?: Prisma.ProposalVoteUncheckedCreateNestedManyWithoutUserInput
+  guestsHosted?: Prisma.ExpenseGuestHostUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutProposalFlagsInput = {
@@ -2774,6 +2997,7 @@ export type UserUpdateWithoutProposalFlagsInput = {
   availabilityEntries?: Prisma.AvailabilityEntryUpdateManyWithoutUserNestedInput
   proposalsCreated?: Prisma.ProposalUpdateManyWithoutProposedByNestedInput
   proposalVotes?: Prisma.ProposalVoteUpdateManyWithoutUserNestedInput
+  guestsHosted?: Prisma.ExpenseGuestHostUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutProposalFlagsInput = {
@@ -2808,6 +3032,7 @@ export type UserUncheckedUpdateWithoutProposalFlagsInput = {
   availabilityEntries?: Prisma.AvailabilityEntryUncheckedUpdateManyWithoutUserNestedInput
   proposalsCreated?: Prisma.ProposalUncheckedUpdateManyWithoutProposedByNestedInput
   proposalVotes?: Prisma.ProposalVoteUncheckedUpdateManyWithoutUserNestedInput
+  guestsHosted?: Prisma.ExpenseGuestHostUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutProposalVotesInput = {
@@ -2842,6 +3067,7 @@ export type UserCreateWithoutProposalVotesInput = {
   availabilityEntries?: Prisma.AvailabilityEntryCreateNestedManyWithoutUserInput
   proposalsCreated?: Prisma.ProposalCreateNestedManyWithoutProposedByInput
   proposalFlags?: Prisma.ProposalFlagCreateNestedManyWithoutUserInput
+  guestsHosted?: Prisma.ExpenseGuestHostCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutProposalVotesInput = {
@@ -2876,6 +3102,7 @@ export type UserUncheckedCreateWithoutProposalVotesInput = {
   availabilityEntries?: Prisma.AvailabilityEntryUncheckedCreateNestedManyWithoutUserInput
   proposalsCreated?: Prisma.ProposalUncheckedCreateNestedManyWithoutProposedByInput
   proposalFlags?: Prisma.ProposalFlagUncheckedCreateNestedManyWithoutUserInput
+  guestsHosted?: Prisma.ExpenseGuestHostUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutProposalVotesInput = {
@@ -2926,6 +3153,7 @@ export type UserUpdateWithoutProposalVotesInput = {
   availabilityEntries?: Prisma.AvailabilityEntryUpdateManyWithoutUserNestedInput
   proposalsCreated?: Prisma.ProposalUpdateManyWithoutProposedByNestedInput
   proposalFlags?: Prisma.ProposalFlagUpdateManyWithoutUserNestedInput
+  guestsHosted?: Prisma.ExpenseGuestHostUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutProposalVotesInput = {
@@ -2960,6 +3188,7 @@ export type UserUncheckedUpdateWithoutProposalVotesInput = {
   availabilityEntries?: Prisma.AvailabilityEntryUncheckedUpdateManyWithoutUserNestedInput
   proposalsCreated?: Prisma.ProposalUncheckedUpdateManyWithoutProposedByNestedInput
   proposalFlags?: Prisma.ProposalFlagUncheckedUpdateManyWithoutUserNestedInput
+  guestsHosted?: Prisma.ExpenseGuestHostUncheckedUpdateManyWithoutUserNestedInput
 }
 
 
@@ -2981,6 +3210,7 @@ export type UserCountOutputType = {
   proposalsCreated: number
   proposalFlags: number
   proposalVotes: number
+  guestsHosted: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2997,6 +3227,7 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   proposalsCreated?: boolean | UserCountOutputTypeCountProposalsCreatedArgs
   proposalFlags?: boolean | UserCountOutputTypeCountProposalFlagsArgs
   proposalVotes?: boolean | UserCountOutputTypeCountProposalVotesArgs
+  guestsHosted?: boolean | UserCountOutputTypeCountGuestsHostedArgs
 }
 
 /**
@@ -3100,6 +3331,13 @@ export type UserCountOutputTypeCountProposalVotesArgs<ExtArgs extends runtime.Ty
   where?: Prisma.ProposalVoteWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountGuestsHostedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ExpenseGuestHostWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -3134,6 +3372,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   proposalsCreated?: boolean | Prisma.User$proposalsCreatedArgs<ExtArgs>
   proposalFlags?: boolean | Prisma.User$proposalFlagsArgs<ExtArgs>
   proposalVotes?: boolean | Prisma.User$proposalVotesArgs<ExtArgs>
+  guestsHosted?: boolean | Prisma.User$guestsHostedArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -3218,6 +3457,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   proposalsCreated?: boolean | Prisma.User$proposalsCreatedArgs<ExtArgs>
   proposalFlags?: boolean | Prisma.User$proposalFlagsArgs<ExtArgs>
   proposalVotes?: boolean | Prisma.User$proposalVotesArgs<ExtArgs>
+  guestsHosted?: boolean | Prisma.User$guestsHostedArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -3239,6 +3479,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     proposalsCreated: Prisma.$ProposalPayload<ExtArgs>[]
     proposalFlags: Prisma.$ProposalFlagPayload<ExtArgs>[]
     proposalVotes: Prisma.$ProposalVotePayload<ExtArgs>[]
+    guestsHosted: Prisma.$ExpenseGuestHostPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -3667,6 +3908,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   proposalsCreated<T extends Prisma.User$proposalsCreatedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$proposalsCreatedArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProposalPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   proposalFlags<T extends Prisma.User$proposalFlagsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$proposalFlagsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProposalFlagPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   proposalVotes<T extends Prisma.User$proposalVotesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$proposalVotesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProposalVotePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  guestsHosted<T extends Prisma.User$guestsHostedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$guestsHostedArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ExpenseGuestHostPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4417,6 +4659,30 @@ export type User$proposalVotesArgs<ExtArgs extends runtime.Types.Extensions.Inte
   take?: number
   skip?: number
   distinct?: Prisma.ProposalVoteScalarFieldEnum | Prisma.ProposalVoteScalarFieldEnum[]
+}
+
+/**
+ * User.guestsHosted
+ */
+export type User$guestsHostedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ExpenseGuestHost
+   */
+  select?: Prisma.ExpenseGuestHostSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ExpenseGuestHost
+   */
+  omit?: Prisma.ExpenseGuestHostOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ExpenseGuestHostInclude<ExtArgs> | null
+  where?: Prisma.ExpenseGuestHostWhereInput
+  orderBy?: Prisma.ExpenseGuestHostOrderByWithRelationInput | Prisma.ExpenseGuestHostOrderByWithRelationInput[]
+  cursor?: Prisma.ExpenseGuestHostWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ExpenseGuestHostScalarFieldEnum | Prisma.ExpenseGuestHostScalarFieldEnum[]
 }
 
 /**

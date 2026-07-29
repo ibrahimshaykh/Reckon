@@ -29,6 +29,15 @@ enum SettlementStatus {
   CONFIRMED
 }
 
+// Where a guest's share sits. Only PAID takes it off the group's books —
+// see src/lib/guest-shares.ts for why an intention isn't enough.
+enum GuestStatus {
+  UNDECIDED
+  PAYING
+  PAID
+  DECLINED
+}
+
 enum ChoreFrequency {
   DAILY
   WEEKLY
@@ -101,6 +110,7 @@ model User {
   proposalsCreated      Proposal[]               @relation("ProposalCreator")
   proposalFlags         ProposalFlag[]
   proposalVotes         ProposalVote[]
+  guestsHosted          ExpenseGuestHost[]
 
   @@index([email])
 }
@@ -138,17 +148,45 @@ model GroupMember {
   @@unique([groupId, userId])
 }
 
-model GuestToken {
-  id         String   @id @default(cuid())
-  token      String   @unique
+// Someone without an account who was part of exactly one expense. Replaces
+// the old GuestToken, which was only a share link and carried no answer —
+// so a guest counted for nothing and the group silently ate their share.
+//
+// The token is still the whole credential (same trust model as
+// Settlement.confirmToken): whoever holds the link is that guest.
+model ExpenseGuest {
+  id         String      @id @default(cuid())
+  token      String      @unique
   expenseId  String
-  expense    Expense  @relation(fields: [expenseId], references: [id], onDelete: Cascade)
-  guestName  String
-  guestEmail String?
+  expense    Expense     @relation(fields: [expenseId], references: [id], onDelete: Cascade)
+  name       String
+  email      String?
+  status     GuestStatus @default(UNDECIDED)
+  // When the guest last answered. Kept for the activity trail — status alone
+  // can't say whether "undecided" means fresh or ignored for a fortnight.
+  resolvedAt DateTime?
   expiresAt  DateTime
-  createdAt  DateTime @default(now())
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
 
+  hosts ExpenseGuestHost[]
+
+  @@index([expenseId])
   @@index([token])
+}
+
+// The members who brought a guest, and who cover that guest's share if it
+// never gets paid. Its own table rather than a string array so a host is a
+// real foreign key — a member who can't be resolved to a person can't be
+// handed someone else's debt.
+model ExpenseGuestHost {
+  guestId String
+  guest   ExpenseGuest @relation(fields: [guestId], references: [id], onDelete: Cascade)
+  userId  String
+  user    User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([guestId, userId])
+  @@index([userId])
 }
 
 model Expense {
@@ -167,7 +205,7 @@ model Expense {
   updatedAt       DateTime      @updatedAt
 
   items       ExpenseItem[]
-  guestTokens GuestToken[]
+  guests      ExpenseGuest[]
 
   @@index([groupId, createdAt])
   @@index([paidById])

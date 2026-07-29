@@ -267,7 +267,7 @@ export type ExpenseWhereInput = {
   group?: Prisma.XOR<Prisma.GroupScalarRelationFilter, Prisma.GroupWhereInput>
   paidBy?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   items?: Prisma.ExpenseItemListRelationFilter
-  guestTokens?: Prisma.GuestTokenListRelationFilter
+  guests?: Prisma.ExpenseGuestListRelationFilter
 }
 
 export type ExpenseOrderByWithRelationInput = {
@@ -285,7 +285,7 @@ export type ExpenseOrderByWithRelationInput = {
   group?: Prisma.GroupOrderByWithRelationInput
   paidBy?: Prisma.UserOrderByWithRelationInput
   items?: Prisma.ExpenseItemOrderByRelationAggregateInput
-  guestTokens?: Prisma.GuestTokenOrderByRelationAggregateInput
+  guests?: Prisma.ExpenseGuestOrderByRelationAggregateInput
 }
 
 export type ExpenseWhereUniqueInput = Prisma.AtLeast<{
@@ -306,7 +306,7 @@ export type ExpenseWhereUniqueInput = Prisma.AtLeast<{
   group?: Prisma.XOR<Prisma.GroupScalarRelationFilter, Prisma.GroupWhereInput>
   paidBy?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   items?: Prisma.ExpenseItemListRelationFilter
-  guestTokens?: Prisma.GuestTokenListRelationFilter
+  guests?: Prisma.ExpenseGuestListRelationFilter
 }, "id">
 
 export type ExpenseOrderByWithAggregationInput = {
@@ -358,7 +358,7 @@ export type ExpenseCreateInput = {
   group: Prisma.GroupCreateNestedOneWithoutExpensesInput
   paidBy: Prisma.UserCreateNestedOneWithoutPaidExpensesInput
   items?: Prisma.ExpenseItemCreateNestedManyWithoutExpenseInput
-  guestTokens?: Prisma.GuestTokenCreateNestedManyWithoutExpenseInput
+  guests?: Prisma.ExpenseGuestCreateNestedManyWithoutExpenseInput
 }
 
 export type ExpenseUncheckedCreateInput = {
@@ -374,7 +374,7 @@ export type ExpenseUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   items?: Prisma.ExpenseItemUncheckedCreateNestedManyWithoutExpenseInput
-  guestTokens?: Prisma.GuestTokenUncheckedCreateNestedManyWithoutExpenseInput
+  guests?: Prisma.ExpenseGuestUncheckedCreateNestedManyWithoutExpenseInput
 }
 
 export type ExpenseUpdateInput = {
@@ -390,7 +390,7 @@ export type ExpenseUpdateInput = {
   group?: Prisma.GroupUpdateOneRequiredWithoutExpensesNestedInput
   paidBy?: Prisma.UserUpdateOneRequiredWithoutPaidExpensesNestedInput
   items?: Prisma.ExpenseItemUpdateManyWithoutExpenseNestedInput
-  guestTokens?: Prisma.GuestTokenUpdateManyWithoutExpenseNestedInput
+  guests?: Prisma.ExpenseGuestUpdateManyWithoutExpenseNestedInput
 }
 
 export type ExpenseUncheckedUpdateInput = {
@@ -406,7 +406,7 @@ export type ExpenseUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   items?: Prisma.ExpenseItemUncheckedUpdateManyWithoutExpenseNestedInput
-  guestTokens?: Prisma.GuestTokenUncheckedUpdateManyWithoutExpenseNestedInput
+  guests?: Prisma.ExpenseGuestUncheckedUpdateManyWithoutExpenseNestedInput
 }
 
 export type ExpenseCreateManyInput = {
@@ -598,18 +598,18 @@ export type ExpenseUncheckedUpdateManyWithoutGroupNestedInput = {
   deleteMany?: Prisma.ExpenseScalarWhereInput | Prisma.ExpenseScalarWhereInput[]
 }
 
-export type ExpenseCreateNestedOneWithoutGuestTokensInput = {
-  create?: Prisma.XOR<Prisma.ExpenseCreateWithoutGuestTokensInput, Prisma.ExpenseUncheckedCreateWithoutGuestTokensInput>
-  connectOrCreate?: Prisma.ExpenseCreateOrConnectWithoutGuestTokensInput
+export type ExpenseCreateNestedOneWithoutGuestsInput = {
+  create?: Prisma.XOR<Prisma.ExpenseCreateWithoutGuestsInput, Prisma.ExpenseUncheckedCreateWithoutGuestsInput>
+  connectOrCreate?: Prisma.ExpenseCreateOrConnectWithoutGuestsInput
   connect?: Prisma.ExpenseWhereUniqueInput
 }
 
-export type ExpenseUpdateOneRequiredWithoutGuestTokensNestedInput = {
-  create?: Prisma.XOR<Prisma.ExpenseCreateWithoutGuestTokensInput, Prisma.ExpenseUncheckedCreateWithoutGuestTokensInput>
-  connectOrCreate?: Prisma.ExpenseCreateOrConnectWithoutGuestTokensInput
-  upsert?: Prisma.ExpenseUpsertWithoutGuestTokensInput
+export type ExpenseUpdateOneRequiredWithoutGuestsNestedInput = {
+  create?: Prisma.XOR<Prisma.ExpenseCreateWithoutGuestsInput, Prisma.ExpenseUncheckedCreateWithoutGuestsInput>
+  connectOrCreate?: Prisma.ExpenseCreateOrConnectWithoutGuestsInput
+  upsert?: Prisma.ExpenseUpsertWithoutGuestsInput
   connect?: Prisma.ExpenseWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.ExpenseUpdateToOneWithWhereWithoutGuestTokensInput, Prisma.ExpenseUpdateWithoutGuestTokensInput>, Prisma.ExpenseUncheckedUpdateWithoutGuestTokensInput>
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ExpenseUpdateToOneWithWhereWithoutGuestsInput, Prisma.ExpenseUpdateWithoutGuestsInput>, Prisma.ExpenseUncheckedUpdateWithoutGuestsInput>
 }
 
 export type DecimalFieldUpdateOperationsInput = {
@@ -654,7 +654,7 @@ export type ExpenseCreateWithoutPaidByInput = {
   updatedAt?: Date | string
   group: Prisma.GroupCreateNestedOneWithoutExpensesInput
   items?: Prisma.ExpenseItemCreateNestedManyWithoutExpenseInput
-  guestTokens?: Prisma.GuestTokenCreateNestedManyWithoutExpenseInput
+  guests?: Prisma.ExpenseGuestCreateNestedManyWithoutExpenseInput
 }
 
 export type ExpenseUncheckedCreateWithoutPaidByInput = {
@@ -669,7 +669,7 @@ export type ExpenseUncheckedCreateWithoutPaidByInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   items?: Prisma.ExpenseItemUncheckedCreateNestedManyWithoutExpenseInput
-  guestTokens?: Prisma.GuestTokenUncheckedCreateNestedManyWithoutExpenseInput
+  guests?: Prisma.ExpenseGuestUncheckedCreateNestedManyWithoutExpenseInput
 }
 
 export type ExpenseCreateOrConnectWithoutPaidByInput = {
@@ -727,7 +727,7 @@ export type ExpenseCreateWithoutGroupInput = {
   updatedAt?: Date | string
   paidBy: Prisma.UserCreateNestedOneWithoutPaidExpensesInput
   items?: Prisma.ExpenseItemCreateNestedManyWithoutExpenseInput
-  guestTokens?: Prisma.GuestTokenCreateNestedManyWithoutExpenseInput
+  guests?: Prisma.ExpenseGuestCreateNestedManyWithoutExpenseInput
 }
 
 export type ExpenseUncheckedCreateWithoutGroupInput = {
@@ -742,7 +742,7 @@ export type ExpenseUncheckedCreateWithoutGroupInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   items?: Prisma.ExpenseItemUncheckedCreateNestedManyWithoutExpenseInput
-  guestTokens?: Prisma.GuestTokenUncheckedCreateNestedManyWithoutExpenseInput
+  guests?: Prisma.ExpenseGuestUncheckedCreateNestedManyWithoutExpenseInput
 }
 
 export type ExpenseCreateOrConnectWithoutGroupInput = {
@@ -771,7 +771,7 @@ export type ExpenseUpdateManyWithWhereWithoutGroupInput = {
   data: Prisma.XOR<Prisma.ExpenseUpdateManyMutationInput, Prisma.ExpenseUncheckedUpdateManyWithoutGroupInput>
 }
 
-export type ExpenseCreateWithoutGuestTokensInput = {
+export type ExpenseCreateWithoutGuestsInput = {
   id?: string
   title: string
   totalAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -786,7 +786,7 @@ export type ExpenseCreateWithoutGuestTokensInput = {
   items?: Prisma.ExpenseItemCreateNestedManyWithoutExpenseInput
 }
 
-export type ExpenseUncheckedCreateWithoutGuestTokensInput = {
+export type ExpenseUncheckedCreateWithoutGuestsInput = {
   id?: string
   groupId: string
   paidById: string
@@ -801,23 +801,23 @@ export type ExpenseUncheckedCreateWithoutGuestTokensInput = {
   items?: Prisma.ExpenseItemUncheckedCreateNestedManyWithoutExpenseInput
 }
 
-export type ExpenseCreateOrConnectWithoutGuestTokensInput = {
+export type ExpenseCreateOrConnectWithoutGuestsInput = {
   where: Prisma.ExpenseWhereUniqueInput
-  create: Prisma.XOR<Prisma.ExpenseCreateWithoutGuestTokensInput, Prisma.ExpenseUncheckedCreateWithoutGuestTokensInput>
+  create: Prisma.XOR<Prisma.ExpenseCreateWithoutGuestsInput, Prisma.ExpenseUncheckedCreateWithoutGuestsInput>
 }
 
-export type ExpenseUpsertWithoutGuestTokensInput = {
-  update: Prisma.XOR<Prisma.ExpenseUpdateWithoutGuestTokensInput, Prisma.ExpenseUncheckedUpdateWithoutGuestTokensInput>
-  create: Prisma.XOR<Prisma.ExpenseCreateWithoutGuestTokensInput, Prisma.ExpenseUncheckedCreateWithoutGuestTokensInput>
+export type ExpenseUpsertWithoutGuestsInput = {
+  update: Prisma.XOR<Prisma.ExpenseUpdateWithoutGuestsInput, Prisma.ExpenseUncheckedUpdateWithoutGuestsInput>
+  create: Prisma.XOR<Prisma.ExpenseCreateWithoutGuestsInput, Prisma.ExpenseUncheckedCreateWithoutGuestsInput>
   where?: Prisma.ExpenseWhereInput
 }
 
-export type ExpenseUpdateToOneWithWhereWithoutGuestTokensInput = {
+export type ExpenseUpdateToOneWithWhereWithoutGuestsInput = {
   where?: Prisma.ExpenseWhereInput
-  data: Prisma.XOR<Prisma.ExpenseUpdateWithoutGuestTokensInput, Prisma.ExpenseUncheckedUpdateWithoutGuestTokensInput>
+  data: Prisma.XOR<Prisma.ExpenseUpdateWithoutGuestsInput, Prisma.ExpenseUncheckedUpdateWithoutGuestsInput>
 }
 
-export type ExpenseUpdateWithoutGuestTokensInput = {
+export type ExpenseUpdateWithoutGuestsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   totalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -832,7 +832,7 @@ export type ExpenseUpdateWithoutGuestTokensInput = {
   items?: Prisma.ExpenseItemUpdateManyWithoutExpenseNestedInput
 }
 
-export type ExpenseUncheckedUpdateWithoutGuestTokensInput = {
+export type ExpenseUncheckedUpdateWithoutGuestsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   groupId?: Prisma.StringFieldUpdateOperationsInput | string
   paidById?: Prisma.StringFieldUpdateOperationsInput | string
@@ -859,7 +859,7 @@ export type ExpenseCreateWithoutItemsInput = {
   updatedAt?: Date | string
   group: Prisma.GroupCreateNestedOneWithoutExpensesInput
   paidBy: Prisma.UserCreateNestedOneWithoutPaidExpensesInput
-  guestTokens?: Prisma.GuestTokenCreateNestedManyWithoutExpenseInput
+  guests?: Prisma.ExpenseGuestCreateNestedManyWithoutExpenseInput
 }
 
 export type ExpenseUncheckedCreateWithoutItemsInput = {
@@ -874,7 +874,7 @@ export type ExpenseUncheckedCreateWithoutItemsInput = {
   source?: $Enums.ExpenseSource
   createdAt?: Date | string
   updatedAt?: Date | string
-  guestTokens?: Prisma.GuestTokenUncheckedCreateNestedManyWithoutExpenseInput
+  guests?: Prisma.ExpenseGuestUncheckedCreateNestedManyWithoutExpenseInput
 }
 
 export type ExpenseCreateOrConnectWithoutItemsInput = {
@@ -905,7 +905,7 @@ export type ExpenseUpdateWithoutItemsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   group?: Prisma.GroupUpdateOneRequiredWithoutExpensesNestedInput
   paidBy?: Prisma.UserUpdateOneRequiredWithoutPaidExpensesNestedInput
-  guestTokens?: Prisma.GuestTokenUpdateManyWithoutExpenseNestedInput
+  guests?: Prisma.ExpenseGuestUpdateManyWithoutExpenseNestedInput
 }
 
 export type ExpenseUncheckedUpdateWithoutItemsInput = {
@@ -920,7 +920,7 @@ export type ExpenseUncheckedUpdateWithoutItemsInput = {
   source?: Prisma.EnumExpenseSourceFieldUpdateOperationsInput | $Enums.ExpenseSource
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  guestTokens?: Prisma.GuestTokenUncheckedUpdateManyWithoutExpenseNestedInput
+  guests?: Prisma.ExpenseGuestUncheckedUpdateManyWithoutExpenseNestedInput
 }
 
 export type ExpenseCreateManyPaidByInput = {
@@ -948,7 +948,7 @@ export type ExpenseUpdateWithoutPaidByInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   group?: Prisma.GroupUpdateOneRequiredWithoutExpensesNestedInput
   items?: Prisma.ExpenseItemUpdateManyWithoutExpenseNestedInput
-  guestTokens?: Prisma.GuestTokenUpdateManyWithoutExpenseNestedInput
+  guests?: Prisma.ExpenseGuestUpdateManyWithoutExpenseNestedInput
 }
 
 export type ExpenseUncheckedUpdateWithoutPaidByInput = {
@@ -963,7 +963,7 @@ export type ExpenseUncheckedUpdateWithoutPaidByInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   items?: Prisma.ExpenseItemUncheckedUpdateManyWithoutExpenseNestedInput
-  guestTokens?: Prisma.GuestTokenUncheckedUpdateManyWithoutExpenseNestedInput
+  guests?: Prisma.ExpenseGuestUncheckedUpdateManyWithoutExpenseNestedInput
 }
 
 export type ExpenseUncheckedUpdateManyWithoutPaidByInput = {
@@ -1004,7 +1004,7 @@ export type ExpenseUpdateWithoutGroupInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paidBy?: Prisma.UserUpdateOneRequiredWithoutPaidExpensesNestedInput
   items?: Prisma.ExpenseItemUpdateManyWithoutExpenseNestedInput
-  guestTokens?: Prisma.GuestTokenUpdateManyWithoutExpenseNestedInput
+  guests?: Prisma.ExpenseGuestUpdateManyWithoutExpenseNestedInput
 }
 
 export type ExpenseUncheckedUpdateWithoutGroupInput = {
@@ -1019,7 +1019,7 @@ export type ExpenseUncheckedUpdateWithoutGroupInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   items?: Prisma.ExpenseItemUncheckedUpdateManyWithoutExpenseNestedInput
-  guestTokens?: Prisma.GuestTokenUncheckedUpdateManyWithoutExpenseNestedInput
+  guests?: Prisma.ExpenseGuestUncheckedUpdateManyWithoutExpenseNestedInput
 }
 
 export type ExpenseUncheckedUpdateManyWithoutGroupInput = {
@@ -1042,12 +1042,12 @@ export type ExpenseUncheckedUpdateManyWithoutGroupInput = {
 
 export type ExpenseCountOutputType = {
   items: number
-  guestTokens: number
+  guests: number
 }
 
 export type ExpenseCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   items?: boolean | ExpenseCountOutputTypeCountItemsArgs
-  guestTokens?: boolean | ExpenseCountOutputTypeCountGuestTokensArgs
+  guests?: boolean | ExpenseCountOutputTypeCountGuestsArgs
 }
 
 /**
@@ -1070,8 +1070,8 @@ export type ExpenseCountOutputTypeCountItemsArgs<ExtArgs extends runtime.Types.E
 /**
  * ExpenseCountOutputType without action
  */
-export type ExpenseCountOutputTypeCountGuestTokensArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.GuestTokenWhereInput
+export type ExpenseCountOutputTypeCountGuestsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ExpenseGuestWhereInput
 }
 
 
@@ -1090,7 +1090,7 @@ export type ExpenseSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   group?: boolean | Prisma.GroupDefaultArgs<ExtArgs>
   paidBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   items?: boolean | Prisma.Expense$itemsArgs<ExtArgs>
-  guestTokens?: boolean | Prisma.Expense$guestTokensArgs<ExtArgs>
+  guests?: boolean | Prisma.Expense$guestsArgs<ExtArgs>
   _count?: boolean | Prisma.ExpenseCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["expense"]>
 
@@ -1145,7 +1145,7 @@ export type ExpenseInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs
   group?: boolean | Prisma.GroupDefaultArgs<ExtArgs>
   paidBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   items?: boolean | Prisma.Expense$itemsArgs<ExtArgs>
-  guestTokens?: boolean | Prisma.Expense$guestTokensArgs<ExtArgs>
+  guests?: boolean | Prisma.Expense$guestsArgs<ExtArgs>
   _count?: boolean | Prisma.ExpenseCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ExpenseIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1163,7 +1163,7 @@ export type $ExpensePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     group: Prisma.$GroupPayload<ExtArgs>
     paidBy: Prisma.$UserPayload<ExtArgs>
     items: Prisma.$ExpenseItemPayload<ExtArgs>[]
-    guestTokens: Prisma.$GuestTokenPayload<ExtArgs>[]
+    guests: Prisma.$ExpenseGuestPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1574,7 +1574,7 @@ export interface Prisma__ExpenseClient<T, Null = never, ExtArgs extends runtime.
   group<T extends Prisma.GroupDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.GroupDefaultArgs<ExtArgs>>): Prisma.Prisma__GroupClient<runtime.Types.Result.GetResult<Prisma.$GroupPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   paidBy<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   items<T extends Prisma.Expense$itemsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Expense$itemsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ExpenseItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  guestTokens<T extends Prisma.Expense$guestTokensArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Expense$guestTokensArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$GuestTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  guests<T extends Prisma.Expense$guestsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Expense$guestsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ExpenseGuestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2040,27 +2040,27 @@ export type Expense$itemsArgs<ExtArgs extends runtime.Types.Extensions.InternalA
 }
 
 /**
- * Expense.guestTokens
+ * Expense.guests
  */
-export type Expense$guestTokensArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type Expense$guestsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the GuestToken
+   * Select specific fields to fetch from the ExpenseGuest
    */
-  select?: Prisma.GuestTokenSelect<ExtArgs> | null
+  select?: Prisma.ExpenseGuestSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the GuestToken
+   * Omit specific fields from the ExpenseGuest
    */
-  omit?: Prisma.GuestTokenOmit<ExtArgs> | null
+  omit?: Prisma.ExpenseGuestOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.GuestTokenInclude<ExtArgs> | null
-  where?: Prisma.GuestTokenWhereInput
-  orderBy?: Prisma.GuestTokenOrderByWithRelationInput | Prisma.GuestTokenOrderByWithRelationInput[]
-  cursor?: Prisma.GuestTokenWhereUniqueInput
+  include?: Prisma.ExpenseGuestInclude<ExtArgs> | null
+  where?: Prisma.ExpenseGuestWhereInput
+  orderBy?: Prisma.ExpenseGuestOrderByWithRelationInput | Prisma.ExpenseGuestOrderByWithRelationInput[]
+  cursor?: Prisma.ExpenseGuestWhereUniqueInput
   take?: number
   skip?: number
-  distinct?: Prisma.GuestTokenScalarFieldEnum | Prisma.GuestTokenScalarFieldEnum[]
+  distinct?: Prisma.ExpenseGuestScalarFieldEnum | Prisma.ExpenseGuestScalarFieldEnum[]
 }
 
 /**

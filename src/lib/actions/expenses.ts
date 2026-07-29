@@ -9,6 +9,7 @@ import { ApiError } from "@/lib/api-error";
 import { fromCents } from "@/lib/money";
 import { validate, cuid, positiveCents, shortText } from "@/lib/validation";
 import { recalculateSettlements } from "@/lib/actions/settlements";
+import { guestLockReason } from "@/lib/guest-shares";
 import { asActionResult, type ActionResult } from "@/lib/action-result";
 
 type AddManualExpenseInput = {
@@ -191,6 +192,7 @@ export async function getExpenseForEdit(expenseId: string): Promise<
     paidById: string;
     participantIds: string[];
     itemised: boolean;
+    guestLock: "PAYING" | "PAID" | null;
   }>
 > {
   return asActionResult(async () => {
@@ -199,7 +201,10 @@ export async function getExpenseForEdit(expenseId: string): Promise<
 
     const expense = await db.expense.findUniqueOrThrow({
       where: { id: validId },
-      include: { items: { include: { participants: true } } },
+      include: {
+        items: { include: { participants: true } },
+        guests: { select: { status: true } },
+      },
     });
 
     await assertMember(expense.groupId, session.id);
@@ -219,6 +224,9 @@ export async function getExpenseForEdit(expenseId: string): Promise<
       paidById: expense.paidById,
       participantIds,
       itemised: expense.items.length > 1,
+      // Lets the form grey out the amount fields up front, rather than
+      // letting someone retype a split and only then be told no.
+      guestLock: guestLockReason(expense.guests.map((g) => g.status)),
     };
   });
 }
@@ -244,7 +252,7 @@ export async function updateExpense(input: {
 
     const expense = await db.expense.findUniqueOrThrow({
       where: { id: valid.expenseId },
-      include: { items: true },
+      include: { items: true, guests: { select: { status: true } } },
     });
 
     await assertMember(expense.groupId, session.id);
@@ -254,6 +262,20 @@ export async function updateExpense(input: {
 
     const itemised = expense.items.length > 1;
     const changingAmounts = valid.totalCents !== undefined || valid.participantIds !== undefined;
+
+    // A guest has been quoted a figure and is acting on it. Re-splitting the
+    // bill now would change what they owe after they'd been told — so the
+    // title and payer stay editable, but the money doesn't.
+    const lock = guestLockReason(expense.guests.map((g) => g.status));
+    if (lock && changingAmounts) {
+      throw new ApiError(
+        400,
+        lock === "PAID"
+          ? "A guest has already paid their share of this expense, so the amount and split are fixed."
+          : "A guest is paying their share right now, so the amount and split are locked until that's settled.",
+      );
+    }
+
     if (itemised && changingAmounts) {
       throw new ApiError(
         400,
@@ -350,6 +372,13 @@ export async function listGroupExpenses(groupId: string) {
     include: {
       paidBy: true,
       items: { include: { participants: { include: { user: true } } } },
+      // Hosts are joined through to the user rather than looked up among the
+      // expense's participants: a host who isn't in the split still has a
+      // name, and falling back to a raw id would print a cuid at people.
+      guests: {
+        include: { hosts: { include: { user: true } } },
+        orderBy: { createdAt: "asc" },
+      },
     },
     orderBy: { createdAt: "desc" },
   });
@@ -371,6 +400,16 @@ export async function listGroupExpenses(groupId: string) {
       // only the payer may remove it.
       paidById: e.paidById,
       participants: [...byId].map(([id, name]) => ({ id, name })),
+      guests: e.guests.map((g) => ({
+        id: g.id,
+        name: g.name,
+        status: g.status,
+        hostNames: g.hosts.map((h) => h.user.displayName),
+      })),
+      // Guests can only ever be added to a single equally split item, so the
+      // share control has to know whether this expense qualifies before
+      // offering it.
+      canHaveGuests: e.items.length === 1 && e.items[0].splitType === "EQUAL",
       createdAt: e.createdAt.toISOString(),
     };
   });

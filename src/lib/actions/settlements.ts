@@ -9,6 +9,7 @@ import { ApiError } from "@/lib/api-error";
 import { logger } from "@/lib/logger";
 import { toCents, fromCents } from "@/lib/money";
 import { computeBalances, computeSettlements, applyIOUs } from "@/lib/settlement";
+import { deriveItemShares, toShareRatios } from "@/lib/guest-shares";
 import { asActionResult, type ActionResult } from "@/lib/action-result";
 
 // The only writer of Settlement rows. Called from the actions that actually
@@ -21,23 +22,65 @@ export async function recalculateSettlements(groupId: string) {
   const [expenses, ious] = await Promise.all([
     db.expense.findMany({
       where: { groupId },
-      include: { items: { include: { participants: true } } },
+      include: {
+        items: { include: { participants: true } },
+        guests: { include: { hosts: true } },
+      },
     }),
     // Forgiven IOUs are excluded — a forgiven debt shouldn't still count
     // against the person who owed it.
     db.iOU.findMany({ where: { groupId, forgivenAt: null } }),
   ]);
 
-  const flattened = expenses.flatMap((expense) =>
-    expense.items.map((item) => ({
+  const flattened = expenses.flatMap((expense) => {
+    const plainItems = expense.items.map((item) => ({
       paidById: expense.paidById,
       totalCents: toCents(item.amount),
       participants: item.participants.map((p) => ({
         userId: p.userId,
         shareRatio: Number(p.shareRatio),
       })),
-    })),
-  );
+    }));
+
+    if (expense.guests.length === 0) return plainItems;
+
+    // addGuest refuses to attach a guest to anything but a single equally
+    // split item, so this is unreachable unless that invariant has been
+    // broken. Guessing how to wedge a guest into a scanned receipt would
+    // quietly invent numbers, so fall back to the guest-free maths and make
+    // noise instead — the balances stay defensible, the data gets fixed.
+    if (expense.items.length !== 1) {
+      logger.error(
+        "Expense has guests but is not a single-item split — ignoring guests for this expense.",
+        { expenseId: expense.id, itemCount: expense.items.length },
+      );
+      return plainItems;
+    }
+
+    const item = expense.items[0];
+    const { memberCents, groupTotalCents } = deriveItemShares({
+      totalCents: toCents(item.amount),
+      memberIds: item.participants.map((p) => p.userId),
+      guests: expense.guests.map((g) => ({
+        id: g.id,
+        status: g.status,
+        hostIds: g.hosts.map((h) => h.userId),
+      })),
+    });
+
+    return [
+      {
+        paidById: expense.paidById,
+        // The group total, not the item total: a guest who has already paid
+        // the payer directly settled that money outside these books, and
+        // crediting the payer for it would bill the group twice.
+        totalCents: groupTotalCents,
+        participants: Object.entries(toShareRatios(memberCents, groupTotalCents)).map(
+          ([userId, shareRatio]) => ({ userId, shareRatio }),
+        ),
+      },
+    ];
+  });
 
   const balances = applyIOUs(
     computeBalances(flattened),

@@ -221,7 +221,20 @@
     "editTitle": "خرچ میں تبدیلی",
     "saveChanges": "تبدیلیاں محفوظ کریں",
     "saving": "محفوظ ہو رہا ہے…",
-    "itemisedNote": "یہ رسید سے آیا ہے، اس لیے رقم اور تقسیم اسکین کی گئی اشیاء کے مطابق ہے۔ آپ عنوان اور ادا کرنے والا پھر بھی بدل سکتے ہیں۔"
+    "itemisedNote": "یہ رسید سے آیا ہے، اس لیے رقم اور تقسیم اسکین کی گئی اشیاء کے مطابق ہے۔ آپ عنوان اور ادا کرنے والا پھر بھی بدل سکتے ہیں۔",
+    "guestHostsLabel": "انہیں کون کور کر رہا ہے؟",
+    "guestHostsHint": "اگر وہ ادا نہ کریں تو ان کا حصہ آپ کے منتخب کردہ لوگوں میں تقسیم ہو جائے گا۔",
+    "guestPickHostsFirst": "کم از کم ایک شخص منتخب کریں۔",
+    "guestsHeading": "مہمان",
+    "guestStatusUndecided": "نے جواب نہیں دیا",
+    "guestStatusPaying": "کہتے ہیں وہ ادا کریں گے",
+    "guestStatusPaid": "ادا کر دیا",
+    "guestStatusDeclined": "ادا نہیں کر رہے",
+    "guestConfirmPaid": "وصولی درج کریں",
+    "guestRemove": "ہٹائیں",
+    "guestLockedNote": "ایک مہمان اس خرچ کا اپنا حصہ ادا کر رہا ہے، اس لیے رقم اور تقسیم مقفل ہے۔",
+    "guestGetLink": "لنک لیں",
+    "guestLinkCopied": "لنک تازہ ہو گیا — دوبارہ بھیجیں"
   },
   "settle": {
     "title": "کس پر کتنا واجب ہے",
@@ -251,8 +264,27 @@
     "settled": "حساب برابر"
   },
   "guest": {
-    "greeting": "ہیلو {guestName} — {payerName} نے اس کے لیے {amount} ادا کیے۔",
-    "payOnVenmo": "{name} کو وینمو پر ادا کریں"
+    "greeting": "سلام {guestName} — {payerName} نے {title} کی ادائیگی کی۔",
+    "payOnVenmo": "{name} کو وینمو پر ادا کریں",
+    "yourShare": "آپ کا حصہ",
+    "shareExplainer": "وہاں موجود سب کے درمیان برابر تقسیم، آپ سمیت۔",
+    "illPay": "میں اپنا حصہ ادا کروں گا",
+    "ignoreIt": "اسے نظر انداز کریں",
+    "decidingNote": "کوئی دباؤ نہیں — اگر آپ نظر انداز کریں تو جنہوں نے آپ کو بلایا وہ آپ کا حصہ اٹھا لیں گے۔",
+    "payingHeading": "{payerName} کو {amount} بھیجیں",
+    "payingNote": "پہنچنے پر وہ تصدیق کر دیں گے۔",
+    "declinedHeading": "کوئی بات نہیں۔",
+    "declinedNote": "{payerName} اور باقی لوگ سنبھال لیں گے۔",
+    "paidHeading": "حساب برابر۔",
+    "paidNote": "{payerName} نے تصدیق کی کہ آپ کے {amount} پہنچ گئے۔",
+    "changeMind": "دراصل، میں ادا کروں گا",
+    "coveredHeading": "آپ ہمارے مہمان تھے۔",
+    "coveredNote": "{hosts} پہلے ہی آپ کا حصہ ادا کر چکے ہیں، کچھ دینے کی ضرورت نہیں۔",
+    "insistLink": "پھر بھی میں اپنا حصہ دینا چاہتا ہوں",
+    "insistHeading": "جنہوں نے آپ کا حصہ اٹھایا انہیں بھیجیں",
+    "insistNote": "یہ سیدھا انہی لوگوں کو جائے گا جنہوں نے آپ کا حصہ اٹھایا، تاکہ کسی کا نقصان نہ ہو۔",
+    "hostOwed": "{name} — {amount}",
+    "nevermind": "رہنے دیں"
   },
   "confirm": {
     "title": "ادائیگی کی وصولی کی تصدیق کریں",

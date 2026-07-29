@@ -34,6 +34,16 @@ export const SettlementStatus = {
 export type SettlementStatus = (typeof SettlementStatus)[keyof typeof SettlementStatus]
 
 
+export const GuestStatus = {
+  UNDECIDED: 'UNDECIDED',
+  PAYING: 'PAYING',
+  PAID: 'PAID',
+  DECLINED: 'DECLINED'
+} as const
+
+export type GuestStatus = (typeof GuestStatus)[keyof typeof GuestStatus]
+
+
 export const ChoreFrequency = {
   DAILY: 'DAILY',
   WEEKLY: 'WEEKLY',

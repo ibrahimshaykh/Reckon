@@ -57,10 +57,15 @@ export type Group = Prisma.GroupModel
  */
 export type GroupMember = Prisma.GroupMemberModel
 /**
- * Model GuestToken
+ * Model ExpenseGuest
  * 
  */
-export type GuestToken = Prisma.GuestTokenModel
+export type ExpenseGuest = Prisma.ExpenseGuestModel
+/**
+ * Model ExpenseGuestHost
+ * 
+ */
+export type ExpenseGuestHost = Prisma.ExpenseGuestHostModel
 /**
  * Model Expense
  * 

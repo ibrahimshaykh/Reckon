@@ -60,12 +60,6 @@ export function generateGuestToken() {
   return randomBytes(24).toString("base64url");
 }
 
-export async function getGuestSession(token: string) {
-  const guestToken = await db.guestToken.findUnique({ where: { token } });
-  if (!guestToken || guestToken.expiresAt < new Date()) return null;
-  return guestToken;
-}
-
 export async function getConfirmToken(token: string) {
   const settlement = await db.settlement.findUnique({ where: { confirmToken: token } });
   if (!settlement || !settlement.confirmTokenExpiresAt || settlement.confirmTokenExpiresAt < new Date()) {

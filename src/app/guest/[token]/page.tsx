@@ -1,91 +1,63 @@
 import { notFound } from "next/navigation";
-import { getGuestSession } from "@/lib/dal";
-import { db } from "@/lib/db";
-import { buildPayLink } from "@/lib/pay-links";
-import { toCents, formatMoney } from "@/lib/money";
+import { getGuestView } from "@/lib/actions/guest";
+import { formatMoney } from "@/lib/money";
 import { getDictionary } from "@/lib/dictionary";
 import { interpolate } from "@/lib/i18n";
-import { CopyRow } from "@/components/copy-row";
+import { GuestResponse } from "@/components/expenses/guest-response";
 
+// What someone without an account sees. Deliberately shows one number —
+// their own share — and never the group's split. The old version listed
+// every member and what each of them owed, which handed a stranger with a
+// link the group's whole private ledger, and then quoted them the entire
+// bill as if it were theirs to pay.
 export default async function GuestExpensePage({
   params,
 }: {
   params: Promise<{ token: string }>;
 }) {
   const { token } = await params;
-  const guestToken = await getGuestSession(token);
-  if (!guestToken) notFound();
+  const view = await getGuestView(token);
+  if (!view) notFound();
 
   const dict = await getDictionary("en");
-  const expense = await db.expense.findUniqueOrThrow({
-    where: { id: guestToken.expenseId },
-    include: {
-      paidBy: true,
-      group: true,
-      items: { include: { participants: { include: { user: true } } } },
-    },
-  });
-  const currency = expense.group.currency;
-
-  const payer = expense.paidBy;
-  const hasAnyPaymentMethod =
-    payer.venmoHandle ||
-    payer.easypaisaNumber ||
-    payer.jazzcashNumber ||
-    payer.nayapayHandle ||
-    payer.bankDetails;
+  const amount = formatMoney(view.shareCents, view.currency);
 
   return (
-    <div className="mx-auto flex w-full max-w-2xl flex-col gap-8 px-6 py-10 md:py-14">
-      <h1 className="text-xl font-semibold">{expense.title}</h1>
-      <p className="text-sm text-muted-foreground">
-        {interpolate(dict.guest.greeting, {
-          guestName: guestToken.guestName,
-          payerName: expense.paidBy.displayName,
-          amount: formatMoney(toCents(expense.totalAmount), currency),
-        })}
-      </p>
-      <ul className="flex flex-col gap-1">
-        {expense.items.flatMap((item) =>
-          item.participants.map((p) => (
-            <li key={p.id} className="text-sm">
-              {p.user.displayName}:{" "}
-              {formatMoney(Math.round(toCents(item.amount) * Number(p.shareRatio)), currency)}
-            </li>
-          )),
-        )}
-      </ul>
-      <div className="flex flex-col gap-2">
-        {payer.venmoHandle && (
-          <a
-            href={buildPayLink("venmo", {
-              handle: payer.venmoHandle,
-              amountCents: toCents(expense.totalAmount),
-              note: expense.title,
-            })}
-            className="text-sm text-primary underline"
-          >
-            {interpolate(dict.guest.payOnVenmo, { name: payer.displayName })}
-          </a>
-        )}
-        {payer.easypaisaNumber && (
-          <CopyRow label={dict.common.easypaisa} value={payer.easypaisaNumber} dict={dict} />
-        )}
-        {payer.jazzcashNumber && (
-          <CopyRow label={dict.common.jazzcash} value={payer.jazzcashNumber} dict={dict} />
-        )}
-        {payer.nayapayHandle && (
-          <CopyRow label={dict.common.nayapay} value={payer.nayapayHandle} dict={dict} />
-        )}
-        {payer.bankDetails && (
-          <CopyRow label={dict.common.bankTransfer} value={payer.bankDetails} dict={dict} />
-        )}
-        {!hasAnyPaymentMethod && (
-          <p className="text-sm text-muted-foreground">
-            {interpolate(dict.common.noPaymentMethod, { name: payer.displayName })}
-          </p>
-        )}
+    <div className="mx-auto flex w-full max-w-md flex-col gap-8 px-6 py-14">
+      <header className="flex flex-col gap-2">
+        <h1 className="text-xl font-semibold">{view.expenseTitle}</h1>
+        <p className="text-sm text-muted-foreground">
+          {interpolate(dict.guest.greeting, {
+            guestName: view.guestName,
+            payerName: view.payerName,
+            title: view.expenseTitle,
+          })}
+        </p>
+      </header>
+
+      <div className="flex flex-col items-center gap-1 rounded-lg border border-rule bg-card px-6 py-8">
+        <span className="text-xs uppercase tracking-wide text-muted-foreground">
+          {dict.guest.yourShare}
+        </span>
+        <span className="tabular text-3xl font-semibold">{amount}</span>
+        <span className="mt-1 text-center text-xs text-muted-foreground">
+          {dict.guest.shareExplainer}
+        </span>
       </div>
+
+      <GuestResponse
+        token={token}
+        status={view.status}
+        payerName={view.payerName}
+        amount={amount}
+        shareCents={view.shareCents}
+        expenseTitle={view.expenseTitle}
+        payTo={view.payTo}
+        covered={view.covered}
+        hosts={view.hosts}
+        currency={view.currency}
+        dict={dict}
+      />
     </div>
   );
 }

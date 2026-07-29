@@ -8,6 +8,7 @@ import { getDictionary } from "@/lib/dictionary";
 import { interpolate } from "@/lib/i18n";
 import { AddMemberForm } from "@/components/groups/add-member-form";
 import { ShareExpenseButton } from "@/components/expenses/share-expense-button";
+import { GuestList } from "@/components/expenses/guest-list";
 import { DeleteExpenseButton } from "@/components/expenses/delete-expense-button";
 import { CurrencyPicker } from "@/components/groups/currency-picker";
 import { Button } from "@/components/ui/button";
@@ -180,7 +181,8 @@ export default async function GroupPage({
           <ul className="flex flex-col">
             {expenses.map((e, i) => (
               <Reveal key={e.id} delay={Math.min(i, 6) * 0.04}>
-                <li className="flex items-baseline gap-4 border-b border-rule/60 py-3 last:border-0">
+                <li className="flex flex-col gap-2 border-b border-rule/60 py-3 last:border-0">
+                  <div className="flex items-baseline gap-4">
                   <div className="flex min-w-0 flex-col gap-0.5">
                     <span className="truncate text-sm font-medium">{e.title}</span>
                     <span className="text-xs text-muted-foreground">
@@ -190,7 +192,15 @@ export default async function GroupPage({
                   <span className="tabular ml-auto shrink-0 text-sm font-semibold">
                     {formatMoney(e.totalAmount * 100, group.currency)}
                   </span>
-                  <ShareExpenseButton expenseId={e.id} expenseTitle={e.title} dict={dict} />
+                  {e.canHaveGuests && (
+                    <ShareExpenseButton
+                      expenseId={e.id}
+                      expenseTitle={e.title}
+                      participants={e.participants}
+                      currentUserId={session.id}
+                      dict={dict}
+                    />
+                  )}
                   {e.paidById === session.id && (
                     <>
                       <Link
@@ -203,6 +213,14 @@ export default async function GroupPage({
                       </Link>
                       <DeleteExpenseButton expenseId={e.id} title={e.title} dict={dict} />
                     </>
+                  )}
+                  </div>
+                  {e.guests.length > 0 && (
+                    <GuestList
+                      guests={e.guests}
+                      isPayer={e.paidById === session.id}
+                      dict={dict}
+                    />
                   )}
                 </li>
               </Reveal>
