@@ -15,11 +15,7 @@ import {
   splitEvenlyByRatio,
 } from "@/lib/settlement";
 import { deriveItemShares, toShareRatios } from "@/lib/guest-shares";
-import {
-  buildLedgerLines,
-  type ExpenseEvidence,
-  type LedgerLine,
-} from "@/lib/settlement-explain";
+import { buildLedgerLines, type ExpenseEvidence } from "@/lib/settlement-explain";
 import { asActionResult, type ActionResult } from "@/lib/action-result";
 
 // The only writer of Settlement rows. Called from the actions that actually
@@ -28,8 +24,12 @@ import { asActionResult, type ActionResult } from "@/lib/action-result";
 // One row per (groupId, fromUserId, toUserId) is the DB-enforced invariant
 // (see the settlement_pair_unique migration): it's upserted in place rather
 // than accumulating a new row per settle cycle.
-export async function recalculateSettlements(groupId: string) {
-  const [expenses, ious] = await Promise.all([
+// Everything a group's balances derive from, in both the shape the settlement
+// engine needs and the shape the settle screen explains. Shared by the writer
+// and the reader, so an explanation can never describe different arithmetic
+// from the one that produced the number.
+async function loadGroupLedger(groupId: string) {
+  const [expenses, iouRows] = await Promise.all([
     db.expense.findMany({
       where: { groupId },
       include: {
@@ -52,6 +52,10 @@ export async function recalculateSettlements(groupId: string) {
     participants: { userId: string; shareRatio: number }[];
   }[] = [];
   const evidence: ExpenseEvidence[] = [];
+  // Returned for the caller to log rather than logged here: this function now
+  // runs on page reads too, and viewing a page shouldn't file the same error
+  // repeatedly about something only the writer can act on.
+  const breaches: { expenseId: string; itemCount: number }[] = [];
 
   for (const expense of expenses) {
     // addGuest refuses to attach a guest to anything but a single equally
@@ -61,10 +65,7 @@ export async function recalculateSettlements(groupId: string) {
     // noise instead — the balances stay defensible, the data gets fixed.
     const guestsApply = expense.guests.length > 0 && expense.items.length === 1;
     if (expense.guests.length > 0 && expense.items.length !== 1) {
-      logger.error(
-        "Expense has guests but is not a single-item split — ignoring guests for this expense.",
-        { expenseId: expense.id, itemCount: expense.items.length },
-      );
+      breaches.push({ expenseId: expense.id, itemCount: expense.items.length });
     }
 
     if (guestsApply) {
@@ -124,34 +125,36 @@ export async function recalculateSettlements(groupId: string) {
     }
   }
 
-  const balances = applyIOUs(
-    computeBalances(flattened),
-    ious.map((i) => ({
+  return {
+    flattened,
+    evidence,
+    breaches,
+    ious: iouRows.map((i) => ({
       fromUserId: i.fromUserId,
       toUserId: i.toUserId,
       amountCents: toCents(i.amount),
     })),
-  );
+  };
+}
+
+// The only writer of Settlement rows. Called from the actions that actually
+// change a group's balances (adding an expense, adding an IOU) — never from
+// a page read, so viewing the settle page doesn't itself mutate the database.
+// One row per (groupId, fromUserId, toUserId) is the DB-enforced invariant
+// (see the settlement_pair_unique migration): it's upserted in place rather
+// than accumulating a new row per settle cycle.
+export async function recalculateSettlements(groupId: string) {
+  const { flattened, ious, breaches } = await loadGroupLedger(groupId);
+
+  for (const breach of breaches) {
+    logger.error(
+      "Expense has guests but is not a single-item split — ignoring guests for this expense.",
+      breach,
+    );
+  }
+
+  const balances = applyIOUs(computeBalances(flattened), ious);
   const computed = computeSettlements(balances);
-
-  // Names are resolved now rather than at read time. The old explanation
-  // stored raw ids and string-replaced them when rendering, which silently
-  // fails the moment an id happens to appear inside other text.
-  const members = await db.groupMember.findMany({
-    where: { groupId },
-    include: { user: { select: { id: true, displayName: true } } },
-  });
-  const nameOf = (id: string) =>
-    members.find((m) => m.userId === id)?.user.displayName ?? id;
-
-  const iouEvidence = ious.map((i) => ({
-    fromUserId: i.fromUserId,
-    toUserId: i.toUserId,
-    amountCents: toCents(i.amount),
-  }));
-
-  const linesFor = (userId: string) =>
-    buildLedgerLines({ userId, expenses: evidence, ious: iouEvidence, nameOf });
 
   await Promise.all(
     computed.map(async (s) => {
@@ -164,13 +167,11 @@ export async function recalculateSettlements(groupId: string) {
       };
       const existing = await db.settlement.findUnique({ where: key });
 
-      const explanation = {
-        ...s.explanation,
-        breakdown: {
-          from: linesFor(s.fromUserId),
-          to: linesFor(s.toUserId),
-        },
-      };
+      // Only the matching steps are stored. The per-person breakdown is built
+      // when the settle page is read: storing it made the explanation depend
+      // on when the row happened to be written, so existing rows kept showing
+      // the old text until something unrelated moved money in that group.
+      const explanation = s.explanation;
 
       await db.settlement.upsert({
         where: key,
@@ -213,19 +214,28 @@ export async function getGroupSettlements(groupId: string) {
   const session = await requireSession();
   await assertMember(groupId, session.id);
 
-  const rows = await db.settlement.findMany({ where: { groupId } });
+  const [rows, ledger] = await Promise.all([
+    db.settlement.findMany({ where: { groupId } }),
+    // Derived here rather than read out of the settlement row, so the
+    // explanation is always current — it reflects renamed people and edited
+    // expenses immediately, and works on rows written before it existed.
+    loadGroupLedger(groupId),
+  ]);
 
   const userIds = [...new Set(rows.flatMap((s) => [s.fromUserId, s.toUserId]))];
   const users = await db.user.findMany({ where: { id: { in: userIds } } });
   const nameOf = (id: string) => users.find((u) => u.id === id)?.displayName ?? id;
 
+  const linesFor = (userId: string) =>
+    buildLedgerLines({
+      userId,
+      expenses: ledger.evidence,
+      ious: ledger.ious,
+      nameOf,
+    });
+
   return rows.map((s) => {
-    const explanation = s.explanation as {
-      steps: string[];
-      // Absent on rows written before the breakdown existed; those keep
-      // showing the old algorithm steps until the group's next recalculation.
-      breakdown?: { from: LedgerLine[]; to: LedgerLine[] };
-    };
+    const explanation = s.explanation as { steps: string[] };
     const toUser = users.find((u) => u.id === s.toUserId);
     return {
       id: s.id,
@@ -246,7 +256,10 @@ export async function getGroupSettlements(groupId: string) {
         steps: explanation.steps.map((step) =>
           step.replace(s.fromUserId, nameOf(s.fromUserId)).replace(s.toUserId, nameOf(s.toUserId)),
         ),
-        breakdown: explanation.breakdown ?? null,
+        breakdown: {
+          from: linesFor(s.fromUserId),
+          to: linesFor(s.toUserId),
+        },
       },
     };
   });

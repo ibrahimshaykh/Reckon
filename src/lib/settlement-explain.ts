@@ -50,12 +50,16 @@ export function buildLedgerLines({
   nameOf: (id: string) => string;
 }): LedgerLine[] {
   const lines: LedgerLine[] = [];
+  // Named rather than "you"/"your". These rows are read aloud to other people
+  // ("look, this is why I owe you"), and a screen full of "your share" is
+  // ambiguous the moment two breakdowns sit next to each other.
+  const who = nameOf(userId);
 
   for (const expense of expenses) {
     if (expense.paidById === userId && expense.paidCents > 0) {
       lines.push({
         label: expense.title,
-        detail: "you paid this",
+        detail: `${who} paid this`,
         amountCents: expense.paidCents,
       });
     }
@@ -75,7 +79,7 @@ export function buildLedgerLines({
     if (ownShare !== 0) {
       lines.push({
         label: expense.title,
-        detail: "your share",
+        detail: `${who}'s own share`,
         amountCents: -ownShare,
       });
     }
@@ -85,7 +89,9 @@ export function buildLedgerLines({
       if (carrying === 0) continue;
       lines.push({
         label: expense.title,
-        detail: `covering ${guest.name}, who hasn't paid yet`,
+        // Spells out both sides. "covering ali" left it unclear who was doing
+        // the covering once several people host the same guest.
+        detail: `${who} covering for ${guest.name}, who hasn't paid yet`,
         amountCents: -carrying,
       });
     }
@@ -95,13 +101,13 @@ export function buildLedgerLines({
     if (iou.fromUserId === userId) {
       lines.push({
         label: "IOU",
-        detail: `you owe ${nameOf(iou.toUserId)}`,
+        detail: `${who} owes ${nameOf(iou.toUserId)}`,
         amountCents: -iou.amountCents,
       });
     } else if (iou.toUserId === userId) {
       lines.push({
         label: "IOU",
-        detail: `${nameOf(iou.fromUserId)} owes you`,
+        detail: `${nameOf(iou.fromUserId)} owes ${who}`,
         amountCents: iou.amountCents,
       });
     }

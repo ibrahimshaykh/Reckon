@@ -38,10 +38,10 @@ describe("buildLedgerLines", () => {
     });
 
     expect(lines).toEqual([
-      { label: "burgers", detail: "your share", amountCents: -23333 },
+      { label: "burgers", detail: "Lola's own share", amountCents: -23333 },
       {
         label: "burgers",
-        detail: "covering sara, who hasn't paid yet",
+        detail: "Lola covering for sara, who hasn't paid yet",
         amountCents: -11666,
       },
     ]);
@@ -59,12 +59,12 @@ describe("buildLedgerLines", () => {
 
     expect(lines[0]).toEqual({
       label: "burgers",
-      detail: "you paid this",
+      detail: "Ibrahim paid this",
       amountCents: 70000,
     });
     expect(lines).toContainEqual({
       label: "burgers",
-      detail: "covering sara, who hasn't paid yet",
+      detail: "Ibrahim covering for sara, who hasn't paid yet",
       amountCents: -11667,
     });
     expect(sumLines(lines)).toBe(34999);
@@ -94,7 +94,7 @@ describe("buildLedgerLines", () => {
     });
 
     expect(lines).toEqual([
-      { label: "burgers", detail: "your share", amountCents: -23333 },
+      { label: "burgers", detail: "Lola's own share", amountCents: -23333 },
     ]);
   });
 
@@ -107,7 +107,7 @@ describe("buildLedgerLines", () => {
     });
 
     expect(lines).toEqual([
-      { label: "IOU", detail: "you owe Ibrahim", amountCents: -5000 },
+      { label: "IOU", detail: "Lola owes Ibrahim", amountCents: -5000 },
     ]);
   });
 
@@ -120,7 +120,7 @@ describe("buildLedgerLines", () => {
     });
 
     expect(lines).toEqual([
-      { label: "IOU", detail: "Lola owes you", amountCents: 5000 },
+      { label: "IOU", detail: "Lola owes Ibrahim", amountCents: 5000 },
     ]);
   });
 
