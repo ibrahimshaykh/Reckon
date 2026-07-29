@@ -1,9 +1,9 @@
 import "server-only";
 import { randomBytes } from "crypto";
 import { currentUser } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
 import { Prisma } from "@/generated/prisma/client";
-import { ApiError } from "@/lib/api-error";
 
 export async function getSession() {
   const clerkUser = await currentUser();
@@ -42,9 +42,17 @@ export async function getSession() {
   }
 }
 
+// Signed-out visitors get sent to sign-in, not an error page. Throwing here
+// surfaced as a 500 "Something went wrong on our end" — so an expired session,
+// or simply opening a shared /groups link while logged out, looked like the
+// app was broken rather than like it wanted you to sign in.
+//
+// redirect() works by throwing NEXT_REDIRECT. That's deliberately NOT an
+// ApiError, so asActionResult() re-throws it untouched and the redirect still
+// happens when this is called from inside a Server Action.
 export async function requireSession() {
   const session = await getSession();
-  if (!session) throw new ApiError(401, "Not signed in");
+  if (!session) redirect("/sign-in");
   return session;
 }
 
