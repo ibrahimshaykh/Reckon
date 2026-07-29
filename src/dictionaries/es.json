@@ -233,12 +233,12 @@
     "guestConfirmPaid": "Marcar recibido",
     "guestRemove": "Quitar",
     "guestLockedNote": "Un invitado está pagando su parte de este gasto, así que el importe y el reparto están bloqueados.",
-    "guestGetLink": "Obtener enlace",
-    "guestLinkCopied": "Enlace renovado — vuelve a enviarlo",
+    "guestGetLink": "Copiar enlace",
+    "guestLinkCopied": "Copia este enlace",
     "guestHostsAssumed": "supuesto",
     "guestChangeHosts": "Cambiar quién lo cubre",
     "guestSaveHosts": "Guardar",
-    "guestLinkCopiedShort": "Enlace copiado",
+    "guestLinkCopiedShort": "Copiado",
     "guestAssumedHint": "Nadie eligió esto — viene de una versión anterior. Defínelo bien aquí."
   },
   "settle": {
@@ -258,7 +258,11 @@
     "waitingConfirmation": "Esperando confirmación…",
     "payNote": "Saldo de Reckon",
     "remainingOne": "Queda 1 pago por saldar",
-    "remainingMany": "Quedan {count} pagos por saldar"
+    "remainingMany": "Quedan {count} pagos por saldar",
+    "mathOwesHeading": "Cómo {name} llegó a {amount}",
+    "mathOwedHeading": "Por qué a {name} le deben {amount}",
+    "mathRunningTotal": "Total",
+    "mathThisPayment": "Este pago cubre {amount} de eso."
   },
   "friends": {
     "youAnd": "Tú y {name}",
@@ -269,7 +273,7 @@
     "settled": "saldado"
   },
   "guest": {
-    "greeting": "Hola {guestName} — {payerName} pagó {title}.",
+    "greeting": "Hola {guestName} — {hosts} compartieron {title} contigo.",
     "payOnVenmo": "Pagar a {name} por Venmo",
     "yourShare": "Tu parte",
     "shareExplainer": "Dividido en partes iguales entre todos los presentes, tú incluido.",
@@ -289,7 +293,8 @@
     "insistHeading": "Envía tu parte a quien te cubrió",
     "insistNote": "Esto va directo a quienes cubrieron tu parte, para que nadie salga perdiendo.",
     "hostOwed": "{name} — {amount}",
-    "nevermind": "Déjalo"
+    "nevermind": "Déjalo",
+    "greetingNoHosts": "Hola {guestName} — {payerName} pagó {title}."
   },
   "confirm": {
     "title": "Confirmar pago recibido",

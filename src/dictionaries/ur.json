@@ -233,12 +233,12 @@
     "guestConfirmPaid": "وصولی درج کریں",
     "guestRemove": "ہٹائیں",
     "guestLockedNote": "ایک مہمان اس خرچ کا اپنا حصہ ادا کر رہا ہے، اس لیے رقم اور تقسیم مقفل ہے۔",
-    "guestGetLink": "لنک لیں",
-    "guestLinkCopied": "لنک تازہ ہو گیا — دوبارہ بھیجیں",
+    "guestGetLink": "لنک کاپی کریں",
+    "guestLinkCopied": "یہ لنک کاپی کریں",
     "guestHostsAssumed": "اندازہ",
     "guestChangeHosts": "کون کور کر رہا ہے، تبدیل کریں",
     "guestSaveHosts": "محفوظ کریں",
-    "guestLinkCopiedShort": "لنک کاپی ہو گیا",
+    "guestLinkCopiedShort": "کاپی ہو گیا",
     "guestAssumedHint": "یہ کسی نے منتخب نہیں کیا — پرانے ورژن سے منتقل ہوا ہے۔ یہاں درست کر لیں۔"
   },
   "settle": {
@@ -258,7 +258,11 @@
     "waitingConfirmation": "تصدیق کا انتظار ہے…",
     "payNote": "Reckon سیٹل اپ",
     "remainingOne": "1 ادائیگی باقی ہے",
-    "remainingMany": "{count} ادائیگیاں باقی ہیں"
+    "remainingMany": "{count} ادائیگیاں باقی ہیں",
+    "mathOwesHeading": "{name} کا {amount} کیسے بنا",
+    "mathOwedHeading": "{name} کو {amount} کیسے ملنے ہیں",
+    "mathRunningTotal": "کل",
+    "mathThisPayment": "یہ ادائیگی اس میں سے {amount} صاف کرتی ہے۔"
   },
   "friends": {
     "youAnd": "آپ اور {name}",
@@ -269,7 +273,7 @@
     "settled": "حساب برابر"
   },
   "guest": {
-    "greeting": "سلام {guestName} — {payerName} نے {title} کی ادائیگی کی۔",
+    "greeting": "سلام {guestName} — {hosts} نے {title} آپ کے ساتھ شیئر کیا۔",
     "payOnVenmo": "{name} کو وینمو پر ادا کریں",
     "yourShare": "آپ کا حصہ",
     "shareExplainer": "وہاں موجود سب کے درمیان برابر تقسیم، آپ سمیت۔",
@@ -289,7 +293,8 @@
     "insistHeading": "جنہوں نے آپ کا حصہ اٹھایا انہیں بھیجیں",
     "insistNote": "یہ سیدھا انہی لوگوں کو جائے گا جنہوں نے آپ کا حصہ اٹھایا، تاکہ کسی کا نقصان نہ ہو۔",
     "hostOwed": "{name} — {amount}",
-    "nevermind": "رہنے دیں"
+    "nevermind": "رہنے دیں",
+    "greetingNoHosts": "سلام {guestName} — {payerName} نے {title} کی ادائیگی کی۔"
   },
   "confirm": {
     "title": "ادائیگی کی وصولی کی تصدیق کریں",

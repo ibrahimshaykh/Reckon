@@ -8,8 +8,18 @@ import { requireSession, generateGuestToken } from "@/lib/dal";
 import { ApiError } from "@/lib/api-error";
 import { logger } from "@/lib/logger";
 import { toCents, fromCents } from "@/lib/money";
-import { computeBalances, computeSettlements, applyIOUs } from "@/lib/settlement";
+import {
+  computeBalances,
+  computeSettlements,
+  applyIOUs,
+  splitEvenlyByRatio,
+} from "@/lib/settlement";
 import { deriveItemShares, toShareRatios } from "@/lib/guest-shares";
+import {
+  buildLedgerLines,
+  type ExpenseEvidence,
+  type LedgerLine,
+} from "@/lib/settlement-explain";
 import { asActionResult, type ActionResult } from "@/lib/action-result";
 
 // The only writer of Settlement rows. Called from the actions that actually
@@ -32,44 +42,44 @@ export async function recalculateSettlements(groupId: string) {
     db.iOU.findMany({ where: { groupId, forgivenAt: null } }),
   ]);
 
-  const flattened = expenses.flatMap((expense) => {
-    const plainItems = expense.items.map((item) => ({
-      paidById: expense.paidById,
-      totalCents: toCents(item.amount),
-      participants: item.participants.map((p) => ({
-        userId: p.userId,
-        shareRatio: Number(p.shareRatio),
-      })),
-    }));
+  // Two parallel outputs from one pass: the numbers the settlement engine
+  // works on, and the human-readable evidence for how each number arose. They
+  // come from the same arithmetic so the breakdown can't explain a figure the
+  // app didn't actually charge.
+  const flattened: {
+    paidById: string;
+    totalCents: number;
+    participants: { userId: string; shareRatio: number }[];
+  }[] = [];
+  const evidence: ExpenseEvidence[] = [];
 
-    if (expense.guests.length === 0) return plainItems;
-
+  for (const expense of expenses) {
     // addGuest refuses to attach a guest to anything but a single equally
     // split item, so this is unreachable unless that invariant has been
     // broken. Guessing how to wedge a guest into a scanned receipt would
     // quietly invent numbers, so fall back to the guest-free maths and make
     // noise instead — the balances stay defensible, the data gets fixed.
-    if (expense.items.length !== 1) {
+    const guestsApply = expense.guests.length > 0 && expense.items.length === 1;
+    if (expense.guests.length > 0 && expense.items.length !== 1) {
       logger.error(
         "Expense has guests but is not a single-item split — ignoring guests for this expense.",
         { expenseId: expense.id, itemCount: expense.items.length },
       );
-      return plainItems;
     }
 
-    const item = expense.items[0];
-    const { memberCents, groupTotalCents } = deriveItemShares({
-      totalCents: toCents(item.amount),
-      memberIds: item.participants.map((p) => p.userId),
-      guests: expense.guests.map((g) => ({
-        id: g.id,
-        status: g.status,
-        hostIds: g.hosts.map((h) => h.userId),
-      })),
-    });
+    if (guestsApply) {
+      const item = expense.items[0];
+      const { memberCents, guestHostSplit, groupTotalCents } = deriveItemShares({
+        totalCents: toCents(item.amount),
+        memberIds: item.participants.map((p) => p.userId),
+        guests: expense.guests.map((g) => ({
+          id: g.id,
+          status: g.status,
+          hostIds: g.hosts.map((h) => h.userId),
+        })),
+      });
 
-    return [
-      {
+      flattened.push({
         paidById: expense.paidById,
         // The group total, not the item total: a guest who has already paid
         // the payer directly settled that money outside these books, and
@@ -78,9 +88,41 @@ export async function recalculateSettlements(groupId: string) {
         participants: Object.entries(toShareRatios(memberCents, groupTotalCents)).map(
           ([userId, shareRatio]) => ({ userId, shareRatio }),
         ),
-      },
-    ];
-  });
+      });
+
+      evidence.push({
+        title: expense.title,
+        paidById: expense.paidById,
+        paidCents: groupTotalCents,
+        memberCents,
+        guests: expense.guests.map((g) => ({
+          name: g.name,
+          hostSplit: guestHostSplit[g.id] ?? {},
+        })),
+      });
+      continue;
+    }
+
+    for (const item of expense.items) {
+      const totalCents = toCents(item.amount);
+      const participants = item.participants.map((p) => ({
+        userId: p.userId,
+        shareRatio: Number(p.shareRatio),
+      }));
+
+      flattened.push({ paidById: expense.paidById, totalCents, participants });
+      evidence.push({
+        // A scanned receipt has many rows; naming the line as well as the
+        // expense is the difference between a useful receipt and a wall.
+        title:
+          expense.items.length > 1 ? `${expense.title} — ${item.label}` : expense.title,
+        paidById: expense.paidById,
+        paidCents: totalCents,
+        memberCents: splitEvenlyByRatio(totalCents, participants),
+        guests: [],
+      });
+    }
+  }
 
   const balances = applyIOUs(
     computeBalances(flattened),
@@ -91,6 +133,25 @@ export async function recalculateSettlements(groupId: string) {
     })),
   );
   const computed = computeSettlements(balances);
+
+  // Names are resolved now rather than at read time. The old explanation
+  // stored raw ids and string-replaced them when rendering, which silently
+  // fails the moment an id happens to appear inside other text.
+  const members = await db.groupMember.findMany({
+    where: { groupId },
+    include: { user: { select: { id: true, displayName: true } } },
+  });
+  const nameOf = (id: string) =>
+    members.find((m) => m.userId === id)?.user.displayName ?? id;
+
+  const iouEvidence = ious.map((i) => ({
+    fromUserId: i.fromUserId,
+    toUserId: i.toUserId,
+    amountCents: toCents(i.amount),
+  }));
+
+  const linesFor = (userId: string) =>
+    buildLedgerLines({ userId, expenses: evidence, ious: iouEvidence, nameOf });
 
   await Promise.all(
     computed.map(async (s) => {
@@ -103,11 +164,19 @@ export async function recalculateSettlements(groupId: string) {
       };
       const existing = await db.settlement.findUnique({ where: key });
 
+      const explanation = {
+        ...s.explanation,
+        breakdown: {
+          from: linesFor(s.fromUserId),
+          to: linesFor(s.toUserId),
+        },
+      };
+
       await db.settlement.upsert({
         where: key,
         update: {
           amount: fromCents(s.amountCents),
-          explanation: s.explanation,
+          explanation,
           // A previously-settled pair with new debt starts a fresh cycle;
           // an in-flight PENDING/PAY_MARKED cycle keeps its status so this
           // doesn't clobber "already marked paid, awaiting confirmation".
@@ -118,7 +187,7 @@ export async function recalculateSettlements(groupId: string) {
           fromUserId: s.fromUserId,
           toUserId: s.toUserId,
           amount: fromCents(s.amountCents),
-          explanation: s.explanation,
+          explanation,
           status: "PENDING",
         },
       });
@@ -151,7 +220,12 @@ export async function getGroupSettlements(groupId: string) {
   const nameOf = (id: string) => users.find((u) => u.id === id)?.displayName ?? id;
 
   return rows.map((s) => {
-    const explanation = s.explanation as { steps: string[] };
+    const explanation = s.explanation as {
+      steps: string[];
+      // Absent on rows written before the breakdown existed; those keep
+      // showing the old algorithm steps until the group's next recalculation.
+      breakdown?: { from: LedgerLine[]; to: LedgerLine[] };
+    };
     const toUser = users.find((u) => u.id === s.toUserId);
     return {
       id: s.id,
@@ -172,6 +246,7 @@ export async function getGroupSettlements(groupId: string) {
         steps: explanation.steps.map((step) =>
           step.replace(s.fromUserId, nameOf(s.fromUserId)).replace(s.toUserId, nameOf(s.toUserId)),
         ),
+        breakdown: explanation.breakdown ?? null,
       },
     };
   });

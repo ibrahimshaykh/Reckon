@@ -105,7 +105,11 @@ export function computeBalances(
 
 // Converts ratios back to exact cents, giving the leftover penny (from
 // rounding) to the last participant so the sum always equals totalCents.
-function splitEvenlyByRatio(
+//
+// Exported so the settle screen's breakdown is built from the same arithmetic
+// that produced the balance. A second implementation would eventually drift
+// and start explaining a number the app didn't actually charge.
+export function splitEvenlyByRatio(
   totalCents: number,
   participants: { userId: string; shareRatio: number }[],
 ): Record<string, number> {

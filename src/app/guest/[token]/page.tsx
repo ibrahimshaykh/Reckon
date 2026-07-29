@@ -3,6 +3,7 @@ import { getGuestView } from "@/lib/actions/guest";
 import { formatMoney } from "@/lib/money";
 import { getDictionary } from "@/lib/dictionary";
 import { interpolate } from "@/lib/i18n";
+import { joinNames } from "@/lib/expense-summary";
 import { GuestResponse } from "@/components/expenses/guest-response";
 
 // What someone without an account sees. Deliberately shows one number —
@@ -27,11 +28,23 @@ export default async function GuestExpensePage({
       <header className="flex flex-col gap-2">
         <h1 className="text-xl font-semibold">{view.expenseTitle}</h1>
         <p className="text-sm text-muted-foreground">
-          {interpolate(dict.guest.greeting, {
-            guestName: view.guestName,
-            payerName: view.payerName,
-            title: view.expenseTitle,
-          })}
+          {/* Names the hosts, not the payer. "Who paid the bill" isn't the
+              question a guest has here — "whose guest am I?" is. Who to pay
+              comes later, on the screen where they can actually do it. */}
+          {view.hosts.length > 0
+            ? interpolate(dict.guest.greeting, {
+                guestName: view.guestName,
+                hosts: joinNames(
+                  view.hosts.map((h) => h.name),
+                  dict.common.and,
+                ),
+                title: view.expenseTitle,
+              })
+            : interpolate(dict.guest.greetingNoHosts, {
+                guestName: view.guestName,
+                payerName: view.payerName,
+                title: view.expenseTitle,
+              })}
         </p>
       </header>
 

@@ -233,12 +233,12 @@
     "guestConfirmPaid": "Mark received",
     "guestRemove": "Remove",
     "guestLockedNote": "A guest is paying their share of this expense, so the amount and split are locked.",
-    "guestGetLink": "Get link",
-    "guestLinkCopied": "Link refreshed — send it again",
+    "guestGetLink": "Copy link",
+    "guestLinkCopied": "Copy this link",
     "guestHostsAssumed": "assumed",
     "guestChangeHosts": "Change who covers them",
     "guestSaveHosts": "Save",
-    "guestLinkCopiedShort": "Link copied",
+    "guestLinkCopiedShort": "Copied",
     "guestAssumedHint": "Nobody picked this — it was carried over from an older version. Set it properly here."
   },
   "settle": {
@@ -258,7 +258,11 @@
     "waitingConfirmation": "Waiting for confirmation…",
     "payNote": "Reckon settle-up",
     "remainingOne": "1 payment left to clear",
-    "remainingMany": "{count} payments left to clear"
+    "remainingMany": "{count} payments left to clear",
+    "mathOwesHeading": "How {name} got to {amount}",
+    "mathOwedHeading": "How {name} is owed {amount}",
+    "mathRunningTotal": "Total",
+    "mathThisPayment": "This payment clears {amount} of it."
   },
   "friends": {
     "youAnd": "You and {name}",
@@ -269,7 +273,7 @@
     "settled": "settled"
   },
   "guest": {
-    "greeting": "Hi {guestName} — {payerName} paid for {title}.",
+    "greeting": "Hi {guestName} — {hosts} shared {title} with you.",
     "payOnVenmo": "Pay {name} on Venmo",
     "yourShare": "Your share",
     "shareExplainer": "Split evenly between everyone who was there, including you.",
@@ -289,7 +293,8 @@
     "insistHeading": "Send your share to whoever covered you",
     "insistNote": "This goes straight to whoever covered your share, so nobody is left out of pocket.",
     "hostOwed": "{name} — {amount}",
-    "nevermind": "Never mind"
+    "nevermind": "Never mind",
+    "greetingNoHosts": "Hi {guestName} — {payerName} paid for {title}."
   },
   "confirm": {
     "title": "Confirm payment received",

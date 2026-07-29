@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { CopyRow } from "@/components/copy-row";
 import { buildPayLink, type PayProvider } from "@/lib/pay-links";
 import type { Dictionary } from "@/lib/dictionary";
+import type { LedgerLine } from "@/lib/settlement-explain";
 import { interpolate } from "@/lib/i18n";
 import { Reveal } from "@/components/motion/reveal";
 import { AnimatePresence, motion } from "motion/react";
@@ -29,8 +30,61 @@ type Settlement = {
   toJazzcashNumber: string | null;
   toNayapayHandle: string | null;
   toBankDetails: string | null;
-  explanation: { steps: string[] };
+  explanation: {
+    steps: string[];
+    breakdown: { from: LedgerLine[]; to: LedgerLine[] } | null;
+  };
 };
+
+// One side's receipt: every line that pushed their balance, then the total.
+// Reads top to bottom like a till roll, because that's what people check.
+function LedgerBreakdown({
+  heading,
+  lines,
+  currency,
+  dict,
+}: {
+  heading: string;
+  lines: LedgerLine[];
+  currency: string;
+  dict: Dictionary;
+}) {
+  if (lines.length === 0) return null;
+
+  const total = lines.reduce((sum, l) => sum + l.amountCents, 0);
+
+  return (
+    <div className="flex flex-col gap-1">
+      <p className="text-xs font-medium">{heading}</p>
+      <ul className="flex flex-col">
+        {lines.map((line, i) => (
+          <li
+            key={i}
+            className="flex items-baseline gap-2 border-b border-rule/40 py-1 last:border-0"
+          >
+            <span className="text-xs">{line.label}</span>
+            <span className="text-xs text-muted-foreground">{line.detail}</span>
+            <span
+              className={`tabular ms-auto shrink-0 text-xs ${
+                line.amountCents < 0 ? "text-destructive" : "text-foreground"
+              }`}
+            >
+              {line.amountCents < 0 ? "−" : "+"}
+              {formatMoney(Math.abs(line.amountCents), currency)}
+            </span>
+          </li>
+        ))}
+      </ul>
+      <div className="flex items-baseline gap-2 border-t-2 border-rule pt-1">
+        <span className="text-xs font-medium">{dict.settle.mathRunningTotal}</span>
+        <span className="tabular ms-auto text-xs font-semibold">
+          {total < 0 ? "−" : "+"}
+          {formatMoney(Math.abs(total), currency)}
+        </span>
+      </div>
+    </div>
+  );
+}
 
 export function SettlementList({
   settlements,
@@ -191,13 +245,57 @@ function SettlementRow({
             transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
             className="overflow-hidden"
           >
-            <ul className="flex flex-col gap-1.5 border-t border-rule px-4 py-3">
-              {settlement.explanation.steps.map((step, i) => (
-                <li key={i} className="ledger-step tabular text-xs leading-relaxed">
-                  {step}
-                </li>
-              ))}
-            </ul>
+            {settlement.explanation.breakdown ? (
+              <div className="flex flex-col gap-4 border-t border-rule px-4 py-3">
+                <LedgerBreakdown
+                  heading={interpolate(dict.settle.mathOwesHeading, {
+                    name: settlement.fromName,
+                    amount: formatMoney(
+                      Math.abs(
+                        settlement.explanation.breakdown.from.reduce(
+                          (s, l) => s + l.amountCents,
+                          0,
+                        ),
+                      ),
+                      currency,
+                    ),
+                  })}
+                  lines={settlement.explanation.breakdown.from}
+                  currency={currency}
+                  dict={dict}
+                />
+                <LedgerBreakdown
+                  heading={interpolate(dict.settle.mathOwedHeading, {
+                    name: settlement.toName,
+                    amount: formatMoney(
+                      Math.abs(
+                        settlement.explanation.breakdown.to.reduce(
+                          (s, l) => s + l.amountCents,
+                          0,
+                        ),
+                      ),
+                      currency,
+                    ),
+                  })}
+                  lines={settlement.explanation.breakdown.to}
+                  currency={currency}
+                  dict={dict}
+                />
+                <p className="text-xs text-muted-foreground">
+                  {interpolate(dict.settle.mathThisPayment, { amount })}
+                </p>
+              </div>
+            ) : (
+              // Rows written before the breakdown existed still have only the
+              // matching steps; they gain the receipt on the next recalculation.
+              <ul className="flex flex-col gap-1.5 border-t border-rule px-4 py-3">
+                {settlement.explanation.steps.map((step, i) => (
+                  <li key={i} className="ledger-step tabular text-xs leading-relaxed">
+                    {step}
+                  </li>
+                ))}
+              </ul>
+            )}
           </motion.div>
         )}
       </AnimatePresence>
