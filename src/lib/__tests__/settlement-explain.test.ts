@@ -38,10 +38,12 @@ describe("buildLedgerLines", () => {
     });
 
     expect(lines).toEqual([
-      { label: "burgers", detail: "Lola's own share", amountCents: -23333 },
+      { label: "burgers", kind: "ownShare", personName: "Lola", amountCents: -23333 },
       {
         label: "burgers",
-        detail: "Lola covering for sara, who hasn't paid yet",
+        kind: "coveringGuest",
+        personName: "Lola",
+        guestName: "sara",
         amountCents: -11666,
       },
     ]);
@@ -59,12 +61,15 @@ describe("buildLedgerLines", () => {
 
     expect(lines[0]).toEqual({
       label: "burgers",
-      detail: "Ibrahim paid this",
+      kind: "paid",
+      personName: "Ibrahim",
       amountCents: 70000,
     });
     expect(lines).toContainEqual({
       label: "burgers",
-      detail: "Ibrahim covering for sara, who hasn't paid yet",
+      kind: "coveringGuest",
+      personName: "Ibrahim",
+      guestName: "sara",
       amountCents: -11667,
     });
     expect(sumLines(lines)).toBe(34999);
@@ -94,7 +99,7 @@ describe("buildLedgerLines", () => {
     });
 
     expect(lines).toEqual([
-      { label: "burgers", detail: "Lola's own share", amountCents: -23333 },
+      { label: "burgers", kind: "ownShare", personName: "Lola", amountCents: -23333 },
     ]);
   });
 
@@ -107,7 +112,13 @@ describe("buildLedgerLines", () => {
     });
 
     expect(lines).toEqual([
-      { label: "IOU", detail: "Lola owes Ibrahim", amountCents: -5000 },
+      {
+        label: "IOU",
+        kind: "iouOwes",
+        personName: "Lola",
+        otherName: "Ibrahim",
+        amountCents: -5000,
+      },
     ]);
   });
 
@@ -120,8 +131,68 @@ describe("buildLedgerLines", () => {
     });
 
     expect(lines).toEqual([
-      { label: "IOU", detail: "Lola owes Ibrahim", amountCents: 5000 },
+      {
+        label: "IOU",
+        kind: "iouOwed",
+        personName: "Ibrahim",
+        otherName: "Lola",
+        amountCents: 5000,
+      },
     ]);
+  });
+
+  // Without these, a debt someone had already cleared simply vanished from
+  // the receipt, which reads as the app forgetting they paid.
+  it("shows money already handed over", () => {
+    const lines = buildLedgerLines({
+      userId: "lola",
+      expenses: [burgers()],
+      ious: [],
+      payments: [{ fromUserId: "lola", toUserId: "ibrahim", amountCents: 34999 }],
+      nameOf,
+    });
+
+    expect(lines).toContainEqual({
+      label: "payment",
+      kind: "alreadyPaid",
+      personName: "Lola",
+      otherName: "Ibrahim",
+      amountCents: 34999,
+    });
+    // Owed 349.99 and paid 349.99, so the receipt lands on zero.
+    expect(sumLines(lines)).toBe(0);
+  });
+
+  it("shows money already received on the other side", () => {
+    const lines = buildLedgerLines({
+      userId: "ibrahim",
+      expenses: [],
+      ious: [],
+      payments: [{ fromUserId: "lola", toUserId: "ibrahim", amountCents: 34999 }],
+      nameOf,
+    });
+
+    expect(lines).toEqual([
+      {
+        label: "payment",
+        kind: "alreadyReceived",
+        personName: "Ibrahim",
+        otherName: "Lola",
+        amountCents: -34999,
+      },
+    ]);
+  });
+
+  it("carries no line for a payment between two other people", () => {
+    const lines = buildLedgerLines({
+      userId: "sam",
+      expenses: [],
+      ious: [],
+      payments: [{ fromUserId: "lola", toUserId: "ibrahim", amountCents: 34999 }],
+      nameOf,
+    });
+
+    expect(lines).toEqual([]);
   });
 
   it("says nothing about an expense someone wasn't part of", () => {

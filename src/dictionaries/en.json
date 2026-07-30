@@ -262,7 +262,16 @@
     "mathOwesHeading": "How {name} got to {amount}",
     "mathOwedHeading": "How {name} is owed {amount}",
     "mathRunningTotal": "Total",
-    "mathThisPayment": "This payment clears {amount} of it."
+    "mathThisPayment": "This payment clears {amount} of it.",
+    "linePaid": "{name} paid this",
+    "lineOwnShare": "{name}’s own share",
+    "lineCovering": "{name} covering for {guest}, who hasn’t paid yet",
+    "lineIouOwes": "{name} owes {other}",
+    "lineIouOwed": "{other} owes {name}",
+    "lineAlreadyPaid": "{name} already paid {other}",
+    "lineAlreadyReceived": "{other} already paid {name}",
+    "lineLabelIou": "IOU",
+    "lineLabelPayment": "settled up"
   },
   "friends": {
     "youAnd": "You and {name}",

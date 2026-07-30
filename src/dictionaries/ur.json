@@ -262,7 +262,16 @@
     "mathOwesHeading": "{name} کا {amount} کیسے بنا",
     "mathOwedHeading": "{name} کو {amount} کیسے ملنے ہیں",
     "mathRunningTotal": "کل",
-    "mathThisPayment": "یہ ادائیگی اس میں سے {amount} صاف کرتی ہے۔"
+    "mathThisPayment": "یہ ادائیگی اس میں سے {amount} صاف کرتی ہے۔",
+    "linePaid": "{name} نے یہ ادا کیا",
+    "lineOwnShare": "{name} کا اپنا حصہ",
+    "lineCovering": "{name} {guest} کا حصہ اٹھا رہے ہیں، جنہوں نے ابھی ادا نہیں کیا",
+    "lineIouOwes": "{name} کو {other} کا دینا ہے",
+    "lineIouOwed": "{other} کو {name} کا دینا ہے",
+    "lineAlreadyPaid": "{name} نے {other} کو پہلے ادا کر دیا",
+    "lineAlreadyReceived": "{other} نے {name} کو پہلے ادا کر دیا",
+    "lineLabelIou": "قرض",
+    "lineLabelPayment": "حساب برابر"
   },
   "friends": {
     "youAnd": "آپ اور {name}",

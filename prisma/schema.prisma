@@ -103,6 +103,8 @@ model User {
   expenseParticipations ExpenseItemParticipant[]
   settlementsOwed       Settlement[]             @relation("SettlementFrom")
   settlementsReceived   Settlement[]             @relation("SettlementTo")
+  paymentsMade          Payment[]                @relation("PaymentFrom")
+  paymentsReceived      Payment[]                @relation("PaymentTo")
   iousOwed              IOU[]                    @relation("IOUFrom")
   iousLent              IOU[]                    @relation("IOUTo")
   choreAssignments      ChoreAssignment[]
@@ -127,6 +129,7 @@ model Group {
   members             GroupMember[]
   expenses            Expense[]
   settlements         Settlement[]
+  payments            Payment[]
   ious                IOU[]
   chores              Chore[]
   availabilityEntries AvailabilityEntry[]
@@ -238,6 +241,33 @@ model ExpenseItemParticipant {
   shareRatio    Decimal     @db.Decimal(5, 4)
 
   @@unique([expenseItemId, userId])
+}
+
+// Money that has actually changed hands, written down once and never
+// recalculated. Everything else in this schema is derived: balances come from
+// expenses and IOUs, and Settlement rows are rebuilt from scratch whenever
+// anything moves. That left confirming a payment as nothing but a status flag,
+// so the next recalculation worked out the debt from the expenses again and
+// asked the same person for the same money a second time.
+//
+// This is the ledger's memory. Rows are only ever added.
+model Payment {
+  id          String   @id @default(cuid())
+  groupId     String
+  group       Group    @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  fromUserId  String
+  fromUser    User     @relation("PaymentFrom", fields: [fromUserId], references: [id])
+  toUserId    String
+  toUser      User     @relation("PaymentTo", fields: [toUserId], references: [id])
+  amount      Decimal  @db.Decimal(10, 2)
+  // The settlement this cleared, when it came from one. Kept so a payment
+  // can't be recorded twice for the same settle cycle.
+  settlementId String? @unique
+  confirmedAt DateTime @default(now())
+
+  @@index([groupId])
+  @@index([fromUserId])
+  @@index([toUserId])
 }
 
 model Settlement {

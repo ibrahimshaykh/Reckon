@@ -262,7 +262,16 @@
     "mathOwesHeading": "Cómo {name} llegó a {amount}",
     "mathOwedHeading": "Por qué a {name} le deben {amount}",
     "mathRunningTotal": "Total",
-    "mathThisPayment": "Este pago cubre {amount} de eso."
+    "mathThisPayment": "Este pago cubre {amount} de eso.",
+    "linePaid": "{name} pagó esto",
+    "lineOwnShare": "La parte de {name}",
+    "lineCovering": "{name} cubriendo a {guest}, que aún no ha pagado",
+    "lineIouOwes": "{name} le debe a {other}",
+    "lineIouOwed": "{other} le debe a {name}",
+    "lineAlreadyPaid": "{name} ya le pagó a {other}",
+    "lineAlreadyReceived": "{other} ya le pagó a {name}",
+    "lineLabelIou": "Préstamo",
+    "lineLabelPayment": "saldado"
   },
   "friends": {
     "youAnd": "Tú y {name}",

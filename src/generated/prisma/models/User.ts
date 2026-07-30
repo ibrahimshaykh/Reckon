@@ -338,6 +338,8 @@ export type UserWhereInput = {
   expenseParticipations?: Prisma.ExpenseItemParticipantListRelationFilter
   settlementsOwed?: Prisma.SettlementListRelationFilter
   settlementsReceived?: Prisma.SettlementListRelationFilter
+  paymentsMade?: Prisma.PaymentListRelationFilter
+  paymentsReceived?: Prisma.PaymentListRelationFilter
   iousOwed?: Prisma.IOUListRelationFilter
   iousLent?: Prisma.IOUListRelationFilter
   choreAssignments?: Prisma.ChoreAssignmentListRelationFilter
@@ -374,6 +376,8 @@ export type UserOrderByWithRelationInput = {
   expenseParticipations?: Prisma.ExpenseItemParticipantOrderByRelationAggregateInput
   settlementsOwed?: Prisma.SettlementOrderByRelationAggregateInput
   settlementsReceived?: Prisma.SettlementOrderByRelationAggregateInput
+  paymentsMade?: Prisma.PaymentOrderByRelationAggregateInput
+  paymentsReceived?: Prisma.PaymentOrderByRelationAggregateInput
   iousOwed?: Prisma.IOUOrderByRelationAggregateInput
   iousLent?: Prisma.IOUOrderByRelationAggregateInput
   choreAssignments?: Prisma.ChoreAssignmentOrderByRelationAggregateInput
@@ -413,6 +417,8 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   expenseParticipations?: Prisma.ExpenseItemParticipantListRelationFilter
   settlementsOwed?: Prisma.SettlementListRelationFilter
   settlementsReceived?: Prisma.SettlementListRelationFilter
+  paymentsMade?: Prisma.PaymentListRelationFilter
+  paymentsReceived?: Prisma.PaymentListRelationFilter
   iousOwed?: Prisma.IOUListRelationFilter
   iousLent?: Prisma.IOUListRelationFilter
   choreAssignments?: Prisma.ChoreAssignmentListRelationFilter
@@ -501,6 +507,8 @@ export type UserCreateInput = {
   expenseParticipations?: Prisma.ExpenseItemParticipantCreateNestedManyWithoutUserInput
   settlementsOwed?: Prisma.SettlementCreateNestedManyWithoutFromUserInput
   settlementsReceived?: Prisma.SettlementCreateNestedManyWithoutToUserInput
+  paymentsMade?: Prisma.PaymentCreateNestedManyWithoutFromUserInput
+  paymentsReceived?: Prisma.PaymentCreateNestedManyWithoutToUserInput
   iousOwed?: Prisma.IOUCreateNestedManyWithoutFromUserInput
   iousLent?: Prisma.IOUCreateNestedManyWithoutToUserInput
   choreAssignments?: Prisma.ChoreAssignmentCreateNestedManyWithoutUserInput
@@ -537,6 +545,8 @@ export type UserUncheckedCreateInput = {
   expenseParticipations?: Prisma.ExpenseItemParticipantUncheckedCreateNestedManyWithoutUserInput
   settlementsOwed?: Prisma.SettlementUncheckedCreateNestedManyWithoutFromUserInput
   settlementsReceived?: Prisma.SettlementUncheckedCreateNestedManyWithoutToUserInput
+  paymentsMade?: Prisma.PaymentUncheckedCreateNestedManyWithoutFromUserInput
+  paymentsReceived?: Prisma.PaymentUncheckedCreateNestedManyWithoutToUserInput
   iousOwed?: Prisma.IOUUncheckedCreateNestedManyWithoutFromUserInput
   iousLent?: Prisma.IOUUncheckedCreateNestedManyWithoutToUserInput
   choreAssignments?: Prisma.ChoreAssignmentUncheckedCreateNestedManyWithoutUserInput
@@ -573,6 +583,8 @@ export type UserUpdateInput = {
   expenseParticipations?: Prisma.ExpenseItemParticipantUpdateManyWithoutUserNestedInput
   settlementsOwed?: Prisma.SettlementUpdateManyWithoutFromUserNestedInput
   settlementsReceived?: Prisma.SettlementUpdateManyWithoutToUserNestedInput
+  paymentsMade?: Prisma.PaymentUpdateManyWithoutFromUserNestedInput
+  paymentsReceived?: Prisma.PaymentUpdateManyWithoutToUserNestedInput
   iousOwed?: Prisma.IOUUpdateManyWithoutFromUserNestedInput
   iousLent?: Prisma.IOUUpdateManyWithoutToUserNestedInput
   choreAssignments?: Prisma.ChoreAssignmentUpdateManyWithoutUserNestedInput
@@ -609,6 +621,8 @@ export type UserUncheckedUpdateInput = {
   expenseParticipations?: Prisma.ExpenseItemParticipantUncheckedUpdateManyWithoutUserNestedInput
   settlementsOwed?: Prisma.SettlementUncheckedUpdateManyWithoutFromUserNestedInput
   settlementsReceived?: Prisma.SettlementUncheckedUpdateManyWithoutToUserNestedInput
+  paymentsMade?: Prisma.PaymentUncheckedUpdateManyWithoutFromUserNestedInput
+  paymentsReceived?: Prisma.PaymentUncheckedUpdateManyWithoutToUserNestedInput
   iousOwed?: Prisma.IOUUncheckedUpdateManyWithoutFromUserNestedInput
   iousLent?: Prisma.IOUUncheckedUpdateManyWithoutToUserNestedInput
   choreAssignments?: Prisma.ChoreAssignmentUncheckedUpdateManyWithoutUserNestedInput
@@ -881,6 +895,34 @@ export type UserUpdateOneRequiredWithoutExpenseParticipationsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutExpenseParticipationsInput, Prisma.UserUpdateWithoutExpenseParticipationsInput>, Prisma.UserUncheckedUpdateWithoutExpenseParticipationsInput>
 }
 
+export type UserCreateNestedOneWithoutPaymentsMadeInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutPaymentsMadeInput, Prisma.UserUncheckedCreateWithoutPaymentsMadeInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPaymentsMadeInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserCreateNestedOneWithoutPaymentsReceivedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutPaymentsReceivedInput, Prisma.UserUncheckedCreateWithoutPaymentsReceivedInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPaymentsReceivedInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutPaymentsMadeNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutPaymentsMadeInput, Prisma.UserUncheckedCreateWithoutPaymentsMadeInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPaymentsMadeInput
+  upsert?: Prisma.UserUpsertWithoutPaymentsMadeInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutPaymentsMadeInput, Prisma.UserUpdateWithoutPaymentsMadeInput>, Prisma.UserUncheckedUpdateWithoutPaymentsMadeInput>
+}
+
+export type UserUpdateOneRequiredWithoutPaymentsReceivedNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutPaymentsReceivedInput, Prisma.UserUncheckedCreateWithoutPaymentsReceivedInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPaymentsReceivedInput
+  upsert?: Prisma.UserUpsertWithoutPaymentsReceivedInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutPaymentsReceivedInput, Prisma.UserUpdateWithoutPaymentsReceivedInput>, Prisma.UserUncheckedUpdateWithoutPaymentsReceivedInput>
+}
+
 export type UserCreateNestedOneWithoutSettlementsOwedInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutSettlementsOwedInput, Prisma.UserUncheckedCreateWithoutSettlementsOwedInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutSettlementsOwedInput
@@ -1032,6 +1074,8 @@ export type UserCreateWithoutCreatedGroupsInput = {
   expenseParticipations?: Prisma.ExpenseItemParticipantCreateNestedManyWithoutUserInput
   settlementsOwed?: Prisma.SettlementCreateNestedManyWithoutFromUserInput
   settlementsReceived?: Prisma.SettlementCreateNestedManyWithoutToUserInput
+  paymentsMade?: Prisma.PaymentCreateNestedManyWithoutFromUserInput
+  paymentsReceived?: Prisma.PaymentCreateNestedManyWithoutToUserInput
   iousOwed?: Prisma.IOUCreateNestedManyWithoutFromUserInput
   iousLent?: Prisma.IOUCreateNestedManyWithoutToUserInput
   choreAssignments?: Prisma.ChoreAssignmentCreateNestedManyWithoutUserInput
@@ -1067,6 +1111,8 @@ export type UserUncheckedCreateWithoutCreatedGroupsInput = {
   expenseParticipations?: Prisma.ExpenseItemParticipantUncheckedCreateNestedManyWithoutUserInput
   settlementsOwed?: Prisma.SettlementUncheckedCreateNestedManyWithoutFromUserInput
   settlementsReceived?: Prisma.SettlementUncheckedCreateNestedManyWithoutToUserInput
+  paymentsMade?: Prisma.PaymentUncheckedCreateNestedManyWithoutFromUserInput
+  paymentsReceived?: Prisma.PaymentUncheckedCreateNestedManyWithoutToUserInput
   iousOwed?: Prisma.IOUUncheckedCreateNestedManyWithoutFromUserInput
   iousLent?: Prisma.IOUUncheckedCreateNestedManyWithoutToUserInput
   choreAssignments?: Prisma.ChoreAssignmentUncheckedCreateNestedManyWithoutUserInput
@@ -1118,6 +1164,8 @@ export type UserUpdateWithoutCreatedGroupsInput = {
   expenseParticipations?: Prisma.ExpenseItemParticipantUpdateManyWithoutUserNestedInput
   settlementsOwed?: Prisma.SettlementUpdateManyWithoutFromUserNestedInput
   settlementsReceived?: Prisma.SettlementUpdateManyWithoutToUserNestedInput
+  paymentsMade?: Prisma.PaymentUpdateManyWithoutFromUserNestedInput
+  paymentsReceived?: Prisma.PaymentUpdateManyWithoutToUserNestedInput
   iousOwed?: Prisma.IOUUpdateManyWithoutFromUserNestedInput
   iousLent?: Prisma.IOUUpdateManyWithoutToUserNestedInput
   choreAssignments?: Prisma.ChoreAssignmentUpdateManyWithoutUserNestedInput
@@ -1153,6 +1201,8 @@ export type UserUncheckedUpdateWithoutCreatedGroupsInput = {
   expenseParticipations?: Prisma.ExpenseItemParticipantUncheckedUpdateManyWithoutUserNestedInput
   settlementsOwed?: Prisma.SettlementUncheckedUpdateManyWithoutFromUserNestedInput
   settlementsReceived?: Prisma.SettlementUncheckedUpdateManyWithoutToUserNestedInput
+  paymentsMade?: Prisma.PaymentUncheckedUpdateManyWithoutFromUserNestedInput
+  paymentsReceived?: Prisma.PaymentUncheckedUpdateManyWithoutToUserNestedInput
   iousOwed?: Prisma.IOUUncheckedUpdateManyWithoutFromUserNestedInput
   iousLent?: Prisma.IOUUncheckedUpdateManyWithoutToUserNestedInput
   choreAssignments?: Prisma.ChoreAssignmentUncheckedUpdateManyWithoutUserNestedInput
@@ -1188,6 +1238,8 @@ export type UserCreateWithoutGroupMembershipsInput = {
   expenseParticipations?: Prisma.ExpenseItemParticipantCreateNestedManyWithoutUserInput
   settlementsOwed?: Prisma.SettlementCreateNestedManyWithoutFromUserInput
   settlementsReceived?: Prisma.SettlementCreateNestedManyWithoutToUserInput
+  paymentsMade?: Prisma.PaymentCreateNestedManyWithoutFromUserInput
+  paymentsReceived?: Prisma.PaymentCreateNestedManyWithoutToUserInput
   iousOwed?: Prisma.IOUCreateNestedManyWithoutFromUserInput
   iousLent?: Prisma.IOUCreateNestedManyWithoutToUserInput
   choreAssignments?: Prisma.ChoreAssignmentCreateNestedManyWithoutUserInput
@@ -1223,6 +1275,8 @@ export type UserUncheckedCreateWithoutGroupMembershipsInput = {
   expenseParticipations?: Prisma.ExpenseItemParticipantUncheckedCreateNestedManyWithoutUserInput
   settlementsOwed?: Prisma.SettlementUncheckedCreateNestedManyWithoutFromUserInput
   settlementsReceived?: Prisma.SettlementUncheckedCreateNestedManyWithoutToUserInput
+  paymentsMade?: Prisma.PaymentUncheckedCreateNestedManyWithoutFromUserInput
+  paymentsReceived?: Prisma.PaymentUncheckedCreateNestedManyWithoutToUserInput
   iousOwed?: Prisma.IOUUncheckedCreateNestedManyWithoutFromUserInput
   iousLent?: Prisma.IOUUncheckedCreateNestedManyWithoutToUserInput
   choreAssignments?: Prisma.ChoreAssignmentUncheckedCreateNestedManyWithoutUserInput
@@ -1274,6 +1328,8 @@ export type UserUpdateWithoutGroupMembershipsInput = {
   expenseParticipations?: Prisma.ExpenseItemParticipantUpdateManyWithoutUserNestedInput
   settlementsOwed?: Prisma.SettlementUpdateManyWithoutFromUserNestedInput
   settlementsReceived?: Prisma.SettlementUpdateManyWithoutToUserNestedInput
+  paymentsMade?: Prisma.PaymentUpdateManyWithoutFromUserNestedInput
+  paymentsReceived?: Prisma.PaymentUpdateManyWithoutToUserNestedInput
   iousOwed?: Prisma.IOUUpdateManyWithoutFromUserNestedInput
   iousLent?: Prisma.IOUUpdateManyWithoutToUserNestedInput
   choreAssignments?: Prisma.ChoreAssignmentUpdateManyWithoutUserNestedInput
@@ -1309,6 +1365,8 @@ export type UserUncheckedUpdateWithoutGroupMembershipsInput = {
   expenseParticipations?: Prisma.ExpenseItemParticipantUncheckedUpdateManyWithoutUserNestedInput
   settlementsOwed?: Prisma.SettlementUncheckedUpdateManyWithoutFromUserNestedInput
   settlementsReceived?: Prisma.SettlementUncheckedUpdateManyWithoutToUserNestedInput
+  paymentsMade?: Prisma.PaymentUncheckedUpdateManyWithoutFromUserNestedInput
+  paymentsReceived?: Prisma.PaymentUncheckedUpdateManyWithoutToUserNestedInput
   iousOwed?: Prisma.IOUUncheckedUpdateManyWithoutFromUserNestedInput
   iousLent?: Prisma.IOUUncheckedUpdateManyWithoutToUserNestedInput
   choreAssignments?: Prisma.ChoreAssignmentUncheckedUpdateManyWithoutUserNestedInput
@@ -1345,6 +1403,8 @@ export type UserCreateWithoutGuestsHostedInput = {
   expenseParticipations?: Prisma.ExpenseItemParticipantCreateNestedManyWithoutUserInput
   settlementsOwed?: Prisma.SettlementCreateNestedManyWithoutFromUserInput
   settlementsReceived?: Prisma.SettlementCreateNestedManyWithoutToUserInput
+  paymentsMade?: Prisma.PaymentCreateNestedManyWithoutFromUserInput
+  paymentsReceived?: Prisma.PaymentCreateNestedManyWithoutToUserInput
   iousOwed?: Prisma.IOUCreateNestedManyWithoutFromUserInput
   iousLent?: Prisma.IOUCreateNestedManyWithoutToUserInput
   choreAssignments?: Prisma.ChoreAssignmentCreateNestedManyWithoutUserInput
@@ -1380,6 +1440,8 @@ export type UserUncheckedCreateWithoutGuestsHostedInput = {
   expenseParticipations?: Prisma.ExpenseItemParticipantUncheckedCreateNestedManyWithoutUserInput
   settlementsOwed?: Prisma.SettlementUncheckedCreateNestedManyWithoutFromUserInput
   settlementsReceived?: Prisma.SettlementUncheckedCreateNestedManyWithoutToUserInput
+  paymentsMade?: Prisma.PaymentUncheckedCreateNestedManyWithoutFromUserInput
+  paymentsReceived?: Prisma.PaymentUncheckedCreateNestedManyWithoutToUserInput
   iousOwed?: Prisma.IOUUncheckedCreateNestedManyWithoutFromUserInput
   iousLent?: Prisma.IOUUncheckedCreateNestedManyWithoutToUserInput
   choreAssignments?: Prisma.ChoreAssignmentUncheckedCreateNestedManyWithoutUserInput
@@ -1431,6 +1493,8 @@ export type UserUpdateWithoutGuestsHostedInput = {
   expenseParticipations?: Prisma.ExpenseItemParticipantUpdateManyWithoutUserNestedInput
   settlementsOwed?: Prisma.SettlementUpdateManyWithoutFromUserNestedInput
   settlementsReceived?: Prisma.SettlementUpdateManyWithoutToUserNestedInput
+  paymentsMade?: Prisma.PaymentUpdateManyWithoutFromUserNestedInput
+  paymentsReceived?: Prisma.PaymentUpdateManyWithoutToUserNestedInput
   iousOwed?: Prisma.IOUUpdateManyWithoutFromUserNestedInput
   iousLent?: Prisma.IOUUpdateManyWithoutToUserNestedInput
   choreAssignments?: Prisma.ChoreAssignmentUpdateManyWithoutUserNestedInput
@@ -1466,6 +1530,8 @@ export type UserUncheckedUpdateWithoutGuestsHostedInput = {
   expenseParticipations?: Prisma.ExpenseItemParticipantUncheckedUpdateManyWithoutUserNestedInput
   settlementsOwed?: Prisma.SettlementUncheckedUpdateManyWithoutFromUserNestedInput
   settlementsReceived?: Prisma.SettlementUncheckedUpdateManyWithoutToUserNestedInput
+  paymentsMade?: Prisma.PaymentUncheckedUpdateManyWithoutFromUserNestedInput
+  paymentsReceived?: Prisma.PaymentUncheckedUpdateManyWithoutToUserNestedInput
   iousOwed?: Prisma.IOUUncheckedUpdateManyWithoutFromUserNestedInput
   iousLent?: Prisma.IOUUncheckedUpdateManyWithoutToUserNestedInput
   choreAssignments?: Prisma.ChoreAssignmentUncheckedUpdateManyWithoutUserNestedInput
@@ -1500,6 +1566,8 @@ export type UserCreateWithoutPaidExpensesInput = {
   expenseParticipations?: Prisma.ExpenseItemParticipantCreateNestedManyWithoutUserInput
   settlementsOwed?: Prisma.SettlementCreateNestedManyWithoutFromUserInput
   settlementsReceived?: Prisma.SettlementCreateNestedManyWithoutToUserInput
+  paymentsMade?: Prisma.PaymentCreateNestedManyWithoutFromUserInput
+  paymentsReceived?: Prisma.PaymentCreateNestedManyWithoutToUserInput
   iousOwed?: Prisma.IOUCreateNestedManyWithoutFromUserInput
   iousLent?: Prisma.IOUCreateNestedManyWithoutToUserInput
   choreAssignments?: Prisma.ChoreAssignmentCreateNestedManyWithoutUserInput
@@ -1535,6 +1603,8 @@ export type UserUncheckedCreateWithoutPaidExpensesInput = {
   expenseParticipations?: Prisma.ExpenseItemParticipantUncheckedCreateNestedManyWithoutUserInput
   settlementsOwed?: Prisma.SettlementUncheckedCreateNestedManyWithoutFromUserInput
   settlementsReceived?: Prisma.SettlementUncheckedCreateNestedManyWithoutToUserInput
+  paymentsMade?: Prisma.PaymentUncheckedCreateNestedManyWithoutFromUserInput
+  paymentsReceived?: Prisma.PaymentUncheckedCreateNestedManyWithoutToUserInput
   iousOwed?: Prisma.IOUUncheckedCreateNestedManyWithoutFromUserInput
   iousLent?: Prisma.IOUUncheckedCreateNestedManyWithoutToUserInput
   choreAssignments?: Prisma.ChoreAssignmentUncheckedCreateNestedManyWithoutUserInput
@@ -1586,6 +1656,8 @@ export type UserUpdateWithoutPaidExpensesInput = {
   expenseParticipations?: Prisma.ExpenseItemParticipantUpdateManyWithoutUserNestedInput
   settlementsOwed?: Prisma.SettlementUpdateManyWithoutFromUserNestedInput
   settlementsReceived?: Prisma.SettlementUpdateManyWithoutToUserNestedInput
+  paymentsMade?: Prisma.PaymentUpdateManyWithoutFromUserNestedInput
+  paymentsReceived?: Prisma.PaymentUpdateManyWithoutToUserNestedInput
   iousOwed?: Prisma.IOUUpdateManyWithoutFromUserNestedInput
   iousLent?: Prisma.IOUUpdateManyWithoutToUserNestedInput
   choreAssignments?: Prisma.ChoreAssignmentUpdateManyWithoutUserNestedInput
@@ -1621,6 +1693,8 @@ export type UserUncheckedUpdateWithoutPaidExpensesInput = {
   expenseParticipations?: Prisma.ExpenseItemParticipantUncheckedUpdateManyWithoutUserNestedInput
   settlementsOwed?: Prisma.SettlementUncheckedUpdateManyWithoutFromUserNestedInput
   settlementsReceived?: Prisma.SettlementUncheckedUpdateManyWithoutToUserNestedInput
+  paymentsMade?: Prisma.PaymentUncheckedUpdateManyWithoutFromUserNestedInput
+  paymentsReceived?: Prisma.PaymentUncheckedUpdateManyWithoutToUserNestedInput
   iousOwed?: Prisma.IOUUncheckedUpdateManyWithoutFromUserNestedInput
   iousLent?: Prisma.IOUUncheckedUpdateManyWithoutToUserNestedInput
   choreAssignments?: Prisma.ChoreAssignmentUncheckedUpdateManyWithoutUserNestedInput
@@ -1656,6 +1730,8 @@ export type UserCreateWithoutExpenseParticipationsInput = {
   paidExpenses?: Prisma.ExpenseCreateNestedManyWithoutPaidByInput
   settlementsOwed?: Prisma.SettlementCreateNestedManyWithoutFromUserInput
   settlementsReceived?: Prisma.SettlementCreateNestedManyWithoutToUserInput
+  paymentsMade?: Prisma.PaymentCreateNestedManyWithoutFromUserInput
+  paymentsReceived?: Prisma.PaymentCreateNestedManyWithoutToUserInput
   iousOwed?: Prisma.IOUCreateNestedManyWithoutFromUserInput
   iousLent?: Prisma.IOUCreateNestedManyWithoutToUserInput
   choreAssignments?: Prisma.ChoreAssignmentCreateNestedManyWithoutUserInput
@@ -1691,6 +1767,8 @@ export type UserUncheckedCreateWithoutExpenseParticipationsInput = {
   paidExpenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutPaidByInput
   settlementsOwed?: Prisma.SettlementUncheckedCreateNestedManyWithoutFromUserInput
   settlementsReceived?: Prisma.SettlementUncheckedCreateNestedManyWithoutToUserInput
+  paymentsMade?: Prisma.PaymentUncheckedCreateNestedManyWithoutFromUserInput
+  paymentsReceived?: Prisma.PaymentUncheckedCreateNestedManyWithoutToUserInput
   iousOwed?: Prisma.IOUUncheckedCreateNestedManyWithoutFromUserInput
   iousLent?: Prisma.IOUUncheckedCreateNestedManyWithoutToUserInput
   choreAssignments?: Prisma.ChoreAssignmentUncheckedCreateNestedManyWithoutUserInput
@@ -1742,6 +1820,8 @@ export type UserUpdateWithoutExpenseParticipationsInput = {
   paidExpenses?: Prisma.ExpenseUpdateManyWithoutPaidByNestedInput
   settlementsOwed?: Prisma.SettlementUpdateManyWithoutFromUserNestedInput
   settlementsReceived?: Prisma.SettlementUpdateManyWithoutToUserNestedInput
+  paymentsMade?: Prisma.PaymentUpdateManyWithoutFromUserNestedInput
+  paymentsReceived?: Prisma.PaymentUpdateManyWithoutToUserNestedInput
   iousOwed?: Prisma.IOUUpdateManyWithoutFromUserNestedInput
   iousLent?: Prisma.IOUUpdateManyWithoutToUserNestedInput
   choreAssignments?: Prisma.ChoreAssignmentUpdateManyWithoutUserNestedInput
@@ -1777,6 +1857,336 @@ export type UserUncheckedUpdateWithoutExpenseParticipationsInput = {
   paidExpenses?: Prisma.ExpenseUncheckedUpdateManyWithoutPaidByNestedInput
   settlementsOwed?: Prisma.SettlementUncheckedUpdateManyWithoutFromUserNestedInput
   settlementsReceived?: Prisma.SettlementUncheckedUpdateManyWithoutToUserNestedInput
+  paymentsMade?: Prisma.PaymentUncheckedUpdateManyWithoutFromUserNestedInput
+  paymentsReceived?: Prisma.PaymentUncheckedUpdateManyWithoutToUserNestedInput
+  iousOwed?: Prisma.IOUUncheckedUpdateManyWithoutFromUserNestedInput
+  iousLent?: Prisma.IOUUncheckedUpdateManyWithoutToUserNestedInput
+  choreAssignments?: Prisma.ChoreAssignmentUncheckedUpdateManyWithoutUserNestedInput
+  availabilityEntries?: Prisma.AvailabilityEntryUncheckedUpdateManyWithoutUserNestedInput
+  proposalsCreated?: Prisma.ProposalUncheckedUpdateManyWithoutProposedByNestedInput
+  proposalFlags?: Prisma.ProposalFlagUncheckedUpdateManyWithoutUserNestedInput
+  proposalVotes?: Prisma.ProposalVoteUncheckedUpdateManyWithoutUserNestedInput
+  guestsHosted?: Prisma.ExpenseGuestHostUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutPaymentsMadeInput = {
+  id?: string
+  clerkId: string
+  email: string
+  displayName: string
+  avatarUrl?: string | null
+  budgetLimit?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  dietaryRestrictions?: Prisma.UserCreatedietaryRestrictionsInput | string[]
+  homeLatitude?: number | null
+  homeLongitude?: number | null
+  venmoHandle?: string | null
+  paypalHandle?: string | null
+  cashappHandle?: string | null
+  easypaisaNumber?: string | null
+  jazzcashNumber?: string | null
+  nayapayHandle?: string | null
+  bankDetails?: string | null
+  locale?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  groupMemberships?: Prisma.GroupMemberCreateNestedManyWithoutUserInput
+  createdGroups?: Prisma.GroupCreateNestedManyWithoutCreatedByInput
+  paidExpenses?: Prisma.ExpenseCreateNestedManyWithoutPaidByInput
+  expenseParticipations?: Prisma.ExpenseItemParticipantCreateNestedManyWithoutUserInput
+  settlementsOwed?: Prisma.SettlementCreateNestedManyWithoutFromUserInput
+  settlementsReceived?: Prisma.SettlementCreateNestedManyWithoutToUserInput
+  paymentsReceived?: Prisma.PaymentCreateNestedManyWithoutToUserInput
+  iousOwed?: Prisma.IOUCreateNestedManyWithoutFromUserInput
+  iousLent?: Prisma.IOUCreateNestedManyWithoutToUserInput
+  choreAssignments?: Prisma.ChoreAssignmentCreateNestedManyWithoutUserInput
+  availabilityEntries?: Prisma.AvailabilityEntryCreateNestedManyWithoutUserInput
+  proposalsCreated?: Prisma.ProposalCreateNestedManyWithoutProposedByInput
+  proposalFlags?: Prisma.ProposalFlagCreateNestedManyWithoutUserInput
+  proposalVotes?: Prisma.ProposalVoteCreateNestedManyWithoutUserInput
+  guestsHosted?: Prisma.ExpenseGuestHostCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutPaymentsMadeInput = {
+  id?: string
+  clerkId: string
+  email: string
+  displayName: string
+  avatarUrl?: string | null
+  budgetLimit?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  dietaryRestrictions?: Prisma.UserCreatedietaryRestrictionsInput | string[]
+  homeLatitude?: number | null
+  homeLongitude?: number | null
+  venmoHandle?: string | null
+  paypalHandle?: string | null
+  cashappHandle?: string | null
+  easypaisaNumber?: string | null
+  jazzcashNumber?: string | null
+  nayapayHandle?: string | null
+  bankDetails?: string | null
+  locale?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  groupMemberships?: Prisma.GroupMemberUncheckedCreateNestedManyWithoutUserInput
+  createdGroups?: Prisma.GroupUncheckedCreateNestedManyWithoutCreatedByInput
+  paidExpenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutPaidByInput
+  expenseParticipations?: Prisma.ExpenseItemParticipantUncheckedCreateNestedManyWithoutUserInput
+  settlementsOwed?: Prisma.SettlementUncheckedCreateNestedManyWithoutFromUserInput
+  settlementsReceived?: Prisma.SettlementUncheckedCreateNestedManyWithoutToUserInput
+  paymentsReceived?: Prisma.PaymentUncheckedCreateNestedManyWithoutToUserInput
+  iousOwed?: Prisma.IOUUncheckedCreateNestedManyWithoutFromUserInput
+  iousLent?: Prisma.IOUUncheckedCreateNestedManyWithoutToUserInput
+  choreAssignments?: Prisma.ChoreAssignmentUncheckedCreateNestedManyWithoutUserInput
+  availabilityEntries?: Prisma.AvailabilityEntryUncheckedCreateNestedManyWithoutUserInput
+  proposalsCreated?: Prisma.ProposalUncheckedCreateNestedManyWithoutProposedByInput
+  proposalFlags?: Prisma.ProposalFlagUncheckedCreateNestedManyWithoutUserInput
+  proposalVotes?: Prisma.ProposalVoteUncheckedCreateNestedManyWithoutUserInput
+  guestsHosted?: Prisma.ExpenseGuestHostUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutPaymentsMadeInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutPaymentsMadeInput, Prisma.UserUncheckedCreateWithoutPaymentsMadeInput>
+}
+
+export type UserCreateWithoutPaymentsReceivedInput = {
+  id?: string
+  clerkId: string
+  email: string
+  displayName: string
+  avatarUrl?: string | null
+  budgetLimit?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  dietaryRestrictions?: Prisma.UserCreatedietaryRestrictionsInput | string[]
+  homeLatitude?: number | null
+  homeLongitude?: number | null
+  venmoHandle?: string | null
+  paypalHandle?: string | null
+  cashappHandle?: string | null
+  easypaisaNumber?: string | null
+  jazzcashNumber?: string | null
+  nayapayHandle?: string | null
+  bankDetails?: string | null
+  locale?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  groupMemberships?: Prisma.GroupMemberCreateNestedManyWithoutUserInput
+  createdGroups?: Prisma.GroupCreateNestedManyWithoutCreatedByInput
+  paidExpenses?: Prisma.ExpenseCreateNestedManyWithoutPaidByInput
+  expenseParticipations?: Prisma.ExpenseItemParticipantCreateNestedManyWithoutUserInput
+  settlementsOwed?: Prisma.SettlementCreateNestedManyWithoutFromUserInput
+  settlementsReceived?: Prisma.SettlementCreateNestedManyWithoutToUserInput
+  paymentsMade?: Prisma.PaymentCreateNestedManyWithoutFromUserInput
+  iousOwed?: Prisma.IOUCreateNestedManyWithoutFromUserInput
+  iousLent?: Prisma.IOUCreateNestedManyWithoutToUserInput
+  choreAssignments?: Prisma.ChoreAssignmentCreateNestedManyWithoutUserInput
+  availabilityEntries?: Prisma.AvailabilityEntryCreateNestedManyWithoutUserInput
+  proposalsCreated?: Prisma.ProposalCreateNestedManyWithoutProposedByInput
+  proposalFlags?: Prisma.ProposalFlagCreateNestedManyWithoutUserInput
+  proposalVotes?: Prisma.ProposalVoteCreateNestedManyWithoutUserInput
+  guestsHosted?: Prisma.ExpenseGuestHostCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutPaymentsReceivedInput = {
+  id?: string
+  clerkId: string
+  email: string
+  displayName: string
+  avatarUrl?: string | null
+  budgetLimit?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  dietaryRestrictions?: Prisma.UserCreatedietaryRestrictionsInput | string[]
+  homeLatitude?: number | null
+  homeLongitude?: number | null
+  venmoHandle?: string | null
+  paypalHandle?: string | null
+  cashappHandle?: string | null
+  easypaisaNumber?: string | null
+  jazzcashNumber?: string | null
+  nayapayHandle?: string | null
+  bankDetails?: string | null
+  locale?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  groupMemberships?: Prisma.GroupMemberUncheckedCreateNestedManyWithoutUserInput
+  createdGroups?: Prisma.GroupUncheckedCreateNestedManyWithoutCreatedByInput
+  paidExpenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutPaidByInput
+  expenseParticipations?: Prisma.ExpenseItemParticipantUncheckedCreateNestedManyWithoutUserInput
+  settlementsOwed?: Prisma.SettlementUncheckedCreateNestedManyWithoutFromUserInput
+  settlementsReceived?: Prisma.SettlementUncheckedCreateNestedManyWithoutToUserInput
+  paymentsMade?: Prisma.PaymentUncheckedCreateNestedManyWithoutFromUserInput
+  iousOwed?: Prisma.IOUUncheckedCreateNestedManyWithoutFromUserInput
+  iousLent?: Prisma.IOUUncheckedCreateNestedManyWithoutToUserInput
+  choreAssignments?: Prisma.ChoreAssignmentUncheckedCreateNestedManyWithoutUserInput
+  availabilityEntries?: Prisma.AvailabilityEntryUncheckedCreateNestedManyWithoutUserInput
+  proposalsCreated?: Prisma.ProposalUncheckedCreateNestedManyWithoutProposedByInput
+  proposalFlags?: Prisma.ProposalFlagUncheckedCreateNestedManyWithoutUserInput
+  proposalVotes?: Prisma.ProposalVoteUncheckedCreateNestedManyWithoutUserInput
+  guestsHosted?: Prisma.ExpenseGuestHostUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutPaymentsReceivedInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutPaymentsReceivedInput, Prisma.UserUncheckedCreateWithoutPaymentsReceivedInput>
+}
+
+export type UserUpsertWithoutPaymentsMadeInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutPaymentsMadeInput, Prisma.UserUncheckedUpdateWithoutPaymentsMadeInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutPaymentsMadeInput, Prisma.UserUncheckedCreateWithoutPaymentsMadeInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutPaymentsMadeInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutPaymentsMadeInput, Prisma.UserUncheckedUpdateWithoutPaymentsMadeInput>
+}
+
+export type UserUpdateWithoutPaymentsMadeInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  clerkId?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  budgetLimit?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  dietaryRestrictions?: Prisma.UserUpdatedietaryRestrictionsInput | string[]
+  homeLatitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  homeLongitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  venmoHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paypalHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cashappHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  easypaisaNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jazzcashNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nayapayHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  groupMemberships?: Prisma.GroupMemberUpdateManyWithoutUserNestedInput
+  createdGroups?: Prisma.GroupUpdateManyWithoutCreatedByNestedInput
+  paidExpenses?: Prisma.ExpenseUpdateManyWithoutPaidByNestedInput
+  expenseParticipations?: Prisma.ExpenseItemParticipantUpdateManyWithoutUserNestedInput
+  settlementsOwed?: Prisma.SettlementUpdateManyWithoutFromUserNestedInput
+  settlementsReceived?: Prisma.SettlementUpdateManyWithoutToUserNestedInput
+  paymentsReceived?: Prisma.PaymentUpdateManyWithoutToUserNestedInput
+  iousOwed?: Prisma.IOUUpdateManyWithoutFromUserNestedInput
+  iousLent?: Prisma.IOUUpdateManyWithoutToUserNestedInput
+  choreAssignments?: Prisma.ChoreAssignmentUpdateManyWithoutUserNestedInput
+  availabilityEntries?: Prisma.AvailabilityEntryUpdateManyWithoutUserNestedInput
+  proposalsCreated?: Prisma.ProposalUpdateManyWithoutProposedByNestedInput
+  proposalFlags?: Prisma.ProposalFlagUpdateManyWithoutUserNestedInput
+  proposalVotes?: Prisma.ProposalVoteUpdateManyWithoutUserNestedInput
+  guestsHosted?: Prisma.ExpenseGuestHostUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutPaymentsMadeInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  clerkId?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  budgetLimit?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  dietaryRestrictions?: Prisma.UserUpdatedietaryRestrictionsInput | string[]
+  homeLatitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  homeLongitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  venmoHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paypalHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cashappHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  easypaisaNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jazzcashNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nayapayHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  groupMemberships?: Prisma.GroupMemberUncheckedUpdateManyWithoutUserNestedInput
+  createdGroups?: Prisma.GroupUncheckedUpdateManyWithoutCreatedByNestedInput
+  paidExpenses?: Prisma.ExpenseUncheckedUpdateManyWithoutPaidByNestedInput
+  expenseParticipations?: Prisma.ExpenseItemParticipantUncheckedUpdateManyWithoutUserNestedInput
+  settlementsOwed?: Prisma.SettlementUncheckedUpdateManyWithoutFromUserNestedInput
+  settlementsReceived?: Prisma.SettlementUncheckedUpdateManyWithoutToUserNestedInput
+  paymentsReceived?: Prisma.PaymentUncheckedUpdateManyWithoutToUserNestedInput
+  iousOwed?: Prisma.IOUUncheckedUpdateManyWithoutFromUserNestedInput
+  iousLent?: Prisma.IOUUncheckedUpdateManyWithoutToUserNestedInput
+  choreAssignments?: Prisma.ChoreAssignmentUncheckedUpdateManyWithoutUserNestedInput
+  availabilityEntries?: Prisma.AvailabilityEntryUncheckedUpdateManyWithoutUserNestedInput
+  proposalsCreated?: Prisma.ProposalUncheckedUpdateManyWithoutProposedByNestedInput
+  proposalFlags?: Prisma.ProposalFlagUncheckedUpdateManyWithoutUserNestedInput
+  proposalVotes?: Prisma.ProposalVoteUncheckedUpdateManyWithoutUserNestedInput
+  guestsHosted?: Prisma.ExpenseGuestHostUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserUpsertWithoutPaymentsReceivedInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutPaymentsReceivedInput, Prisma.UserUncheckedUpdateWithoutPaymentsReceivedInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutPaymentsReceivedInput, Prisma.UserUncheckedCreateWithoutPaymentsReceivedInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutPaymentsReceivedInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutPaymentsReceivedInput, Prisma.UserUncheckedUpdateWithoutPaymentsReceivedInput>
+}
+
+export type UserUpdateWithoutPaymentsReceivedInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  clerkId?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  budgetLimit?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  dietaryRestrictions?: Prisma.UserUpdatedietaryRestrictionsInput | string[]
+  homeLatitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  homeLongitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  venmoHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paypalHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cashappHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  easypaisaNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jazzcashNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nayapayHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  groupMemberships?: Prisma.GroupMemberUpdateManyWithoutUserNestedInput
+  createdGroups?: Prisma.GroupUpdateManyWithoutCreatedByNestedInput
+  paidExpenses?: Prisma.ExpenseUpdateManyWithoutPaidByNestedInput
+  expenseParticipations?: Prisma.ExpenseItemParticipantUpdateManyWithoutUserNestedInput
+  settlementsOwed?: Prisma.SettlementUpdateManyWithoutFromUserNestedInput
+  settlementsReceived?: Prisma.SettlementUpdateManyWithoutToUserNestedInput
+  paymentsMade?: Prisma.PaymentUpdateManyWithoutFromUserNestedInput
+  iousOwed?: Prisma.IOUUpdateManyWithoutFromUserNestedInput
+  iousLent?: Prisma.IOUUpdateManyWithoutToUserNestedInput
+  choreAssignments?: Prisma.ChoreAssignmentUpdateManyWithoutUserNestedInput
+  availabilityEntries?: Prisma.AvailabilityEntryUpdateManyWithoutUserNestedInput
+  proposalsCreated?: Prisma.ProposalUpdateManyWithoutProposedByNestedInput
+  proposalFlags?: Prisma.ProposalFlagUpdateManyWithoutUserNestedInput
+  proposalVotes?: Prisma.ProposalVoteUpdateManyWithoutUserNestedInput
+  guestsHosted?: Prisma.ExpenseGuestHostUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutPaymentsReceivedInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  clerkId?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  budgetLimit?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  dietaryRestrictions?: Prisma.UserUpdatedietaryRestrictionsInput | string[]
+  homeLatitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  homeLongitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  venmoHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paypalHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cashappHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  easypaisaNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jazzcashNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nayapayHandle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  groupMemberships?: Prisma.GroupMemberUncheckedUpdateManyWithoutUserNestedInput
+  createdGroups?: Prisma.GroupUncheckedUpdateManyWithoutCreatedByNestedInput
+  paidExpenses?: Prisma.ExpenseUncheckedUpdateManyWithoutPaidByNestedInput
+  expenseParticipations?: Prisma.ExpenseItemParticipantUncheckedUpdateManyWithoutUserNestedInput
+  settlementsOwed?: Prisma.SettlementUncheckedUpdateManyWithoutFromUserNestedInput
+  settlementsReceived?: Prisma.SettlementUncheckedUpdateManyWithoutToUserNestedInput
+  paymentsMade?: Prisma.PaymentUncheckedUpdateManyWithoutFromUserNestedInput
   iousOwed?: Prisma.IOUUncheckedUpdateManyWithoutFromUserNestedInput
   iousLent?: Prisma.IOUUncheckedUpdateManyWithoutToUserNestedInput
   choreAssignments?: Prisma.ChoreAssignmentUncheckedUpdateManyWithoutUserNestedInput
@@ -1812,6 +2222,8 @@ export type UserCreateWithoutSettlementsOwedInput = {
   paidExpenses?: Prisma.ExpenseCreateNestedManyWithoutPaidByInput
   expenseParticipations?: Prisma.ExpenseItemParticipantCreateNestedManyWithoutUserInput
   settlementsReceived?: Prisma.SettlementCreateNestedManyWithoutToUserInput
+  paymentsMade?: Prisma.PaymentCreateNestedManyWithoutFromUserInput
+  paymentsReceived?: Prisma.PaymentCreateNestedManyWithoutToUserInput
   iousOwed?: Prisma.IOUCreateNestedManyWithoutFromUserInput
   iousLent?: Prisma.IOUCreateNestedManyWithoutToUserInput
   choreAssignments?: Prisma.ChoreAssignmentCreateNestedManyWithoutUserInput
@@ -1847,6 +2259,8 @@ export type UserUncheckedCreateWithoutSettlementsOwedInput = {
   paidExpenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutPaidByInput
   expenseParticipations?: Prisma.ExpenseItemParticipantUncheckedCreateNestedManyWithoutUserInput
   settlementsReceived?: Prisma.SettlementUncheckedCreateNestedManyWithoutToUserInput
+  paymentsMade?: Prisma.PaymentUncheckedCreateNestedManyWithoutFromUserInput
+  paymentsReceived?: Prisma.PaymentUncheckedCreateNestedManyWithoutToUserInput
   iousOwed?: Prisma.IOUUncheckedCreateNestedManyWithoutFromUserInput
   iousLent?: Prisma.IOUUncheckedCreateNestedManyWithoutToUserInput
   choreAssignments?: Prisma.ChoreAssignmentUncheckedCreateNestedManyWithoutUserInput
@@ -1887,6 +2301,8 @@ export type UserCreateWithoutSettlementsReceivedInput = {
   paidExpenses?: Prisma.ExpenseCreateNestedManyWithoutPaidByInput
   expenseParticipations?: Prisma.ExpenseItemParticipantCreateNestedManyWithoutUserInput
   settlementsOwed?: Prisma.SettlementCreateNestedManyWithoutFromUserInput
+  paymentsMade?: Prisma.PaymentCreateNestedManyWithoutFromUserInput
+  paymentsReceived?: Prisma.PaymentCreateNestedManyWithoutToUserInput
   iousOwed?: Prisma.IOUCreateNestedManyWithoutFromUserInput
   iousLent?: Prisma.IOUCreateNestedManyWithoutToUserInput
   choreAssignments?: Prisma.ChoreAssignmentCreateNestedManyWithoutUserInput
@@ -1922,6 +2338,8 @@ export type UserUncheckedCreateWithoutSettlementsReceivedInput = {
   paidExpenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutPaidByInput
   expenseParticipations?: Prisma.ExpenseItemParticipantUncheckedCreateNestedManyWithoutUserInput
   settlementsOwed?: Prisma.SettlementUncheckedCreateNestedManyWithoutFromUserInput
+  paymentsMade?: Prisma.PaymentUncheckedCreateNestedManyWithoutFromUserInput
+  paymentsReceived?: Prisma.PaymentUncheckedCreateNestedManyWithoutToUserInput
   iousOwed?: Prisma.IOUUncheckedCreateNestedManyWithoutFromUserInput
   iousLent?: Prisma.IOUUncheckedCreateNestedManyWithoutToUserInput
   choreAssignments?: Prisma.ChoreAssignmentUncheckedCreateNestedManyWithoutUserInput
@@ -1973,6 +2391,8 @@ export type UserUpdateWithoutSettlementsOwedInput = {
   paidExpenses?: Prisma.ExpenseUpdateManyWithoutPaidByNestedInput
   expenseParticipations?: Prisma.ExpenseItemParticipantUpdateManyWithoutUserNestedInput
   settlementsReceived?: Prisma.SettlementUpdateManyWithoutToUserNestedInput
+  paymentsMade?: Prisma.PaymentUpdateManyWithoutFromUserNestedInput
+  paymentsReceived?: Prisma.PaymentUpdateManyWithoutToUserNestedInput
   iousOwed?: Prisma.IOUUpdateManyWithoutFromUserNestedInput
   iousLent?: Prisma.IOUUpdateManyWithoutToUserNestedInput
   choreAssignments?: Prisma.ChoreAssignmentUpdateManyWithoutUserNestedInput
@@ -2008,6 +2428,8 @@ export type UserUncheckedUpdateWithoutSettlementsOwedInput = {
   paidExpenses?: Prisma.ExpenseUncheckedUpdateManyWithoutPaidByNestedInput
   expenseParticipations?: Prisma.ExpenseItemParticipantUncheckedUpdateManyWithoutUserNestedInput
   settlementsReceived?: Prisma.SettlementUncheckedUpdateManyWithoutToUserNestedInput
+  paymentsMade?: Prisma.PaymentUncheckedUpdateManyWithoutFromUserNestedInput
+  paymentsReceived?: Prisma.PaymentUncheckedUpdateManyWithoutToUserNestedInput
   iousOwed?: Prisma.IOUUncheckedUpdateManyWithoutFromUserNestedInput
   iousLent?: Prisma.IOUUncheckedUpdateManyWithoutToUserNestedInput
   choreAssignments?: Prisma.ChoreAssignmentUncheckedUpdateManyWithoutUserNestedInput
@@ -2054,6 +2476,8 @@ export type UserUpdateWithoutSettlementsReceivedInput = {
   paidExpenses?: Prisma.ExpenseUpdateManyWithoutPaidByNestedInput
   expenseParticipations?: Prisma.ExpenseItemParticipantUpdateManyWithoutUserNestedInput
   settlementsOwed?: Prisma.SettlementUpdateManyWithoutFromUserNestedInput
+  paymentsMade?: Prisma.PaymentUpdateManyWithoutFromUserNestedInput
+  paymentsReceived?: Prisma.PaymentUpdateManyWithoutToUserNestedInput
   iousOwed?: Prisma.IOUUpdateManyWithoutFromUserNestedInput
   iousLent?: Prisma.IOUUpdateManyWithoutToUserNestedInput
   choreAssignments?: Prisma.ChoreAssignmentUpdateManyWithoutUserNestedInput
@@ -2089,6 +2513,8 @@ export type UserUncheckedUpdateWithoutSettlementsReceivedInput = {
   paidExpenses?: Prisma.ExpenseUncheckedUpdateManyWithoutPaidByNestedInput
   expenseParticipations?: Prisma.ExpenseItemParticipantUncheckedUpdateManyWithoutUserNestedInput
   settlementsOwed?: Prisma.SettlementUncheckedUpdateManyWithoutFromUserNestedInput
+  paymentsMade?: Prisma.PaymentUncheckedUpdateManyWithoutFromUserNestedInput
+  paymentsReceived?: Prisma.PaymentUncheckedUpdateManyWithoutToUserNestedInput
   iousOwed?: Prisma.IOUUncheckedUpdateManyWithoutFromUserNestedInput
   iousLent?: Prisma.IOUUncheckedUpdateManyWithoutToUserNestedInput
   choreAssignments?: Prisma.ChoreAssignmentUncheckedUpdateManyWithoutUserNestedInput
@@ -2125,6 +2551,8 @@ export type UserCreateWithoutIousOwedInput = {
   expenseParticipations?: Prisma.ExpenseItemParticipantCreateNestedManyWithoutUserInput
   settlementsOwed?: Prisma.SettlementCreateNestedManyWithoutFromUserInput
   settlementsReceived?: Prisma.SettlementCreateNestedManyWithoutToUserInput
+  paymentsMade?: Prisma.PaymentCreateNestedManyWithoutFromUserInput
+  paymentsReceived?: Prisma.PaymentCreateNestedManyWithoutToUserInput
   iousLent?: Prisma.IOUCreateNestedManyWithoutToUserInput
   choreAssignments?: Prisma.ChoreAssignmentCreateNestedManyWithoutUserInput
   availabilityEntries?: Prisma.AvailabilityEntryCreateNestedManyWithoutUserInput
@@ -2160,6 +2588,8 @@ export type UserUncheckedCreateWithoutIousOwedInput = {
   expenseParticipations?: Prisma.ExpenseItemParticipantUncheckedCreateNestedManyWithoutUserInput
   settlementsOwed?: Prisma.SettlementUncheckedCreateNestedManyWithoutFromUserInput
   settlementsReceived?: Prisma.SettlementUncheckedCreateNestedManyWithoutToUserInput
+  paymentsMade?: Prisma.PaymentUncheckedCreateNestedManyWithoutFromUserInput
+  paymentsReceived?: Prisma.PaymentUncheckedCreateNestedManyWithoutToUserInput
   iousLent?: Prisma.IOUUncheckedCreateNestedManyWithoutToUserInput
   choreAssignments?: Prisma.ChoreAssignmentUncheckedCreateNestedManyWithoutUserInput
   availabilityEntries?: Prisma.AvailabilityEntryUncheckedCreateNestedManyWithoutUserInput
@@ -2200,6 +2630,8 @@ export type UserCreateWithoutIousLentInput = {
   expenseParticipations?: Prisma.ExpenseItemParticipantCreateNestedManyWithoutUserInput
   settlementsOwed?: Prisma.SettlementCreateNestedManyWithoutFromUserInput
   settlementsReceived?: Prisma.SettlementCreateNestedManyWithoutToUserInput
+  paymentsMade?: Prisma.PaymentCreateNestedManyWithoutFromUserInput
+  paymentsReceived?: Prisma.PaymentCreateNestedManyWithoutToUserInput
   iousOwed?: Prisma.IOUCreateNestedManyWithoutFromUserInput
   choreAssignments?: Prisma.ChoreAssignmentCreateNestedManyWithoutUserInput
   availabilityEntries?: Prisma.AvailabilityEntryCreateNestedManyWithoutUserInput
@@ -2235,6 +2667,8 @@ export type UserUncheckedCreateWithoutIousLentInput = {
   expenseParticipations?: Prisma.ExpenseItemParticipantUncheckedCreateNestedManyWithoutUserInput
   settlementsOwed?: Prisma.SettlementUncheckedCreateNestedManyWithoutFromUserInput
   settlementsReceived?: Prisma.SettlementUncheckedCreateNestedManyWithoutToUserInput
+  paymentsMade?: Prisma.PaymentUncheckedCreateNestedManyWithoutFromUserInput
+  paymentsReceived?: Prisma.PaymentUncheckedCreateNestedManyWithoutToUserInput
   iousOwed?: Prisma.IOUUncheckedCreateNestedManyWithoutFromUserInput
   choreAssignments?: Prisma.ChoreAssignmentUncheckedCreateNestedManyWithoutUserInput
   availabilityEntries?: Prisma.AvailabilityEntryUncheckedCreateNestedManyWithoutUserInput
@@ -2286,6 +2720,8 @@ export type UserUpdateWithoutIousOwedInput = {
   expenseParticipations?: Prisma.ExpenseItemParticipantUpdateManyWithoutUserNestedInput
   settlementsOwed?: Prisma.SettlementUpdateManyWithoutFromUserNestedInput
   settlementsReceived?: Prisma.SettlementUpdateManyWithoutToUserNestedInput
+  paymentsMade?: Prisma.PaymentUpdateManyWithoutFromUserNestedInput
+  paymentsReceived?: Prisma.PaymentUpdateManyWithoutToUserNestedInput
   iousLent?: Prisma.IOUUpdateManyWithoutToUserNestedInput
   choreAssignments?: Prisma.ChoreAssignmentUpdateManyWithoutUserNestedInput
   availabilityEntries?: Prisma.AvailabilityEntryUpdateManyWithoutUserNestedInput
@@ -2321,6 +2757,8 @@ export type UserUncheckedUpdateWithoutIousOwedInput = {
   expenseParticipations?: Prisma.ExpenseItemParticipantUncheckedUpdateManyWithoutUserNestedInput
   settlementsOwed?: Prisma.SettlementUncheckedUpdateManyWithoutFromUserNestedInput
   settlementsReceived?: Prisma.SettlementUncheckedUpdateManyWithoutToUserNestedInput
+  paymentsMade?: Prisma.PaymentUncheckedUpdateManyWithoutFromUserNestedInput
+  paymentsReceived?: Prisma.PaymentUncheckedUpdateManyWithoutToUserNestedInput
   iousLent?: Prisma.IOUUncheckedUpdateManyWithoutToUserNestedInput
   choreAssignments?: Prisma.ChoreAssignmentUncheckedUpdateManyWithoutUserNestedInput
   availabilityEntries?: Prisma.AvailabilityEntryUncheckedUpdateManyWithoutUserNestedInput
@@ -2367,6 +2805,8 @@ export type UserUpdateWithoutIousLentInput = {
   expenseParticipations?: Prisma.ExpenseItemParticipantUpdateManyWithoutUserNestedInput
   settlementsOwed?: Prisma.SettlementUpdateManyWithoutFromUserNestedInput
   settlementsReceived?: Prisma.SettlementUpdateManyWithoutToUserNestedInput
+  paymentsMade?: Prisma.PaymentUpdateManyWithoutFromUserNestedInput
+  paymentsReceived?: Prisma.PaymentUpdateManyWithoutToUserNestedInput
   iousOwed?: Prisma.IOUUpdateManyWithoutFromUserNestedInput
   choreAssignments?: Prisma.ChoreAssignmentUpdateManyWithoutUserNestedInput
   availabilityEntries?: Prisma.AvailabilityEntryUpdateManyWithoutUserNestedInput
@@ -2402,6 +2842,8 @@ export type UserUncheckedUpdateWithoutIousLentInput = {
   expenseParticipations?: Prisma.ExpenseItemParticipantUncheckedUpdateManyWithoutUserNestedInput
   settlementsOwed?: Prisma.SettlementUncheckedUpdateManyWithoutFromUserNestedInput
   settlementsReceived?: Prisma.SettlementUncheckedUpdateManyWithoutToUserNestedInput
+  paymentsMade?: Prisma.PaymentUncheckedUpdateManyWithoutFromUserNestedInput
+  paymentsReceived?: Prisma.PaymentUncheckedUpdateManyWithoutToUserNestedInput
   iousOwed?: Prisma.IOUUncheckedUpdateManyWithoutFromUserNestedInput
   choreAssignments?: Prisma.ChoreAssignmentUncheckedUpdateManyWithoutUserNestedInput
   availabilityEntries?: Prisma.AvailabilityEntryUncheckedUpdateManyWithoutUserNestedInput
@@ -2437,6 +2879,8 @@ export type UserCreateWithoutChoreAssignmentsInput = {
   expenseParticipations?: Prisma.ExpenseItemParticipantCreateNestedManyWithoutUserInput
   settlementsOwed?: Prisma.SettlementCreateNestedManyWithoutFromUserInput
   settlementsReceived?: Prisma.SettlementCreateNestedManyWithoutToUserInput
+  paymentsMade?: Prisma.PaymentCreateNestedManyWithoutFromUserInput
+  paymentsReceived?: Prisma.PaymentCreateNestedManyWithoutToUserInput
   iousOwed?: Prisma.IOUCreateNestedManyWithoutFromUserInput
   iousLent?: Prisma.IOUCreateNestedManyWithoutToUserInput
   availabilityEntries?: Prisma.AvailabilityEntryCreateNestedManyWithoutUserInput
@@ -2472,6 +2916,8 @@ export type UserUncheckedCreateWithoutChoreAssignmentsInput = {
   expenseParticipations?: Prisma.ExpenseItemParticipantUncheckedCreateNestedManyWithoutUserInput
   settlementsOwed?: Prisma.SettlementUncheckedCreateNestedManyWithoutFromUserInput
   settlementsReceived?: Prisma.SettlementUncheckedCreateNestedManyWithoutToUserInput
+  paymentsMade?: Prisma.PaymentUncheckedCreateNestedManyWithoutFromUserInput
+  paymentsReceived?: Prisma.PaymentUncheckedCreateNestedManyWithoutToUserInput
   iousOwed?: Prisma.IOUUncheckedCreateNestedManyWithoutFromUserInput
   iousLent?: Prisma.IOUUncheckedCreateNestedManyWithoutToUserInput
   availabilityEntries?: Prisma.AvailabilityEntryUncheckedCreateNestedManyWithoutUserInput
@@ -2523,6 +2969,8 @@ export type UserUpdateWithoutChoreAssignmentsInput = {
   expenseParticipations?: Prisma.ExpenseItemParticipantUpdateManyWithoutUserNestedInput
   settlementsOwed?: Prisma.SettlementUpdateManyWithoutFromUserNestedInput
   settlementsReceived?: Prisma.SettlementUpdateManyWithoutToUserNestedInput
+  paymentsMade?: Prisma.PaymentUpdateManyWithoutFromUserNestedInput
+  paymentsReceived?: Prisma.PaymentUpdateManyWithoutToUserNestedInput
   iousOwed?: Prisma.IOUUpdateManyWithoutFromUserNestedInput
   iousLent?: Prisma.IOUUpdateManyWithoutToUserNestedInput
   availabilityEntries?: Prisma.AvailabilityEntryUpdateManyWithoutUserNestedInput
@@ -2558,6 +3006,8 @@ export type UserUncheckedUpdateWithoutChoreAssignmentsInput = {
   expenseParticipations?: Prisma.ExpenseItemParticipantUncheckedUpdateManyWithoutUserNestedInput
   settlementsOwed?: Prisma.SettlementUncheckedUpdateManyWithoutFromUserNestedInput
   settlementsReceived?: Prisma.SettlementUncheckedUpdateManyWithoutToUserNestedInput
+  paymentsMade?: Prisma.PaymentUncheckedUpdateManyWithoutFromUserNestedInput
+  paymentsReceived?: Prisma.PaymentUncheckedUpdateManyWithoutToUserNestedInput
   iousOwed?: Prisma.IOUUncheckedUpdateManyWithoutFromUserNestedInput
   iousLent?: Prisma.IOUUncheckedUpdateManyWithoutToUserNestedInput
   availabilityEntries?: Prisma.AvailabilityEntryUncheckedUpdateManyWithoutUserNestedInput
@@ -2593,6 +3043,8 @@ export type UserCreateWithoutAvailabilityEntriesInput = {
   expenseParticipations?: Prisma.ExpenseItemParticipantCreateNestedManyWithoutUserInput
   settlementsOwed?: Prisma.SettlementCreateNestedManyWithoutFromUserInput
   settlementsReceived?: Prisma.SettlementCreateNestedManyWithoutToUserInput
+  paymentsMade?: Prisma.PaymentCreateNestedManyWithoutFromUserInput
+  paymentsReceived?: Prisma.PaymentCreateNestedManyWithoutToUserInput
   iousOwed?: Prisma.IOUCreateNestedManyWithoutFromUserInput
   iousLent?: Prisma.IOUCreateNestedManyWithoutToUserInput
   choreAssignments?: Prisma.ChoreAssignmentCreateNestedManyWithoutUserInput
@@ -2628,6 +3080,8 @@ export type UserUncheckedCreateWithoutAvailabilityEntriesInput = {
   expenseParticipations?: Prisma.ExpenseItemParticipantUncheckedCreateNestedManyWithoutUserInput
   settlementsOwed?: Prisma.SettlementUncheckedCreateNestedManyWithoutFromUserInput
   settlementsReceived?: Prisma.SettlementUncheckedCreateNestedManyWithoutToUserInput
+  paymentsMade?: Prisma.PaymentUncheckedCreateNestedManyWithoutFromUserInput
+  paymentsReceived?: Prisma.PaymentUncheckedCreateNestedManyWithoutToUserInput
   iousOwed?: Prisma.IOUUncheckedCreateNestedManyWithoutFromUserInput
   iousLent?: Prisma.IOUUncheckedCreateNestedManyWithoutToUserInput
   choreAssignments?: Prisma.ChoreAssignmentUncheckedCreateNestedManyWithoutUserInput
@@ -2679,6 +3133,8 @@ export type UserUpdateWithoutAvailabilityEntriesInput = {
   expenseParticipations?: Prisma.ExpenseItemParticipantUpdateManyWithoutUserNestedInput
   settlementsOwed?: Prisma.SettlementUpdateManyWithoutFromUserNestedInput
   settlementsReceived?: Prisma.SettlementUpdateManyWithoutToUserNestedInput
+  paymentsMade?: Prisma.PaymentUpdateManyWithoutFromUserNestedInput
+  paymentsReceived?: Prisma.PaymentUpdateManyWithoutToUserNestedInput
   iousOwed?: Prisma.IOUUpdateManyWithoutFromUserNestedInput
   iousLent?: Prisma.IOUUpdateManyWithoutToUserNestedInput
   choreAssignments?: Prisma.ChoreAssignmentUpdateManyWithoutUserNestedInput
@@ -2714,6 +3170,8 @@ export type UserUncheckedUpdateWithoutAvailabilityEntriesInput = {
   expenseParticipations?: Prisma.ExpenseItemParticipantUncheckedUpdateManyWithoutUserNestedInput
   settlementsOwed?: Prisma.SettlementUncheckedUpdateManyWithoutFromUserNestedInput
   settlementsReceived?: Prisma.SettlementUncheckedUpdateManyWithoutToUserNestedInput
+  paymentsMade?: Prisma.PaymentUncheckedUpdateManyWithoutFromUserNestedInput
+  paymentsReceived?: Prisma.PaymentUncheckedUpdateManyWithoutToUserNestedInput
   iousOwed?: Prisma.IOUUncheckedUpdateManyWithoutFromUserNestedInput
   iousLent?: Prisma.IOUUncheckedUpdateManyWithoutToUserNestedInput
   choreAssignments?: Prisma.ChoreAssignmentUncheckedUpdateManyWithoutUserNestedInput
@@ -2749,6 +3207,8 @@ export type UserCreateWithoutProposalsCreatedInput = {
   expenseParticipations?: Prisma.ExpenseItemParticipantCreateNestedManyWithoutUserInput
   settlementsOwed?: Prisma.SettlementCreateNestedManyWithoutFromUserInput
   settlementsReceived?: Prisma.SettlementCreateNestedManyWithoutToUserInput
+  paymentsMade?: Prisma.PaymentCreateNestedManyWithoutFromUserInput
+  paymentsReceived?: Prisma.PaymentCreateNestedManyWithoutToUserInput
   iousOwed?: Prisma.IOUCreateNestedManyWithoutFromUserInput
   iousLent?: Prisma.IOUCreateNestedManyWithoutToUserInput
   choreAssignments?: Prisma.ChoreAssignmentCreateNestedManyWithoutUserInput
@@ -2784,6 +3244,8 @@ export type UserUncheckedCreateWithoutProposalsCreatedInput = {
   expenseParticipations?: Prisma.ExpenseItemParticipantUncheckedCreateNestedManyWithoutUserInput
   settlementsOwed?: Prisma.SettlementUncheckedCreateNestedManyWithoutFromUserInput
   settlementsReceived?: Prisma.SettlementUncheckedCreateNestedManyWithoutToUserInput
+  paymentsMade?: Prisma.PaymentUncheckedCreateNestedManyWithoutFromUserInput
+  paymentsReceived?: Prisma.PaymentUncheckedCreateNestedManyWithoutToUserInput
   iousOwed?: Prisma.IOUUncheckedCreateNestedManyWithoutFromUserInput
   iousLent?: Prisma.IOUUncheckedCreateNestedManyWithoutToUserInput
   choreAssignments?: Prisma.ChoreAssignmentUncheckedCreateNestedManyWithoutUserInput
@@ -2835,6 +3297,8 @@ export type UserUpdateWithoutProposalsCreatedInput = {
   expenseParticipations?: Prisma.ExpenseItemParticipantUpdateManyWithoutUserNestedInput
   settlementsOwed?: Prisma.SettlementUpdateManyWithoutFromUserNestedInput
   settlementsReceived?: Prisma.SettlementUpdateManyWithoutToUserNestedInput
+  paymentsMade?: Prisma.PaymentUpdateManyWithoutFromUserNestedInput
+  paymentsReceived?: Prisma.PaymentUpdateManyWithoutToUserNestedInput
   iousOwed?: Prisma.IOUUpdateManyWithoutFromUserNestedInput
   iousLent?: Prisma.IOUUpdateManyWithoutToUserNestedInput
   choreAssignments?: Prisma.ChoreAssignmentUpdateManyWithoutUserNestedInput
@@ -2870,6 +3334,8 @@ export type UserUncheckedUpdateWithoutProposalsCreatedInput = {
   expenseParticipations?: Prisma.ExpenseItemParticipantUncheckedUpdateManyWithoutUserNestedInput
   settlementsOwed?: Prisma.SettlementUncheckedUpdateManyWithoutFromUserNestedInput
   settlementsReceived?: Prisma.SettlementUncheckedUpdateManyWithoutToUserNestedInput
+  paymentsMade?: Prisma.PaymentUncheckedUpdateManyWithoutFromUserNestedInput
+  paymentsReceived?: Prisma.PaymentUncheckedUpdateManyWithoutToUserNestedInput
   iousOwed?: Prisma.IOUUncheckedUpdateManyWithoutFromUserNestedInput
   iousLent?: Prisma.IOUUncheckedUpdateManyWithoutToUserNestedInput
   choreAssignments?: Prisma.ChoreAssignmentUncheckedUpdateManyWithoutUserNestedInput
@@ -2905,6 +3371,8 @@ export type UserCreateWithoutProposalFlagsInput = {
   expenseParticipations?: Prisma.ExpenseItemParticipantCreateNestedManyWithoutUserInput
   settlementsOwed?: Prisma.SettlementCreateNestedManyWithoutFromUserInput
   settlementsReceived?: Prisma.SettlementCreateNestedManyWithoutToUserInput
+  paymentsMade?: Prisma.PaymentCreateNestedManyWithoutFromUserInput
+  paymentsReceived?: Prisma.PaymentCreateNestedManyWithoutToUserInput
   iousOwed?: Prisma.IOUCreateNestedManyWithoutFromUserInput
   iousLent?: Prisma.IOUCreateNestedManyWithoutToUserInput
   choreAssignments?: Prisma.ChoreAssignmentCreateNestedManyWithoutUserInput
@@ -2940,6 +3408,8 @@ export type UserUncheckedCreateWithoutProposalFlagsInput = {
   expenseParticipations?: Prisma.ExpenseItemParticipantUncheckedCreateNestedManyWithoutUserInput
   settlementsOwed?: Prisma.SettlementUncheckedCreateNestedManyWithoutFromUserInput
   settlementsReceived?: Prisma.SettlementUncheckedCreateNestedManyWithoutToUserInput
+  paymentsMade?: Prisma.PaymentUncheckedCreateNestedManyWithoutFromUserInput
+  paymentsReceived?: Prisma.PaymentUncheckedCreateNestedManyWithoutToUserInput
   iousOwed?: Prisma.IOUUncheckedCreateNestedManyWithoutFromUserInput
   iousLent?: Prisma.IOUUncheckedCreateNestedManyWithoutToUserInput
   choreAssignments?: Prisma.ChoreAssignmentUncheckedCreateNestedManyWithoutUserInput
@@ -2991,6 +3461,8 @@ export type UserUpdateWithoutProposalFlagsInput = {
   expenseParticipations?: Prisma.ExpenseItemParticipantUpdateManyWithoutUserNestedInput
   settlementsOwed?: Prisma.SettlementUpdateManyWithoutFromUserNestedInput
   settlementsReceived?: Prisma.SettlementUpdateManyWithoutToUserNestedInput
+  paymentsMade?: Prisma.PaymentUpdateManyWithoutFromUserNestedInput
+  paymentsReceived?: Prisma.PaymentUpdateManyWithoutToUserNestedInput
   iousOwed?: Prisma.IOUUpdateManyWithoutFromUserNestedInput
   iousLent?: Prisma.IOUUpdateManyWithoutToUserNestedInput
   choreAssignments?: Prisma.ChoreAssignmentUpdateManyWithoutUserNestedInput
@@ -3026,6 +3498,8 @@ export type UserUncheckedUpdateWithoutProposalFlagsInput = {
   expenseParticipations?: Prisma.ExpenseItemParticipantUncheckedUpdateManyWithoutUserNestedInput
   settlementsOwed?: Prisma.SettlementUncheckedUpdateManyWithoutFromUserNestedInput
   settlementsReceived?: Prisma.SettlementUncheckedUpdateManyWithoutToUserNestedInput
+  paymentsMade?: Prisma.PaymentUncheckedUpdateManyWithoutFromUserNestedInput
+  paymentsReceived?: Prisma.PaymentUncheckedUpdateManyWithoutToUserNestedInput
   iousOwed?: Prisma.IOUUncheckedUpdateManyWithoutFromUserNestedInput
   iousLent?: Prisma.IOUUncheckedUpdateManyWithoutToUserNestedInput
   choreAssignments?: Prisma.ChoreAssignmentUncheckedUpdateManyWithoutUserNestedInput
@@ -3061,6 +3535,8 @@ export type UserCreateWithoutProposalVotesInput = {
   expenseParticipations?: Prisma.ExpenseItemParticipantCreateNestedManyWithoutUserInput
   settlementsOwed?: Prisma.SettlementCreateNestedManyWithoutFromUserInput
   settlementsReceived?: Prisma.SettlementCreateNestedManyWithoutToUserInput
+  paymentsMade?: Prisma.PaymentCreateNestedManyWithoutFromUserInput
+  paymentsReceived?: Prisma.PaymentCreateNestedManyWithoutToUserInput
   iousOwed?: Prisma.IOUCreateNestedManyWithoutFromUserInput
   iousLent?: Prisma.IOUCreateNestedManyWithoutToUserInput
   choreAssignments?: Prisma.ChoreAssignmentCreateNestedManyWithoutUserInput
@@ -3096,6 +3572,8 @@ export type UserUncheckedCreateWithoutProposalVotesInput = {
   expenseParticipations?: Prisma.ExpenseItemParticipantUncheckedCreateNestedManyWithoutUserInput
   settlementsOwed?: Prisma.SettlementUncheckedCreateNestedManyWithoutFromUserInput
   settlementsReceived?: Prisma.SettlementUncheckedCreateNestedManyWithoutToUserInput
+  paymentsMade?: Prisma.PaymentUncheckedCreateNestedManyWithoutFromUserInput
+  paymentsReceived?: Prisma.PaymentUncheckedCreateNestedManyWithoutToUserInput
   iousOwed?: Prisma.IOUUncheckedCreateNestedManyWithoutFromUserInput
   iousLent?: Prisma.IOUUncheckedCreateNestedManyWithoutToUserInput
   choreAssignments?: Prisma.ChoreAssignmentUncheckedCreateNestedManyWithoutUserInput
@@ -3147,6 +3625,8 @@ export type UserUpdateWithoutProposalVotesInput = {
   expenseParticipations?: Prisma.ExpenseItemParticipantUpdateManyWithoutUserNestedInput
   settlementsOwed?: Prisma.SettlementUpdateManyWithoutFromUserNestedInput
   settlementsReceived?: Prisma.SettlementUpdateManyWithoutToUserNestedInput
+  paymentsMade?: Prisma.PaymentUpdateManyWithoutFromUserNestedInput
+  paymentsReceived?: Prisma.PaymentUpdateManyWithoutToUserNestedInput
   iousOwed?: Prisma.IOUUpdateManyWithoutFromUserNestedInput
   iousLent?: Prisma.IOUUpdateManyWithoutToUserNestedInput
   choreAssignments?: Prisma.ChoreAssignmentUpdateManyWithoutUserNestedInput
@@ -3182,6 +3662,8 @@ export type UserUncheckedUpdateWithoutProposalVotesInput = {
   expenseParticipations?: Prisma.ExpenseItemParticipantUncheckedUpdateManyWithoutUserNestedInput
   settlementsOwed?: Prisma.SettlementUncheckedUpdateManyWithoutFromUserNestedInput
   settlementsReceived?: Prisma.SettlementUncheckedUpdateManyWithoutToUserNestedInput
+  paymentsMade?: Prisma.PaymentUncheckedUpdateManyWithoutFromUserNestedInput
+  paymentsReceived?: Prisma.PaymentUncheckedUpdateManyWithoutToUserNestedInput
   iousOwed?: Prisma.IOUUncheckedUpdateManyWithoutFromUserNestedInput
   iousLent?: Prisma.IOUUncheckedUpdateManyWithoutToUserNestedInput
   choreAssignments?: Prisma.ChoreAssignmentUncheckedUpdateManyWithoutUserNestedInput
@@ -3203,6 +3685,8 @@ export type UserCountOutputType = {
   expenseParticipations: number
   settlementsOwed: number
   settlementsReceived: number
+  paymentsMade: number
+  paymentsReceived: number
   iousOwed: number
   iousLent: number
   choreAssignments: number
@@ -3220,6 +3704,8 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   expenseParticipations?: boolean | UserCountOutputTypeCountExpenseParticipationsArgs
   settlementsOwed?: boolean | UserCountOutputTypeCountSettlementsOwedArgs
   settlementsReceived?: boolean | UserCountOutputTypeCountSettlementsReceivedArgs
+  paymentsMade?: boolean | UserCountOutputTypeCountPaymentsMadeArgs
+  paymentsReceived?: boolean | UserCountOutputTypeCountPaymentsReceivedArgs
   iousOwed?: boolean | UserCountOutputTypeCountIousOwedArgs
   iousLent?: boolean | UserCountOutputTypeCountIousLentArgs
   choreAssignments?: boolean | UserCountOutputTypeCountChoreAssignmentsArgs
@@ -3280,6 +3766,20 @@ export type UserCountOutputTypeCountSettlementsOwedArgs<ExtArgs extends runtime.
  */
 export type UserCountOutputTypeCountSettlementsReceivedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.SettlementWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountPaymentsMadeArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PaymentWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountPaymentsReceivedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PaymentWhereInput
 }
 
 /**
@@ -3365,6 +3865,8 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   expenseParticipations?: boolean | Prisma.User$expenseParticipationsArgs<ExtArgs>
   settlementsOwed?: boolean | Prisma.User$settlementsOwedArgs<ExtArgs>
   settlementsReceived?: boolean | Prisma.User$settlementsReceivedArgs<ExtArgs>
+  paymentsMade?: boolean | Prisma.User$paymentsMadeArgs<ExtArgs>
+  paymentsReceived?: boolean | Prisma.User$paymentsReceivedArgs<ExtArgs>
   iousOwed?: boolean | Prisma.User$iousOwedArgs<ExtArgs>
   iousLent?: boolean | Prisma.User$iousLentArgs<ExtArgs>
   choreAssignments?: boolean | Prisma.User$choreAssignmentsArgs<ExtArgs>
@@ -3450,6 +3952,8 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   expenseParticipations?: boolean | Prisma.User$expenseParticipationsArgs<ExtArgs>
   settlementsOwed?: boolean | Prisma.User$settlementsOwedArgs<ExtArgs>
   settlementsReceived?: boolean | Prisma.User$settlementsReceivedArgs<ExtArgs>
+  paymentsMade?: boolean | Prisma.User$paymentsMadeArgs<ExtArgs>
+  paymentsReceived?: boolean | Prisma.User$paymentsReceivedArgs<ExtArgs>
   iousOwed?: boolean | Prisma.User$iousOwedArgs<ExtArgs>
   iousLent?: boolean | Prisma.User$iousLentArgs<ExtArgs>
   choreAssignments?: boolean | Prisma.User$choreAssignmentsArgs<ExtArgs>
@@ -3472,6 +3976,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     expenseParticipations: Prisma.$ExpenseItemParticipantPayload<ExtArgs>[]
     settlementsOwed: Prisma.$SettlementPayload<ExtArgs>[]
     settlementsReceived: Prisma.$SettlementPayload<ExtArgs>[]
+    paymentsMade: Prisma.$PaymentPayload<ExtArgs>[]
+    paymentsReceived: Prisma.$PaymentPayload<ExtArgs>[]
     iousOwed: Prisma.$IOUPayload<ExtArgs>[]
     iousLent: Prisma.$IOUPayload<ExtArgs>[]
     choreAssignments: Prisma.$ChoreAssignmentPayload<ExtArgs>[]
@@ -3901,6 +4407,8 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   expenseParticipations<T extends Prisma.User$expenseParticipationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$expenseParticipationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ExpenseItemParticipantPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   settlementsOwed<T extends Prisma.User$settlementsOwedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$settlementsOwedArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SettlementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   settlementsReceived<T extends Prisma.User$settlementsReceivedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$settlementsReceivedArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SettlementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  paymentsMade<T extends Prisma.User$paymentsMadeArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$paymentsMadeArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PaymentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  paymentsReceived<T extends Prisma.User$paymentsReceivedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$paymentsReceivedArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PaymentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   iousOwed<T extends Prisma.User$iousOwedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$iousOwedArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$IOUPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   iousLent<T extends Prisma.User$iousLentArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$iousLentArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$IOUPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   choreAssignments<T extends Prisma.User$choreAssignmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$choreAssignmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ChoreAssignmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -4491,6 +4999,54 @@ export type User$settlementsReceivedArgs<ExtArgs extends runtime.Types.Extension
   take?: number
   skip?: number
   distinct?: Prisma.SettlementScalarFieldEnum | Prisma.SettlementScalarFieldEnum[]
+}
+
+/**
+ * User.paymentsMade
+ */
+export type User$paymentsMadeArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Payment
+   */
+  select?: Prisma.PaymentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Payment
+   */
+  omit?: Prisma.PaymentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PaymentInclude<ExtArgs> | null
+  where?: Prisma.PaymentWhereInput
+  orderBy?: Prisma.PaymentOrderByWithRelationInput | Prisma.PaymentOrderByWithRelationInput[]
+  cursor?: Prisma.PaymentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PaymentScalarFieldEnum | Prisma.PaymentScalarFieldEnum[]
+}
+
+/**
+ * User.paymentsReceived
+ */
+export type User$paymentsReceivedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Payment
+   */
+  select?: Prisma.PaymentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Payment
+   */
+  omit?: Prisma.PaymentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PaymentInclude<ExtArgs> | null
+  where?: Prisma.PaymentWhereInput
+  orderBy?: Prisma.PaymentOrderByWithRelationInput | Prisma.PaymentOrderByWithRelationInput[]
+  cursor?: Prisma.PaymentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PaymentScalarFieldEnum | Prisma.PaymentScalarFieldEnum[]
 }
 
 /**

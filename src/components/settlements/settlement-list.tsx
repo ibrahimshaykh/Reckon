@@ -36,6 +36,44 @@ type Settlement = {
   };
 };
 
+// Turns a line's data into words. The wording lives in the dictionary rather
+// than being built server-side, so this screen speaks the reader's language
+// like the rest of the app.
+function describeLine(line: LedgerLine, dict: Dictionary): string {
+  const vars = {
+    name: line.personName,
+    guest: line.guestName ?? "",
+    other: line.otherName ?? "",
+  };
+
+  switch (line.kind) {
+    case "paid":
+      return interpolate(dict.settle.linePaid, vars);
+    case "ownShare":
+      return interpolate(dict.settle.lineOwnShare, vars);
+    case "coveringGuest":
+      return interpolate(dict.settle.lineCovering, vars);
+    case "iouOwes":
+      return interpolate(dict.settle.lineIouOwes, vars);
+    case "iouOwed":
+      return interpolate(dict.settle.lineIouOwed, vars);
+    case "alreadyPaid":
+      return interpolate(dict.settle.lineAlreadyPaid, vars);
+    case "alreadyReceived":
+      return interpolate(dict.settle.lineAlreadyReceived, vars);
+  }
+}
+
+// The label column is a title for expenses, but IOUs and payments have no
+// title of their own, so they get a translated word instead of a raw key.
+function describeLabel(line: LedgerLine, dict: Dictionary): string {
+  if (line.kind === "iouOwes" || line.kind === "iouOwed") return dict.settle.lineLabelIou;
+  if (line.kind === "alreadyPaid" || line.kind === "alreadyReceived") {
+    return dict.settle.lineLabelPayment;
+  }
+  return line.label;
+}
+
 // One side's receipt: every line that pushed their balance, then the total.
 // Reads top to bottom like a till roll, because that's what people check.
 function LedgerBreakdown({
@@ -62,8 +100,10 @@ function LedgerBreakdown({
             key={i}
             className="flex items-baseline gap-2 border-b border-rule/40 py-1 last:border-0"
           >
-            <span className="text-xs">{line.label}</span>
-            <span className="text-xs text-muted-foreground">{line.detail}</span>
+            <span className="text-xs">{describeLabel(line, dict)}</span>
+            <span className="text-xs text-muted-foreground">
+              {describeLine(line, dict)}
+            </span>
             <span
               className={`tabular ms-auto shrink-0 text-xs ${
                 line.amountCents < 0 ? "text-destructive" : "text-foreground"

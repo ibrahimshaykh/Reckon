@@ -24,6 +24,30 @@ export function applyIOUs(
   return result;
 }
 
+export type PaymentInput = { fromUserId: string; toUserId: string; amountCents: number };
+
+// Money that has already moved, subtracted from what the expenses say is owed.
+//
+// Without this, confirming a payment was only a label: the next recalculation
+// re-derived the debt from the same expenses and asked for it again. Note this
+// is the exact mirror of applyIOUs — an IOU is a debt created, a payment is a
+// debt discharged — so it deliberately moves the balances the opposite way.
+//
+// Overpaying is allowed to push a balance past zero rather than being clamped.
+// If someone has handed over more than they owed, the honest answer is that
+// they're now owed the difference, not that they're square.
+export function applyPayments(
+  balances: Record<string, number>,
+  payments: PaymentInput[],
+): Record<string, number> {
+  const result = { ...balances };
+  for (const payment of payments) {
+    result[payment.fromUserId] = (result[payment.fromUserId] ?? 0) + payment.amountCents;
+    result[payment.toUserId] = (result[payment.toUserId] ?? 0) - payment.amountCents;
+  }
+  return result;
+}
+
 // Greedy debt minimization: repeatedly match the largest creditor against
 // the largest debtor until every balance is zero. This is the standard
 // minimum-transaction heuristic — not always the mathematically fewest

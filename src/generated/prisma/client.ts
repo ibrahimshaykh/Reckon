@@ -82,6 +82,11 @@ export type ExpenseItem = Prisma.ExpenseItemModel
  */
 export type ExpenseItemParticipant = Prisma.ExpenseItemParticipantModel
 /**
+ * Model Payment
+ * 
+ */
+export type Payment = Prisma.PaymentModel
+/**
  * Model Settlement
  * 
  */

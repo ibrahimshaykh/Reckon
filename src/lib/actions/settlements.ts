@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { Resend } from "resend";
 import { db } from "@/lib/db";
+import type { Prisma } from "@/generated/prisma/client";
 import { assertMember } from "@/lib/actions/groups";
 import { requireSession, generateGuestToken } from "@/lib/dal";
 import { ApiError } from "@/lib/api-error";
@@ -12,6 +13,7 @@ import {
   computeBalances,
   computeSettlements,
   applyIOUs,
+  applyPayments,
   splitEvenlyByRatio,
 } from "@/lib/settlement";
 import { deriveItemShares, toShareRatios } from "@/lib/guest-shares";
@@ -29,7 +31,7 @@ import { asActionResult, type ActionResult } from "@/lib/action-result";
 // and the reader, so an explanation can never describe different arithmetic
 // from the one that produced the number.
 async function loadGroupLedger(groupId: string) {
-  const [expenses, iouRows] = await Promise.all([
+  const [expenses, iouRows, paymentRows] = await Promise.all([
     db.expense.findMany({
       where: { groupId },
       include: {
@@ -40,6 +42,9 @@ async function loadGroupLedger(groupId: string) {
     // Forgiven IOUs are excluded — a forgiven debt shouldn't still count
     // against the person who owed it.
     db.iOU.findMany({ where: { groupId, forgivenAt: null } }),
+    // Money that has actually moved. Without this the debt gets re-derived
+    // from the expenses every time and people are asked to pay twice.
+    db.payment.findMany({ where: { groupId }, orderBy: { confirmedAt: "asc" } }),
   ]);
 
   // Two parallel outputs from one pass: the numbers the settlement engine
@@ -134,6 +139,11 @@ async function loadGroupLedger(groupId: string) {
       toUserId: i.toUserId,
       amountCents: toCents(i.amount),
     })),
+    payments: paymentRows.map((p) => ({
+      fromUserId: p.fromUserId,
+      toUserId: p.toUserId,
+      amountCents: toCents(p.amount),
+    })),
   };
 }
 
@@ -144,7 +154,7 @@ async function loadGroupLedger(groupId: string) {
 // (see the settlement_pair_unique migration): it's upserted in place rather
 // than accumulating a new row per settle cycle.
 export async function recalculateSettlements(groupId: string) {
-  const { flattened, ious, breaches } = await loadGroupLedger(groupId);
+  const { flattened, ious, payments, breaches } = await loadGroupLedger(groupId);
 
   for (const breach of breaches) {
     logger.error(
@@ -153,7 +163,9 @@ export async function recalculateSettlements(groupId: string) {
     );
   }
 
-  const balances = applyIOUs(computeBalances(flattened), ious);
+  // Payments last: what the expenses say is owed, minus what has already been
+  // handed over. Skipping this step is what let a settled debt come back.
+  const balances = applyPayments(applyIOUs(computeBalances(flattened), ious), payments);
   const computed = computeSettlements(balances);
 
   await Promise.all(
@@ -231,6 +243,7 @@ export async function getGroupSettlements(groupId: string) {
       userId,
       expenses: ledger.evidence,
       ious: ledger.ious,
+      payments: ledger.payments,
       nameOf,
     });
 
@@ -306,6 +319,35 @@ export async function markPaid(settlementId: string): Promise<ActionResult<void>
   });
 }
 
+// Writes the payment down and then re-derives the group's balances from it.
+// Confirming used to only set a status flag, which meant the next
+// recalculation worked the same debt out from the same expenses and asked for
+// it again. The upsert keyed on settlementId makes a double-click harmless —
+// recording the same money twice would push the balance the wrong way.
+async function recordPayment(settlement: {
+  id: string;
+  groupId: string;
+  fromUserId: string;
+  toUserId: string;
+  amount: Prisma.Decimal;
+}) {
+  await db.payment.upsert({
+    where: { settlementId: settlement.id },
+    update: {},
+    create: {
+      groupId: settlement.groupId,
+      fromUserId: settlement.fromUserId,
+      toUserId: settlement.toUserId,
+      amount: settlement.amount,
+      settlementId: settlement.id,
+    },
+  });
+
+  await recalculateSettlements(settlement.groupId);
+  revalidatePath(`/groups/${settlement.groupId}`);
+  revalidatePath(`/groups/${settlement.groupId}/settle`);
+}
+
 export async function confirmReceived(settlementId: string): Promise<ActionResult<void>> {
   return asActionResult(async () => {
     const session = await requireSession();
@@ -313,8 +355,10 @@ export async function confirmReceived(settlementId: string): Promise<ActionResul
     if (settlement.toUserId !== session.id) {
       throw new ApiError(403, "Only the person owed can confirm this.");
     }
+    if (settlement.status === "CONFIRMED") return;
+
     await db.settlement.update({ where: { id: settlementId }, data: { status: "CONFIRMED" } });
-    revalidatePath(`/groups/${settlement.groupId}/settle`);
+    await recordPayment(settlement);
   });
 }
 
@@ -333,7 +377,7 @@ export async function confirmReceivedByToken(
 
     if (settlement.status === "PAY_MARKED") {
       await db.settlement.update({ where: { id: settlement.id }, data: { status: "CONFIRMED" } });
-      revalidatePath(`/groups/${settlement.groupId}/settle`);
+      await recordPayment(settlement);
     }
 
     return { status: "CONFIRMED" as const };

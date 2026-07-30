@@ -308,28 +308,28 @@ export async function getGuestView(token: string): Promise<GuestView | null> {
   const committed = guest.status === "PAYING" || guest.status === "PAID";
 
   // "The hosts have squared up" means two things at once: nothing involving
-  // them is still outstanding, AND something of theirs was actually settled.
-  // Requiring the second half matters — a host who is also the payer can owe
-  // nobody and have no rows at all, and treating that emptiness as "already
-  // covered" would wave a guest away while their host is still out of pocket.
+  // them is still outstanding, AND money of theirs actually moved. Requiring
+  // the second half matters — a host who is also the payer can owe nobody and
+  // have no rows at all, and treating that emptiness as "already covered"
+  // would wave a guest away while their host is still out of pocket.
+  //
+  // The second half reads the Payment table, not settlement statuses. Once a
+  // payment is recorded the balance clears, and a cleared settlement row is
+  // deleted — so counting CONFIRMED rows would have started reporting zero
+  // exactly when the money had definitely arrived.
   const hostIds = guest.hosts.map((h) => h.userId);
-  const [outstanding, settled] = await Promise.all([
+  const hostSides = [{ fromUserId: { in: hostIds } }, { toUserId: { in: hostIds } }];
+  const [outstanding, paid] = await Promise.all([
     db.settlement.count({
       where: {
         groupId: expense.groupId,
         status: { not: "CONFIRMED" },
-        OR: [{ fromUserId: { in: hostIds } }, { toUserId: { in: hostIds } }],
+        OR: hostSides,
       },
     }),
-    db.settlement.count({
-      where: {
-        groupId: expense.groupId,
-        status: "CONFIRMED",
-        OR: [{ fromUserId: { in: hostIds } }, { toUserId: { in: hostIds } }],
-      },
-    }),
+    db.payment.count({ where: { groupId: expense.groupId, OR: hostSides } }),
   ]);
-  const covered = guest.status !== "PAID" && outstanding === 0 && settled > 0;
+  const covered = guest.status !== "PAID" && outstanding === 0 && paid > 0;
 
   const carried = guestHostSplit[guest.id] ?? {};
 

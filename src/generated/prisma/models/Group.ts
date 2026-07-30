@@ -194,6 +194,7 @@ export type GroupWhereInput = {
   members?: Prisma.GroupMemberListRelationFilter
   expenses?: Prisma.ExpenseListRelationFilter
   settlements?: Prisma.SettlementListRelationFilter
+  payments?: Prisma.PaymentListRelationFilter
   ious?: Prisma.IOUListRelationFilter
   chores?: Prisma.ChoreListRelationFilter
   availabilityEntries?: Prisma.AvailabilityEntryListRelationFilter
@@ -213,6 +214,7 @@ export type GroupOrderByWithRelationInput = {
   members?: Prisma.GroupMemberOrderByRelationAggregateInput
   expenses?: Prisma.ExpenseOrderByRelationAggregateInput
   settlements?: Prisma.SettlementOrderByRelationAggregateInput
+  payments?: Prisma.PaymentOrderByRelationAggregateInput
   ious?: Prisma.IOUOrderByRelationAggregateInput
   chores?: Prisma.ChoreOrderByRelationAggregateInput
   availabilityEntries?: Prisma.AvailabilityEntryOrderByRelationAggregateInput
@@ -235,6 +237,7 @@ export type GroupWhereUniqueInput = Prisma.AtLeast<{
   members?: Prisma.GroupMemberListRelationFilter
   expenses?: Prisma.ExpenseListRelationFilter
   settlements?: Prisma.SettlementListRelationFilter
+  payments?: Prisma.PaymentListRelationFilter
   ious?: Prisma.IOUListRelationFilter
   chores?: Prisma.ChoreListRelationFilter
   availabilityEntries?: Prisma.AvailabilityEntryListRelationFilter
@@ -277,6 +280,7 @@ export type GroupCreateInput = {
   members?: Prisma.GroupMemberCreateNestedManyWithoutGroupInput
   expenses?: Prisma.ExpenseCreateNestedManyWithoutGroupInput
   settlements?: Prisma.SettlementCreateNestedManyWithoutGroupInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutGroupInput
   ious?: Prisma.IOUCreateNestedManyWithoutGroupInput
   chores?: Prisma.ChoreCreateNestedManyWithoutGroupInput
   availabilityEntries?: Prisma.AvailabilityEntryCreateNestedManyWithoutGroupInput
@@ -295,6 +299,7 @@ export type GroupUncheckedCreateInput = {
   members?: Prisma.GroupMemberUncheckedCreateNestedManyWithoutGroupInput
   expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutGroupInput
   settlements?: Prisma.SettlementUncheckedCreateNestedManyWithoutGroupInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutGroupInput
   ious?: Prisma.IOUUncheckedCreateNestedManyWithoutGroupInput
   chores?: Prisma.ChoreUncheckedCreateNestedManyWithoutGroupInput
   availabilityEntries?: Prisma.AvailabilityEntryUncheckedCreateNestedManyWithoutGroupInput
@@ -313,6 +318,7 @@ export type GroupUpdateInput = {
   members?: Prisma.GroupMemberUpdateManyWithoutGroupNestedInput
   expenses?: Prisma.ExpenseUpdateManyWithoutGroupNestedInput
   settlements?: Prisma.SettlementUpdateManyWithoutGroupNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutGroupNestedInput
   ious?: Prisma.IOUUpdateManyWithoutGroupNestedInput
   chores?: Prisma.ChoreUpdateManyWithoutGroupNestedInput
   availabilityEntries?: Prisma.AvailabilityEntryUpdateManyWithoutGroupNestedInput
@@ -331,6 +337,7 @@ export type GroupUncheckedUpdateInput = {
   members?: Prisma.GroupMemberUncheckedUpdateManyWithoutGroupNestedInput
   expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutGroupNestedInput
   settlements?: Prisma.SettlementUncheckedUpdateManyWithoutGroupNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutGroupNestedInput
   ious?: Prisma.IOUUncheckedUpdateManyWithoutGroupNestedInput
   chores?: Prisma.ChoreUncheckedUpdateManyWithoutGroupNestedInput
   availabilityEntries?: Prisma.AvailabilityEntryUncheckedUpdateManyWithoutGroupNestedInput
@@ -477,6 +484,20 @@ export type GroupUpdateOneRequiredWithoutExpensesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.GroupUpdateToOneWithWhereWithoutExpensesInput, Prisma.GroupUpdateWithoutExpensesInput>, Prisma.GroupUncheckedUpdateWithoutExpensesInput>
 }
 
+export type GroupCreateNestedOneWithoutPaymentsInput = {
+  create?: Prisma.XOR<Prisma.GroupCreateWithoutPaymentsInput, Prisma.GroupUncheckedCreateWithoutPaymentsInput>
+  connectOrCreate?: Prisma.GroupCreateOrConnectWithoutPaymentsInput
+  connect?: Prisma.GroupWhereUniqueInput
+}
+
+export type GroupUpdateOneRequiredWithoutPaymentsNestedInput = {
+  create?: Prisma.XOR<Prisma.GroupCreateWithoutPaymentsInput, Prisma.GroupUncheckedCreateWithoutPaymentsInput>
+  connectOrCreate?: Prisma.GroupCreateOrConnectWithoutPaymentsInput
+  upsert?: Prisma.GroupUpsertWithoutPaymentsInput
+  connect?: Prisma.GroupWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.GroupUpdateToOneWithWhereWithoutPaymentsInput, Prisma.GroupUpdateWithoutPaymentsInput>, Prisma.GroupUncheckedUpdateWithoutPaymentsInput>
+}
+
 export type GroupCreateNestedOneWithoutSettlementsInput = {
   create?: Prisma.XOR<Prisma.GroupCreateWithoutSettlementsInput, Prisma.GroupUncheckedCreateWithoutSettlementsInput>
   connectOrCreate?: Prisma.GroupCreateOrConnectWithoutSettlementsInput
@@ -584,6 +605,7 @@ export type GroupCreateWithoutCreatedByInput = {
   members?: Prisma.GroupMemberCreateNestedManyWithoutGroupInput
   expenses?: Prisma.ExpenseCreateNestedManyWithoutGroupInput
   settlements?: Prisma.SettlementCreateNestedManyWithoutGroupInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutGroupInput
   ious?: Prisma.IOUCreateNestedManyWithoutGroupInput
   chores?: Prisma.ChoreCreateNestedManyWithoutGroupInput
   availabilityEntries?: Prisma.AvailabilityEntryCreateNestedManyWithoutGroupInput
@@ -601,6 +623,7 @@ export type GroupUncheckedCreateWithoutCreatedByInput = {
   members?: Prisma.GroupMemberUncheckedCreateNestedManyWithoutGroupInput
   expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutGroupInput
   settlements?: Prisma.SettlementUncheckedCreateNestedManyWithoutGroupInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutGroupInput
   ious?: Prisma.IOUUncheckedCreateNestedManyWithoutGroupInput
   chores?: Prisma.ChoreUncheckedCreateNestedManyWithoutGroupInput
   availabilityEntries?: Prisma.AvailabilityEntryUncheckedCreateNestedManyWithoutGroupInput
@@ -656,6 +679,7 @@ export type GroupCreateWithoutMembersInput = {
   createdBy: Prisma.UserCreateNestedOneWithoutCreatedGroupsInput
   expenses?: Prisma.ExpenseCreateNestedManyWithoutGroupInput
   settlements?: Prisma.SettlementCreateNestedManyWithoutGroupInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutGroupInput
   ious?: Prisma.IOUCreateNestedManyWithoutGroupInput
   chores?: Prisma.ChoreCreateNestedManyWithoutGroupInput
   availabilityEntries?: Prisma.AvailabilityEntryCreateNestedManyWithoutGroupInput
@@ -673,6 +697,7 @@ export type GroupUncheckedCreateWithoutMembersInput = {
   updatedAt?: Date | string
   expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutGroupInput
   settlements?: Prisma.SettlementUncheckedCreateNestedManyWithoutGroupInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutGroupInput
   ious?: Prisma.IOUUncheckedCreateNestedManyWithoutGroupInput
   chores?: Prisma.ChoreUncheckedCreateNestedManyWithoutGroupInput
   availabilityEntries?: Prisma.AvailabilityEntryUncheckedCreateNestedManyWithoutGroupInput
@@ -706,6 +731,7 @@ export type GroupUpdateWithoutMembersInput = {
   createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedGroupsNestedInput
   expenses?: Prisma.ExpenseUpdateManyWithoutGroupNestedInput
   settlements?: Prisma.SettlementUpdateManyWithoutGroupNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutGroupNestedInput
   ious?: Prisma.IOUUpdateManyWithoutGroupNestedInput
   chores?: Prisma.ChoreUpdateManyWithoutGroupNestedInput
   availabilityEntries?: Prisma.AvailabilityEntryUpdateManyWithoutGroupNestedInput
@@ -723,6 +749,7 @@ export type GroupUncheckedUpdateWithoutMembersInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutGroupNestedInput
   settlements?: Prisma.SettlementUncheckedUpdateManyWithoutGroupNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutGroupNestedInput
   ious?: Prisma.IOUUncheckedUpdateManyWithoutGroupNestedInput
   chores?: Prisma.ChoreUncheckedUpdateManyWithoutGroupNestedInput
   availabilityEntries?: Prisma.AvailabilityEntryUncheckedUpdateManyWithoutGroupNestedInput
@@ -740,6 +767,7 @@ export type GroupCreateWithoutExpensesInput = {
   createdBy: Prisma.UserCreateNestedOneWithoutCreatedGroupsInput
   members?: Prisma.GroupMemberCreateNestedManyWithoutGroupInput
   settlements?: Prisma.SettlementCreateNestedManyWithoutGroupInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutGroupInput
   ious?: Prisma.IOUCreateNestedManyWithoutGroupInput
   chores?: Prisma.ChoreCreateNestedManyWithoutGroupInput
   availabilityEntries?: Prisma.AvailabilityEntryCreateNestedManyWithoutGroupInput
@@ -757,6 +785,7 @@ export type GroupUncheckedCreateWithoutExpensesInput = {
   updatedAt?: Date | string
   members?: Prisma.GroupMemberUncheckedCreateNestedManyWithoutGroupInput
   settlements?: Prisma.SettlementUncheckedCreateNestedManyWithoutGroupInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutGroupInput
   ious?: Prisma.IOUUncheckedCreateNestedManyWithoutGroupInput
   chores?: Prisma.ChoreUncheckedCreateNestedManyWithoutGroupInput
   availabilityEntries?: Prisma.AvailabilityEntryUncheckedCreateNestedManyWithoutGroupInput
@@ -790,6 +819,7 @@ export type GroupUpdateWithoutExpensesInput = {
   createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedGroupsNestedInput
   members?: Prisma.GroupMemberUpdateManyWithoutGroupNestedInput
   settlements?: Prisma.SettlementUpdateManyWithoutGroupNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutGroupNestedInput
   ious?: Prisma.IOUUpdateManyWithoutGroupNestedInput
   chores?: Prisma.ChoreUpdateManyWithoutGroupNestedInput
   availabilityEntries?: Prisma.AvailabilityEntryUpdateManyWithoutGroupNestedInput
@@ -806,6 +836,95 @@ export type GroupUncheckedUpdateWithoutExpensesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   members?: Prisma.GroupMemberUncheckedUpdateManyWithoutGroupNestedInput
+  settlements?: Prisma.SettlementUncheckedUpdateManyWithoutGroupNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutGroupNestedInput
+  ious?: Prisma.IOUUncheckedUpdateManyWithoutGroupNestedInput
+  chores?: Prisma.ChoreUncheckedUpdateManyWithoutGroupNestedInput
+  availabilityEntries?: Prisma.AvailabilityEntryUncheckedUpdateManyWithoutGroupNestedInput
+  proposals?: Prisma.ProposalUncheckedUpdateManyWithoutGroupNestedInput
+  activityEvents?: Prisma.ActivityEventUncheckedUpdateManyWithoutGroupNestedInput
+  recaps?: Prisma.RecapUncheckedUpdateManyWithoutGroupNestedInput
+}
+
+export type GroupCreateWithoutPaymentsInput = {
+  id?: string
+  name: string
+  currency?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  createdBy: Prisma.UserCreateNestedOneWithoutCreatedGroupsInput
+  members?: Prisma.GroupMemberCreateNestedManyWithoutGroupInput
+  expenses?: Prisma.ExpenseCreateNestedManyWithoutGroupInput
+  settlements?: Prisma.SettlementCreateNestedManyWithoutGroupInput
+  ious?: Prisma.IOUCreateNestedManyWithoutGroupInput
+  chores?: Prisma.ChoreCreateNestedManyWithoutGroupInput
+  availabilityEntries?: Prisma.AvailabilityEntryCreateNestedManyWithoutGroupInput
+  proposals?: Prisma.ProposalCreateNestedManyWithoutGroupInput
+  activityEvents?: Prisma.ActivityEventCreateNestedManyWithoutGroupInput
+  recaps?: Prisma.RecapCreateNestedManyWithoutGroupInput
+}
+
+export type GroupUncheckedCreateWithoutPaymentsInput = {
+  id?: string
+  name: string
+  currency?: string
+  createdById: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  members?: Prisma.GroupMemberUncheckedCreateNestedManyWithoutGroupInput
+  expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutGroupInput
+  settlements?: Prisma.SettlementUncheckedCreateNestedManyWithoutGroupInput
+  ious?: Prisma.IOUUncheckedCreateNestedManyWithoutGroupInput
+  chores?: Prisma.ChoreUncheckedCreateNestedManyWithoutGroupInput
+  availabilityEntries?: Prisma.AvailabilityEntryUncheckedCreateNestedManyWithoutGroupInput
+  proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutGroupInput
+  activityEvents?: Prisma.ActivityEventUncheckedCreateNestedManyWithoutGroupInput
+  recaps?: Prisma.RecapUncheckedCreateNestedManyWithoutGroupInput
+}
+
+export type GroupCreateOrConnectWithoutPaymentsInput = {
+  where: Prisma.GroupWhereUniqueInput
+  create: Prisma.XOR<Prisma.GroupCreateWithoutPaymentsInput, Prisma.GroupUncheckedCreateWithoutPaymentsInput>
+}
+
+export type GroupUpsertWithoutPaymentsInput = {
+  update: Prisma.XOR<Prisma.GroupUpdateWithoutPaymentsInput, Prisma.GroupUncheckedUpdateWithoutPaymentsInput>
+  create: Prisma.XOR<Prisma.GroupCreateWithoutPaymentsInput, Prisma.GroupUncheckedCreateWithoutPaymentsInput>
+  where?: Prisma.GroupWhereInput
+}
+
+export type GroupUpdateToOneWithWhereWithoutPaymentsInput = {
+  where?: Prisma.GroupWhereInput
+  data: Prisma.XOR<Prisma.GroupUpdateWithoutPaymentsInput, Prisma.GroupUncheckedUpdateWithoutPaymentsInput>
+}
+
+export type GroupUpdateWithoutPaymentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedGroupsNestedInput
+  members?: Prisma.GroupMemberUpdateManyWithoutGroupNestedInput
+  expenses?: Prisma.ExpenseUpdateManyWithoutGroupNestedInput
+  settlements?: Prisma.SettlementUpdateManyWithoutGroupNestedInput
+  ious?: Prisma.IOUUpdateManyWithoutGroupNestedInput
+  chores?: Prisma.ChoreUpdateManyWithoutGroupNestedInput
+  availabilityEntries?: Prisma.AvailabilityEntryUpdateManyWithoutGroupNestedInput
+  proposals?: Prisma.ProposalUpdateManyWithoutGroupNestedInput
+  activityEvents?: Prisma.ActivityEventUpdateManyWithoutGroupNestedInput
+  recaps?: Prisma.RecapUpdateManyWithoutGroupNestedInput
+}
+
+export type GroupUncheckedUpdateWithoutPaymentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  createdById?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  members?: Prisma.GroupMemberUncheckedUpdateManyWithoutGroupNestedInput
+  expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutGroupNestedInput
   settlements?: Prisma.SettlementUncheckedUpdateManyWithoutGroupNestedInput
   ious?: Prisma.IOUUncheckedUpdateManyWithoutGroupNestedInput
   chores?: Prisma.ChoreUncheckedUpdateManyWithoutGroupNestedInput
@@ -824,6 +943,7 @@ export type GroupCreateWithoutSettlementsInput = {
   createdBy: Prisma.UserCreateNestedOneWithoutCreatedGroupsInput
   members?: Prisma.GroupMemberCreateNestedManyWithoutGroupInput
   expenses?: Prisma.ExpenseCreateNestedManyWithoutGroupInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutGroupInput
   ious?: Prisma.IOUCreateNestedManyWithoutGroupInput
   chores?: Prisma.ChoreCreateNestedManyWithoutGroupInput
   availabilityEntries?: Prisma.AvailabilityEntryCreateNestedManyWithoutGroupInput
@@ -841,6 +961,7 @@ export type GroupUncheckedCreateWithoutSettlementsInput = {
   updatedAt?: Date | string
   members?: Prisma.GroupMemberUncheckedCreateNestedManyWithoutGroupInput
   expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutGroupInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutGroupInput
   ious?: Prisma.IOUUncheckedCreateNestedManyWithoutGroupInput
   chores?: Prisma.ChoreUncheckedCreateNestedManyWithoutGroupInput
   availabilityEntries?: Prisma.AvailabilityEntryUncheckedCreateNestedManyWithoutGroupInput
@@ -874,6 +995,7 @@ export type GroupUpdateWithoutSettlementsInput = {
   createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedGroupsNestedInput
   members?: Prisma.GroupMemberUpdateManyWithoutGroupNestedInput
   expenses?: Prisma.ExpenseUpdateManyWithoutGroupNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutGroupNestedInput
   ious?: Prisma.IOUUpdateManyWithoutGroupNestedInput
   chores?: Prisma.ChoreUpdateManyWithoutGroupNestedInput
   availabilityEntries?: Prisma.AvailabilityEntryUpdateManyWithoutGroupNestedInput
@@ -891,6 +1013,7 @@ export type GroupUncheckedUpdateWithoutSettlementsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   members?: Prisma.GroupMemberUncheckedUpdateManyWithoutGroupNestedInput
   expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutGroupNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutGroupNestedInput
   ious?: Prisma.IOUUncheckedUpdateManyWithoutGroupNestedInput
   chores?: Prisma.ChoreUncheckedUpdateManyWithoutGroupNestedInput
   availabilityEntries?: Prisma.AvailabilityEntryUncheckedUpdateManyWithoutGroupNestedInput
@@ -909,6 +1032,7 @@ export type GroupCreateWithoutIousInput = {
   members?: Prisma.GroupMemberCreateNestedManyWithoutGroupInput
   expenses?: Prisma.ExpenseCreateNestedManyWithoutGroupInput
   settlements?: Prisma.SettlementCreateNestedManyWithoutGroupInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutGroupInput
   chores?: Prisma.ChoreCreateNestedManyWithoutGroupInput
   availabilityEntries?: Prisma.AvailabilityEntryCreateNestedManyWithoutGroupInput
   proposals?: Prisma.ProposalCreateNestedManyWithoutGroupInput
@@ -926,6 +1050,7 @@ export type GroupUncheckedCreateWithoutIousInput = {
   members?: Prisma.GroupMemberUncheckedCreateNestedManyWithoutGroupInput
   expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutGroupInput
   settlements?: Prisma.SettlementUncheckedCreateNestedManyWithoutGroupInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutGroupInput
   chores?: Prisma.ChoreUncheckedCreateNestedManyWithoutGroupInput
   availabilityEntries?: Prisma.AvailabilityEntryUncheckedCreateNestedManyWithoutGroupInput
   proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutGroupInput
@@ -959,6 +1084,7 @@ export type GroupUpdateWithoutIousInput = {
   members?: Prisma.GroupMemberUpdateManyWithoutGroupNestedInput
   expenses?: Prisma.ExpenseUpdateManyWithoutGroupNestedInput
   settlements?: Prisma.SettlementUpdateManyWithoutGroupNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutGroupNestedInput
   chores?: Prisma.ChoreUpdateManyWithoutGroupNestedInput
   availabilityEntries?: Prisma.AvailabilityEntryUpdateManyWithoutGroupNestedInput
   proposals?: Prisma.ProposalUpdateManyWithoutGroupNestedInput
@@ -976,6 +1102,7 @@ export type GroupUncheckedUpdateWithoutIousInput = {
   members?: Prisma.GroupMemberUncheckedUpdateManyWithoutGroupNestedInput
   expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutGroupNestedInput
   settlements?: Prisma.SettlementUncheckedUpdateManyWithoutGroupNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutGroupNestedInput
   chores?: Prisma.ChoreUncheckedUpdateManyWithoutGroupNestedInput
   availabilityEntries?: Prisma.AvailabilityEntryUncheckedUpdateManyWithoutGroupNestedInput
   proposals?: Prisma.ProposalUncheckedUpdateManyWithoutGroupNestedInput
@@ -993,6 +1120,7 @@ export type GroupCreateWithoutChoresInput = {
   members?: Prisma.GroupMemberCreateNestedManyWithoutGroupInput
   expenses?: Prisma.ExpenseCreateNestedManyWithoutGroupInput
   settlements?: Prisma.SettlementCreateNestedManyWithoutGroupInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutGroupInput
   ious?: Prisma.IOUCreateNestedManyWithoutGroupInput
   availabilityEntries?: Prisma.AvailabilityEntryCreateNestedManyWithoutGroupInput
   proposals?: Prisma.ProposalCreateNestedManyWithoutGroupInput
@@ -1010,6 +1138,7 @@ export type GroupUncheckedCreateWithoutChoresInput = {
   members?: Prisma.GroupMemberUncheckedCreateNestedManyWithoutGroupInput
   expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutGroupInput
   settlements?: Prisma.SettlementUncheckedCreateNestedManyWithoutGroupInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutGroupInput
   ious?: Prisma.IOUUncheckedCreateNestedManyWithoutGroupInput
   availabilityEntries?: Prisma.AvailabilityEntryUncheckedCreateNestedManyWithoutGroupInput
   proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutGroupInput
@@ -1043,6 +1172,7 @@ export type GroupUpdateWithoutChoresInput = {
   members?: Prisma.GroupMemberUpdateManyWithoutGroupNestedInput
   expenses?: Prisma.ExpenseUpdateManyWithoutGroupNestedInput
   settlements?: Prisma.SettlementUpdateManyWithoutGroupNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutGroupNestedInput
   ious?: Prisma.IOUUpdateManyWithoutGroupNestedInput
   availabilityEntries?: Prisma.AvailabilityEntryUpdateManyWithoutGroupNestedInput
   proposals?: Prisma.ProposalUpdateManyWithoutGroupNestedInput
@@ -1060,6 +1190,7 @@ export type GroupUncheckedUpdateWithoutChoresInput = {
   members?: Prisma.GroupMemberUncheckedUpdateManyWithoutGroupNestedInput
   expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutGroupNestedInput
   settlements?: Prisma.SettlementUncheckedUpdateManyWithoutGroupNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutGroupNestedInput
   ious?: Prisma.IOUUncheckedUpdateManyWithoutGroupNestedInput
   availabilityEntries?: Prisma.AvailabilityEntryUncheckedUpdateManyWithoutGroupNestedInput
   proposals?: Prisma.ProposalUncheckedUpdateManyWithoutGroupNestedInput
@@ -1077,6 +1208,7 @@ export type GroupCreateWithoutAvailabilityEntriesInput = {
   members?: Prisma.GroupMemberCreateNestedManyWithoutGroupInput
   expenses?: Prisma.ExpenseCreateNestedManyWithoutGroupInput
   settlements?: Prisma.SettlementCreateNestedManyWithoutGroupInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutGroupInput
   ious?: Prisma.IOUCreateNestedManyWithoutGroupInput
   chores?: Prisma.ChoreCreateNestedManyWithoutGroupInput
   proposals?: Prisma.ProposalCreateNestedManyWithoutGroupInput
@@ -1094,6 +1226,7 @@ export type GroupUncheckedCreateWithoutAvailabilityEntriesInput = {
   members?: Prisma.GroupMemberUncheckedCreateNestedManyWithoutGroupInput
   expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutGroupInput
   settlements?: Prisma.SettlementUncheckedCreateNestedManyWithoutGroupInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutGroupInput
   ious?: Prisma.IOUUncheckedCreateNestedManyWithoutGroupInput
   chores?: Prisma.ChoreUncheckedCreateNestedManyWithoutGroupInput
   proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutGroupInput
@@ -1127,6 +1260,7 @@ export type GroupUpdateWithoutAvailabilityEntriesInput = {
   members?: Prisma.GroupMemberUpdateManyWithoutGroupNestedInput
   expenses?: Prisma.ExpenseUpdateManyWithoutGroupNestedInput
   settlements?: Prisma.SettlementUpdateManyWithoutGroupNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutGroupNestedInput
   ious?: Prisma.IOUUpdateManyWithoutGroupNestedInput
   chores?: Prisma.ChoreUpdateManyWithoutGroupNestedInput
   proposals?: Prisma.ProposalUpdateManyWithoutGroupNestedInput
@@ -1144,6 +1278,7 @@ export type GroupUncheckedUpdateWithoutAvailabilityEntriesInput = {
   members?: Prisma.GroupMemberUncheckedUpdateManyWithoutGroupNestedInput
   expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutGroupNestedInput
   settlements?: Prisma.SettlementUncheckedUpdateManyWithoutGroupNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutGroupNestedInput
   ious?: Prisma.IOUUncheckedUpdateManyWithoutGroupNestedInput
   chores?: Prisma.ChoreUncheckedUpdateManyWithoutGroupNestedInput
   proposals?: Prisma.ProposalUncheckedUpdateManyWithoutGroupNestedInput
@@ -1161,6 +1296,7 @@ export type GroupCreateWithoutProposalsInput = {
   members?: Prisma.GroupMemberCreateNestedManyWithoutGroupInput
   expenses?: Prisma.ExpenseCreateNestedManyWithoutGroupInput
   settlements?: Prisma.SettlementCreateNestedManyWithoutGroupInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutGroupInput
   ious?: Prisma.IOUCreateNestedManyWithoutGroupInput
   chores?: Prisma.ChoreCreateNestedManyWithoutGroupInput
   availabilityEntries?: Prisma.AvailabilityEntryCreateNestedManyWithoutGroupInput
@@ -1178,6 +1314,7 @@ export type GroupUncheckedCreateWithoutProposalsInput = {
   members?: Prisma.GroupMemberUncheckedCreateNestedManyWithoutGroupInput
   expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutGroupInput
   settlements?: Prisma.SettlementUncheckedCreateNestedManyWithoutGroupInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutGroupInput
   ious?: Prisma.IOUUncheckedCreateNestedManyWithoutGroupInput
   chores?: Prisma.ChoreUncheckedCreateNestedManyWithoutGroupInput
   availabilityEntries?: Prisma.AvailabilityEntryUncheckedCreateNestedManyWithoutGroupInput
@@ -1211,6 +1348,7 @@ export type GroupUpdateWithoutProposalsInput = {
   members?: Prisma.GroupMemberUpdateManyWithoutGroupNestedInput
   expenses?: Prisma.ExpenseUpdateManyWithoutGroupNestedInput
   settlements?: Prisma.SettlementUpdateManyWithoutGroupNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutGroupNestedInput
   ious?: Prisma.IOUUpdateManyWithoutGroupNestedInput
   chores?: Prisma.ChoreUpdateManyWithoutGroupNestedInput
   availabilityEntries?: Prisma.AvailabilityEntryUpdateManyWithoutGroupNestedInput
@@ -1228,6 +1366,7 @@ export type GroupUncheckedUpdateWithoutProposalsInput = {
   members?: Prisma.GroupMemberUncheckedUpdateManyWithoutGroupNestedInput
   expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutGroupNestedInput
   settlements?: Prisma.SettlementUncheckedUpdateManyWithoutGroupNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutGroupNestedInput
   ious?: Prisma.IOUUncheckedUpdateManyWithoutGroupNestedInput
   chores?: Prisma.ChoreUncheckedUpdateManyWithoutGroupNestedInput
   availabilityEntries?: Prisma.AvailabilityEntryUncheckedUpdateManyWithoutGroupNestedInput
@@ -1245,6 +1384,7 @@ export type GroupCreateWithoutRecapsInput = {
   members?: Prisma.GroupMemberCreateNestedManyWithoutGroupInput
   expenses?: Prisma.ExpenseCreateNestedManyWithoutGroupInput
   settlements?: Prisma.SettlementCreateNestedManyWithoutGroupInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutGroupInput
   ious?: Prisma.IOUCreateNestedManyWithoutGroupInput
   chores?: Prisma.ChoreCreateNestedManyWithoutGroupInput
   availabilityEntries?: Prisma.AvailabilityEntryCreateNestedManyWithoutGroupInput
@@ -1262,6 +1402,7 @@ export type GroupUncheckedCreateWithoutRecapsInput = {
   members?: Prisma.GroupMemberUncheckedCreateNestedManyWithoutGroupInput
   expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutGroupInput
   settlements?: Prisma.SettlementUncheckedCreateNestedManyWithoutGroupInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutGroupInput
   ious?: Prisma.IOUUncheckedCreateNestedManyWithoutGroupInput
   chores?: Prisma.ChoreUncheckedCreateNestedManyWithoutGroupInput
   availabilityEntries?: Prisma.AvailabilityEntryUncheckedCreateNestedManyWithoutGroupInput
@@ -1295,6 +1436,7 @@ export type GroupUpdateWithoutRecapsInput = {
   members?: Prisma.GroupMemberUpdateManyWithoutGroupNestedInput
   expenses?: Prisma.ExpenseUpdateManyWithoutGroupNestedInput
   settlements?: Prisma.SettlementUpdateManyWithoutGroupNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutGroupNestedInput
   ious?: Prisma.IOUUpdateManyWithoutGroupNestedInput
   chores?: Prisma.ChoreUpdateManyWithoutGroupNestedInput
   availabilityEntries?: Prisma.AvailabilityEntryUpdateManyWithoutGroupNestedInput
@@ -1312,6 +1454,7 @@ export type GroupUncheckedUpdateWithoutRecapsInput = {
   members?: Prisma.GroupMemberUncheckedUpdateManyWithoutGroupNestedInput
   expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutGroupNestedInput
   settlements?: Prisma.SettlementUncheckedUpdateManyWithoutGroupNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutGroupNestedInput
   ious?: Prisma.IOUUncheckedUpdateManyWithoutGroupNestedInput
   chores?: Prisma.ChoreUncheckedUpdateManyWithoutGroupNestedInput
   availabilityEntries?: Prisma.AvailabilityEntryUncheckedUpdateManyWithoutGroupNestedInput
@@ -1329,6 +1472,7 @@ export type GroupCreateWithoutActivityEventsInput = {
   members?: Prisma.GroupMemberCreateNestedManyWithoutGroupInput
   expenses?: Prisma.ExpenseCreateNestedManyWithoutGroupInput
   settlements?: Prisma.SettlementCreateNestedManyWithoutGroupInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutGroupInput
   ious?: Prisma.IOUCreateNestedManyWithoutGroupInput
   chores?: Prisma.ChoreCreateNestedManyWithoutGroupInput
   availabilityEntries?: Prisma.AvailabilityEntryCreateNestedManyWithoutGroupInput
@@ -1346,6 +1490,7 @@ export type GroupUncheckedCreateWithoutActivityEventsInput = {
   members?: Prisma.GroupMemberUncheckedCreateNestedManyWithoutGroupInput
   expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutGroupInput
   settlements?: Prisma.SettlementUncheckedCreateNestedManyWithoutGroupInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutGroupInput
   ious?: Prisma.IOUUncheckedCreateNestedManyWithoutGroupInput
   chores?: Prisma.ChoreUncheckedCreateNestedManyWithoutGroupInput
   availabilityEntries?: Prisma.AvailabilityEntryUncheckedCreateNestedManyWithoutGroupInput
@@ -1379,6 +1524,7 @@ export type GroupUpdateWithoutActivityEventsInput = {
   members?: Prisma.GroupMemberUpdateManyWithoutGroupNestedInput
   expenses?: Prisma.ExpenseUpdateManyWithoutGroupNestedInput
   settlements?: Prisma.SettlementUpdateManyWithoutGroupNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutGroupNestedInput
   ious?: Prisma.IOUUpdateManyWithoutGroupNestedInput
   chores?: Prisma.ChoreUpdateManyWithoutGroupNestedInput
   availabilityEntries?: Prisma.AvailabilityEntryUpdateManyWithoutGroupNestedInput
@@ -1396,6 +1542,7 @@ export type GroupUncheckedUpdateWithoutActivityEventsInput = {
   members?: Prisma.GroupMemberUncheckedUpdateManyWithoutGroupNestedInput
   expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutGroupNestedInput
   settlements?: Prisma.SettlementUncheckedUpdateManyWithoutGroupNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutGroupNestedInput
   ious?: Prisma.IOUUncheckedUpdateManyWithoutGroupNestedInput
   chores?: Prisma.ChoreUncheckedUpdateManyWithoutGroupNestedInput
   availabilityEntries?: Prisma.AvailabilityEntryUncheckedUpdateManyWithoutGroupNestedInput
@@ -1420,6 +1567,7 @@ export type GroupUpdateWithoutCreatedByInput = {
   members?: Prisma.GroupMemberUpdateManyWithoutGroupNestedInput
   expenses?: Prisma.ExpenseUpdateManyWithoutGroupNestedInput
   settlements?: Prisma.SettlementUpdateManyWithoutGroupNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutGroupNestedInput
   ious?: Prisma.IOUUpdateManyWithoutGroupNestedInput
   chores?: Prisma.ChoreUpdateManyWithoutGroupNestedInput
   availabilityEntries?: Prisma.AvailabilityEntryUpdateManyWithoutGroupNestedInput
@@ -1437,6 +1585,7 @@ export type GroupUncheckedUpdateWithoutCreatedByInput = {
   members?: Prisma.GroupMemberUncheckedUpdateManyWithoutGroupNestedInput
   expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutGroupNestedInput
   settlements?: Prisma.SettlementUncheckedUpdateManyWithoutGroupNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutGroupNestedInput
   ious?: Prisma.IOUUncheckedUpdateManyWithoutGroupNestedInput
   chores?: Prisma.ChoreUncheckedUpdateManyWithoutGroupNestedInput
   availabilityEntries?: Prisma.AvailabilityEntryUncheckedUpdateManyWithoutGroupNestedInput
@@ -1462,6 +1611,7 @@ export type GroupCountOutputType = {
   members: number
   expenses: number
   settlements: number
+  payments: number
   ious: number
   chores: number
   availabilityEntries: number
@@ -1474,6 +1624,7 @@ export type GroupCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.
   members?: boolean | GroupCountOutputTypeCountMembersArgs
   expenses?: boolean | GroupCountOutputTypeCountExpensesArgs
   settlements?: boolean | GroupCountOutputTypeCountSettlementsArgs
+  payments?: boolean | GroupCountOutputTypeCountPaymentsArgs
   ious?: boolean | GroupCountOutputTypeCountIousArgs
   chores?: boolean | GroupCountOutputTypeCountChoresArgs
   availabilityEntries?: boolean | GroupCountOutputTypeCountAvailabilityEntriesArgs
@@ -1511,6 +1662,13 @@ export type GroupCountOutputTypeCountExpensesArgs<ExtArgs extends runtime.Types.
  */
 export type GroupCountOutputTypeCountSettlementsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.SettlementWhereInput
+}
+
+/**
+ * GroupCountOutputType without action
+ */
+export type GroupCountOutputTypeCountPaymentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PaymentWhereInput
 }
 
 /**
@@ -1567,6 +1725,7 @@ export type GroupSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   members?: boolean | Prisma.Group$membersArgs<ExtArgs>
   expenses?: boolean | Prisma.Group$expensesArgs<ExtArgs>
   settlements?: boolean | Prisma.Group$settlementsArgs<ExtArgs>
+  payments?: boolean | Prisma.Group$paymentsArgs<ExtArgs>
   ious?: boolean | Prisma.Group$iousArgs<ExtArgs>
   chores?: boolean | Prisma.Group$choresArgs<ExtArgs>
   availabilityEntries?: boolean | Prisma.Group$availabilityEntriesArgs<ExtArgs>
@@ -1611,6 +1770,7 @@ export type GroupInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   members?: boolean | Prisma.Group$membersArgs<ExtArgs>
   expenses?: boolean | Prisma.Group$expensesArgs<ExtArgs>
   settlements?: boolean | Prisma.Group$settlementsArgs<ExtArgs>
+  payments?: boolean | Prisma.Group$paymentsArgs<ExtArgs>
   ious?: boolean | Prisma.Group$iousArgs<ExtArgs>
   chores?: boolean | Prisma.Group$choresArgs<ExtArgs>
   availabilityEntries?: boolean | Prisma.Group$availabilityEntriesArgs<ExtArgs>
@@ -1633,6 +1793,7 @@ export type $GroupPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     members: Prisma.$GroupMemberPayload<ExtArgs>[]
     expenses: Prisma.$ExpensePayload<ExtArgs>[]
     settlements: Prisma.$SettlementPayload<ExtArgs>[]
+    payments: Prisma.$PaymentPayload<ExtArgs>[]
     ious: Prisma.$IOUPayload<ExtArgs>[]
     chores: Prisma.$ChorePayload<ExtArgs>[]
     availabilityEntries: Prisma.$AvailabilityEntryPayload<ExtArgs>[]
@@ -2045,6 +2206,7 @@ export interface Prisma__GroupClient<T, Null = never, ExtArgs extends runtime.Ty
   members<T extends Prisma.Group$membersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Group$membersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$GroupMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   expenses<T extends Prisma.Group$expensesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Group$expensesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ExpensePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   settlements<T extends Prisma.Group$settlementsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Group$settlementsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SettlementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  payments<T extends Prisma.Group$paymentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Group$paymentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PaymentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   ious<T extends Prisma.Group$iousArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Group$iousArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$IOUPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   chores<T extends Prisma.Group$choresArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Group$choresArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ChorePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   availabilityEntries<T extends Prisma.Group$availabilityEntriesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Group$availabilityEntriesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AvailabilityEntryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -2556,6 +2718,30 @@ export type Group$settlementsArgs<ExtArgs extends runtime.Types.Extensions.Inter
   take?: number
   skip?: number
   distinct?: Prisma.SettlementScalarFieldEnum | Prisma.SettlementScalarFieldEnum[]
+}
+
+/**
+ * Group.payments
+ */
+export type Group$paymentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Payment
+   */
+  select?: Prisma.PaymentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Payment
+   */
+  omit?: Prisma.PaymentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PaymentInclude<ExtArgs> | null
+  where?: Prisma.PaymentWhereInput
+  orderBy?: Prisma.PaymentOrderByWithRelationInput | Prisma.PaymentOrderByWithRelationInput[]
+  cursor?: Prisma.PaymentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PaymentScalarFieldEnum | Prisma.PaymentScalarFieldEnum[]
 }
 
 /**

@@ -59,6 +59,7 @@ export const ModelName = {
   Expense: 'Expense',
   ExpenseItem: 'ExpenseItem',
   ExpenseItemParticipant: 'ExpenseItemParticipant',
+  Payment: 'Payment',
   Settlement: 'Settlement',
   IOU: 'IOU',
   Chore: 'Chore',
@@ -197,6 +198,19 @@ export const ExpenseItemParticipantScalarFieldEnum = {
 } as const
 
 export type ExpenseItemParticipantScalarFieldEnum = (typeof ExpenseItemParticipantScalarFieldEnum)[keyof typeof ExpenseItemParticipantScalarFieldEnum]
+
+
+export const PaymentScalarFieldEnum = {
+  id: 'id',
+  groupId: 'groupId',
+  fromUserId: 'fromUserId',
+  toUserId: 'toUserId',
+  amount: 'amount',
+  settlementId: 'settlementId',
+  confirmedAt: 'confirmedAt'
+} as const
+
+export type PaymentScalarFieldEnum = (typeof PaymentScalarFieldEnum)[keyof typeof PaymentScalarFieldEnum]
 
 
 export const SettlementScalarFieldEnum = {
