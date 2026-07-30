@@ -193,6 +193,13 @@
   }
   html {
     @apply font-sans;
+    /* The design was drawn at what a browser calls 110% zoom, and at a plain
+       100% everything read a size too small. Scaling the root instead of
+       forcing CSS zoom means every rem-based size — type, spacing, the whole
+       scale — grows together, while a reader who has set their own zoom or a
+       larger default font size still gets that on top rather than having it
+       overridden. Percent, not px, for exactly that reason. */
+    font-size: 110%;
   }
   h1,
   h2,
