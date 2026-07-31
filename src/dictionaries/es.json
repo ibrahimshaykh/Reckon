@@ -99,7 +99,19 @@
     "assignedTo": "asignado a {name}",
     "doneAt": "✓ Hecho {datetime}",
     "markDone": "Marcar como hecho",
-    "fairnessTitle": "Quién ha hecho qué (esfuerzo completado)"
+    "fairnessTitle": "Quién ha hecho qué (esfuerzo completado)",
+    "effortEasy": "fácil",
+    "effortModerate": "normal",
+    "effortHard": "pesada",
+    "effortVeryHard": "muy pesada",
+    "effortWorst": "la peor tarea",
+    "effortWithBand": "esfuerzo {n} — {band}",
+    "whyEffort": "{chore} vale {effort} — {band}.",
+    "whyPicked": "{name} era quien menos llevaba ({effort}) cuando se repartió.",
+    "whyFirstRound": "Nadie había hecho nada todavía, así que esta ronda se repartió lo más pareja que permiten estas tareas — no porque alguien fuera atrasado.",
+    "whyBalance": "Elegido para mantener la carga pareja con el tiempo.",
+    "roundSplit": "Esta ronda",
+    "roundEven": "pareja"
   },
   "availability": {
     "title": "Disponibilidad del grupo",
@@ -333,8 +345,8 @@
         },
         {
           "name": "Esfuerzo",
-          "what": "Lo pesada que es, del 1 al 5. Algo de dos minutos es 1; fregar el baño es 5. Los turnos reparten el esfuerzo para que a nadie le toquen siempre las peores.",
-          "example": "1 la basura, 4 el baño"
+          "what": "Lo pesada que es la tarea. Más alto es más dura, y los turnos reparten la carga para que a nadie le toquen siempre las peores. La mayoría se queda entre 1 y 10.",
+          "example": "2 la basura, 10 el baño"
         },
         {
           "name": "Cada cuánto",

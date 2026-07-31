@@ -6,6 +6,7 @@ import { createChore } from "@/lib/actions/chores";
 import type { Dictionary } from "@/lib/dictionary";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { effortWord } from "@/lib/effort-text";
 
 type Frequency = "DAILY" | "WEEKLY" | "BIWEEKLY" | "MONTHLY";
 
@@ -56,6 +57,13 @@ export function AddChoreForm({ groupId, dict }: { groupId: string; dict: Diction
           placeholder={dict.chores.effortPlaceholder}
           className="w-24"
         />
+        {/* Names the number as you pick it, so you can tell whether 10 is what
+            you meant without having to learn the scale first. */}
+        {Number(effortWeight) >= 1 && (
+          <span className="self-center whitespace-nowrap text-xs text-muted-foreground">
+            {effortWord(Number(effortWeight), dict)}
+          </span>
+        )}
         <select
           className="flex-1 rounded-md border bg-background p-2 text-sm"
           value={frequency}

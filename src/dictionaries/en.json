@@ -99,7 +99,19 @@
     "assignedTo": "assigned to {name}",
     "doneAt": "✓ Done {datetime}",
     "markDone": "Mark done",
-    "fairnessTitle": "Who's done what (completed effort)"
+    "fairnessTitle": "Who's done what (completed effort)",
+    "effortEasy": "easy",
+    "effortModerate": "moderate",
+    "effortHard": "hard",
+    "effortVeryHard": "very hard",
+    "effortWorst": "the worst job",
+    "effortWithBand": "effort {n} — {band}",
+    "whyEffort": "{chore} is worth {effort} — {band}.",
+    "whyPicked": "{name} had the least on their plate ({effort}) when this was handed out.",
+    "whyFirstRound": "Nobody had done anything yet, so this round was split as evenly as these jobs allow — not because anyone was behind.",
+    "whyBalance": "Chosen to keep the load even over time.",
+    "roundSplit": "This round",
+    "roundEven": "even"
   },
   "availability": {
     "title": "Group availability",
@@ -333,8 +345,8 @@
         },
         {
           "name": "Effort",
-          "what": "How heavy the job is, from 1 to 5. A two-minute job is 1; scrubbing the bathroom is 5. Rotation shares effort out evenly, so nobody keeps landing the worst jobs.",
-          "example": "1 for bins, 4 for the bathroom"
+          "what": "How heavy the job is. Higher means harder, and rotation shares the load out evenly so nobody keeps landing the worst jobs. Most people stay between 1 and 10.",
+          "example": "2 for the bins, 10 for the bathroom"
         },
         {
           "name": "How often",

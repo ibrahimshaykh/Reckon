@@ -6,7 +6,8 @@ import { db } from "@/lib/db";
 import { assertMember } from "@/lib/actions/groups";
 import { requireSession } from "@/lib/dal";
 import { validate, cuid, shortText } from "@/lib/validation";
-import { assignChoresForPeriod } from "@/lib/chore-rotation";
+import { assignChoresWithTrace } from "@/lib/chore-rotation";
+import type { ChoreExplanation } from "@/lib/chore-explanation";
 
 type Frequency = "DAILY" | "WEEKLY" | "BIWEEKLY" | "MONTHLY";
 
@@ -81,15 +82,17 @@ export async function rotateChores(groupId: string) {
     if (chore) cumulative[a.userId] = (cumulative[a.userId] ?? 0) + chore.effortWeight;
   });
 
-  const assignments = assignChoresForPeriod(
+  const traces = assignChoresWithTrace(
     needsAssignment.map((c) => ({ id: c.id, effortWeight: c.effortWeight })),
     members.map((m) => ({ userId: m.userId, cumulativeEffort: cumulative[m.userId] ?? 0 })),
   );
 
+  const nameOf = (id: string) =>
+    members.find((m) => m.userId === id)?.user.displayName ?? id;
+
   await Promise.all(
     needsAssignment.map((chore) => {
-      const userId = assignments[chore.id];
-      const assignee = members.find((m) => m.userId === userId);
+      const trace = traces[chore.id];
       const periodEnd = new Date(
         now.getTime() + periodLengthDays(chore.frequency) * 86_400_000,
       );
@@ -97,15 +100,23 @@ export async function rotateChores(groupId: string) {
       return db.choreAssignment.create({
         data: {
           choreId: chore.id,
-          userId,
+          userId: trace.userId,
           periodStart: now,
           periodEnd,
+          // Stored as data rather than finished sentences so the reason can be
+          // read in the reader's own language, and so the round's whole split
+          // travels with it. Seeing that the round came out even settles an
+          // argument far better than being told your own share was fair.
           explanation: {
-            steps: [
-              `${chore.name} has effort weight ${chore.effortWeight}.`,
-              `${assignee?.user.displayName} had the lowest cumulative effort (${cumulative[userId] ?? 0}) of the group.`,
-              `Assigned to keep total effort balanced over time.`,
-            ],
+            choreName: chore.name,
+            effortWeight: chore.effortWeight,
+            assigneeName: nameOf(trace.userId),
+            effortBefore: trace.effortBefore,
+            firstRound: trace.firstRound,
+            roundTotals: trace.roundTotals.map((t) => ({
+              name: nameOf(t.userId),
+              effort: t.effort,
+            })),
           },
         },
       });
@@ -140,7 +151,9 @@ export async function listChores(groupId: string) {
       frequency: c.frequency,
       currentAssignee: current?.user.displayName ?? null,
       periodEnd: current?.periodEnd.toISOString() ?? null,
-      explanation: (current?.explanation as { steps: string[] } | undefined) ?? null,
+      // Assignments made before this was structured still hold {steps}; the
+      // renderer falls back to those rather than showing nothing.
+      explanation: (current?.explanation as ChoreExplanation | undefined) ?? null,
       assignmentId: current?.id ?? null,
       completedAt: current?.completedAt?.toISOString() ?? null,
     };
