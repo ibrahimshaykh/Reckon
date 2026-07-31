@@ -6,6 +6,7 @@ import { getDictionary } from "@/lib/dictionary";
 import { WeekGrid } from "@/components/availability/week-grid";
 import { FreeTimeList } from "@/components/availability/free-time-list";
 import { PageHeader } from "@/components/page-header";
+import { FieldGuide } from "@/components/field-guide";
 
 export default async function AvailabilityPage({
   params,
@@ -32,6 +33,7 @@ export default async function AvailabilityPage({
         title={dict.availability.title}
         description={dict.availability.helpTip}
       />
+      <FieldGuide guide={dict.guides.availability} dict={dict} />
       <WeekGrid
         groupId={groupId}
         startDate={startDate}

@@ -318,5 +318,135 @@
     "results": "Resultados",
     "commonLabel": "Comunes",
     "noMatch": "Ninguna moneda coincide."
+  },
+  "guides": {
+    "openLabel": "¿Qué significan estos campos?",
+    "closeLabel": "Cerrar",
+    "exampleLabel": "Ejemplo",
+    "chores": {
+      "intro": "Añade una tarea, di cuánto cuesta y cada cuánto toca.",
+      "fields": [
+        {
+          "name": "Nombre de la tarea",
+          "what": "La tarea en sí. Escríbela como la dirías en voz alta.",
+          "example": "Sacar la basura"
+        },
+        {
+          "name": "Esfuerzo",
+          "what": "Lo pesada que es, del 1 al 5. Algo de dos minutos es 1; fregar el baño es 5. Los turnos reparten el esfuerzo para que a nadie le toquen siempre las peores.",
+          "example": "1 la basura, 4 el baño"
+        },
+        {
+          "name": "Cada cuánto",
+          "what": "Cuánto dura cada turno antes de pasar a otra persona.",
+          "example": "Semanal"
+        },
+        {
+          "name": "Rotar ahora",
+          "what": "Reparte las tareas cuyo turno ya terminó, y se las da a quien menos esfuerzo lleva. Las que siguen en curso no se tocan.",
+          "example": "Púlsalo un domingo por la noche"
+        }
+      ]
+    },
+    "ious": {
+      "intro": "Para dinero prestado fuera de cualquier gasto compartido.",
+      "fields": [
+        {
+          "name": "Le presté a",
+          "what": "A quién le diste el dinero. Aquí siempre prestas tú.",
+          "example": "Lola"
+        },
+        {
+          "name": "Importe",
+          "what": "Cuánto le diste. Los botones son los billetes que existen en tu moneda.",
+          "example": "500"
+        },
+        {
+          "name": "Nota",
+          "what": "Para qué era, y así nadie tiene que acordarse dentro de un mes. Opcional.",
+          "example": "gasolina de vuelta"
+        },
+        {
+          "name": "Categoría",
+          "what": "Lo agrupa para el resumen mensual. Opcional.",
+          "example": "Comida"
+        }
+      ]
+    },
+    "expenses": {
+      "intro": "Una cuenta que alguien pagó y que el grupo comparte.",
+      "fields": [
+        {
+          "name": "Título",
+          "what": "En qué se fue el dinero.",
+          "example": "Compra"
+        },
+        {
+          "name": "Importe",
+          "what": "El total del recibo, antes de repartir.",
+          "example": "700"
+        },
+        {
+          "name": "Pagado por",
+          "what": "Quien puso el dinero de verdad. El resto se lo devuelve.",
+          "example": "Tú, si pagaste"
+        },
+        {
+          "name": "Repartir entre",
+          "what": "Quienes lo compartieron. El total se divide a partes iguales entre los marcados; a quien no marques no le toca nada.",
+          "example": "Marca a todos los que comieron"
+        },
+        {
+          "name": "Compartir",
+          "what": "Añade a alguien sin cuenta como invitado. Cuenta como una persona más en el reparto, y tú eliges quién lo cubre si no paga.",
+          "example": "Un amigo que vino a cenar"
+        }
+      ]
+    },
+    "availability": {
+      "intro": "Marca cuándo estás libre para encontrar una hora que le vaya bien a todos.",
+      "fields": [
+        {
+          "name": "La cuadrícula",
+          "what": "Arrastra para marcarte libre. Vuelve a hacerlo sobre tu propia barra para quitarla.",
+          "example": "Arrastra viernes de 19 a 22"
+        },
+        {
+          "name": "Se repite cada semana",
+          "what": "Actívalo antes de arrastrar si estás libre a esa hora todas las semanas.",
+          "example": "Todos los martes por la tarde"
+        },
+        {
+          "name": "Las zonas brillantes",
+          "what": "Donde coincide el tiempo libre de todos. Cuanto más brillante, más gente puede.",
+          "example": "El bloque más brillante"
+        }
+      ]
+    },
+    "proposals": {
+      "intro": "Propón un plan y deja que cada uno diga si puede.",
+      "fields": [
+        {
+          "name": "Título",
+          "what": "Lo que propones.",
+          "example": "Pizza en Mario's"
+        },
+        {
+          "name": "Coste por persona",
+          "what": "Más o menos lo que le costará a cada uno. A quien tenga un presupuesto menor se le marca discretamente. Opcional.",
+          "example": "1200"
+        },
+        {
+          "name": "Apto para",
+          "what": "Qué necesidades alimentarias cubre. A quien no le sirva, se le marca. Opcional.",
+          "example": "vegetariano"
+        },
+        {
+          "name": "Ubicación",
+          "what": "Coordenadas, para calcular el viaje de cada uno. Opcional.",
+          "example": "Cópialas de Google Maps"
+        }
+      ]
+    }
   }
 }

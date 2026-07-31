@@ -5,6 +5,7 @@ import { getDictionary } from "@/lib/dictionary";
 import { AddIOUForm } from "@/components/ious/add-iou-form";
 import { IOUList } from "@/components/ious/iou-list";
 import { PageHeader } from "@/components/page-header";
+import { FieldGuide } from "@/components/field-guide";
 
 export default async function IOUsPage({
   params,
@@ -26,6 +27,7 @@ export default async function IOUsPage({
         title={dict.ious.title}
         description={dict.ious.helpTip}
       />
+      <FieldGuide guide={dict.guides.ious} dict={dict} />
       <AddIOUForm
         groupId={groupId}
         members={group.members}

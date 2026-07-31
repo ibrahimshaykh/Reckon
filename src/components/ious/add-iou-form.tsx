@@ -5,13 +5,12 @@ import { useRouter } from "next/navigation";
 import { addIOU } from "@/lib/actions/ious";
 import { isActionError } from "@/lib/action-result";
 import { toCents, formatMoney } from "@/lib/money";
+import { quickAmountsFor } from "@/lib/denominations";
 import type { Dictionary } from "@/lib/dictionary";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 type Member = { id: string; displayName: string };
-
-const AMOUNT_PRESETS = [5, 10, 20];
 
 export function AddIOUForm({
   groupId,
@@ -95,17 +94,23 @@ export function AddIOUForm({
           required
           className="flex-1"
         />
-        {AMOUNT_PRESETS.map((preset) => (
-          <Button
-            key={preset}
-            type="button"
-            size="sm"
-            variant={amount === String(preset) ? "secondary" : "outline"}
-            onClick={() => setAmount(String(preset))}
-          >
-            {formatMoney(preset * 100, currency)}
-          </Button>
-        ))}
+        {/* Notes that exist in the group's own currency. Fixed at 5/10/20
+            these were dollar amounts wherever you were — and nobody lends a
+            friend a 5-rupee note, because there hasn't been one in years. */}
+        {quickAmountsFor(currency).map((preset) => {
+          const value = String(preset / 100);
+          return (
+            <Button
+              key={preset}
+              type="button"
+              size="sm"
+              variant={amount === value ? "secondary" : "outline"}
+              onClick={() => setAmount(value)}
+            >
+              {formatMoney(preset, currency)}
+            </Button>
+          );
+        })}
       </div>
       <Input
         value={note}

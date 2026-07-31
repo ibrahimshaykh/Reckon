@@ -22,9 +22,12 @@ export function AppNav({ dict }: { dict: Dictionary }) {
     ? [
         { href: `/groups/${groupId}`, label: dict.groupHub.expenses, exact: true },
         { href: `/groups/${groupId}/settle`, label: dict.groupHub.whoOwesWho },
+        // Money first: expenses, who owes who, then IOUs, since an IOU is
+        // the same question as "who owes who" by another route. The household
+        // sections follow.
+        { href: `/groups/${groupId}/ious`, label: dict.groupHub.ious },
         { href: `/groups/${groupId}/chores`, label: dict.groupHub.chores },
         { href: `/groups/${groupId}/availability`, label: dict.groupHub.availability },
-        { href: `/groups/${groupId}/ious`, label: dict.groupHub.ious },
         { href: `/groups/${groupId}/proposals`, label: dict.groupHub.proposals },
         { href: `/groups/${groupId}/ask`, label: dict.groupHub.askAi },
         { href: `/groups/${groupId}/recap`, label: dict.groupHub.monthlyRecap },

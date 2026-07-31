@@ -6,6 +6,7 @@ import { AddChoreForm } from "@/components/chores/add-chore-form";
 import { ChoreList } from "@/components/chores/chore-list";
 import { FairnessBars } from "@/components/chores/fairness-bars";
 import { PageHeader } from "@/components/page-header";
+import { FieldGuide } from "@/components/field-guide";
 
 export default async function ChoresPage({
   params,
@@ -27,6 +28,7 @@ export default async function ChoresPage({
         title={dict.chores.title}
         description={dict.chores.helpTip}
       />
+      <FieldGuide guide={dict.guides.chores} dict={dict} />
       <AddChoreForm groupId={groupId} dict={dict} />
       <FairnessBars bars={bars} title={dict.chores.fairnessTitle} />
       <ChoreList groupId={groupId} chores={chores} dict={dict} />

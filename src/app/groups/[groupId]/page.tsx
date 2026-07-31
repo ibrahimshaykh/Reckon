@@ -13,6 +13,7 @@ import { DeleteExpenseButton } from "@/components/expenses/delete-expense-button
 import { CurrencyPicker } from "@/components/groups/currency-picker";
 import { Button } from "@/components/ui/button";
 import { PageHeader, SectionHeading } from "@/components/page-header";
+import { FieldGuide } from "@/components/field-guide";
 import { Reveal } from "@/components/motion/reveal";
 import { StickmanParade } from "@/components/sketch/sketch-ui";
 import { Shavings, Thumbtacked } from "@/components/sketch/scribble";
@@ -173,6 +174,7 @@ export default async function GroupPage({
         >
           {dict.groupHub.expenses}
         </SectionHeading>
+        <FieldGuide guide={dict.guides.expenses} dict={dict} />
         {expenses.length === 0 ? (
           <div className="ledger-panel rounded-r-lg px-5 py-8 text-center">
             <p className="text-sm text-ledger-foreground">{dict.groupHub.noExpensesYet}</p>

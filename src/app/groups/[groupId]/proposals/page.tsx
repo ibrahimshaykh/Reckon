@@ -6,6 +6,7 @@ import { AddProposalForm } from "@/components/proposals/add-proposal-form";
 import { ProposalList } from "@/components/proposals/proposal-list";
 import { MeetingPointMap } from "@/components/proposals/meeting-point-map-wrapper";
 import { PageHeader } from "@/components/page-header";
+import { FieldGuide } from "@/components/field-guide";
 
 export default async function ProposalsPage({
   params,
@@ -32,6 +33,7 @@ export default async function ProposalsPage({
         title={dict.proposals.title}
         description={dict.proposals.helpTip}
       />
+      <FieldGuide guide={dict.guides.proposals} dict={dict} />
       <AddProposalForm groupId={groupId} dict={dict} />
       {memberHomes.length > 0 && (
         <MeetingPointMap homes={memberHomes} proposals={locatedProposals} dict={dict} />

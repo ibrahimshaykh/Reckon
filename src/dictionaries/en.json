@@ -318,5 +318,135 @@
     "results": "Results",
     "commonLabel": "Common",
     "noMatch": "No currencies match."
+  },
+  "guides": {
+    "openLabel": "What do these mean?",
+    "closeLabel": "Close",
+    "exampleLabel": "Example",
+    "chores": {
+      "intro": "Add a job, say how heavy it is, and how often it comes round.",
+      "fields": [
+        {
+          "name": "Chore name",
+          "what": "The job itself. Write it the way you'd say it out loud.",
+          "example": "Take out trash"
+        },
+        {
+          "name": "Effort",
+          "what": "How heavy the job is, from 1 to 5. A two-minute job is 1; scrubbing the bathroom is 5. Rotation shares effort out evenly, so nobody keeps landing the worst jobs.",
+          "example": "1 for bins, 4 for the bathroom"
+        },
+        {
+          "name": "How often",
+          "what": "How long each turn lasts before it passes to someone else.",
+          "example": "Weekly"
+        },
+        {
+          "name": "Rotate now",
+          "what": "Hands out every chore whose turn has ended, picking whoever has done the least effort so far. Nothing happens to chores still mid-turn.",
+          "example": "Press it on a Sunday night"
+        }
+      ]
+    },
+    "ious": {
+      "intro": "For money lent outside any shared bill — cash you handed over.",
+      "fields": [
+        {
+          "name": "I lent",
+          "what": "Who you gave the money to. You're always the lender here.",
+          "example": "Lola"
+        },
+        {
+          "name": "Amount",
+          "what": "How much you handed over. The buttons are the notes your currency actually has.",
+          "example": "500"
+        },
+        {
+          "name": "Note",
+          "what": "What it was for, so nobody has to remember in a month. Optional.",
+          "example": "petrol on the way back"
+        },
+        {
+          "name": "Category",
+          "what": "Groups it for the monthly recap. Optional.",
+          "example": "Food"
+        }
+      ]
+    },
+    "expenses": {
+      "intro": "A bill somebody paid that the group is sharing.",
+      "fields": [
+        {
+          "name": "Title",
+          "what": "What the money went on.",
+          "example": "Groceries"
+        },
+        {
+          "name": "Amount",
+          "what": "The total on the receipt, before splitting.",
+          "example": "700"
+        },
+        {
+          "name": "Paid by",
+          "what": "Whoever actually handed over the money. They get paid back by everyone else.",
+          "example": "You, if you paid"
+        },
+        {
+          "name": "Split between",
+          "what": "Everyone who shared it. The total divides evenly between the people ticked — leave someone out and they owe nothing.",
+          "example": "Tick everyone who ate"
+        },
+        {
+          "name": "Share",
+          "what": "Adds someone with no Reckon account as a guest. They count as one more head in the split, and you pick who covers them if they don't pay.",
+          "example": "A friend who came to dinner"
+        }
+      ]
+    },
+    "availability": {
+      "intro": "Mark when you're free so the group can find a time that suits everyone.",
+      "fields": [
+        {
+          "name": "The grid",
+          "what": "Drag across it to mark yourself free. Drag again over your own bar to remove it.",
+          "example": "Drag Friday 7pm–10pm"
+        },
+        {
+          "name": "Repeats weekly",
+          "what": "Turn on before dragging if you're free at that time every week, not just once.",
+          "example": "Every Tuesday evening"
+        },
+        {
+          "name": "The bright patches",
+          "what": "Where everyone's free time overlaps. The brighter it is, the more people can make it.",
+          "example": "Brightest block = plan it there"
+        }
+      ]
+    },
+    "proposals": {
+      "intro": "Suggest a plan and let everyone say whether they can make it.",
+      "fields": [
+        {
+          "name": "Title",
+          "what": "What you're suggesting.",
+          "example": "Pizza night at Mario's"
+        },
+        {
+          "name": "Cost per person",
+          "what": "Roughly what it'll cost each person. Anyone whose budget is lower gets a quiet flag. Optional.",
+          "example": "1200"
+        },
+        {
+          "name": "Covers",
+          "what": "Which dietary needs it suits. People it doesn't suit get flagged. Optional.",
+          "example": "vegetarian"
+        },
+        {
+          "name": "Location",
+          "what": "Coordinates, used to work out travel for everyone. Optional.",
+          "example": "Copy from Google Maps"
+        }
+      ]
+    }
   }
 }
