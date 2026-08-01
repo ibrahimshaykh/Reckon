@@ -122,7 +122,12 @@
     "swapAccept": "Aceptar",
     "swapDecline": "No, gracias",
     "swapWithdraw": "Retirar",
-    "swapNote": "El crédito es de quien la haga de verdad, así que cambiar no le cuesta nada a ninguno."
+    "swapNote": "El crédito es de quien la haga de verdad, así que cambiar no le cuesta nada a ninguno.",
+    "swapAskAnyone": "Preguntar a cualquiera",
+    "swapAskSomeone": "Preguntar a alguien concreto",
+    "swapMyCall": "Preguntaste al grupo por tu {yours}. Esperando que alguien la tome.",
+    "swapOpenCall": "{name} quiere cambiar su {theirs} ({band}). Ofrece una de las tuyas:",
+    "swapTake": "Tomarla"
   },
   "availability": {
     "title": "Disponibilidad del grupo",

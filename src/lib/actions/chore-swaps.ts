@@ -20,7 +20,7 @@ const REFUSAL_MESSAGE: Record<SwapRefusal, string> = {
 };
 
 const assignmentInclude = {
-  chore: { select: { groupId: true, name: true } },
+  chore: { select: { groupId: true, name: true, effortWeight: true } },
   user: { select: { displayName: true } },
 } as const;
 
@@ -99,6 +99,131 @@ export async function proposeSwap(input: {
   });
 }
 
+// "Anyone want this?" — no target, first willing taker gets it. Asking one
+// person at a time means guessing who'll say yes; in a flat of four that's
+// three separate asks.
+export async function openSwapCall(assignmentId: string): Promise<ActionResult<void>> {
+  return asActionResult(async () => {
+    const session = await requireSession();
+    const validId = validate(cuid, assignmentId);
+
+    const mine = await db.choreAssignment.findUniqueOrThrow({
+      where: { id: validId },
+      include: assignmentInclude,
+    });
+    await assertMember(mine.chore.groupId, session.id);
+
+    if (mine.userId !== session.id) {
+      throw new ApiError(400, REFUSAL_MESSAGE.notYours);
+    }
+    if (mine.completedAt !== null) {
+      throw new ApiError(400, REFUSAL_MESSAGE.alreadyDone);
+    }
+    if (mine.periodEnd < new Date()) {
+      throw new ApiError(400, REFUSAL_MESSAGE.periodOver);
+    }
+
+    const existing = await db.choreSwapRequest.findFirst({
+      where: { fromAssignmentId: mine.id, toAssignmentId: null, status: "PENDING" },
+    });
+    if (existing) {
+      throw new ApiError(400, "You've already asked the group about this one.");
+    }
+
+    await db.choreSwapRequest.create({
+      data: {
+        groupId: mine.chore.groupId,
+        fromAssignmentId: mine.id,
+        toAssignmentId: null,
+      },
+    });
+
+    revalidatePath(`/groups/${mine.chore.groupId}/chores`);
+  });
+}
+
+const claimSchema = z.object({ callId: cuid, myAssignmentId: cuid });
+
+// Taking an open call. First come, first swapped — so the claim has to win a
+// race, not merely pass a check.
+export async function claimSwapCall(input: {
+  callId: string;
+  myAssignmentId: string;
+}): Promise<ActionResult<void>> {
+  return asActionResult(async () => {
+    const session = await requireSession();
+    const valid = validate(claimSchema, input);
+
+    const [call, mine] = await Promise.all([
+      db.choreSwapRequest.findUniqueOrThrow({
+        where: { id: valid.callId },
+        include: { fromAssignment: { include: assignmentInclude } },
+      }),
+      db.choreAssignment.findUniqueOrThrow({
+        where: { id: valid.myAssignmentId },
+        include: assignmentInclude,
+      }),
+    ]);
+
+    await assertMember(call.groupId, session.id);
+
+    if (call.toAssignmentId !== null) {
+      throw new ApiError(400, "That was a direct request, not an open call.");
+    }
+
+    // Same rules as a directed swap, read from the claimer's side: they are
+    // the one offering their own chore up.
+    const refusal = refuseSwap({
+      mine: toSide(mine),
+      theirs: toSide(call.fromAssignment),
+      requesterId: session.id,
+      now: new Date(),
+    });
+    if (refusal) throw new ApiError(400, REFUSAL_MESSAGE[refusal]);
+
+    await db.$transaction(async (tx) => {
+      // The whole race comes down to this line: only one caller can move the
+      // row out of PENDING, and the loser sees a count of zero rather than
+      // quietly performing a second swap on top of the first.
+      const claimed = await tx.choreSwapRequest.updateMany({
+        where: { id: call.id, status: "PENDING", toAssignmentId: null },
+        data: {
+          toAssignmentId: mine.id,
+          status: "ACCEPTED",
+          resolvedAt: new Date(),
+        },
+      });
+      if (claimed.count === 0) {
+        throw new ApiError(400, "Someone else took that one first.");
+      }
+
+      await tx.choreAssignment.update({
+        where: { id: call.fromAssignmentId },
+        data: { userId: mine.userId },
+      });
+      await tx.choreAssignment.update({
+        where: { id: mine.id },
+        data: { userId: call.fromAssignment.userId },
+      });
+
+      // Anything else pending on either chore is stale now.
+      await tx.choreSwapRequest.updateMany({
+        where: {
+          status: "PENDING",
+          id: { not: call.id },
+          OR: [
+            { fromAssignmentId: { in: [call.fromAssignmentId, mine.id] } },
+            { toAssignmentId: { in: [call.fromAssignmentId, mine.id] } },
+          ],
+        },
+        data: { status: "CANCELLED", resolvedAt: new Date() },
+      });
+    });
+
+    revalidatePath(`/groups/${call.groupId}/chores`);
+  });
+}
+
 const respondSchema = z.object({ swapId: cuid, accept: z.boolean() });
 
 export async function respondToSwap(input: {
@@ -118,6 +243,11 @@ export async function respondToSwap(input: {
     });
 
     await assertMember(swap.groupId, session.id);
+
+    // An open call has nobody to answer it yet — it's claimed, not accepted.
+    if (!swap.toAssignment) {
+      throw new ApiError(400, "That's an open call — take it instead of answering it.");
+    }
 
     // Only the person being asked can answer. Without this the asker could
     // accept on the other's behalf, which is just taking their chore.
@@ -151,13 +281,18 @@ export async function respondToSwap(input: {
     // Swapping the assignees is the whole operation. Effort is credited on
     // completion, so the fairness ledger follows whoever actually does the
     // work without anything else being touched.
+    // Narrowed above, but pulled out so the transaction reads without the
+    // non-null assertions the compiler would otherwise want on every line.
+    const target = swap.toAssignment;
+    const targetId = swap.toAssignmentId as string;
+
     await db.$transaction([
       db.choreAssignment.update({
         where: { id: swap.fromAssignmentId },
-        data: { userId: swap.toAssignment.userId },
+        data: { userId: target.userId },
       }),
       db.choreAssignment.update({
-        where: { id: swap.toAssignmentId },
+        where: { id: targetId },
         data: { userId: swap.fromAssignment.userId },
       }),
       db.choreSwapRequest.update({
@@ -171,8 +306,8 @@ export async function respondToSwap(input: {
           status: "PENDING",
           id: { not: swap.id },
           OR: [
-            { fromAssignmentId: { in: [swap.fromAssignmentId, swap.toAssignmentId] } },
-            { toAssignmentId: { in: [swap.fromAssignmentId, swap.toAssignmentId] } },
+            { fromAssignmentId: { in: [swap.fromAssignmentId, targetId] } },
+            { toAssignmentId: { in: [swap.fromAssignmentId, targetId] } },
           ],
         },
         data: { status: "CANCELLED", resolvedAt: new Date() },
@@ -210,17 +345,22 @@ export async function cancelSwap(swapId: string): Promise<ActionResult<void>> {
 
 export type SwapOffer = {
   id: string;
-  /** Who asked. */
+  /**
+   * incoming  — someone asked you directly, answer it
+   * outgoing  — you asked someone, waiting on them
+   * openCall  — someone asked the group; you can take it
+   * myCall    — you asked the group, waiting for a taker
+   */
+  kind: "incoming" | "outgoing" | "openCall" | "myCall";
   fromName: string;
-  /** Who was asked — the one an outgoing offer is waiting on. */
-  toName: string;
+  toName: string | null;
   fromChore: string;
-  toChore: string;
-  /** True when this person is the one being asked, rather than the asker. */
-  incoming: boolean;
+  /** Effort of the chore on offer, so nobody claims blind. */
+  fromEffort: number;
+  toChore: string | null;
 };
 
-/** Live offers touching this person, either direction. */
+/** Anything live this person could act on: their own swaps, plus open calls. */
 export async function listSwapOffers(groupId: string): Promise<SwapOffer[]> {
   const session = await requireSession();
   await assertMember(groupId, session.id);
@@ -229,9 +369,14 @@ export async function listSwapOffers(groupId: string): Promise<SwapOffer[]> {
     where: {
       groupId,
       status: "PENDING",
+      // A turn that's already over is about to be reassigned by the next
+      // rotation, so a swap for it is noise rather than a decision.
+      fromAssignment: { periodEnd: { gt: new Date() }, completedAt: null },
       OR: [
         { fromAssignment: { userId: session.id } },
         { toAssignment: { userId: session.id } },
+        // Open calls are everyone's business — that's the point of them.
+        { toAssignmentId: null },
       ],
     },
     include: {
@@ -241,12 +386,24 @@ export async function listSwapOffers(groupId: string): Promise<SwapOffer[]> {
     orderBy: { createdAt: "desc" },
   });
 
-  return swaps.map((s) => ({
-    id: s.id,
-    fromName: s.fromAssignment.user.displayName,
-    toName: s.toAssignment.user.displayName,
-    fromChore: s.fromAssignment.chore.name,
-    toChore: s.toAssignment.chore.name,
-    incoming: s.toAssignment.userId === session.id,
-  }));
+  return swaps.map((s) => {
+    const mineIsAsker = s.fromAssignment.userId === session.id;
+    const kind = s.toAssignment
+      ? s.toAssignment.userId === session.id
+        ? ("incoming" as const)
+        : ("outgoing" as const)
+      : mineIsAsker
+        ? ("myCall" as const)
+        : ("openCall" as const);
+
+    return {
+      id: s.id,
+      kind,
+      fromName: s.fromAssignment.user.displayName,
+      toName: s.toAssignment?.user.displayName ?? null,
+      fromChore: s.fromAssignment.chore.name,
+      fromEffort: s.fromAssignment.chore.effortWeight,
+      toChore: s.toAssignment?.chore.name ?? null,
+    };
+  });
 }

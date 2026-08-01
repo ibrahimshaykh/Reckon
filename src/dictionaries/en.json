@@ -122,7 +122,12 @@
     "swapAccept": "Accept",
     "swapDecline": "No thanks",
     "swapWithdraw": "Take it back",
-    "swapNote": "Credit goes to whoever actually does it, so trading costs neither of you anything."
+    "swapNote": "Credit goes to whoever actually does it, so trading costs neither of you anything.",
+    "swapAskAnyone": "Ask anyone",
+    "swapAskSomeone": "Ask someone specific",
+    "swapMyCall": "You asked the group about your {yours}. Waiting for a taker.",
+    "swapOpenCall": "{name} would like to swap their {theirs} ({band}). Offer one of yours:",
+    "swapTake": "Take it"
   },
   "availability": {
     "title": "Group availability",

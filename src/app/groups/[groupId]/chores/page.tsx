@@ -35,7 +35,22 @@ export default async function ChoresPage({
       <AddChoreForm groupId={groupId} dict={dict} />
       {/* Above the list: an offer waiting on you is the thing to deal with
           first, not something to hunt for among the rows. */}
-      <SwapOffers offers={swapOffers} dict={dict} />
+      <SwapOffers
+        offers={swapOffers}
+        // Taking an open call means giving something back, so the claim needs
+        // to know what this person has to offer.
+        mine={chores
+          .filter(
+            (c) =>
+              c.assignmentId && !c.completedAt && c.currentAssigneeId === session.id,
+          )
+          .map((c) => ({
+            assignmentId: c.assignmentId as string,
+            choreName: c.name,
+            assigneeName: c.currentAssignee as string,
+          }))}
+        dict={dict}
+      />
       <FairnessBars bars={bars} title={dict.chores.fairnessTitle} />
       <ChoreList
         groupId={groupId}

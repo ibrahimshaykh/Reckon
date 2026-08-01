@@ -376,6 +376,11 @@ export type ChoreAssignmentScalarRelationFilter = {
   isNot?: Prisma.ChoreAssignmentWhereInput
 }
 
+export type ChoreAssignmentNullableScalarRelationFilter = {
+  is?: Prisma.ChoreAssignmentWhereInput | null
+  isNot?: Prisma.ChoreAssignmentWhereInput | null
+}
+
 export type ChoreAssignmentCreateNestedManyWithoutUserInput = {
   create?: Prisma.XOR<Prisma.ChoreAssignmentCreateWithoutUserInput, Prisma.ChoreAssignmentUncheckedCreateWithoutUserInput> | Prisma.ChoreAssignmentCreateWithoutUserInput[] | Prisma.ChoreAssignmentUncheckedCreateWithoutUserInput[]
   connectOrCreate?: Prisma.ChoreAssignmentCreateOrConnectWithoutUserInput | Prisma.ChoreAssignmentCreateOrConnectWithoutUserInput[]
@@ -480,10 +485,12 @@ export type ChoreAssignmentUpdateOneRequiredWithoutSwapsOfferedNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ChoreAssignmentUpdateToOneWithWhereWithoutSwapsOfferedInput, Prisma.ChoreAssignmentUpdateWithoutSwapsOfferedInput>, Prisma.ChoreAssignmentUncheckedUpdateWithoutSwapsOfferedInput>
 }
 
-export type ChoreAssignmentUpdateOneRequiredWithoutSwapsReceivedNestedInput = {
+export type ChoreAssignmentUpdateOneWithoutSwapsReceivedNestedInput = {
   create?: Prisma.XOR<Prisma.ChoreAssignmentCreateWithoutSwapsReceivedInput, Prisma.ChoreAssignmentUncheckedCreateWithoutSwapsReceivedInput>
   connectOrCreate?: Prisma.ChoreAssignmentCreateOrConnectWithoutSwapsReceivedInput
   upsert?: Prisma.ChoreAssignmentUpsertWithoutSwapsReceivedInput
+  disconnect?: Prisma.ChoreAssignmentWhereInput | boolean
+  delete?: Prisma.ChoreAssignmentWhereInput | boolean
   connect?: Prisma.ChoreAssignmentWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.ChoreAssignmentUpdateToOneWithWhereWithoutSwapsReceivedInput, Prisma.ChoreAssignmentUpdateWithoutSwapsReceivedInput>, Prisma.ChoreAssignmentUncheckedUpdateWithoutSwapsReceivedInput>
 }

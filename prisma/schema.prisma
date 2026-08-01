@@ -366,8 +366,11 @@ model ChoreSwapRequest {
   group            Group      @relation(fields: [groupId], references: [id], onDelete: Cascade)
   fromAssignmentId String
   fromAssignment   ChoreAssignment @relation("SwapFrom", fields: [fromAssignmentId], references: [id], onDelete: Cascade)
-  toAssignmentId   String
-  toAssignment     ChoreAssignment @relation("SwapTo", fields: [toAssignmentId], references: [id], onDelete: Cascade)
+  // Null while an open call is still looking for a taker. Directed offers
+  // name their target from the start; an open call fills this in at the
+  // moment somebody claims it, so the row also records who took it.
+  toAssignmentId   String?
+  toAssignment     ChoreAssignment? @relation("SwapTo", fields: [toAssignmentId], references: [id], onDelete: Cascade)
   status           SwapStatus @default(PENDING)
   createdAt        DateTime   @default(now())
   resolvedAt       DateTime?
