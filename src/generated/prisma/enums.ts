@@ -102,7 +102,8 @@ export const SwapStatus = {
   PENDING: 'PENDING',
   ACCEPTED: 'ACCEPTED',
   DECLINED: 'DECLINED',
-  CANCELLED: 'CANCELLED'
+  CANCELLED: 'CANCELLED',
+  NO_TAKERS: 'NO_TAKERS'
 } as const
 
 export type SwapStatus = (typeof SwapStatus)[keyof typeof SwapStatus]

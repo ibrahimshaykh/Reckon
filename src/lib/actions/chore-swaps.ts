@@ -7,7 +7,12 @@ import { requireSession } from "@/lib/dal";
 import { assertMember } from "@/lib/actions/groups";
 import { ApiError } from "@/lib/api-error";
 import { validate, cuid } from "@/lib/validation";
-import { refuseSwap, type SwapRefusal, type SwapSide } from "@/lib/chore-swap";
+import {
+  refuseSwap,
+  callExhausted,
+  type SwapRefusal,
+  type SwapSide,
+} from "@/lib/chore-swap";
 import { asActionResult, type ActionResult } from "@/lib/action-result";
 
 const REFUSAL_MESSAGE: Record<SwapRefusal, string> = {
@@ -224,6 +229,55 @@ export async function claimSwapCall(input: {
   });
 }
 
+// "Not me." Saying out loud that you won't take an open call.
+//
+// Without this, silence means two different things — nobody looked, or
+// everybody refused — and the asker can't tell which, so the call just hangs
+// there. Once everyone else has passed, it closes with an answer.
+export async function passSwapCall(callId: string): Promise<ActionResult<void>> {
+  return asActionResult(async () => {
+    const session = await requireSession();
+    const validId = validate(cuid, callId);
+
+    const call = await db.choreSwapRequest.findUniqueOrThrow({
+      where: { id: validId },
+      include: { fromAssignment: true },
+    });
+    await assertMember(call.groupId, session.id);
+
+    if (call.toAssignmentId !== null) {
+      throw new ApiError(400, "That's a direct request — decline it instead.");
+    }
+    if (call.status !== "PENDING") return;
+    if (call.fromAssignment.userId === session.id) {
+      throw new ApiError(400, "You're the one asking.");
+    }
+
+    // Upsert rather than create: pressing twice shouldn't count twice and
+    // close the call early on everybody else's behalf.
+    await db.choreSwapPass.upsert({
+      where: { requestId_userId: { requestId: call.id, userId: session.id } },
+      update: {},
+      create: { requestId: call.id, userId: session.id },
+    });
+
+    const [passes, memberCount] = await Promise.all([
+      db.choreSwapPass.count({ where: { requestId: call.id } }),
+      db.groupMember.count({ where: { groupId: call.groupId } }),
+    ]);
+
+    // Once everyone else has said no, there's nothing left to wait for.
+    if (callExhausted(passes, memberCount)) {
+      await db.choreSwapRequest.updateMany({
+        where: { id: call.id, status: "PENDING" },
+        data: { status: "NO_TAKERS", resolvedAt: new Date() },
+      });
+    }
+
+    revalidatePath(`/groups/${call.groupId}/chores`);
+  });
+}
+
 const respondSchema = z.object({ swapId: cuid, accept: z.boolean() });
 
 export async function respondToSwap(input: {
@@ -351,13 +405,18 @@ export type SwapOffer = {
    * openCall  — someone asked the group; you can take it
    * myCall    — you asked the group, waiting for a taker
    */
-  kind: "incoming" | "outgoing" | "openCall" | "myCall";
+  kind: "incoming" | "outgoing" | "openCall" | "myCall" | "noTakers";
   fromName: string;
   toName: string | null;
   fromChore: string;
   /** Effort of the chore on offer, so nobody claims blind. */
   fromEffort: number;
   toChore: string | null;
+  /** How many have said "not me", out of how many could have taken it. */
+  passCount: number;
+  passTotal: number;
+  /** Whether the reader has already passed, so the button can stand down. */
+  iPassed: boolean;
 };
 
 /** Anything live this person could act on: their own swaps, plus open calls. */
@@ -365,36 +424,58 @@ export async function listSwapOffers(groupId: string): Promise<SwapOffer[]> {
   const session = await requireSession();
   await assertMember(groupId, session.id);
 
+  const memberCount = await db.groupMember.count({ where: { groupId } });
+
   const swaps = await db.choreSwapRequest.findMany({
     where: {
       groupId,
-      status: "PENDING",
       // A turn that's already over is about to be reassigned by the next
       // rotation, so a swap for it is noise rather than a decision.
       fromAssignment: { periodEnd: { gt: new Date() }, completedAt: null },
-      OR: [
-        { fromAssignment: { userId: session.id } },
-        { toAssignment: { userId: session.id } },
-        // Open calls are everyone's business — that's the point of them.
-        { toAssignmentId: null },
+      // Two independent conditions, so they go in AND rather than as two OR
+      // keys on the same object — the second would silently replace the first.
+      AND: [
+        {
+          OR: [
+            { status: "PENDING" as const },
+            // A closed call is shown only to the person who asked: they're
+            // the one who needs to hear the answer came back no.
+            {
+              status: "NO_TAKERS" as const,
+              fromAssignment: { userId: session.id },
+            },
+          ],
+        },
+        {
+          OR: [
+            { fromAssignment: { userId: session.id } },
+            { toAssignment: { userId: session.id } },
+            // Open calls are everyone's business — that's the point of them.
+            { toAssignmentId: null },
+          ],
+        },
       ],
     },
     include: {
       fromAssignment: { include: assignmentInclude },
       toAssignment: { include: assignmentInclude },
+      passes: { select: { userId: true } },
     },
     orderBy: { createdAt: "desc" },
   });
 
   return swaps.map((s) => {
     const mineIsAsker = s.fromAssignment.userId === session.id;
-    const kind = s.toAssignment
-      ? s.toAssignment.userId === session.id
-        ? ("incoming" as const)
-        : ("outgoing" as const)
-      : mineIsAsker
-        ? ("myCall" as const)
-        : ("openCall" as const);
+    const kind =
+      s.status === "NO_TAKERS"
+        ? ("noTakers" as const)
+        : s.toAssignment
+          ? s.toAssignment.userId === session.id
+            ? ("incoming" as const)
+            : ("outgoing" as const)
+          : mineIsAsker
+            ? ("myCall" as const)
+            : ("openCall" as const);
 
     return {
       id: s.id,
@@ -404,6 +485,10 @@ export async function listSwapOffers(groupId: string): Promise<SwapOffer[]> {
       fromChore: s.fromAssignment.chore.name,
       fromEffort: s.fromAssignment.chore.effortWeight,
       toChore: s.toAssignment?.chore.name ?? null,
+      passCount: s.passes.length,
+      // Everyone except whoever asked.
+      passTotal: Math.max(memberCount - 1, 0),
+      iPassed: s.passes.some((p) => p.userId === session.id),
     };
   });
 }

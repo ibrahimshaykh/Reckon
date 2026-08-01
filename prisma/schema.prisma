@@ -105,6 +105,7 @@ model User {
   settlementsReceived   Settlement[]             @relation("SettlementTo")
   paymentsMade          Payment[]                @relation("PaymentFrom")
   paymentsReceived      Payment[]                @relation("PaymentTo")
+  choreSwapPasses       ChoreSwapPass[]
   iousOwed              IOU[]                    @relation("IOUFrom")
   iousLent              IOU[]                    @relation("IOUTo")
   choreAssignments      ChoreAssignment[]
@@ -348,6 +349,9 @@ enum SwapStatus {
   ACCEPTED
   DECLINED
   CANCELLED
+  // Everyone who could have taken an open call passed on it. Distinct from
+  // CANCELLED: the asker didn't change their mind, the group answered.
+  NO_TAKERS
 }
 
 // "I'll do yours if you do mine." Rotation is fair on average but any single
@@ -375,9 +379,32 @@ model ChoreSwapRequest {
   createdAt        DateTime   @default(now())
   resolvedAt       DateTime?
 
+  passes ChoreSwapPass[]
+
   @@index([groupId, status])
   @@index([toAssignmentId, status])
   @@index([fromAssignmentId, status])
+}
+
+// "Not me." Someone saying out loud that they won't take an open call.
+//
+// Without this, silence means two different things — nobody has looked, or
+// everybody has refused — and the person asking has no way to tell which. A
+// row per person turns that into a count, and once everyone has passed the
+// call closes with an answer instead of hanging there indefinitely.
+//
+// Its own table rather than an array column: several people can pass at once,
+// and appending to an array loses writes when two land together.
+model ChoreSwapPass {
+  id        String   @id @default(cuid())
+  requestId String
+  request   ChoreSwapRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([requestId, userId])
+  @@index([requestId])
 }
 
 model AvailabilityEntry {

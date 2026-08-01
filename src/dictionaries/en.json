@@ -127,7 +127,12 @@
     "swapAskSomeone": "Ask someone specific",
     "swapMyCall": "You asked the group about your {yours}. Waiting for a taker.",
     "swapOpenCall": "{name} would like to swap their {theirs} ({band}). Offer one of yours:",
-    "swapTake": "Take it"
+    "swapTake": "Take it",
+    "swapNotMe": "Not me",
+    "swapPassed": "You passed",
+    "swapPassCount": "{n} of {total} passed",
+    "swapNoTakers": "Nobody could take your {yours} — looks like it's yours this time.",
+    "swapNoTakersDismiss": "Fair enough"
   },
   "availability": {
     "title": "Group availability",

@@ -1,5 +1,11 @@
 import { describe, it, expect } from "vitest";
-import { refuseSwap, canSwap, type SwapSide } from "@/lib/chore-swap";
+import {
+  refuseSwap,
+  canSwap,
+  callExhausted,
+  passesNeeded,
+  type SwapSide,
+} from "@/lib/chore-swap";
 
 const NOW = new Date("2026-08-01T12:00:00Z");
 const LATER = new Date("2026-08-08T12:00:00Z");
@@ -108,5 +114,39 @@ describe("refuseSwap", () => {
 
     expect(typeof refusal).toBe("string");
     expect(refusal).not.toBe("");
+  });
+});
+
+describe("callExhausted", () => {
+  it("waits while somebody could still say yes", () => {
+    // Four flatmates, so three others to hear from.
+    expect(callExhausted(0, 4)).toBe(false);
+    expect(callExhausted(1, 4)).toBe(false);
+    expect(callExhausted(2, 4)).toBe(false);
+  });
+
+  it("gives up once everyone else has passed", () => {
+    expect(callExhausted(3, 4)).toBe(true);
+  });
+
+  it("counts everyone except the person asking", () => {
+    expect(passesNeeded(5)).toBe(4);
+    expect(passesNeeded(2)).toBe(1);
+  });
+
+  it("closes a two-person group as soon as the other one passes", () => {
+    expect(callExhausted(0, 2)).toBe(false);
+    expect(callExhausted(1, 2)).toBe(true);
+  });
+
+  // Otherwise a call would close the instant it was posted, having been
+  // refused by nobody.
+  it("never closes a call in a group with nobody else in it", () => {
+    expect(callExhausted(0, 1)).toBe(false);
+    expect(passesNeeded(1)).toBe(0);
+  });
+
+  it("stays closed if a stray extra pass somehow lands", () => {
+    expect(callExhausted(5, 4)).toBe(true);
   });
 });

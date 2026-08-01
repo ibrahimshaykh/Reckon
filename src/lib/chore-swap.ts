@@ -59,3 +59,27 @@ export function refuseSwap({
 export function canSwap(input: Parameters<typeof refuseSwap>[0]): boolean {
   return refuseSwap(input) === null;
 }
+
+/**
+ * How many people an open call is waiting on — everyone in the group except
+ * whoever asked.
+ */
+export function passesNeeded(memberCount: number): number {
+  return Math.max(memberCount - 1, 0);
+}
+
+/**
+ * Whether an open call has run out of people to hope for.
+ *
+ * The point of counting at all is that silence is ambiguous — it means either
+ * "nobody looked" or "everybody refused", and the asker can't tell which. Once
+ * this is true, the call has an actual answer rather than a shrug.
+ */
+export function callExhausted(passCount: number, memberCount: number): boolean {
+  const needed = passesNeeded(memberCount);
+  // A group of one has nobody to ask, so a call there is never "answered" —
+  // it just has nobody to answer it. Treating zero-of-zero as exhausted would
+  // close a call the moment it was posted.
+  if (needed === 0) return false;
+  return passCount >= needed;
+}

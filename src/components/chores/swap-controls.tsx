@@ -8,6 +8,7 @@ import {
   cancelSwap,
   openSwapCall,
   claimSwapCall,
+  passSwapCall,
 } from "@/lib/actions/chore-swaps";
 import { isActionError, type ActionResult } from "@/lib/action-result";
 import { interpolate } from "@/lib/i18n";
@@ -173,8 +174,24 @@ export function SwapOffers({
                   yours: offer.fromChore,
                   theirs: offer.toChore ?? "",
                 })}
-              {offer.kind === "myCall" &&
-                interpolate(dict.chores.swapMyCall, { yours: offer.fromChore })}
+              {offer.kind === "myCall" && (
+                <>
+                  {interpolate(dict.chores.swapMyCall, { yours: offer.fromChore })}
+                  {/* A running count, not just the final answer — most people
+                      won't press anything, and "2 of 4 passed" is still worth
+                      knowing while you wait. */}
+                  {offer.passCount > 0 && (
+                    <span className="ms-1 text-muted-foreground">
+                      {interpolate(dict.chores.swapPassCount, {
+                        n: offer.passCount,
+                        total: offer.passTotal,
+                      })}
+                    </span>
+                  )}
+                </>
+              )}
+              {offer.kind === "noTakers" &&
+                interpolate(dict.chores.swapNoTakers, { yours: offer.fromChore })}
               {offer.kind === "openCall" &&
                 interpolate(dict.chores.swapOpenCall, {
                   name: offer.fromName,
@@ -222,12 +239,40 @@ export function SwapOffers({
             )}
 
             {offer.kind === "openCall" && claiming !== offer.id && (
+              <>
+                <Button
+                  size="sm"
+                  disabled={pendingId === offer.id || mine.length === 0}
+                  onClick={() => setClaiming(offer.id)}
+                >
+                  {dict.chores.swapTake}
+                </Button>
+                {/* Saying no out loud. Without it, silence means either
+                    "nobody looked" or "everybody refused", and the person
+                    asking has no way to tell which. */}
+                {offer.iPassed ? (
+                  <span className="text-muted-foreground">{dict.chores.swapPassed}</span>
+                ) : (
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    disabled={pendingId === offer.id}
+                    onClick={() => act(offer.id, () => passSwapCall(offer.id))}
+                  >
+                    {dict.chores.swapNotMe}
+                  </Button>
+                )}
+              </>
+            )}
+
+            {offer.kind === "noTakers" && (
               <Button
                 size="sm"
-                disabled={pendingId === offer.id || mine.length === 0}
-                onClick={() => setClaiming(offer.id)}
+                variant="outline"
+                disabled={pendingId === offer.id}
+                onClick={() => act(offer.id, () => cancelSwap(offer.id))}
               >
-                {dict.chores.swapTake}
+                {dict.chores.swapNoTakersDismiss}
               </Button>
             )}
           </div>

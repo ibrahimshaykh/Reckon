@@ -411,6 +411,7 @@ export const ModelName = {
   Chore: 'Chore',
   ChoreAssignment: 'ChoreAssignment',
   ChoreSwapRequest: 'ChoreSwapRequest',
+  ChoreSwapPass: 'ChoreSwapPass',
   AvailabilityEntry: 'AvailabilityEntry',
   Proposal: 'Proposal',
   ProposalFlag: 'ProposalFlag',
@@ -433,7 +434,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "group" | "groupMember" | "expenseGuest" | "expenseGuestHost" | "expense" | "expenseItem" | "expenseItemParticipant" | "payment" | "settlement" | "iOU" | "chore" | "choreAssignment" | "choreSwapRequest" | "availabilityEntry" | "proposal" | "proposalFlag" | "proposalVote" | "nudge" | "recap" | "activityEvent"
+    modelProps: "user" | "group" | "groupMember" | "expenseGuest" | "expenseGuestHost" | "expense" | "expenseItem" | "expenseItemParticipant" | "payment" | "settlement" | "iOU" | "chore" | "choreAssignment" | "choreSwapRequest" | "choreSwapPass" | "availabilityEntry" | "proposal" | "proposalFlag" | "proposalVote" | "nudge" | "recap" | "activityEvent"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1473,6 +1474,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    ChoreSwapPass: {
+      payload: Prisma.$ChoreSwapPassPayload<ExtArgs>
+      fields: Prisma.ChoreSwapPassFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ChoreSwapPassFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChoreSwapPassPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ChoreSwapPassFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChoreSwapPassPayload>
+        }
+        findFirst: {
+          args: Prisma.ChoreSwapPassFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChoreSwapPassPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ChoreSwapPassFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChoreSwapPassPayload>
+        }
+        findMany: {
+          args: Prisma.ChoreSwapPassFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChoreSwapPassPayload>[]
+        }
+        create: {
+          args: Prisma.ChoreSwapPassCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChoreSwapPassPayload>
+        }
+        createMany: {
+          args: Prisma.ChoreSwapPassCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ChoreSwapPassCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChoreSwapPassPayload>[]
+        }
+        delete: {
+          args: Prisma.ChoreSwapPassDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChoreSwapPassPayload>
+        }
+        update: {
+          args: Prisma.ChoreSwapPassUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChoreSwapPassPayload>
+        }
+        deleteMany: {
+          args: Prisma.ChoreSwapPassDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ChoreSwapPassUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ChoreSwapPassUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChoreSwapPassPayload>[]
+        }
+        upsert: {
+          args: Prisma.ChoreSwapPassUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChoreSwapPassPayload>
+        }
+        aggregate: {
+          args: Prisma.ChoreSwapPassAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateChoreSwapPass>
+        }
+        groupBy: {
+          args: Prisma.ChoreSwapPassGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ChoreSwapPassGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ChoreSwapPassCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ChoreSwapPassCountAggregateOutputType> | number
+        }
+      }
+    }
     AvailabilityEntry: {
       payload: Prisma.$AvailabilityEntryPayload<ExtArgs>
       fields: Prisma.AvailabilityEntryFieldRefs
@@ -2224,6 +2299,16 @@ export const ChoreSwapRequestScalarFieldEnum = {
 export type ChoreSwapRequestScalarFieldEnum = (typeof ChoreSwapRequestScalarFieldEnum)[keyof typeof ChoreSwapRequestScalarFieldEnum]
 
 
+export const ChoreSwapPassScalarFieldEnum = {
+  id: 'id',
+  requestId: 'requestId',
+  userId: 'userId',
+  createdAt: 'createdAt'
+} as const
+
+export type ChoreSwapPassScalarFieldEnum = (typeof ChoreSwapPassScalarFieldEnum)[keyof typeof ChoreSwapPassScalarFieldEnum]
+
+
 export const AvailabilityEntryScalarFieldEnum = {
   id: 'id',
   groupId: 'groupId',
@@ -2768,6 +2853,7 @@ export type GlobalOmitConfig = {
   chore?: Prisma.ChoreOmit
   choreAssignment?: Prisma.ChoreAssignmentOmit
   choreSwapRequest?: Prisma.ChoreSwapRequestOmit
+  choreSwapPass?: Prisma.ChoreSwapPassOmit
   availabilityEntry?: Prisma.AvailabilityEntryOmit
   proposal?: Prisma.ProposalOmit
   proposalFlag?: Prisma.ProposalFlagOmit
