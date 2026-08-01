@@ -111,7 +111,18 @@
     "whyFirstRound": "Nadie había hecho nada todavía, así que esta ronda se repartió lo más pareja que permiten estas tareas — no porque alguien fuera atrasado.",
     "whyBalance": "Elegido para mantener la carga pareja con el tiempo.",
     "roundSplit": "Esta ronda",
-    "roundEven": "pareja"
+    "roundEven": "pareja",
+    "swapButton": "Cambiar esta",
+    "swapPick": "Ofrécela por una de las suyas:",
+    "swapCancel": "Cancelar",
+    "swapSending": "Preguntando…",
+    "swapNothingToSwap": "Nadie más tiene una tarea pendiente ahora mismo.",
+    "swapIncoming": "{name} hará tu {yours} si tú haces su {theirs}.",
+    "swapOutgoing": "Ofreciste tu {yours} por la {theirs}. Esperando a {name}.",
+    "swapAccept": "Aceptar",
+    "swapDecline": "No, gracias",
+    "swapWithdraw": "Retirar",
+    "swapNote": "El crédito es de quien la haga de verdad, así que cambiar no le cuesta nada a ninguno."
   },
   "availability": {
     "title": "Disponibilidad del grupo",

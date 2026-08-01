@@ -392,6 +392,23 @@ export type EnumChoreFrequencyWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumChoreFrequencyFilter<$PrismaModel>
 }
 
+export type EnumSwapStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.SwapStatus | Prisma.EnumSwapStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.SwapStatus[] | Prisma.ListEnumSwapStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SwapStatus[] | Prisma.ListEnumSwapStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSwapStatusFilter<$PrismaModel> | $Enums.SwapStatus
+}
+
+export type EnumSwapStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.SwapStatus | Prisma.EnumSwapStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.SwapStatus[] | Prisma.ListEnumSwapStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SwapStatus[] | Prisma.ListEnumSwapStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSwapStatusWithAggregatesFilter<$PrismaModel> | $Enums.SwapStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumSwapStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumSwapStatusFilter<$PrismaModel>
+}
+
 export type EnumProposalStatusFilter<$PrismaModel = never> = {
   equals?: $Enums.ProposalStatus | Prisma.EnumProposalStatusFieldRefInput<$PrismaModel>
   in?: $Enums.ProposalStatus[] | Prisma.ListEnumProposalStatusFieldRefInput<$PrismaModel>
@@ -839,6 +856,23 @@ export type NestedEnumChoreFrequencyWithAggregatesFilter<$PrismaModel = never> =
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumChoreFrequencyFilter<$PrismaModel>
   _max?: Prisma.NestedEnumChoreFrequencyFilter<$PrismaModel>
+}
+
+export type NestedEnumSwapStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.SwapStatus | Prisma.EnumSwapStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.SwapStatus[] | Prisma.ListEnumSwapStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SwapStatus[] | Prisma.ListEnumSwapStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSwapStatusFilter<$PrismaModel> | $Enums.SwapStatus
+}
+
+export type NestedEnumSwapStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.SwapStatus | Prisma.EnumSwapStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.SwapStatus[] | Prisma.ListEnumSwapStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SwapStatus[] | Prisma.ListEnumSwapStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSwapStatusWithAggregatesFilter<$PrismaModel> | $Enums.SwapStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumSwapStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumSwapStatusFilter<$PrismaModel>
 }
 
 export type NestedEnumProposalStatusFilter<$PrismaModel = never> = {

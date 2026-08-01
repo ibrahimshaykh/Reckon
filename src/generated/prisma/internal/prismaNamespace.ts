@@ -410,6 +410,7 @@ export const ModelName = {
   IOU: 'IOU',
   Chore: 'Chore',
   ChoreAssignment: 'ChoreAssignment',
+  ChoreSwapRequest: 'ChoreSwapRequest',
   AvailabilityEntry: 'AvailabilityEntry',
   Proposal: 'Proposal',
   ProposalFlag: 'ProposalFlag',
@@ -432,7 +433,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "group" | "groupMember" | "expenseGuest" | "expenseGuestHost" | "expense" | "expenseItem" | "expenseItemParticipant" | "payment" | "settlement" | "iOU" | "chore" | "choreAssignment" | "availabilityEntry" | "proposal" | "proposalFlag" | "proposalVote" | "nudge" | "recap" | "activityEvent"
+    modelProps: "user" | "group" | "groupMember" | "expenseGuest" | "expenseGuestHost" | "expense" | "expenseItem" | "expenseItemParticipant" | "payment" | "settlement" | "iOU" | "chore" | "choreAssignment" | "choreSwapRequest" | "availabilityEntry" | "proposal" | "proposalFlag" | "proposalVote" | "nudge" | "recap" | "activityEvent"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1398,6 +1399,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    ChoreSwapRequest: {
+      payload: Prisma.$ChoreSwapRequestPayload<ExtArgs>
+      fields: Prisma.ChoreSwapRequestFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ChoreSwapRequestFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChoreSwapRequestPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ChoreSwapRequestFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChoreSwapRequestPayload>
+        }
+        findFirst: {
+          args: Prisma.ChoreSwapRequestFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChoreSwapRequestPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ChoreSwapRequestFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChoreSwapRequestPayload>
+        }
+        findMany: {
+          args: Prisma.ChoreSwapRequestFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChoreSwapRequestPayload>[]
+        }
+        create: {
+          args: Prisma.ChoreSwapRequestCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChoreSwapRequestPayload>
+        }
+        createMany: {
+          args: Prisma.ChoreSwapRequestCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ChoreSwapRequestCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChoreSwapRequestPayload>[]
+        }
+        delete: {
+          args: Prisma.ChoreSwapRequestDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChoreSwapRequestPayload>
+        }
+        update: {
+          args: Prisma.ChoreSwapRequestUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChoreSwapRequestPayload>
+        }
+        deleteMany: {
+          args: Prisma.ChoreSwapRequestDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ChoreSwapRequestUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ChoreSwapRequestUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChoreSwapRequestPayload>[]
+        }
+        upsert: {
+          args: Prisma.ChoreSwapRequestUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChoreSwapRequestPayload>
+        }
+        aggregate: {
+          args: Prisma.ChoreSwapRequestAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateChoreSwapRequest>
+        }
+        groupBy: {
+          args: Prisma.ChoreSwapRequestGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ChoreSwapRequestGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ChoreSwapRequestCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ChoreSwapRequestCountAggregateOutputType> | number
+        }
+      }
+    }
     AvailabilityEntry: {
       payload: Prisma.$AvailabilityEntryPayload<ExtArgs>
       fields: Prisma.AvailabilityEntryFieldRefs
@@ -2136,6 +2211,19 @@ export const ChoreAssignmentScalarFieldEnum = {
 export type ChoreAssignmentScalarFieldEnum = (typeof ChoreAssignmentScalarFieldEnum)[keyof typeof ChoreAssignmentScalarFieldEnum]
 
 
+export const ChoreSwapRequestScalarFieldEnum = {
+  id: 'id',
+  groupId: 'groupId',
+  fromAssignmentId: 'fromAssignmentId',
+  toAssignmentId: 'toAssignmentId',
+  status: 'status',
+  createdAt: 'createdAt',
+  resolvedAt: 'resolvedAt'
+} as const
+
+export type ChoreSwapRequestScalarFieldEnum = (typeof ChoreSwapRequestScalarFieldEnum)[keyof typeof ChoreSwapRequestScalarFieldEnum]
+
+
 export const AvailabilityEntryScalarFieldEnum = {
   id: 'id',
   groupId: 'groupId',
@@ -2433,6 +2521,20 @@ export type ListEnumChoreFrequencyFieldRefInput<$PrismaModel> = FieldRefInputTyp
 
 
 /**
+ * Reference to a field of type 'SwapStatus'
+ */
+export type EnumSwapStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SwapStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'SwapStatus[]'
+ */
+export type ListEnumSwapStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SwapStatus[]'>
+    
+
+
+/**
  * Reference to a field of type 'ProposalStatus'
  */
 export type EnumProposalStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProposalStatus'>
@@ -2665,6 +2767,7 @@ export type GlobalOmitConfig = {
   iOU?: Prisma.IOUOmit
   chore?: Prisma.ChoreOmit
   choreAssignment?: Prisma.ChoreAssignmentOmit
+  choreSwapRequest?: Prisma.ChoreSwapRequestOmit
   availabilityEntry?: Prisma.AvailabilityEntryOmit
   proposal?: Prisma.ProposalOmit
   proposalFlag?: Prisma.ProposalFlagOmit

@@ -64,6 +64,7 @@ export const ModelName = {
   IOU: 'IOU',
   Chore: 'Chore',
   ChoreAssignment: 'ChoreAssignment',
+  ChoreSwapRequest: 'ChoreSwapRequest',
   AvailabilityEntry: 'AvailabilityEntry',
   Proposal: 'Proposal',
   ProposalFlag: 'ProposalFlag',
@@ -268,6 +269,19 @@ export const ChoreAssignmentScalarFieldEnum = {
 } as const
 
 export type ChoreAssignmentScalarFieldEnum = (typeof ChoreAssignmentScalarFieldEnum)[keyof typeof ChoreAssignmentScalarFieldEnum]
+
+
+export const ChoreSwapRequestScalarFieldEnum = {
+  id: 'id',
+  groupId: 'groupId',
+  fromAssignmentId: 'fromAssignmentId',
+  toAssignmentId: 'toAssignmentId',
+  status: 'status',
+  createdAt: 'createdAt',
+  resolvedAt: 'resolvedAt'
+} as const
+
+export type ChoreSwapRequestScalarFieldEnum = (typeof ChoreSwapRequestScalarFieldEnum)[keyof typeof ChoreSwapRequestScalarFieldEnum]
 
 
 export const AvailabilityEntryScalarFieldEnum = {

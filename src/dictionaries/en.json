@@ -111,7 +111,18 @@
     "whyFirstRound": "Nobody had done anything yet, so this round was split as evenly as these jobs allow — not because anyone was behind.",
     "whyBalance": "Chosen to keep the load even over time.",
     "roundSplit": "This round",
-    "roundEven": "even"
+    "roundEven": "even",
+    "swapButton": "Swap this",
+    "swapPick": "Offer it for one of theirs:",
+    "swapCancel": "Cancel",
+    "swapSending": "Asking…",
+    "swapNothingToSwap": "Nobody else has an unfinished chore right now.",
+    "swapIncoming": "{name} will do your {yours} if you do their {theirs}.",
+    "swapOutgoing": "You offered your {yours} for the {theirs}. Waiting on {name}.",
+    "swapAccept": "Accept",
+    "swapDecline": "No thanks",
+    "swapWithdraw": "Take it back",
+    "swapNote": "Credit goes to whoever actually does it, so trading costs neither of you anything."
   },
   "availability": {
     "title": "Group availability",

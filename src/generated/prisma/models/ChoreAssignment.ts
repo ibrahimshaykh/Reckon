@@ -196,6 +196,8 @@ export type ChoreAssignmentWhereInput = {
   explanation?: Prisma.JsonFilter<"ChoreAssignment">
   chore?: Prisma.XOR<Prisma.ChoreScalarRelationFilter, Prisma.ChoreWhereInput>
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  swapsOffered?: Prisma.ChoreSwapRequestListRelationFilter
+  swapsReceived?: Prisma.ChoreSwapRequestListRelationFilter
 }
 
 export type ChoreAssignmentOrderByWithRelationInput = {
@@ -208,6 +210,8 @@ export type ChoreAssignmentOrderByWithRelationInput = {
   explanation?: Prisma.SortOrder
   chore?: Prisma.ChoreOrderByWithRelationInput
   user?: Prisma.UserOrderByWithRelationInput
+  swapsOffered?: Prisma.ChoreSwapRequestOrderByRelationAggregateInput
+  swapsReceived?: Prisma.ChoreSwapRequestOrderByRelationAggregateInput
 }
 
 export type ChoreAssignmentWhereUniqueInput = Prisma.AtLeast<{
@@ -223,6 +227,8 @@ export type ChoreAssignmentWhereUniqueInput = Prisma.AtLeast<{
   explanation?: Prisma.JsonFilter<"ChoreAssignment">
   chore?: Prisma.XOR<Prisma.ChoreScalarRelationFilter, Prisma.ChoreWhereInput>
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  swapsOffered?: Prisma.ChoreSwapRequestListRelationFilter
+  swapsReceived?: Prisma.ChoreSwapRequestListRelationFilter
 }, "id">
 
 export type ChoreAssignmentOrderByWithAggregationInput = {
@@ -259,6 +265,8 @@ export type ChoreAssignmentCreateInput = {
   explanation: Prisma.JsonNullValueInput | runtime.InputJsonValue
   chore: Prisma.ChoreCreateNestedOneWithoutAssignmentsInput
   user: Prisma.UserCreateNestedOneWithoutChoreAssignmentsInput
+  swapsOffered?: Prisma.ChoreSwapRequestCreateNestedManyWithoutFromAssignmentInput
+  swapsReceived?: Prisma.ChoreSwapRequestCreateNestedManyWithoutToAssignmentInput
 }
 
 export type ChoreAssignmentUncheckedCreateInput = {
@@ -269,6 +277,8 @@ export type ChoreAssignmentUncheckedCreateInput = {
   periodEnd: Date | string
   completedAt?: Date | string | null
   explanation: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  swapsOffered?: Prisma.ChoreSwapRequestUncheckedCreateNestedManyWithoutFromAssignmentInput
+  swapsReceived?: Prisma.ChoreSwapRequestUncheckedCreateNestedManyWithoutToAssignmentInput
 }
 
 export type ChoreAssignmentUpdateInput = {
@@ -279,6 +289,8 @@ export type ChoreAssignmentUpdateInput = {
   explanation?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   chore?: Prisma.ChoreUpdateOneRequiredWithoutAssignmentsNestedInput
   user?: Prisma.UserUpdateOneRequiredWithoutChoreAssignmentsNestedInput
+  swapsOffered?: Prisma.ChoreSwapRequestUpdateManyWithoutFromAssignmentNestedInput
+  swapsReceived?: Prisma.ChoreSwapRequestUpdateManyWithoutToAssignmentNestedInput
 }
 
 export type ChoreAssignmentUncheckedUpdateInput = {
@@ -289,6 +301,8 @@ export type ChoreAssignmentUncheckedUpdateInput = {
   periodEnd?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   explanation?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  swapsOffered?: Prisma.ChoreSwapRequestUncheckedUpdateManyWithoutFromAssignmentNestedInput
+  swapsReceived?: Prisma.ChoreSwapRequestUncheckedUpdateManyWithoutToAssignmentNestedInput
 }
 
 export type ChoreAssignmentCreateManyInput = {
@@ -355,6 +369,11 @@ export type ChoreAssignmentMinOrderByAggregateInput = {
   periodStart?: Prisma.SortOrder
   periodEnd?: Prisma.SortOrder
   completedAt?: Prisma.SortOrder
+}
+
+export type ChoreAssignmentScalarRelationFilter = {
+  is?: Prisma.ChoreAssignmentWhereInput
+  isNot?: Prisma.ChoreAssignmentWhereInput
 }
 
 export type ChoreAssignmentCreateNestedManyWithoutUserInput = {
@@ -441,6 +460,34 @@ export type ChoreAssignmentUncheckedUpdateManyWithoutChoreNestedInput = {
   deleteMany?: Prisma.ChoreAssignmentScalarWhereInput | Prisma.ChoreAssignmentScalarWhereInput[]
 }
 
+export type ChoreAssignmentCreateNestedOneWithoutSwapsOfferedInput = {
+  create?: Prisma.XOR<Prisma.ChoreAssignmentCreateWithoutSwapsOfferedInput, Prisma.ChoreAssignmentUncheckedCreateWithoutSwapsOfferedInput>
+  connectOrCreate?: Prisma.ChoreAssignmentCreateOrConnectWithoutSwapsOfferedInput
+  connect?: Prisma.ChoreAssignmentWhereUniqueInput
+}
+
+export type ChoreAssignmentCreateNestedOneWithoutSwapsReceivedInput = {
+  create?: Prisma.XOR<Prisma.ChoreAssignmentCreateWithoutSwapsReceivedInput, Prisma.ChoreAssignmentUncheckedCreateWithoutSwapsReceivedInput>
+  connectOrCreate?: Prisma.ChoreAssignmentCreateOrConnectWithoutSwapsReceivedInput
+  connect?: Prisma.ChoreAssignmentWhereUniqueInput
+}
+
+export type ChoreAssignmentUpdateOneRequiredWithoutSwapsOfferedNestedInput = {
+  create?: Prisma.XOR<Prisma.ChoreAssignmentCreateWithoutSwapsOfferedInput, Prisma.ChoreAssignmentUncheckedCreateWithoutSwapsOfferedInput>
+  connectOrCreate?: Prisma.ChoreAssignmentCreateOrConnectWithoutSwapsOfferedInput
+  upsert?: Prisma.ChoreAssignmentUpsertWithoutSwapsOfferedInput
+  connect?: Prisma.ChoreAssignmentWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ChoreAssignmentUpdateToOneWithWhereWithoutSwapsOfferedInput, Prisma.ChoreAssignmentUpdateWithoutSwapsOfferedInput>, Prisma.ChoreAssignmentUncheckedUpdateWithoutSwapsOfferedInput>
+}
+
+export type ChoreAssignmentUpdateOneRequiredWithoutSwapsReceivedNestedInput = {
+  create?: Prisma.XOR<Prisma.ChoreAssignmentCreateWithoutSwapsReceivedInput, Prisma.ChoreAssignmentUncheckedCreateWithoutSwapsReceivedInput>
+  connectOrCreate?: Prisma.ChoreAssignmentCreateOrConnectWithoutSwapsReceivedInput
+  upsert?: Prisma.ChoreAssignmentUpsertWithoutSwapsReceivedInput
+  connect?: Prisma.ChoreAssignmentWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ChoreAssignmentUpdateToOneWithWhereWithoutSwapsReceivedInput, Prisma.ChoreAssignmentUpdateWithoutSwapsReceivedInput>, Prisma.ChoreAssignmentUncheckedUpdateWithoutSwapsReceivedInput>
+}
+
 export type ChoreAssignmentCreateWithoutUserInput = {
   id?: string
   periodStart: Date | string
@@ -448,6 +495,8 @@ export type ChoreAssignmentCreateWithoutUserInput = {
   completedAt?: Date | string | null
   explanation: Prisma.JsonNullValueInput | runtime.InputJsonValue
   chore: Prisma.ChoreCreateNestedOneWithoutAssignmentsInput
+  swapsOffered?: Prisma.ChoreSwapRequestCreateNestedManyWithoutFromAssignmentInput
+  swapsReceived?: Prisma.ChoreSwapRequestCreateNestedManyWithoutToAssignmentInput
 }
 
 export type ChoreAssignmentUncheckedCreateWithoutUserInput = {
@@ -457,6 +506,8 @@ export type ChoreAssignmentUncheckedCreateWithoutUserInput = {
   periodEnd: Date | string
   completedAt?: Date | string | null
   explanation: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  swapsOffered?: Prisma.ChoreSwapRequestUncheckedCreateNestedManyWithoutFromAssignmentInput
+  swapsReceived?: Prisma.ChoreSwapRequestUncheckedCreateNestedManyWithoutToAssignmentInput
 }
 
 export type ChoreAssignmentCreateOrConnectWithoutUserInput = {
@@ -505,6 +556,8 @@ export type ChoreAssignmentCreateWithoutChoreInput = {
   completedAt?: Date | string | null
   explanation: Prisma.JsonNullValueInput | runtime.InputJsonValue
   user: Prisma.UserCreateNestedOneWithoutChoreAssignmentsInput
+  swapsOffered?: Prisma.ChoreSwapRequestCreateNestedManyWithoutFromAssignmentInput
+  swapsReceived?: Prisma.ChoreSwapRequestCreateNestedManyWithoutToAssignmentInput
 }
 
 export type ChoreAssignmentUncheckedCreateWithoutChoreInput = {
@@ -514,6 +567,8 @@ export type ChoreAssignmentUncheckedCreateWithoutChoreInput = {
   periodEnd: Date | string
   completedAt?: Date | string | null
   explanation: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  swapsOffered?: Prisma.ChoreSwapRequestUncheckedCreateNestedManyWithoutFromAssignmentInput
+  swapsReceived?: Prisma.ChoreSwapRequestUncheckedCreateNestedManyWithoutToAssignmentInput
 }
 
 export type ChoreAssignmentCreateOrConnectWithoutChoreInput = {
@@ -542,6 +597,126 @@ export type ChoreAssignmentUpdateManyWithWhereWithoutChoreInput = {
   data: Prisma.XOR<Prisma.ChoreAssignmentUpdateManyMutationInput, Prisma.ChoreAssignmentUncheckedUpdateManyWithoutChoreInput>
 }
 
+export type ChoreAssignmentCreateWithoutSwapsOfferedInput = {
+  id?: string
+  periodStart: Date | string
+  periodEnd: Date | string
+  completedAt?: Date | string | null
+  explanation: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  chore: Prisma.ChoreCreateNestedOneWithoutAssignmentsInput
+  user: Prisma.UserCreateNestedOneWithoutChoreAssignmentsInput
+  swapsReceived?: Prisma.ChoreSwapRequestCreateNestedManyWithoutToAssignmentInput
+}
+
+export type ChoreAssignmentUncheckedCreateWithoutSwapsOfferedInput = {
+  id?: string
+  choreId: string
+  userId: string
+  periodStart: Date | string
+  periodEnd: Date | string
+  completedAt?: Date | string | null
+  explanation: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  swapsReceived?: Prisma.ChoreSwapRequestUncheckedCreateNestedManyWithoutToAssignmentInput
+}
+
+export type ChoreAssignmentCreateOrConnectWithoutSwapsOfferedInput = {
+  where: Prisma.ChoreAssignmentWhereUniqueInput
+  create: Prisma.XOR<Prisma.ChoreAssignmentCreateWithoutSwapsOfferedInput, Prisma.ChoreAssignmentUncheckedCreateWithoutSwapsOfferedInput>
+}
+
+export type ChoreAssignmentCreateWithoutSwapsReceivedInput = {
+  id?: string
+  periodStart: Date | string
+  periodEnd: Date | string
+  completedAt?: Date | string | null
+  explanation: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  chore: Prisma.ChoreCreateNestedOneWithoutAssignmentsInput
+  user: Prisma.UserCreateNestedOneWithoutChoreAssignmentsInput
+  swapsOffered?: Prisma.ChoreSwapRequestCreateNestedManyWithoutFromAssignmentInput
+}
+
+export type ChoreAssignmentUncheckedCreateWithoutSwapsReceivedInput = {
+  id?: string
+  choreId: string
+  userId: string
+  periodStart: Date | string
+  periodEnd: Date | string
+  completedAt?: Date | string | null
+  explanation: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  swapsOffered?: Prisma.ChoreSwapRequestUncheckedCreateNestedManyWithoutFromAssignmentInput
+}
+
+export type ChoreAssignmentCreateOrConnectWithoutSwapsReceivedInput = {
+  where: Prisma.ChoreAssignmentWhereUniqueInput
+  create: Prisma.XOR<Prisma.ChoreAssignmentCreateWithoutSwapsReceivedInput, Prisma.ChoreAssignmentUncheckedCreateWithoutSwapsReceivedInput>
+}
+
+export type ChoreAssignmentUpsertWithoutSwapsOfferedInput = {
+  update: Prisma.XOR<Prisma.ChoreAssignmentUpdateWithoutSwapsOfferedInput, Prisma.ChoreAssignmentUncheckedUpdateWithoutSwapsOfferedInput>
+  create: Prisma.XOR<Prisma.ChoreAssignmentCreateWithoutSwapsOfferedInput, Prisma.ChoreAssignmentUncheckedCreateWithoutSwapsOfferedInput>
+  where?: Prisma.ChoreAssignmentWhereInput
+}
+
+export type ChoreAssignmentUpdateToOneWithWhereWithoutSwapsOfferedInput = {
+  where?: Prisma.ChoreAssignmentWhereInput
+  data: Prisma.XOR<Prisma.ChoreAssignmentUpdateWithoutSwapsOfferedInput, Prisma.ChoreAssignmentUncheckedUpdateWithoutSwapsOfferedInput>
+}
+
+export type ChoreAssignmentUpdateWithoutSwapsOfferedInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  periodStart?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  periodEnd?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  explanation?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  chore?: Prisma.ChoreUpdateOneRequiredWithoutAssignmentsNestedInput
+  user?: Prisma.UserUpdateOneRequiredWithoutChoreAssignmentsNestedInput
+  swapsReceived?: Prisma.ChoreSwapRequestUpdateManyWithoutToAssignmentNestedInput
+}
+
+export type ChoreAssignmentUncheckedUpdateWithoutSwapsOfferedInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  choreId?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  periodStart?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  periodEnd?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  explanation?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  swapsReceived?: Prisma.ChoreSwapRequestUncheckedUpdateManyWithoutToAssignmentNestedInput
+}
+
+export type ChoreAssignmentUpsertWithoutSwapsReceivedInput = {
+  update: Prisma.XOR<Prisma.ChoreAssignmentUpdateWithoutSwapsReceivedInput, Prisma.ChoreAssignmentUncheckedUpdateWithoutSwapsReceivedInput>
+  create: Prisma.XOR<Prisma.ChoreAssignmentCreateWithoutSwapsReceivedInput, Prisma.ChoreAssignmentUncheckedCreateWithoutSwapsReceivedInput>
+  where?: Prisma.ChoreAssignmentWhereInput
+}
+
+export type ChoreAssignmentUpdateToOneWithWhereWithoutSwapsReceivedInput = {
+  where?: Prisma.ChoreAssignmentWhereInput
+  data: Prisma.XOR<Prisma.ChoreAssignmentUpdateWithoutSwapsReceivedInput, Prisma.ChoreAssignmentUncheckedUpdateWithoutSwapsReceivedInput>
+}
+
+export type ChoreAssignmentUpdateWithoutSwapsReceivedInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  periodStart?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  periodEnd?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  explanation?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  chore?: Prisma.ChoreUpdateOneRequiredWithoutAssignmentsNestedInput
+  user?: Prisma.UserUpdateOneRequiredWithoutChoreAssignmentsNestedInput
+  swapsOffered?: Prisma.ChoreSwapRequestUpdateManyWithoutFromAssignmentNestedInput
+}
+
+export type ChoreAssignmentUncheckedUpdateWithoutSwapsReceivedInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  choreId?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  periodStart?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  periodEnd?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  explanation?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  swapsOffered?: Prisma.ChoreSwapRequestUncheckedUpdateManyWithoutFromAssignmentNestedInput
+}
+
 export type ChoreAssignmentCreateManyUserInput = {
   id?: string
   choreId: string
@@ -558,6 +733,8 @@ export type ChoreAssignmentUpdateWithoutUserInput = {
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   explanation?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   chore?: Prisma.ChoreUpdateOneRequiredWithoutAssignmentsNestedInput
+  swapsOffered?: Prisma.ChoreSwapRequestUpdateManyWithoutFromAssignmentNestedInput
+  swapsReceived?: Prisma.ChoreSwapRequestUpdateManyWithoutToAssignmentNestedInput
 }
 
 export type ChoreAssignmentUncheckedUpdateWithoutUserInput = {
@@ -567,6 +744,8 @@ export type ChoreAssignmentUncheckedUpdateWithoutUserInput = {
   periodEnd?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   explanation?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  swapsOffered?: Prisma.ChoreSwapRequestUncheckedUpdateManyWithoutFromAssignmentNestedInput
+  swapsReceived?: Prisma.ChoreSwapRequestUncheckedUpdateManyWithoutToAssignmentNestedInput
 }
 
 export type ChoreAssignmentUncheckedUpdateManyWithoutUserInput = {
@@ -594,6 +773,8 @@ export type ChoreAssignmentUpdateWithoutChoreInput = {
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   explanation?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   user?: Prisma.UserUpdateOneRequiredWithoutChoreAssignmentsNestedInput
+  swapsOffered?: Prisma.ChoreSwapRequestUpdateManyWithoutFromAssignmentNestedInput
+  swapsReceived?: Prisma.ChoreSwapRequestUpdateManyWithoutToAssignmentNestedInput
 }
 
 export type ChoreAssignmentUncheckedUpdateWithoutChoreInput = {
@@ -603,6 +784,8 @@ export type ChoreAssignmentUncheckedUpdateWithoutChoreInput = {
   periodEnd?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   explanation?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  swapsOffered?: Prisma.ChoreSwapRequestUncheckedUpdateManyWithoutFromAssignmentNestedInput
+  swapsReceived?: Prisma.ChoreSwapRequestUncheckedUpdateManyWithoutToAssignmentNestedInput
 }
 
 export type ChoreAssignmentUncheckedUpdateManyWithoutChoreInput = {
@@ -615,6 +798,44 @@ export type ChoreAssignmentUncheckedUpdateManyWithoutChoreInput = {
 }
 
 
+/**
+ * Count Type ChoreAssignmentCountOutputType
+ */
+
+export type ChoreAssignmentCountOutputType = {
+  swapsOffered: number
+  swapsReceived: number
+}
+
+export type ChoreAssignmentCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  swapsOffered?: boolean | ChoreAssignmentCountOutputTypeCountSwapsOfferedArgs
+  swapsReceived?: boolean | ChoreAssignmentCountOutputTypeCountSwapsReceivedArgs
+}
+
+/**
+ * ChoreAssignmentCountOutputType without action
+ */
+export type ChoreAssignmentCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ChoreAssignmentCountOutputType
+   */
+  select?: Prisma.ChoreAssignmentCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * ChoreAssignmentCountOutputType without action
+ */
+export type ChoreAssignmentCountOutputTypeCountSwapsOfferedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ChoreSwapRequestWhereInput
+}
+
+/**
+ * ChoreAssignmentCountOutputType without action
+ */
+export type ChoreAssignmentCountOutputTypeCountSwapsReceivedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ChoreSwapRequestWhereInput
+}
+
 
 export type ChoreAssignmentSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -626,6 +847,9 @@ export type ChoreAssignmentSelect<ExtArgs extends runtime.Types.Extensions.Inter
   explanation?: boolean
   chore?: boolean | Prisma.ChoreDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  swapsOffered?: boolean | Prisma.ChoreAssignment$swapsOfferedArgs<ExtArgs>
+  swapsReceived?: boolean | Prisma.ChoreAssignment$swapsReceivedArgs<ExtArgs>
+  _count?: boolean | Prisma.ChoreAssignmentCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["choreAssignment"]>
 
 export type ChoreAssignmentSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -666,6 +890,9 @@ export type ChoreAssignmentOmit<ExtArgs extends runtime.Types.Extensions.Interna
 export type ChoreAssignmentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   chore?: boolean | Prisma.ChoreDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  swapsOffered?: boolean | Prisma.ChoreAssignment$swapsOfferedArgs<ExtArgs>
+  swapsReceived?: boolean | Prisma.ChoreAssignment$swapsReceivedArgs<ExtArgs>
+  _count?: boolean | Prisma.ChoreAssignmentCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ChoreAssignmentIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   chore?: boolean | Prisma.ChoreDefaultArgs<ExtArgs>
@@ -681,6 +908,8 @@ export type $ChoreAssignmentPayload<ExtArgs extends runtime.Types.Extensions.Int
   objects: {
     chore: Prisma.$ChorePayload<ExtArgs>
     user: Prisma.$UserPayload<ExtArgs>
+    swapsOffered: Prisma.$ChoreSwapRequestPayload<ExtArgs>[]
+    swapsReceived: Prisma.$ChoreSwapRequestPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1086,6 +1315,8 @@ export interface Prisma__ChoreAssignmentClient<T, Null = never, ExtArgs extends 
   readonly [Symbol.toStringTag]: "PrismaPromise"
   chore<T extends Prisma.ChoreDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ChoreDefaultArgs<ExtArgs>>): Prisma.Prisma__ChoreClient<runtime.Types.Result.GetResult<Prisma.$ChorePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  swapsOffered<T extends Prisma.ChoreAssignment$swapsOfferedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ChoreAssignment$swapsOfferedArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ChoreSwapRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  swapsReceived<T extends Prisma.ChoreAssignment$swapsReceivedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ChoreAssignment$swapsReceivedArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ChoreSwapRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1520,6 +1751,54 @@ export type ChoreAssignmentDeleteManyArgs<ExtArgs extends runtime.Types.Extensio
    * Limit how many ChoreAssignments to delete.
    */
   limit?: number
+}
+
+/**
+ * ChoreAssignment.swapsOffered
+ */
+export type ChoreAssignment$swapsOfferedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ChoreSwapRequest
+   */
+  select?: Prisma.ChoreSwapRequestSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ChoreSwapRequest
+   */
+  omit?: Prisma.ChoreSwapRequestOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ChoreSwapRequestInclude<ExtArgs> | null
+  where?: Prisma.ChoreSwapRequestWhereInput
+  orderBy?: Prisma.ChoreSwapRequestOrderByWithRelationInput | Prisma.ChoreSwapRequestOrderByWithRelationInput[]
+  cursor?: Prisma.ChoreSwapRequestWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ChoreSwapRequestScalarFieldEnum | Prisma.ChoreSwapRequestScalarFieldEnum[]
+}
+
+/**
+ * ChoreAssignment.swapsReceived
+ */
+export type ChoreAssignment$swapsReceivedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ChoreSwapRequest
+   */
+  select?: Prisma.ChoreSwapRequestSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ChoreSwapRequest
+   */
+  omit?: Prisma.ChoreSwapRequestOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ChoreSwapRequestInclude<ExtArgs> | null
+  where?: Prisma.ChoreSwapRequestWhereInput
+  orderBy?: Prisma.ChoreSwapRequestOrderByWithRelationInput | Prisma.ChoreSwapRequestOrderByWithRelationInput[]
+  cursor?: Prisma.ChoreSwapRequestWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ChoreSwapRequestScalarFieldEnum | Prisma.ChoreSwapRequestScalarFieldEnum[]
 }
 
 /**

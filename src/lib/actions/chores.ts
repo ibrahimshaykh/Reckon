@@ -150,6 +150,8 @@ export async function listChores(groupId: string) {
       effortWeight: c.effortWeight,
       frequency: c.frequency,
       currentAssignee: current?.user.displayName ?? null,
+      // The row needs this to know whether the chore is the reader's to offer.
+      currentAssigneeId: current?.userId ?? null,
       periodEnd: current?.periodEnd.toISOString() ?? null,
       // Assignments made before this was structured still hold {steps}; the
       // renderer falls back to those rather than showing nothing.

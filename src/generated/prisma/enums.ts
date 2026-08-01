@@ -96,3 +96,13 @@ export const ActivityType = {
 } as const
 
 export type ActivityType = (typeof ActivityType)[keyof typeof ActivityType]
+
+
+export const SwapStatus = {
+  PENDING: 'PENDING',
+  ACCEPTED: 'ACCEPTED',
+  DECLINED: 'DECLINED',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type SwapStatus = (typeof SwapStatus)[keyof typeof SwapStatus]

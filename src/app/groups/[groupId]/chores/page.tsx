@@ -1,4 +1,5 @@
 import { listChores, getChoreFairness } from "@/lib/actions/chores";
+import { listSwapOffers } from "@/lib/actions/chore-swaps";
 import { computeFairnessBars } from "@/lib/chore-fairness";
 import { requireSession } from "@/lib/dal";
 import { getDictionary } from "@/lib/dictionary";
@@ -7,6 +8,7 @@ import { ChoreList } from "@/components/chores/chore-list";
 import { FairnessBars } from "@/components/chores/fairness-bars";
 import { PageHeader } from "@/components/page-header";
 import { FieldGuide } from "@/components/field-guide";
+import { SwapOffers } from "@/components/chores/swap-controls";
 
 export default async function ChoresPage({
   params,
@@ -14,10 +16,11 @@ export default async function ChoresPage({
   params: Promise<{ groupId: string }>;
 }) {
   const { groupId } = await params;
-  const [session, chores, fairness] = await Promise.all([
+  const [session, chores, fairness, swapOffers] = await Promise.all([
     requireSession(),
     listChores(groupId),
     getChoreFairness(groupId),
+    listSwapOffers(groupId),
   ]);
   const dict = await getDictionary(session.locale);
   const bars = computeFairnessBars(fairness);
@@ -30,8 +33,16 @@ export default async function ChoresPage({
       />
       <FieldGuide guide={dict.guides.chores} dict={dict} />
       <AddChoreForm groupId={groupId} dict={dict} />
+      {/* Above the list: an offer waiting on you is the thing to deal with
+          first, not something to hunt for among the rows. */}
+      <SwapOffers offers={swapOffers} dict={dict} />
       <FairnessBars bars={bars} title={dict.chores.fairnessTitle} />
-      <ChoreList groupId={groupId} chores={chores} dict={dict} />
+      <ChoreList
+        groupId={groupId}
+        chores={chores}
+        currentUserId={session.id}
+        dict={dict}
+      />
     </div>
   );
 }

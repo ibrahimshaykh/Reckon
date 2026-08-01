@@ -107,6 +107,11 @@ export type Chore = Prisma.ChoreModel
  */
 export type ChoreAssignment = Prisma.ChoreAssignmentModel
 /**
+ * Model ChoreSwapRequest
+ * 
+ */
+export type ChoreSwapRequest = Prisma.ChoreSwapRequestModel
+/**
  * Model AvailabilityEntry
  * 
  */

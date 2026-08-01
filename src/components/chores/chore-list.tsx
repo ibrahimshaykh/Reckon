@@ -13,6 +13,7 @@ import {
   type ChoreExplanation,
 } from "@/lib/chore-explanation";
 import { Button } from "@/components/ui/button";
+import { SwapButton } from "@/components/chores/swap-controls";
 
 type Chore = {
   id: string;
@@ -20,6 +21,7 @@ type Chore = {
   effortWeight: number;
   frequency: string;
   currentAssignee: string | null;
+  currentAssigneeId: string | null;
   periodEnd: string | null;
   explanation: ChoreExplanation | null;
   assignmentId: string | null;
@@ -36,10 +38,12 @@ const FREQ_KEY = {
 export function ChoreList({
   groupId,
   chores,
+  currentUserId,
   dict,
 }: {
   groupId: string;
   chores: Chore[];
+  currentUserId: string;
   dict: Dictionary;
 }) {
   const router = useRouter();
@@ -75,14 +79,44 @@ export function ChoreList({
       )}
       <ul className="flex flex-col gap-2">
         {chores.map((chore) => (
-          <ChoreRow key={chore.id} chore={chore} dict={dict} />
+          <ChoreRow
+            key={chore.id}
+            chore={chore}
+            // Everyone else's live chores, which are what this one could be
+            // traded for. Computed here so each row doesn't rescan the list.
+            others={chores
+              .filter(
+                (c) =>
+                  c.assignmentId &&
+                  !c.completedAt &&
+                  c.currentAssigneeId &&
+                  c.currentAssigneeId !== currentUserId,
+              )
+              .map((c) => ({
+                assignmentId: c.assignmentId as string,
+                choreName: c.name,
+                assigneeName: c.currentAssignee as string,
+              }))}
+            isMine={chore.currentAssigneeId === currentUserId}
+            dict={dict}
+          />
         ))}
       </ul>
     </div>
   );
 }
 
-function ChoreRow({ chore, dict }: { chore: Chore; dict: Dictionary }) {
+function ChoreRow({
+  chore,
+  others,
+  isMine,
+  dict,
+}: {
+  chore: Chore;
+  others: { assignmentId: string; choreName: string; assigneeName: string }[];
+  isMine: boolean;
+  dict: Dictionary;
+}) {
   const router = useRouter();
   const [showMath, setShowMath] = useState(false);
   const [pending, setPending] = useState(false);
@@ -167,9 +201,19 @@ function ChoreRow({ chore, dict }: { chore: Chore; dict: Dictionary }) {
               })}
             </p>
           ) : (
-            <Button size="sm" variant="outline" disabled={pending} onClick={onComplete}>
-              {dict.chores.markDone}
-            </Button>
+            <div className="flex flex-wrap items-center gap-1">
+              <Button size="sm" variant="outline" disabled={pending} onClick={onComplete}>
+                {dict.chores.markDone}
+              </Button>
+              {/* Only your own chore is yours to offer. */}
+              {isMine && (
+                <SwapButton
+                  myAssignmentId={chore.assignmentId}
+                  others={others}
+                  dict={dict}
+                />
+              )}
+            </div>
           )}
         </div>
       )}
