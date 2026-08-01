@@ -142,6 +142,46 @@ export async function listChores(groupId: string) {
     },
   });
 
+  // Who a chore came from, when it arrived by swap.
+  //
+  // Without this the row contradicts itself: the rotation's explanation still
+  // names whoever it originally picked, while the chore sits with somebody
+  // else. That reads as a bug rather than as two people having agreed a trade.
+  const currentIds = chores
+    .map((c) => c.assignments[0]?.id)
+    .filter((id): id is string => Boolean(id));
+
+  const acceptedSwaps = currentIds.length
+    ? await db.choreSwapRequest.findMany({
+        where: {
+          status: "ACCEPTED",
+          OR: [
+            { fromAssignmentId: { in: currentIds } },
+            { toAssignmentId: { in: currentIds } },
+          ],
+        },
+        include: {
+          fromAssignment: { include: { user: { select: { displayName: true } } } },
+          toAssignment: { include: { user: { select: { displayName: true } } } },
+        },
+        orderBy: { resolvedAt: "desc" },
+      })
+    : [];
+
+  // Each side points at the OTHER side's current holder — that's the person
+  // you traded with. Pointing an assignment at its own holder just prints the
+  // assignee's name twice: "assigned to X (swapped with X)".
+  const swappedWith = new Map<string, string>();
+  for (const swap of acceptedSwaps) {
+    if (!swap.toAssignment || !swap.toAssignmentId) continue;
+    if (!swappedWith.has(swap.fromAssignmentId)) {
+      swappedWith.set(swap.fromAssignmentId, swap.toAssignment.user.displayName);
+    }
+    if (!swappedWith.has(swap.toAssignmentId)) {
+      swappedWith.set(swap.toAssignmentId, swap.fromAssignment.user.displayName);
+    }
+  }
+
   return chores.map((c) => {
     const current = c.assignments[0];
     return {
@@ -152,6 +192,9 @@ export async function listChores(groupId: string) {
       currentAssignee: current?.user.displayName ?? null,
       // The row needs this to know whether the chore is the reader's to offer.
       currentAssigneeId: current?.userId ?? null,
+      // Who it came from, if it arrived by swap — otherwise the rotation's
+      // reasoning below appears to name the wrong person.
+      swappedWith: current ? (swappedWith.get(current.id) ?? null) : null,
       periodEnd: current?.periodEnd.toISOString() ?? null,
       // Assignments made before this was structured still hold {steps}; the
       // renderer falls back to those rather than showing nothing.

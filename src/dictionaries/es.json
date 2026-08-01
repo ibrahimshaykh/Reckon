@@ -132,7 +132,8 @@
     "swapPassed": "Pasaste",
     "swapPassCount": "{n} de {total} pasaron",
     "swapNoTakers": "Nadie pudo con tu {yours} — parece que esta vez te toca.",
-    "swapNoTakersDismiss": "Está bien"
+    "swapNoTakersDismiss": "Está bien",
+    "swappedWith": "cambiada con {name}"
   },
   "availability": {
     "title": "Disponibilidad del grupo",

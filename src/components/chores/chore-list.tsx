@@ -22,6 +22,7 @@ type Chore = {
   frequency: string;
   currentAssignee: string | null;
   currentAssigneeId: string | null;
+  swappedWith: string | null;
   periodEnd: string | null;
   explanation: ChoreExplanation | null;
   assignmentId: string | null;
@@ -142,6 +143,15 @@ function ChoreRow({
           {chore.currentAssignee
             ? interpolate(dict.chores.assignedTo, { name: chore.currentAssignee })
             : dict.chores.unassigned}
+          {/* Says the chore arrived by agreement. Without it the reasoning
+              below names whoever the rotation originally picked, while the
+              chore sits with someone else — which reads as a bug. */}
+          {chore.swappedWith && (
+            <span className="text-muted-foreground">
+              {" "}
+              ({interpolate(dict.chores.swappedWith, { name: chore.swappedWith })})
+            </span>
+          )}
         </p>
         <div className="flex shrink-0 items-center gap-1">
           {chore.explanation && (
