@@ -149,8 +149,15 @@ model GroupMember {
   userId   String
   user     User     @relation(fields: [userId], references: [id])
   joinedAt DateTime @default(now())
+  // When they left, or null while they're still in. Leaving is a state rather
+  // than a deletion: their name is on expenses as payer and participant, on
+  // settlements, on IOUs, on chores they completed. Removing the row would
+  // either break those references or silently rewrite what everyone else
+  // owes — so the history stays and the membership goes quiet.
+  leftAt   DateTime?
 
   @@unique([groupId, userId])
+  @@index([userId, leftAt])
 }
 
 // Someone without an account who was part of exactly one expense. Replaces

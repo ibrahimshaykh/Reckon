@@ -92,7 +92,7 @@ export async function listProposals(groupId: string) {
       },
       orderBy: { createdAt: "desc" },
     }),
-    db.groupMember.findMany({ where: { groupId }, include: { user: true } }),
+    db.groupMember.findMany({ where: { groupId, leftAt: null }, include: { user: true } }),
   ]);
 
   const homes = members
@@ -176,7 +176,7 @@ export async function castVote(proposalId: string, choice: VoteChoice) {
   if (proposal.status === "PROPOSED") {
     const [votes, memberCount] = await Promise.all([
       db.proposalVote.findMany({ where: { proposalId } }),
-      db.groupMember.count({ where: { groupId: proposal.groupId } }),
+      db.groupMember.count({ where: { groupId: proposal.groupId, leftAt: null } }),
     ]);
 
     const outcome = computeProposalOutcome(votes, memberCount);

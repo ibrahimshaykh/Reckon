@@ -77,7 +77,15 @@
     "deleting": "حذف ہو رہا ہے…",
     "sharedBy": "{names} نے یہ مل کر لیا",
     "boughtFor": "{payer} نے یہ {names} کے لیے خریدا",
-    "paidForSelf": "{payer} نے اپنے لیے ادا کیا"
+    "paidForSelf": "{payer} نے اپنے لیے ادا کیا",
+    "leaveGroup": "گروپ چھوڑیں",
+    "leaveConfirm": "{name} چھوڑ دیں؟ آپ کے پرانے اخراجات اور کام گروپ کی تاریخ میں رہیں گے۔",
+    "leaving": "چھوڑا جا رہا ہے…",
+    "joinedOn": "{date} کو شامل ہوئے",
+    "pastGroups": "وہ گروپ جو آپ نے چھوڑے",
+    "pastGroupWith": "{names} کے ساتھ",
+    "pastGroupDates": "{joined} – {left}",
+    "noPastGroups": "آپ نے کوئی گروپ نہیں چھوڑا۔"
   },
   "chores": {
     "title": "کام",

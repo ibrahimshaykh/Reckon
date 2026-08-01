@@ -77,7 +77,15 @@
     "deleting": "Deleting…",
     "sharedBy": "{names} shared this",
     "boughtFor": "{payer} bought this for {names}",
-    "paidForSelf": "{payer} paid for themselves"
+    "paidForSelf": "{payer} paid for themselves",
+    "leaveGroup": "Leave group",
+    "leaveConfirm": "Leave {name}? Your past expenses and chores stay in the group's history.",
+    "leaving": "Leaving…",
+    "joinedOn": "joined {date}",
+    "pastGroups": "Groups you've left",
+    "pastGroupWith": "with {names}",
+    "pastGroupDates": "{joined} – {left}",
+    "noPastGroups": "You haven't left any groups."
   },
   "chores": {
     "title": "Chores",

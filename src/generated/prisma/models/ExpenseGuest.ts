@@ -469,10 +469,6 @@ export type BoolFieldUpdateOperationsInput = {
   set?: boolean
 }
 
-export type NullableDateTimeFieldUpdateOperationsInput = {
-  set?: Date | string | null
-}
-
 export type ExpenseGuestCreateNestedOneWithoutHostsInput = {
   create?: Prisma.XOR<Prisma.ExpenseGuestCreateWithoutHostsInput, Prisma.ExpenseGuestUncheckedCreateWithoutHostsInput>
   connectOrCreate?: Prisma.ExpenseGuestCreateOrConnectWithoutHostsInput

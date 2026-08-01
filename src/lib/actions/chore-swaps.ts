@@ -263,7 +263,7 @@ export async function passSwapCall(callId: string): Promise<ActionResult<void>> 
 
     const [passes, memberCount] = await Promise.all([
       db.choreSwapPass.count({ where: { requestId: call.id } }),
-      db.groupMember.count({ where: { groupId: call.groupId } }),
+      db.groupMember.count({ where: { groupId: call.groupId, leftAt: null } }),
     ]);
 
     // Once everyone else has said no, there's nothing left to wait for.
@@ -424,7 +424,7 @@ export async function listSwapOffers(groupId: string): Promise<SwapOffer[]> {
   const session = await requireSession();
   await assertMember(groupId, session.id);
 
-  const memberCount = await db.groupMember.count({ where: { groupId } });
+  const memberCount = await db.groupMember.count({ where: { groupId, leftAt: null } });
 
   const swaps = await db.choreSwapRequest.findMany({
     where: {

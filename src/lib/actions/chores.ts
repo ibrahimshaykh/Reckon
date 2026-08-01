@@ -59,7 +59,7 @@ export async function rotateChores(groupId: string) {
 
   const [chores, members, pastAssignments] = await Promise.all([
     db.chore.findMany({ where: { groupId } }),
-    db.groupMember.findMany({ where: { groupId }, include: { user: true } }),
+    db.groupMember.findMany({ where: { groupId, leftAt: null }, include: { user: true } }),
     db.choreAssignment.findMany({ where: { chore: { groupId } } }),
   ]);
 
@@ -232,7 +232,7 @@ export async function getChoreFairness(groupId: string) {
   await assertMember(groupId, session.id);
 
   const [members, completedAssignments] = await Promise.all([
-    db.groupMember.findMany({ where: { groupId }, include: { user: true } }),
+    db.groupMember.findMany({ where: { groupId, leftAt: null }, include: { user: true } }),
     db.choreAssignment.findMany({
       where: { chore: { groupId }, completedAt: { not: null } },
       include: { chore: true },

@@ -77,7 +77,15 @@
     "deleting": "Eliminando…",
     "sharedBy": "{names} compartieron esto",
     "boughtFor": "{payer} compró esto para {names}",
-    "paidForSelf": "{payer} pagó lo suyo"
+    "paidForSelf": "{payer} pagó lo suyo",
+    "leaveGroup": "Salir del grupo",
+    "leaveConfirm": "¿Salir de {name}? Tus gastos y tareas anteriores se quedan en el historial del grupo.",
+    "leaving": "Saliendo…",
+    "joinedOn": "se unió el {date}",
+    "pastGroups": "Grupos que dejaste",
+    "pastGroupWith": "con {names}",
+    "pastGroupDates": "{joined} – {left}",
+    "noPastGroups": "No has dejado ningún grupo."
   },
   "chores": {
     "title": "Tareas",

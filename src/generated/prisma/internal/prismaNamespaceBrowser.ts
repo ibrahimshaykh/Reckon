@@ -132,7 +132,8 @@ export const GroupMemberScalarFieldEnum = {
   id: 'id',
   groupId: 'groupId',
   userId: 'userId',
-  joinedAt: 'joinedAt'
+  joinedAt: 'joinedAt',
+  leftAt: 'leftAt'
 } as const
 
 export type GroupMemberScalarFieldEnum = (typeof GroupMemberScalarFieldEnum)[keyof typeof GroupMemberScalarFieldEnum]

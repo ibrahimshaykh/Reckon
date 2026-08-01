@@ -9,6 +9,7 @@ import { interpolate } from "@/lib/i18n";
 import { AddMemberForm } from "@/components/groups/add-member-form";
 import { ShareExpenseButton } from "@/components/expenses/share-expense-button";
 import { GuestList } from "@/components/expenses/guest-list";
+import { LeaveGroupButton } from "@/components/groups/leave-group-button";
 import { DeleteExpenseButton } from "@/components/expenses/delete-expense-button";
 import { CurrencyPicker } from "@/components/groups/currency-picker";
 import { Button } from "@/components/ui/button";
@@ -112,10 +113,23 @@ export default async function GroupPage({
                 {m.displayName}
               </Link>
               <span className="font-mono text-xs text-muted-foreground">{m.email}</span>
+              {/* Answers "why is their effort bar low?" before anyone asks. */}
+              <span className="ms-auto font-mono text-[0.7rem] text-muted-foreground">
+                {interpolate(dict.groupHub.joinedOn, {
+                  // Pinned locale, same reason as everywhere else in this app:
+                  // an unpinned one caused a real hydration mismatch before.
+                  date: new Date(m.joinedAt).toLocaleDateString("en-US", {
+                    day: "numeric",
+                    month: "short",
+                    year: "numeric",
+                  }),
+                })}
+              </span>
             </li>
           ))}
         </ul>
         <AddMemberForm groupId={group.id} dict={dict} />
+        <LeaveGroupButton groupId={group.id} groupName={group.name} dict={dict} />
       </section>
       <StickmanParade />
       <nav className="grid grid-cols-2 gap-px overflow-hidden rounded-lg border border-rule bg-rule sm:grid-cols-3 sketch:gap-3 sketch:border-0 sketch:bg-transparent">
