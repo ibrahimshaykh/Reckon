@@ -121,6 +121,23 @@ export async function listPastGroups(): Promise<PastGroup[]> {
   }));
 }
 
+// The access gate for a group page, to be awaited BEFORE anything else the
+// page loads.
+//
+// Page data comes from actions that call assertMember, which throws a 403.
+// Run alongside getGroup in a Promise.all, that 403 races the 404 and often
+// wins — so someone who left a group saw "Something went wrong on our end"
+// instead of a plain "can't find that". Gating first makes the 404 the only
+// possible answer.
+export async function requireGroupAccess(groupId: string) {
+  const session = await requireSession();
+  const membership = await db.groupMember.findUnique({
+    where: { groupId_userId: { groupId, userId: session.id } },
+  });
+  if (!membership || membership.leftAt) notFound();
+  return session;
+}
+
 // Used to render pages, unlike assertMember (used to gate mutations) — a
 // missing group and "not your group" both 404 here rather than leaking a
 // 403, so a stranger can't tell the difference between "doesn't exist" and

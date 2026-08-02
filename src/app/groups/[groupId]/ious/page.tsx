@@ -1,4 +1,4 @@
-import { getGroup } from "@/lib/actions/groups";
+import { getGroup , requireGroupAccess } from "@/lib/actions/groups";
 import { listIOUs } from "@/lib/actions/ious";
 import { requireSession } from "@/lib/dal";
 import { getDictionary } from "@/lib/dictionary";
@@ -13,6 +13,7 @@ export default async function IOUsPage({
   params: Promise<{ groupId: string }>;
 }) {
   const { groupId } = await params;
+  await requireGroupAccess(groupId);
   const [group, ious, session] = await Promise.all([
     getGroup(groupId),
     listIOUs(groupId),

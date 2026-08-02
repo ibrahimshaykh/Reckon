@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Pencil } from "lucide-react";
-import { getGroup } from "@/lib/actions/groups";
+import { getGroup , requireGroupAccess } from "@/lib/actions/groups";
 import { listGroupExpenses } from "@/lib/actions/expenses";
 import { formatMoney } from "@/lib/money";
 import { requireSession } from "@/lib/dal";
@@ -60,6 +60,9 @@ export default async function GroupPage({
   params: Promise<{ groupId: string }>;
 }) {
   const { groupId } = await params;
+  // Before anything else: the data loaders below throw a 403 for a
+  // non-member, which would race this page's 404 and win.
+  await requireGroupAccess(groupId);
   const [session, group, expenses] = await Promise.all([
     requireSession(),
     getGroup(groupId),

@@ -1,5 +1,5 @@
 import { getGroupSettlements } from "@/lib/actions/settlements";
-import { getGroup } from "@/lib/actions/groups";
+import { getGroup , requireGroupAccess } from "@/lib/actions/groups";
 import { requireSession } from "@/lib/dal";
 import { getDictionary } from "@/lib/dictionary";
 import { SettlementList } from "@/components/settlements/settlement-list";
@@ -12,6 +12,7 @@ export default async function SettlePage({
   params: Promise<{ groupId: string }>;
 }) {
   const { groupId } = await params;
+  await requireGroupAccess(groupId);
   const [settlements, session, group] = await Promise.all([
     getGroupSettlements(groupId),
     requireSession(),

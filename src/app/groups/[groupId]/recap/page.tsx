@@ -1,5 +1,5 @@
 import { listPastRecaps } from "@/lib/actions/recap";
-import { getGroup } from "@/lib/actions/groups";
+import { getGroup , requireGroupAccess } from "@/lib/actions/groups";
 import { RecapView } from "@/components/recap/recap-view";
 import { PastRecaps } from "@/components/recap/past-recaps";
 import { PageHeader } from "@/components/page-header";
@@ -12,6 +12,7 @@ export default async function RecapPage({
   params: Promise<{ groupId: string }>;
 }) {
   const { groupId } = await params;
+  await requireGroupAccess(groupId);
   const [session, pastRecaps, group] = await Promise.all([
     requireSession(),
     listPastRecaps(groupId),

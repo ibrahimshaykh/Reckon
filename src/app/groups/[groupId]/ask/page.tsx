@@ -1,5 +1,6 @@
 import { AskForm } from "@/components/ai-query/ask-form";
 import { PageHeader } from "@/components/page-header";
+import { requireGroupAccess } from "@/lib/actions/groups";
 import { requireSession } from "@/lib/dal";
 import { getDictionary } from "@/lib/dictionary";
 
@@ -9,6 +10,7 @@ export default async function AskPage({
   params: Promise<{ groupId: string }>;
 }) {
   const { groupId } = await params;
+  await requireGroupAccess(groupId);
   const session = await requireSession();
   const dict = await getDictionary(session.locale);
 

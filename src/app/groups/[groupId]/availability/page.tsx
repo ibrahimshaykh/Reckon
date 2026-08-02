@@ -1,4 +1,4 @@
-import { getGroup } from "@/lib/actions/groups";
+import { getGroup , requireGroupAccess } from "@/lib/actions/groups";
 import { getGroupFreeTime } from "@/lib/actions/availability";
 import { requireSession } from "@/lib/dal";
 import { formatDateParam, getWeekDays, parseDateParam } from "@/lib/availability-grid";
@@ -16,6 +16,7 @@ export default async function AvailabilityPage({
   searchParams: Promise<{ start?: string }>;
 }) {
   const { groupId } = await params;
+  await requireGroupAccess(groupId);
   const { start } = await searchParams;
   const startDate = formatDateParam(getWeekDays(parseDateParam(start, new Date()))[0]);
 

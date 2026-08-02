@@ -1,6 +1,7 @@
 import { listChores, getChoreFairness } from "@/lib/actions/chores";
 import { listSwapOffers } from "@/lib/actions/chore-swaps";
 import { computeFairnessBars } from "@/lib/chore-fairness";
+import { requireGroupAccess } from "@/lib/actions/groups";
 import { requireSession } from "@/lib/dal";
 import { getDictionary } from "@/lib/dictionary";
 import { AddChoreForm } from "@/components/chores/add-chore-form";
@@ -16,6 +17,7 @@ export default async function ChoresPage({
   params: Promise<{ groupId: string }>;
 }) {
   const { groupId } = await params;
+  await requireGroupAccess(groupId);
   const [session, chores, fairness, swapOffers] = await Promise.all([
     requireSession(),
     listChores(groupId),

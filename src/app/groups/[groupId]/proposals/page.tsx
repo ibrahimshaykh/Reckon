@@ -1,5 +1,5 @@
 import { listProposals } from "@/lib/actions/proposals";
-import { getGroup } from "@/lib/actions/groups";
+import { getGroup , requireGroupAccess } from "@/lib/actions/groups";
 import { requireSession } from "@/lib/dal";
 import { getDictionary } from "@/lib/dictionary";
 import { AddProposalForm } from "@/components/proposals/add-proposal-form";
@@ -14,6 +14,7 @@ export default async function ProposalsPage({
   params: Promise<{ groupId: string }>;
 }) {
   const { groupId } = await params;
+  await requireGroupAccess(groupId);
   const [{ proposals, memberHomes }, group, session] = await Promise.all([
     listProposals(groupId),
     getGroup(groupId),
