@@ -141,7 +141,13 @@
     "swapPassCount": "{n} of {total} passed",
     "swapNoTakers": "Nobody could take your {yours} — looks like it's yours this time.",
     "swapNoTakersDismiss": "Fair enough",
-    "swappedWith": "swapped with {name}"
+    "swappedWith": "swapped with {name}",
+    "filterMine": "My chores",
+    "filterEveryone": "Everyone",
+    "filterNone": "Nothing here right now.",
+    "statusAll": "All",
+    "statusTodo": "Still to do",
+    "statusDone": "Completed"
   },
   "availability": {
     "title": "Group availability",

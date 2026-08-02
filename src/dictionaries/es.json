@@ -141,7 +141,13 @@
     "swapPassCount": "{n} de {total} pasaron",
     "swapNoTakers": "Nadie pudo con tu {yours} — parece que esta vez te toca.",
     "swapNoTakersDismiss": "Está bien",
-    "swappedWith": "cambiada con {name}"
+    "swappedWith": "cambiada con {name}",
+    "filterMine": "Mis tareas",
+    "filterEveryone": "De todos",
+    "filterNone": "Nada por aquí ahora mismo.",
+    "statusAll": "Todas",
+    "statusTodo": "Pendientes",
+    "statusDone": "Completadas"
   },
   "availability": {
     "title": "Disponibilidad del grupo",

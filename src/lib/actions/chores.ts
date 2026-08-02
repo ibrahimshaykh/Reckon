@@ -4,6 +4,7 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
 import { assertMember } from "@/lib/actions/groups";
+import { ApiError } from "@/lib/api-error";
 import { requireSession } from "@/lib/dal";
 import { validate, cuid, shortText } from "@/lib/validation";
 import { assignChoresWithTrace } from "@/lib/chore-rotation";
@@ -182,6 +183,26 @@ export async function listChores(groupId: string) {
     }
   }
 
+  // What everyone is actually carrying right now.
+  //
+  // This used to be read from a snapshot taken when the rotation ran and
+  // stored on the assignment. Swaps move chores afterwards and the snapshot
+  // never moved with them, so the panel went on insisting a round was "even"
+  // while the real split had drifted to 35 against 3. A fairness figure that
+  // has stopped tracking reality is worse than showing no figure at all.
+  const now = new Date();
+  const liveLoad = new Map<string, number>();
+  for (const chore of chores) {
+    const assignment = chore.assignments[0];
+    if (!assignment || assignment.periodEnd < now) continue;
+    const name = assignment.user.displayName;
+    liveLoad.set(name, (liveLoad.get(name) ?? 0) + chore.effortWeight);
+  }
+
+  const roundLoad = [...liveLoad]
+    .map(([name, effort]) => ({ name, effort }))
+    .sort((a, b) => b.effort - a.effort || a.name.localeCompare(b.name));
+
   return chores.map((c) => {
     const current = c.assignments[0];
     return {
@@ -189,6 +210,9 @@ export async function listChores(groupId: string) {
       name: c.name,
       effortWeight: c.effortWeight,
       frequency: c.frequency,
+      // The same for every row — it's the group's current standing, not this
+      // chore's. Carried per row so each one can show it without refetching.
+      roundLoad,
       currentAssignee: current?.user.displayName ?? null,
       // The row needs this to know whether the chore is the reader's to offer.
       currentAssigneeId: current?.userId ?? null,
@@ -205,9 +229,14 @@ export async function listChores(groupId: string) {
   });
 }
 
-// Any member can mark a chore done — in a small trusted household,
-// whoever notices it happened should be able to record it, not just
-// whoever it was assigned to.
+// Only the person a chore is assigned to can mark it done.
+//
+// This used to be open to any member, on the reasoning that whoever noticed
+// should be able to record it. But completed effort is credited to the
+// ASSIGNEE, not to whoever pressed the button — so marking someone else's
+// chore done handed them credit for work they may not have done, and the next
+// rotation then gave them lighter jobs for it. If somebody else actually did
+// it, the honest route is to swap the chore, which moves the credit too.
 export async function completeChore(assignmentId: string) {
   const session = await requireSession();
   const assignment = await db.choreAssignment.findUniqueOrThrow({
@@ -215,6 +244,13 @@ export async function completeChore(assignmentId: string) {
     include: { chore: true },
   });
   await assertMember(assignment.chore.groupId, session.id);
+
+  if (assignment.userId !== session.id) {
+    throw new ApiError(
+      403,
+      "Only the person it's assigned to can mark it done. Swap it first if you're taking it on.",
+    );
+  }
 
   await db.choreAssignment.update({
     where: { id: assignmentId },

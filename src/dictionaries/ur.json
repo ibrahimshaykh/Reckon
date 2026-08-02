@@ -141,7 +141,13 @@
     "swapPassCount": "{total} میں سے {n} نے انکار کیا",
     "swapNoTakers": "آپ کا {yours} کوئی نہیں لے سکا — لگتا ہے اس بار آپ ہی کو کرنا ہے۔",
     "swapNoTakersDismiss": "ٹھیک ہے",
-    "swappedWith": "{name} سے بدلا گیا"
+    "swappedWith": "{name} سے بدلا گیا",
+    "filterMine": "میرے کام",
+    "filterEveryone": "سب کے",
+    "filterNone": "یہاں ابھی کچھ نہیں۔",
+    "statusAll": "سب",
+    "statusTodo": "باقی ہیں",
+    "statusDone": "مکمل"
   },
   "availability": {
     "title": "گروپ کی دستیابی",

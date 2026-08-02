@@ -8,7 +8,6 @@ import { interpolate } from "@/lib/i18n";
 import { effortLabel } from "@/lib/effort-text";
 import {
   explainAssignment,
-  isLegacyExplanation,
   isRoundEven,
   type ChoreExplanation,
 } from "@/lib/chore-explanation";
@@ -23,6 +22,7 @@ type Chore = {
   currentAssignee: string | null;
   currentAssigneeId: string | null;
   swappedWith: string | null;
+  roundLoad: { name: string; effort: number }[];
   periodEnd: string | null;
   explanation: ChoreExplanation | null;
   assignmentId: string | null;
@@ -50,6 +50,33 @@ export function ChoreList({
   const router = useRouter();
   const [pending, setPending] = useState(false);
   const [lastResult, setLastResult] = useState<string | null>(null);
+  // Your own chores first, because the question you arrive with is "what do I
+  // have to do?" — not "what is everybody doing?". One list of everyone's
+  // chores buries yours among theirs.
+  const [showing, setShowing] = useState<string>(currentUserId);
+  // Independent of the person filter, so the two combine: "what has Lola
+  // still got left?" is one question, not two screens.
+  const [status, setStatus] = useState<"all" | "todo" | "done">("all");
+
+  // Everyone who currently holds a chore, so the picker only offers names
+  // that would actually show something.
+  const people = [
+    ...new Map(
+      chores
+        .filter((c) => c.currentAssigneeId && c.currentAssignee)
+        .map((c) => [c.currentAssigneeId as string, c.currentAssignee as string]),
+    ),
+  ].map(([id, name]) => ({ id, name }));
+
+  const visible = chores
+    .filter((c) => showing === "all" || c.currentAssigneeId === showing)
+    .filter((c) =>
+      status === "all"
+        ? true
+        : status === "done"
+          ? Boolean(c.completedAt)
+          : !c.completedAt,
+    );
 
   async function onRotate() {
     setPending(true);
@@ -71,15 +98,46 @@ export function ChoreList({
 
   return (
     <div className="flex flex-col gap-3">
-      <Button onClick={onRotate} disabled={pending} size="sm" className="w-fit">
-        {pending ? dict.chores.rotating : dict.chores.rotateNow}
-      </Button>
+      <div className="flex flex-wrap items-center gap-2">
+        <Button onClick={onRotate} disabled={pending} size="sm" className="w-fit">
+          {pending ? dict.chores.rotating : dict.chores.rotateNow}
+        </Button>
+        <select
+          className="rounded-md border bg-background px-2 py-1.5 text-sm"
+          value={showing}
+          onChange={(e) => setShowing(e.target.value)}
+          aria-label={dict.chores.filterMine}
+        >
+          <option value={currentUserId}>{dict.chores.filterMine}</option>
+          {people
+            .filter((p) => p.id !== currentUserId)
+            .map((p) => (
+              <option key={p.id} value={p.id}>
+                {p.name}
+              </option>
+            ))}
+          <option value="all">{dict.chores.filterEveryone}</option>
+        </select>
+        <select
+          className="rounded-md border bg-background px-2 py-1.5 text-sm"
+          value={status}
+          onChange={(e) => setStatus(e.target.value as typeof status)}
+          aria-label={dict.chores.statusAll}
+        >
+          <option value="all">{dict.chores.statusAll}</option>
+          <option value="todo">{dict.chores.statusTodo}</option>
+          <option value="done">{dict.chores.statusDone}</option>
+        </select>
+      </div>
       {lastResult && <p className="text-sm text-muted-foreground">{lastResult}</p>}
       {chores.length === 0 && (
         <p className="text-sm text-muted-foreground">{dict.chores.noChoresYet}</p>
       )}
+      {chores.length > 0 && visible.length === 0 && (
+        <p className="text-sm text-muted-foreground">{dict.chores.filterNone}</p>
+      )}
       <ul className="flex flex-col gap-2">
-        {chores.map((chore) => (
+        {visible.map((chore) => (
           <ChoreRow
             key={chore.id}
             chore={chore}
@@ -169,28 +227,27 @@ function ChoreRow({
             ))}
           </ul>
 
-          {/* The whole round, not just this person's slice. Being shown that
-              it came out level settles an argument in a way that being told
-              your own share was fair never does. */}
-          {!isLegacyExplanation(chore.explanation) &&
-            chore.explanation.roundTotals.length > 1 && (
-              <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1 rounded-md border border-rule bg-card px-3 py-2 text-xs">
-                <span className="font-medium">{dict.chores.roundSplit}</span>
-                {chore.explanation.roundTotals.map((t) => (
-                  <span key={t.name} className="text-muted-foreground">
-                    {t.name}{" "}
-                    <span className="tabular font-medium text-foreground">
-                      {t.effort}
-                    </span>
-                  </span>
-                ))}
-                {isRoundEven(chore.explanation.roundTotals) && (
-                  <span className="ms-auto text-emerald-600 dark:text-emerald-400">
-                    {dict.chores.roundEven}
-                  </span>
-                )}
-              </div>
-            )}
+          {/* Where everyone actually stands, computed now rather than read
+              from what the rotation recorded — swaps move chores afterwards,
+              and a stored split goes on claiming "even" long after it stopped
+              being true. Being shown the real numbers settles an argument in a
+              way that being told your own share was fair never does. */}
+          {chore.roundLoad.length > 1 && (
+            <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1 rounded-md border border-rule bg-card px-3 py-2 text-xs">
+              <span className="font-medium">{dict.chores.roundSplit}</span>
+              {chore.roundLoad.map((t) => (
+                <span key={t.name} className="text-muted-foreground">
+                  {t.name}{" "}
+                  <span className="tabular font-medium text-foreground">{t.effort}</span>
+                </span>
+              ))}
+              {isRoundEven(chore.roundLoad) && (
+                <span className="ms-auto text-emerald-600 dark:text-emerald-400">
+                  {dict.chores.roundEven}
+                </span>
+              )}
+            </div>
+          )}
         </div>
       )}
       {chore.assignmentId && (
@@ -212,9 +269,14 @@ function ChoreRow({
             </p>
           ) : (
             <div className="flex flex-wrap items-center gap-1">
-              <Button size="sm" variant="outline" disabled={pending} onClick={onComplete}>
-                {dict.chores.markDone}
-              </Button>
+              {/* Only the assignee marks it done, because the effort is
+                  credited to them — pressing it on someone else's chore was
+                  handing them credit for work they might not have done. */}
+              {isMine && (
+                <Button size="sm" variant="outline" disabled={pending} onClick={onComplete}>
+                  {dict.chores.markDone}
+                </Button>
+              )}
               {/* Only your own chore is yours to offer. */}
               {isMine && (
                 <SwapButton
