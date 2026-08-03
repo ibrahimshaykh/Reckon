@@ -166,7 +166,13 @@
     "removeChoreGone": "Delete {name}? Nobody has ever been given it, so there's nothing to keep — it just goes.",
     "removeChoreKept": "Remove {name}? It stops being handed out and nobody has to finish the turn in progress. Work already done on it still counts towards everyone's totals.",
     "removeChoreConfirm": "Remove it",
-    "choreWithDetail": "{name} ({band}, {freq})"
+    "choreWithDetail": "{name} ({band}, {freq})",
+    "onDate": "Show the day",
+    "backToToday": "Back to today",
+    "dueThisDay": "due by the end of this day",
+    "dueBy": "due by {date}",
+    "notHandedOutYet": "not handed out yet",
+    "markDoneFrom": "You can mark this done from {date}."
   },
   "availability": {
     "title": "Group availability",

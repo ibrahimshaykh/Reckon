@@ -10,17 +10,25 @@ import { FairnessBars } from "@/components/chores/fairness-bars";
 import { PageHeader } from "@/components/page-header";
 import { FieldGuide } from "@/components/field-guide";
 import { SwapOffers } from "@/components/chores/swap-controls";
+import { toIsoDate } from "@/lib/chore-schedule";
 
 export default async function ChoresPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ groupId: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   const { groupId } = await params;
   await requireGroupAccess(groupId);
+  // The day lives in the URL rather than in component state, so a link to
+  // "what are we doing on Saturday" can be sent to the group and still mean
+  // Saturday when somebody else opens it.
+  const dateParam = (await searchParams).date;
+  const onDate = typeof dateParam === "string" ? dateParam : undefined;
   const [session, chores, fairness, swapOffers] = await Promise.all([
     requireSession(),
-    listChores(groupId),
+    listChores(groupId, onDate),
     getChoreFairness(groupId),
     listSwapOffers(groupId),
   ]);
@@ -58,6 +66,7 @@ export default async function ChoresPage({
       <FairnessBars bars={bars} title={dict.chores.fairnessTitle} />
       <ChoreList
         groupId={groupId}
+        onDate={onDate ?? toIsoDate(new Date())}
         chores={chores}
         currentUserId={session.id}
         dict={dict}

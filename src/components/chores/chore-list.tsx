@@ -7,6 +7,7 @@ import { isActionError } from "@/lib/action-result";
 import type { Dictionary } from "@/lib/dictionary";
 import { interpolate } from "@/lib/i18n";
 import { effortLabel } from "@/lib/effort-text";
+import { describeDue, formatDay } from "@/lib/chore-due-text";
 import {
   explainAssignment,
   loadGap,
@@ -28,9 +29,18 @@ type Chore = {
   explanation: ChoreExplanation | null;
   assignmentId: string | null;
   completedAt: string | null;
+  periodStart: string | null;
+  /** When this turn has to be finished by — the deadline, not the day shown. */
+  dueBy: string | null;
+  isAssigned: boolean;
+  markDoneBlockedBy: "unassigned" | "notStarted" | "alreadyDone" | null;
   /** Whether removing it would erase a record of work already done. */
   hasHistory: boolean;
 };
+
+function todayIso() {
+  return new Date().toISOString().slice(0, 10);
+}
 
 const FREQ_KEY = {
   DAILY: "freqDaily",
@@ -41,11 +51,14 @@ const FREQ_KEY = {
 
 export function ChoreList({
   groupId,
+  onDate,
   chores,
   currentUserId,
   dict,
 }: {
   groupId: string;
+  /** The day being looked at, as yyyy-mm-dd. */
+  onDate: string;
   chores: Chore[];
   currentUserId: string;
   dict: Dictionary;
@@ -131,6 +144,26 @@ export function ChoreList({
           <option value="todo">{dict.chores.statusTodo}</option>
           <option value="done">{dict.chores.statusDone}</option>
         </select>
+        {/* Navigates rather than setting state, so the chosen day is in the
+            URL and a link to it still means that day for whoever opens it. */}
+        <input
+          type="date"
+          className="rounded-md border bg-background px-2 py-1.5 text-sm"
+          value={onDate}
+          aria-label={dict.chores.onDate}
+          onChange={(e) =>
+            router.push(
+              e.target.value
+                ? `?date=${e.target.value}`
+                : window.location.pathname,
+            )
+          }
+        />
+        {onDate !== todayIso() && (
+          <Button size="sm" variant="ghost" onClick={() => router.push("?")}>
+            {dict.chores.backToToday}
+          </Button>
+        )}
       </div>
       {lastResult && <p className="text-sm text-muted-foreground">{lastResult}</p>}
       {chores.length === 0 && (
@@ -162,6 +195,7 @@ export function ChoreList({
                 assigneeName: c.currentAssignee as string,
               }))}
             isMine={chore.currentAssigneeId === currentUserId}
+            onDate={onDate}
             dict={dict}
           />
         ))}
@@ -174,11 +208,13 @@ function ChoreRow({
   chore,
   others,
   isMine,
+  onDate,
   dict,
 }: {
   chore: Chore;
   others: Swappable[];
   isMine: boolean;
+  onDate: string;
   dict: Dictionary;
 }) {
   const router = useRouter();
@@ -210,6 +246,7 @@ function ChoreRow({
 
   const frequencyLabel = dict.chores[FREQ_KEY[chore.frequency as keyof typeof FREQ_KEY]];
   const gap = loadGap(chore.roundLoad);
+  const dueLabel = describeDue(chore.dueBy, onDate, dict);
 
   return (
     <li className="rounded-lg border p-3 text-sm">
@@ -225,7 +262,15 @@ function ChoreRow({
           {frequencyLabel.toLowerCase()}) —{" "}
           {chore.currentAssignee
             ? interpolate(dict.chores.assignedTo, { name: chore.currentAssignee })
-            : dict.chores.unassigned}
+            : chore.isAssigned
+              ? dict.chores.unassigned
+              : dict.chores.notHandedOutYet}
+          {/* Without this a weekly chore showing on Thursday reads as a
+              Thursday job. It is due by Sunday, and the difference is the
+              whole reason the day filter needs explaining. */}
+          {dueLabel && (
+            <span className="text-muted-foreground"> — {dueLabel}</span>
+          )}
           {/* Says the chore arrived by agreement. Without it the reasoning
               below names whoever the rotation originally picked, while the
               chore sits with someone else — which reads as a bug. */}
@@ -357,10 +402,19 @@ function ChoreRow({
               {/* Only the assignee marks it done, because the effort is
                   credited to them — pressing it on someone else's chore was
                   handing them credit for work they might not have done. */}
-              {isMine && (
+              {isMine && chore.markDoneBlockedBy === null && (
                 <Button size="sm" variant="outline" disabled={pending} onClick={onComplete}>
                   {dict.chores.markDone}
                 </Button>
+              )}
+              {/* A turn that hasn't begun can't be finished. Saying when it
+                  opens beats a dead button with no explanation. */}
+              {isMine && chore.markDoneBlockedBy === "notStarted" && (
+                <span className="text-xs text-muted-foreground">
+                  {interpolate(dict.chores.markDoneFrom, {
+                    date: formatDay(chore.periodStart),
+                  })}
+                </span>
               )}
               {/* Only your own chore is yours to offer. */}
               {isMine && (

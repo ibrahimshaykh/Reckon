@@ -166,7 +166,13 @@
     "removeChoreGone": "¿Borrar {name}? Nunca se le ha asignado a nadie, así que no hay nada que conservar: desaparece sin más.",
     "removeChoreKept": "¿Quitar {name}? Dejará de repartirse y nadie tendrá que terminar el turno en curso. El trabajo ya hecho sigue contando en los totales de cada persona.",
     "removeChoreConfirm": "Quitar",
-    "choreWithDetail": "{name} ({band}, {freq})"
+    "choreWithDetail": "{name} ({band}, {freq})",
+    "onDate": "Ver el día",
+    "backToToday": "Volver a hoy",
+    "dueThisDay": "para el final de este día",
+    "dueBy": "para el {date}",
+    "notHandedOutYet": "aún sin repartir",
+    "markDoneFrom": "Podrás marcarla como hecha a partir del {date}."
   },
   "availability": {
     "title": "Disponibilidad del grupo",

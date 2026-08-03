@@ -166,7 +166,13 @@
     "removeChoreGone": "{name} حذف کریں؟ یہ کبھی کسی کو نہیں دیا گیا، اس لیے محفوظ رکھنے کو کچھ نہیں — بس ختم ہو جائے گا۔",
     "removeChoreKept": "{name} ہٹا دیں؟ یہ آگے سے کسی کو نہیں ملے گا اور جو باری چل رہی ہے وہ بھی کسی کو مکمل نہیں کرنی پڑے گی۔ اِس پر جو کام پہلے ہو چکا ہے وہ سب کے کل حساب میں شامل رہے گا۔",
     "removeChoreConfirm": "ہٹا دیں",
-    "choreWithDetail": "{name} ({band}، {freq})"
+    "choreWithDetail": "{name} ({band}، {freq})",
+    "onDate": "دن دیکھیں",
+    "backToToday": "آج پر واپس",
+    "dueThisDay": "اِسی دن کے اختتام تک",
+    "dueBy": "{date} تک",
+    "notHandedOutYet": "ابھی کسی کو نہیں دیا گیا",
+    "markDoneFrom": "آپ اسے {date} سے مکمل نشان زد کر سکیں گے۔"
   },
   "availability": {
     "title": "گروپ کی دستیابی",

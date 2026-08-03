@@ -13,6 +13,13 @@ import { weightedEffort, asPerWeek, type ChoreFrequency } from "@/lib/chore-weig
 import { totalLoad } from "@/lib/chore-load";
 import { planRemoval } from "@/lib/chore-removal";
 import { findDuplicate } from "@/lib/chore-duplicates";
+import {
+  dayWindow,
+  markDoneBlock,
+  occurrenceOn,
+  periodLengthDays,
+  toIsoDate,
+} from "@/lib/chore-schedule";
 import { Prisma } from "@/generated/prisma/client";
 import type { ChoreExplanation } from "@/lib/chore-explanation";
 
@@ -30,19 +37,6 @@ const createChoreSchema = z.object({
 
 const DUPLICATE_CHORE_MESSAGE =
   "That chore is already on the list, with the same effort and how often it happens. Change one of those, or use the one that's there.";
-
-function periodLengthDays(frequency: Frequency): number {
-  switch (frequency) {
-    case "DAILY":
-      return 1;
-    case "WEEKLY":
-      return 7;
-    case "BIWEEKLY":
-      return 14;
-    case "MONTHLY":
-      return 30;
-  }
-}
 
 // Wrapped, so the reasons it can refuse actually reach the person typing.
 // Next redacts thrown Server Action errors in production, so a message like
@@ -214,9 +208,22 @@ export async function rotateChores(groupId: string) {
   return { created: needsAssignment.length };
 }
 
-export async function listChores(groupId: string) {
+/**
+ * The chore list as it stood, or will stand, on one day.
+ *
+ * Defaults to today. A chore belongs to a date when its turn overlaps that
+ * date — one rule covering all four frequencies, which is what makes a weekly
+ * chore appear every day of the week it is due rather than only on the day it
+ * happened to be handed out.
+ */
+export async function listChores(groupId: string, onDate?: string) {
   const session = await requireSession();
   await assertMember(groupId, session.id);
+
+  const now = new Date();
+  // An unparseable date in the URL falls back to today rather than erroring:
+  // a mistyped link should still show something useful.
+  const day = (onDate ? dayWindow(onDate) : null) ?? dayWindow(toIsoDate(now))!;
 
   const [chores, members, allAssignments] = await Promise.all([
     db.chore.findMany({
@@ -225,9 +232,11 @@ export async function listChores(groupId: string) {
         // So the row can say whether removing it would throw away a record of
         // work already done, before anyone presses the button.
         _count: { select: { assignments: true } },
+        // Every turn, not just the newest: the day being asked about may be in
+        // the past, and `take: 1` would answer with a turn that had not
+        // started yet.
         assignments: {
           orderBy: { periodStart: "desc" },
-          take: 1,
           include: { user: true },
         },
       },
@@ -258,8 +267,15 @@ export async function listChores(groupId: string) {
   // Without this the row contradicts itself: the rotation's explanation still
   // names whoever it originally picked, while the chore sits with somebody
   // else. That reads as a bug rather than as two people having agreed a trade.
-  const currentIds = chores
-    .map((c) => c.assignments[0]?.id)
+  // Whose turn each chore is on the day in question — a real one where the
+  // records have it, otherwise the rhythm carried forward and marked as
+  // nobody's yet.
+  const onDay = new Map(
+    chores.map((c) => [c.id, occurrenceOn(c, c.assignments, day)] as const),
+  );
+
+  const currentIds = [...onDay.values()]
+    .map((o) => o?.assignment?.id)
     .filter((id): id is string => Boolean(id));
 
   const acceptedSwaps = currentIds.length
@@ -327,8 +343,11 @@ export async function listChores(groupId: string) {
     .map(([name, weighted]) => ({ name, effort: asPerWeek(weighted) }))
     .sort((a, b) => b.effort - a.effort || a.name.localeCompare(b.name));
 
-  return chores.map((c) => {
-    const current = c.assignments[0];
+  return chores
+    .filter((c) => onDay.get(c.id))
+    .map((c) => {
+    const occurrence = onDay.get(c.id) ?? null;
+    const current = occurrence?.assignment ?? null;
     return {
       id: c.id,
       name: c.name,
@@ -344,6 +363,14 @@ export async function listChores(groupId: string) {
       // reasoning below appears to name the wrong person.
       swappedWith: current ? (swappedWith.get(current.id) ?? null) : null,
       periodEnd: current?.periodEnd.toISOString() ?? null,
+      // The turn this row is about, so it can say "due by Sunday" instead of
+      // implying a weekly chore is owed on every day it shows up.
+      periodStart: occurrence?.period.start.toISOString() ?? null,
+      dueBy: occurrence?.period.end.toISOString() ?? null,
+      /** False when the turn is projected: real, but not handed out yet. */
+      isAssigned: current !== null,
+      /** Why the button is unavailable, worked out once on the server. */
+      markDoneBlockedBy: markDoneBlock(current, now),
       // Assignments made before this was structured still hold {steps}; the
       // renderer falls back to those rather than showing nothing.
       explanation: (current?.explanation as ChoreExplanation | undefined) ?? null,
@@ -375,6 +402,16 @@ export async function completeChore(assignmentId: string) {
       403,
       "Only the person it's assigned to can mark it done. Swap it first if you're taking it on.",
     );
+  }
+
+  // Looking at a future day shows turns that have not begun. The button is
+  // hidden there, but the check belongs here too — a disabled button is a
+  // suggestion, not a rule, and crediting work for a turn nobody has started
+  // would put the person ahead in a rotation that hands the next job to
+  // whoever is behind.
+  const blocked = markDoneBlock(assignment, new Date());
+  if (blocked === "notStarted") {
+    throw new ApiError(400, "That turn hasn't started yet.");
   }
 
   await db.choreAssignment.update({
