@@ -211,8 +211,12 @@ function ChoreRow({
 
   return (
     <li className="rounded-lg border p-3 text-sm">
-      <div className="flex items-center justify-between gap-2">
-        <p>
+      {/* Wraps, and the title is allowed to shrink. The controls are shrink-0
+          so they stay legible, which on a narrow phone meant a long chore name
+          shoved them off the right-hand edge and took the whole page into
+          horizontal scroll with it. */}
+      <div className="flex flex-wrap items-start justify-between gap-2">
+        <p className="min-w-0 flex-1">
           {/* The number alone says nothing — "effort 10" only means something
               if you already know what it's heavy relative to. */}
           <strong>{chore.name}</strong> ({effortLabel(chore.effortWeight, dict)},{" "}
