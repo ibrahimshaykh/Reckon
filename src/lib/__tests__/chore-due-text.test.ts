@@ -52,23 +52,27 @@ describe("describeDue", () => {
   // it appears on every day of it. On Thursday it must not read as a Thursday
   // job when there are three days left.
   it("gives the deadline when it is not the day being viewed", () => {
-    expect(describeDue("2026-08-09T17:35:00.000Z", "2026-08-06", dict, UTC)).toBe(
-      "due by Sun 9 Aug, 5:35 pm",
+    // A turn ending at midnight on the 10th is the 9th's work.
+    expect(describeDue("2026-08-10T00:00:00.000Z", "2026-08-06", dict)).toBe(
+      "due by the end of Sun 9 Aug",
     );
   });
 
-  it("drops the date on the day itself and keeps the hour", () => {
-    // Repeating the date somebody is already looking at tells them nothing;
-    // how long they have left does.
-    expect(describeDue("2026-08-06T17:35:00.000Z", "2026-08-06", dict, UTC)).toBe(
-      "due by 5:35 pm this day",
+  it("counts a turn ending at midnight as the day before", () => {
+    // The bug this fixed: a daily turn running to midnight on the 4th showed
+    // on the 4th as well as the 3rd, so a daily chore appeared twice.
+    expect(describeDue("2026-08-04T00:00:00.000Z", "2026-08-03", dict)).toBe(
+      "due by the end of this day",
+    );
+    expect(describeDue("2026-08-04T00:00:00.000Z", "2026-08-04", dict)).toBe(
+      "due by the end of Mon 3 Aug",
     );
   });
 
   it("still gives a deadline that has already passed", () => {
     // Being late is worth knowing; silence would read as nothing being owed.
-    expect(describeDue("2026-08-01T17:35:00.000Z", "2026-08-06", dict, UTC)).toBe(
-      "due by Sat 1 Aug, 5:35 pm",
+    expect(describeDue("2026-08-02T00:00:00.000Z", "2026-08-06", dict)).toBe(
+      "due by the end of Sat 1 Aug",
     );
   });
 
@@ -77,9 +81,17 @@ describe("describeDue", () => {
     expect(describeDue("rubbish", "2026-08-06", dict)).toBe("");
   });
 
+  it("reads the same wherever the machine is", () => {
+    // Deadlines are whole days now, so unlike a timestamp they must not shift
+    // with the reader's zone — that would move a chore to the wrong date.
+    expect(describeDue("2026-08-10T00:00:00.000Z", "2026-08-06", dict)).toContain(
+      "Sun 9 Aug",
+    );
+  });
+
   it.each(DICTS)("leaves no placeholder unfilled in %s", (_lang, d) => {
-    for (const due of ["2026-08-09T17:35:00.000Z", "2026-08-06T00:00:00.000Z"]) {
-      expect(describeDue(due, "2026-08-06", d, UTC)).not.toMatch(/\{[a-z]+\}/i);
+    for (const due of ["2026-08-10T00:00:00.000Z", "2026-08-07T00:00:00.000Z"]) {
+      expect(describeDue(due, "2026-08-06", d)).not.toMatch(/\{[a-z]+\}/i);
     }
   });
 });

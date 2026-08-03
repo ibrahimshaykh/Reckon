@@ -1,5 +1,6 @@
 import { interpolate } from "@/lib/i18n";
 import type { Dictionary } from "@/lib/dictionary";
+import { lastCoveredDay } from "@/lib/chore-schedule";
 
 /**
  * Deadlines are instants, so the clock time is shown in the reader's own zone
@@ -65,25 +66,26 @@ export function formatDayTime(iso: string | null, timeZone?: string): string {
  * bathroom" as a Thursday job, and a chore they have until Sunday to do looks
  * like one they are already late on.
  *
- * On the day itself the date is dropped and only the time kept — repeating the
- * date somebody is already looking at tells them nothing, but the hour they
- * have left does.
+ * Said as a day rather than a clock time. Turns now end at midnight, so a time
+ * would read "12:00 am" on every row and mean nothing; and the last day is the
+ * honest answer to "when do I have to have done this by".
  */
 export function describeDue(
   dueBy: string | null,
   onDate: string,
   dict: Dictionary,
-  timeZone?: string,
 ): string {
   const due = valid(dueBy);
   if (!due) return "";
 
+  // The end is exclusive — a turn finishing at midnight on the 4th is the
+  // 3rd's work — so the day quoted is the instant just before it.
+  const lastDay = lastCoveredDay(due);
   // Compared in UTC because that is how the day filter itself is defined, so
   // "the day on screen" means the same thing in both places.
-  const dueDay = due.toISOString().slice(0, 10);
-  if (dueDay === onDate) {
-    return interpolate(dict.chores.dueThisDay, { time: formatTime(dueBy, timeZone) });
-  }
+  if (lastDay.toISOString().slice(0, 10) === onDate) return dict.chores.dueThisDay;
 
-  return interpolate(dict.chores.dueBy, { date: formatDayTime(dueBy, timeZone) });
+  return interpolate(dict.chores.dueBy, {
+    date: formatDay(lastDay.toISOString(), "UTC"),
+  });
 }

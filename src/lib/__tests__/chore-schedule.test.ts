@@ -6,6 +6,9 @@ import {
   periodLengthDays,
   projectPeriod,
   markDoneBlock,
+  periodEndFor,
+  lastCoveredDay,
+  startOfUtcDay,
   toIsoDate,
 } from "@/lib/chore-schedule";
 
@@ -191,5 +194,59 @@ describe("markDoneBlock", () => {
     expect(
       markDoneBlock({ periodStart: at("2026-08-02T00:00:00"), completedAt: now }, now),
     ).toBe("alreadyDone");
+  });
+});
+
+describe("turns cover whole days", () => {
+  // The reported bug: Rotate pressed at 21:04 gave a "daily" turn running to
+  // 21:04 the next evening, so it was live on two dates and showed on both.
+  const pressedLate = at("2026-08-03T21:04:00");
+
+  it("ends a daily turn at the end of the day it began", () => {
+    expect(periodEndFor(pressedLate, "DAILY").toISOString()).toBe(
+      "2026-08-04T00:00:00.000Z",
+    );
+  });
+
+  it("puts a daily chore on exactly one date", () => {
+    const end = periodEndFor(pressedLate, "DAILY");
+    const covered = ["2026-08-02", "2026-08-03", "2026-08-04"].filter((iso) =>
+      overlapsDay({ start: pressedLate, end }, day(iso)),
+    );
+
+    expect(covered).toEqual(["2026-08-03"]);
+  });
+
+  it("gives each frequency its whole number of days", () => {
+    const spans = {
+      DAILY: 1,
+      WEEKLY: 7,
+      BIWEEKLY: 14,
+      MONTHLY: 30,
+    } as const;
+
+    for (const [frequency, days] of Object.entries(spans)) {
+      const end = periodEndFor(pressedLate, frequency as keyof typeof spans);
+      const covered = Array.from({ length: 40 }, (_, i) =>
+        toIsoDate(new Date(startOfUtcDay(pressedLate).getTime() + i * 86_400_000)),
+      ).filter((iso) => overlapsDay({ start: pressedLate, end }, day(iso)));
+
+      expect(covered.length, frequency).toBe(days);
+    }
+  });
+
+  it("names the last day of a turn, not the midnight after it", () => {
+    // An exclusive end means the instant itself belongs to the next date.
+    expect(toIsoDate(lastCoveredDay("2026-08-04T00:00:00.000Z"))).toBe("2026-08-03");
+  });
+
+  it("keeps projected turns on the same day boundaries", () => {
+    // Otherwise the straddle returns the moment the view looks past the
+    // current turn.
+    const end = periodEndFor(pressedLate, "DAILY");
+    const next = projectPeriod(end, "DAILY", day("2026-08-09"))!;
+
+    expect(next.start.toISOString()).toBe("2026-08-09T00:00:00.000Z");
+    expect(next.end.toISOString()).toBe("2026-08-10T00:00:00.000Z");
   });
 });

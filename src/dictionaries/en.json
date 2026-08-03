@@ -169,8 +169,8 @@
     "choreWithDetail": "{name} ({band}, {freq})",
     "onDate": "Show the day",
     "backToToday": "Back to today",
-    "dueThisDay": "due by {time} this day",
-    "dueBy": "due by {date}",
+    "dueThisDay": "due by the end of this day",
+    "dueBy": "due by the end of {date}",
     "notHandedOutYet": "not handed out yet",
     "everyFrequency": "Any frequency"
   },

@@ -17,7 +17,7 @@ import {
   dayWindow,
   markDoneBlock,
   occurrenceOn,
-  periodLengthDays,
+  periodEndFor,
   toIsoDate,
 } from "@/lib/chore-schedule";
 import { Prisma } from "@/generated/prisma/client";
@@ -161,9 +161,9 @@ export async function rotateChores(groupId: string) {
   await Promise.all(
     needsAssignment.map((chore) => {
       const trace = traces[chore.id];
-      const periodEnd = new Date(
-        now.getTime() + periodLengthDays(chore.frequency) * 86_400_000,
-      );
+      // Ends on a day boundary, so a turn covers whole calendar days rather
+      // than N×24 hours from whenever this button was pressed.
+      const periodEnd = periodEndFor(now, chore.frequency as ChoreFrequency);
 
       return db.choreAssignment.create({
         data: {

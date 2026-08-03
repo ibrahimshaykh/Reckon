@@ -16,6 +16,40 @@ export function periodLengthDays(frequency: ChoreFrequency): number {
   }
 }
 
+export function startOfUtcDay(at: Date): Date {
+  return new Date(`${at.toISOString().slice(0, 10)}T00:00:00.000Z`);
+}
+
+/**
+ * When a turn handed out at this moment should end.
+ *
+ * Ends land on a day boundary, so a turn covers a whole number of calendar
+ * days. Running for exactly N×24 hours from whenever somebody pressed Rotate
+ * meant a daily chore started at 21:04 and finished at 21:04 the next evening
+ * — genuinely live across two dates, so it appeared on both, and a "daily"
+ * chore showing up two days running reads as the app double-counting it.
+ *
+ * The deadline it produces is midnight, which is also why the row says "by the
+ * end of Monday" rather than quoting a time: 21:04 was never a deadline anyone
+ * chose, just the moment a button happened to be pressed.
+ */
+export function periodEndFor(startedAt: Date, frequency: ChoreFrequency): Date {
+  return new Date(
+    startOfUtcDay(startedAt).getTime() + periodLengthDays(frequency) * DAY_MS,
+  );
+}
+
+/**
+ * The last day a turn covers.
+ *
+ * Ends are exclusive — a turn finishing at midnight on the 4th is the 3rd's
+ * work — so the date a person should be told is the instant just before.
+ */
+export function lastCoveredDay(periodEnd: string | Date): Date {
+  const end = typeof periodEnd === "string" ? new Date(periodEnd) : periodEnd;
+  return new Date(end.getTime() - 1);
+}
+
 export type Period = { start: Date; end: Date };
 export type DayWindow = { start: Date; end: Date };
 
