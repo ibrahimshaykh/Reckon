@@ -100,10 +100,10 @@ describe("the question this feature had to answer", () => {
 
     expect(found).not.toBeNull();
     expect(found?.assignment).toBeNull();
-    // A daily turn inherits the 17:35 handover, so two of them touch the 6th.
-    // The one returned is the earlier, which covers most of that date.
+    // Laid out on whole days, so exactly one daily turn touches the 6th.
     expect(overlapsDay(found!.period, sixth)).toBe(true);
-    expect(found?.period.start.toISOString()).toBe("2026-08-05T17:35:00.000Z");
+    expect(found?.period.start.toISOString()).toBe("2026-08-06T00:00:00.000Z");
+    expect(found?.period.end.toISOString()).toBe("2026-08-07T00:00:00.000Z");
   });
 });
 
@@ -115,12 +115,27 @@ describe("projectPeriod", () => {
     expect(period.end.getTime()).toBeGreaterThan(day("2026-09-15").start.getTime());
   });
 
-  it("keeps the rhythm's own offset rather than snapping to midnight", () => {
-    // Turns continue from when the last one ended, so a chore handed out at
-    // 17:35 keeps rolling over at 17:35.
+  it("lays projected turns out on whole days", () => {
+    // Not on the anchor's own clock time. Stepping in raw 24-hour blocks from
+    // whenever the last turn happened to end left every projected turn
+    // straddling two dates — the fault day-aligned ends exist to remove, and
+    // it reappeared the moment the view looked past the current turn.
     const period = projectPeriod(HANDED_OUT, "WEEKLY", day("2026-08-20"))!;
 
-    expect(period.start.toISOString()).toBe("2026-08-16T17:35:00.000Z");
+    expect(period.start.toISOString()).toBe("2026-08-16T00:00:00.000Z");
+    expect(period.end.toISOString()).toBe("2026-08-23T00:00:00.000Z");
+  });
+
+  it("puts a chore added today on today, not tomorrow", () => {
+    // What this fixed: adding a daily chore at lunchtime projected a turn
+    // running to lunchtime tomorrow, so the row said "due by the end of
+    // tomorrow" for a job that is plainly today's.
+    const addedAtNoon = at("2026-08-03T12:00:00");
+    const period = projectPeriod(addedAtNoon, "DAILY", day("2026-08-03"))!;
+
+    expect(period.start.toISOString()).toBe("2026-08-03T00:00:00.000Z");
+    expect(period.end.toISOString()).toBe("2026-08-04T00:00:00.000Z");
+    expect(toIsoDate(lastCoveredDay(period.end))).toBe("2026-08-03");
   });
 
   it("projects nothing into a day that ended before the rhythm resumed", () => {

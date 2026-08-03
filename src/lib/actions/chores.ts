@@ -70,8 +70,9 @@ export async function createChore(input: {
       throw new ApiError(409, DUPLICATE_CHORE_MESSAGE);
     }
 
+    let created;
     try {
-      await db.chore.create({
+      created = await db.chore.create({
         data: {
           groupId: valid.groupId,
           name: valid.name,
@@ -91,11 +92,17 @@ export async function createChore(input: {
       throw error;
     }
 
+    // Handed out straight away. A chore that has just been added is somebody's
+    // job from today, and leaving it unassigned until a separate Rotate press
+    // meant it sat there marked "not handed out yet" with nothing to act on —
+    // two steps to do the one thing the person plainly meant.
+    await rotateChores(valid.groupId, [created.id]);
+
     revalidatePath(`/groups/${input.groupId}/chores`);
   });
 }
 
-export async function rotateChores(groupId: string) {
+export async function rotateChores(groupId: string, onlyChoreIds?: string[]) {
   const session = await requireSession();
   await assertMember(groupId, session.id);
 
@@ -111,6 +118,10 @@ export async function rotateChores(groupId: string) {
   // already done on them, which is the whole reason they were kept.
   const needsAssignment = chores.filter((chore) => {
     if (chore.archivedAt) return false;
+    // Narrowed when a single new chore is being brought into the rotation, so
+    // adding one doesn't quietly re-deal everybody else's lapsed turns as a
+    // side effect of pressing Add.
+    if (onlyChoreIds && !onlyChoreIds.includes(chore.id)) return false;
     const latest = pastAssignments
       .filter((a) => a.choreId === chore.id)
       .sort((a, b) => b.periodEnd.getTime() - a.periodEnd.getTime())[0];

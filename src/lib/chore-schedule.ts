@@ -104,10 +104,15 @@ export function projectPeriod(
   // it — that stretch is history and only real turns should speak for it.
   if (day.end <= anchorEnd) return null;
 
+  // Laid out on whole days, like the turns the rotation creates. Stepping in
+  // raw 24-hour blocks from the anchor instead meant a chore added at lunchtime
+  // projected a turn running to lunchtime tomorrow, so a daily chore created
+  // today was reported as due tomorrow — and it straddled two dates, which is
+  // the fault day-aligned ends were supposed to remove.
   const length = periodLengthDays(frequency) * DAY_MS;
-  const elapsed = day.start.getTime() - anchorEnd.getTime();
-  const steps = Math.max(0, Math.floor(elapsed / length));
-  const start = anchorEnd.getTime() + steps * length;
+  const grid = startOfUtcDay(anchorEnd).getTime();
+  const steps = Math.max(0, Math.floor((day.start.getTime() - grid) / length));
+  const start = grid + steps * length;
 
   return { start: new Date(start), end: new Date(start + length) };
 }
