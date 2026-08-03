@@ -10,7 +10,7 @@ import { validate, cuid, shortText } from "@/lib/validation";
 import { asActionResult, type ActionResult } from "@/lib/action-result";
 import { assignChoresWithTrace } from "@/lib/chore-rotation";
 import { weightedEffort, asPerWeek, type ChoreFrequency } from "@/lib/chore-weight";
-import { totalLoad } from "@/lib/chore-load";
+import { totalLoad, countMissed } from "@/lib/chore-load";
 import { planRemoval } from "@/lib/chore-removal";
 import { findDuplicate } from "@/lib/chore-duplicates";
 import {
@@ -506,11 +506,21 @@ export async function getChoreFairness(groupId: string) {
   const session = await requireSession();
   await assertMember(groupId, session.id);
 
-  const [members, completedAssignments] = await Promise.all([
+  const [members, completedAssignments, recentAssignments] = await Promise.all([
     db.groupMember.findMany({ where: { groupId, leftAt: null }, include: { user: true } }),
     db.choreAssignment.findMany({
       where: { chore: { groupId }, completedAt: { not: null } },
       include: { chore: true },
+    }),
+    // Unfinished turns, for the count of what people let lapse. Restricted to
+    // ones already over: a turn still running is not missed, it is in hand.
+    db.choreAssignment.findMany({
+      where: {
+        chore: { groupId },
+        completedAt: null,
+        periodEnd: { lt: new Date() },
+      },
+      select: { userId: true, completedAt: true, periodEnd: true },
     }),
   ]);
 
@@ -522,9 +532,20 @@ export async function getChoreFairness(groupId: string) {
       weightedEffort(a.chore.effortWeight, a.chore.frequency as ChoreFrequency);
   });
 
+  const missed = countMissed(
+    recentAssignments.map((a) => ({
+      key: a.userId,
+      completedAt: a.completedAt,
+      periodEnd: a.periodEnd,
+    })),
+    new Date(),
+    members.map((m) => m.userId),
+  );
+
   return members.map((m) => ({
     userId: m.userId,
     displayName: m.user.displayName,
     completedEffort: asPerWeek(effortByUser[m.userId] ?? 0),
+    missedCount: missed.get(m.userId) ?? 0,
   }));
 }

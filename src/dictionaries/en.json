@@ -172,7 +172,9 @@
     "dueThisDay": "due by the end of this day",
     "dueBy": "due by the end of {date}",
     "notHandedOutYet": "not handed out yet",
-    "everyFrequency": "Any frequency"
+    "everyFrequency": "Any frequency",
+    "missedCount": "{n} missed",
+    "missedNote": "Missed = a turn that ran out before it was done, in the last 30 days. It already costs them: the credit goes, so the rotation sends them more."
   },
   "availability": {
     "title": "Group availability",

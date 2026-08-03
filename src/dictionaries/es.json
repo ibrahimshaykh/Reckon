@@ -172,7 +172,9 @@
     "dueThisDay": "para el final de este día",
     "dueBy": "para el final del {date}",
     "notHandedOutYet": "aún sin repartir",
-    "everyFrequency": "Cualquier frecuencia"
+    "everyFrequency": "Cualquier frecuencia",
+    "missedCount": "{n} sin hacer",
+    "missedNote": "Sin hacer = un turno que se acabó sin completarse, en los últimos 30 días. Ya le cuesta: pierde ese crédito, así que el reparto le manda más."
   },
   "availability": {
     "title": "Disponibilidad del grupo",

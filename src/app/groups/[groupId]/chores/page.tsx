@@ -63,7 +63,12 @@ export default async function ChoresPage({
           }))}
         dict={dict}
       />
-      <FairnessBars bars={bars} title={dict.chores.fairnessTitle} />
+      <FairnessBars
+        bars={bars}
+        title={dict.chores.fairnessTitle}
+        note={dict.chores.missedNote}
+        missedLabel={dict.chores.missedCount}
+      />
       <ChoreList
         groupId={groupId}
         onDate={onDate ?? toIsoDate(new Date())}

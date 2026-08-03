@@ -1,4 +1,10 @@
-export type MemberCompletedEffort = { userId: string; displayName: string; completedEffort: number };
+export type MemberCompletedEffort = {
+  userId: string;
+  displayName: string;
+  completedEffort: number;
+  /** Turns that ran out unfinished, recently. Shown, never acted on. */
+  missedCount: number;
+};
 export type FairnessBar = MemberCompletedEffort & { barPercent: number };
 
 // Scales each member's completed effort relative to whoever's done the
