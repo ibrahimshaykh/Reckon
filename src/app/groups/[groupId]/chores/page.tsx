@@ -74,10 +74,16 @@ export default async function ChoresPage({
           }))}
         dict={dict}
       />
-      <FairnessBars bars={bars} title={dict.chores.fairnessTitle} dict={dict} />
+      <FairnessBars
+        bars={bars}
+        title={dict.chores.fairnessTitle}
+        timeZone={timeZone}
+        dict={dict}
+      />
       <ChoreList
         groupId={groupId}
         onDate={onDate ?? toIsoDate(new Date(), timeZone)}
+        timeZone={timeZone}
         chores={chores}
         currentUserId={session.id}
         dict={dict}

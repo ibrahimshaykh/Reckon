@@ -53,7 +53,7 @@ describe("describeDue", () => {
   // job when there are three days left.
   it("gives the deadline when it is not the day being viewed", () => {
     // A turn ending at midnight on the 10th is the 9th's work.
-    expect(describeDue("2026-08-10T00:00:00.000Z", "2026-08-06", dict)).toBe(
+    expect(describeDue("2026-08-10T00:00:00.000Z", "2026-08-06", dict, UTC)).toBe(
       "due by the end of Sun 9 Aug",
     );
   });
@@ -61,37 +61,55 @@ describe("describeDue", () => {
   it("counts a turn ending at midnight as the day before", () => {
     // The bug this fixed: a daily turn running to midnight on the 4th showed
     // on the 4th as well as the 3rd, so a daily chore appeared twice.
-    expect(describeDue("2026-08-04T00:00:00.000Z", "2026-08-03", dict)).toBe(
+    expect(describeDue("2026-08-04T00:00:00.000Z", "2026-08-03", dict, UTC)).toBe(
       "due by the end of this day",
     );
-    expect(describeDue("2026-08-04T00:00:00.000Z", "2026-08-04", dict)).toBe(
+    expect(describeDue("2026-08-04T00:00:00.000Z", "2026-08-04", dict, UTC)).toBe(
       "due by the end of Mon 3 Aug",
     );
   });
 
   it("still gives a deadline that has already passed", () => {
     // Being late is worth knowing; silence would read as nothing being owed.
-    expect(describeDue("2026-08-02T00:00:00.000Z", "2026-08-06", dict)).toBe(
+    expect(describeDue("2026-08-02T00:00:00.000Z", "2026-08-06", dict, UTC)).toBe(
       "due by the end of Sat 1 Aug",
     );
   });
 
   it("says nothing when there is no turn", () => {
-    expect(describeDue(null, "2026-08-06", dict)).toBe("");
-    expect(describeDue("rubbish", "2026-08-06", dict)).toBe("");
+    expect(describeDue(null, "2026-08-06", dict, UTC)).toBe("");
+    expect(describeDue("rubbish", "2026-08-06", dict, UTC)).toBe("");
   });
 
   it("reads the same wherever the machine is", () => {
     // Deadlines are whole days now, so unlike a timestamp they must not shift
     // with the reader's zone — that would move a chore to the wrong date.
-    expect(describeDue("2026-08-10T00:00:00.000Z", "2026-08-06", dict)).toContain(
+    expect(describeDue("2026-08-10T00:00:00.000Z", "2026-08-06", dict, UTC)).toContain(
       "Sun 9 Aug",
     );
   });
 
   it.each(DICTS)("leaves no placeholder unfilled in %s", (_lang, d) => {
     for (const due of ["2026-08-10T00:00:00.000Z", "2026-08-07T00:00:00.000Z"]) {
-      expect(describeDue(due, "2026-08-06", d)).not.toMatch(/\{[a-z]+\}/i);
+      expect(describeDue(due, "2026-08-06", d, UTC)).not.toMatch(/\{[a-z]+\}/i);
     }
+  });
+});
+
+describe("naming the day in the group's own clock", () => {
+  const KARACHI = "Asia/Karachi";
+
+  it("does not label a turn with yesterday's date because the server is behind", () => {
+    // The bug: a turn ending at midnight UTC is five in the morning in
+    // Karachi, so it is live on the local 4th — but read in UTC it was
+    // labelled the 3rd, and the row contradicted the filter that placed it.
+    const endsAtUtcMidnight = "2026-08-04T00:00:00.000Z";
+
+    expect(describeDue(endsAtUtcMidnight, "2026-08-04", dict, KARACHI)).toBe(
+      "due by the end of this day",
+    );
+    expect(describeDue(endsAtUtcMidnight, "2026-08-04", dict, UTC)).toBe(
+      "due by the end of Mon 3 Aug",
+    );
   });
 });

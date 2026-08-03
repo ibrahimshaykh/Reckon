@@ -19,10 +19,13 @@ type Bar = {
 export function FairnessBars({
   bars,
   title,
+  timeZone,
   dict,
 }: {
   bars: Bar[];
   title: string;
+  /** The clock the household keeps, so a due date names the right day. */
+  timeZone: string;
   dict: Dictionary;
 }) {
   const [open, setOpen] = useState<string | null>(null);
@@ -89,7 +92,9 @@ export function FairnessBars({
                         },
                         dict,
                       ),
-                      date: formatDay(`${m.dueOn}T00:00:00.000Z`, "UTC"),
+                      // dueOn is already a plain local date, so it is read
+                      // back as one rather than shifted a second time.
+                      date: formatDay(`${m.dueOn}T12:00:00.000Z`, "UTC"),
                     })}
                   </Link>
                 </li>

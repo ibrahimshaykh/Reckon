@@ -37,8 +37,14 @@ type Chore = {
   hasHistory: boolean;
 };
 
-function todayIso() {
-  return new Date().toISOString().slice(0, 10);
+/** Today where the group lives — not where the server happens to run. */
+function todayIso(timeZone: string) {
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(new Date());
 }
 
 const FREQ_KEY = {
@@ -51,6 +57,7 @@ const FREQ_KEY = {
 export function ChoreList({
   groupId,
   onDate,
+  timeZone,
   chores,
   currentUserId,
   dict,
@@ -58,6 +65,8 @@ export function ChoreList({
   groupId: string;
   /** The day being looked at, as yyyy-mm-dd. */
   onDate: string;
+  /** The clock the household keeps. */
+  timeZone: string;
   chores: Chore[];
   currentUserId: string;
   dict: Dictionary;
@@ -178,7 +187,7 @@ export function ChoreList({
             )
           }
         />
-        {onDate !== todayIso() && (
+        {onDate !== todayIso(timeZone) && (
           <Button size="sm" variant="ghost" onClick={() => router.push("?")}>
             {dict.chores.backToToday}
           </Button>
@@ -215,8 +224,9 @@ export function ChoreList({
               }))}
             isMine={chore.currentAssigneeId === currentUserId}
             onDate={onDate}
+            timeZone={timeZone}
             // Looking ahead is looking, not doing.
-            isFutureDay={onDate > todayIso()}
+            isFutureDay={onDate > todayIso(timeZone)}
             dict={dict}
           />
         ))}
@@ -230,6 +240,7 @@ function ChoreRow({
   others,
   isMine,
   onDate,
+  timeZone,
   isFutureDay,
   dict,
 }: {
@@ -237,6 +248,7 @@ function ChoreRow({
   others: Swappable[];
   isMine: boolean;
   onDate: string;
+  timeZone: string;
   isFutureDay: boolean;
   dict: Dictionary;
 }) {
@@ -269,7 +281,7 @@ function ChoreRow({
 
   const frequencyLabel = dict.chores[FREQ_KEY[chore.frequency as keyof typeof FREQ_KEY]];
   const gap = loadGap(chore.roundLoad);
-  const dueLabel = describeDue(chore.dueBy, onDate, dict);
+  const dueLabel = describeDue(chore.dueBy, onDate, dict, timeZone);
 
   return (
     <li className="rounded-lg border p-3 text-sm">
@@ -421,7 +433,7 @@ function ChoreRow({
               className="text-xs text-emerald-600 dark:text-emerald-400"
             >
               {interpolate(dict.chores.doneAt, {
-                datetime: formatDayTime(chore.completedAt),
+                datetime: formatDayTime(chore.completedAt, timeZone),
               })}
             </p>
           ) : (

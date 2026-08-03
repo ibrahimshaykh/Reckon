@@ -1,6 +1,6 @@
 import { interpolate } from "@/lib/i18n";
 import type { Dictionary } from "@/lib/dictionary";
-import { lastCoveredDay } from "@/lib/chore-schedule";
+import { lastCoveredDay, toIsoDate } from "@/lib/chore-schedule";
 
 /**
  * Deadlines are instants, so the clock time is shown in the reader's own zone
@@ -74,6 +74,7 @@ export function describeDue(
   dueBy: string | null,
   onDate: string,
   dict: Dictionary,
+  timeZone: string,
 ): string {
   const due = valid(dueBy);
   if (!due) return "";
@@ -81,11 +82,12 @@ export function describeDue(
   // The end is exclusive — a turn finishing at midnight on the 4th is the
   // 3rd's work — so the day quoted is the instant just before it.
   const lastDay = lastCoveredDay(due);
-  // Compared in UTC because that is how the day filter itself is defined, so
-  // "the day on screen" means the same thing in both places.
-  if (lastDay.toISOString().slice(0, 10) === onDate) return dict.chores.dueThisDay;
+  // Named in the group's own clock, the same one the day filter uses. Reading
+  // this in UTC while the filter read local put a turn on the 4th and labelled
+  // it the 3rd.
+  if (toIsoDate(lastDay, timeZone) === onDate) return dict.chores.dueThisDay;
 
   return interpolate(dict.chores.dueBy, {
-    date: formatDay(lastDay.toISOString(), "UTC"),
+    date: formatDay(lastDay.toISOString(), timeZone),
   });
 }
