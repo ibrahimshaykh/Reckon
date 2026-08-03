@@ -1,0 +1,8 @@
+{
+  "crons": [
+    {
+      "path": "/api/cron/rotate-chores",
+      "schedule": "5 0 * * *"
+    }
+  ]
+}

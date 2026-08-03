@@ -2209,6 +2209,7 @@ export const GroupScalarFieldEnum = {
   id: 'id',
   name: 'name',
   currency: 'currency',
+  timeZone: 'timeZone',
   createdById: 'createdById',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

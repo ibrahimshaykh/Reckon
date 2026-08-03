@@ -111,6 +111,9 @@ export function listMissed(
   now: Date,
   keys: string[] = [],
   windowDays: number = MISSED_WINDOW_DAYS,
+  // The day to send somebody back to has to be named in the group's own
+  // clock, or the link lands on the wrong date for anyone not on UTC.
+  timeZone: string = "UTC",
 ): Map<string, MissedTurn[]> {
   const found = new Map<string, MissedTurn[]>();
   for (const key of keys) found.set(key, []);
@@ -134,7 +137,7 @@ export function listMissed(
         choreName: a.choreName,
         effortWeight: a.effortWeight,
         frequency: a.frequency,
-        dueOn: toIsoDate(lastCoveredDay(a.periodEnd)),
+        dueOn: toIsoDate(lastCoveredDay(a.periodEnd), timeZone),
       },
     ]);
   }

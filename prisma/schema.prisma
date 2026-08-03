@@ -124,6 +124,14 @@ model Group {
   id          String   @id @default(cuid())
   name        String
   currency    String   @default("USD")
+  // Whose midnight a chore day ends at. Turns and the day filter ran on UTC,
+  // so a house in Karachi saw yesterday's list until five in the morning and
+  // chores rolled over at breakfast. A chore is a local-day thing: "the bins
+  // go out today" means the household's today.
+  //
+  // Set from the browser of whoever first opens the group, since flatmates
+  // share a house and therefore a clock. UTC only until then.
+  timeZone    String   @default("UTC")
   createdById String
   createdBy   User     @relation("GroupCreator", fields: [createdById], references: [id])
   createdAt   DateTime @default(now())

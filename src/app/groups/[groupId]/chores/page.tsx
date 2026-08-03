@@ -11,6 +11,8 @@ import { PageHeader } from "@/components/page-header";
 import { FieldGuide } from "@/components/field-guide";
 import { SwapOffers } from "@/components/chores/swap-controls";
 import { toIsoDate } from "@/lib/chore-schedule";
+import { getGroupTimeZone } from "@/lib/actions/groups";
+import { TimeZoneSync } from "@/components/chores/time-zone-sync";
 
 export default async function ChoresPage({
   params,
@@ -26,6 +28,7 @@ export default async function ChoresPage({
   // Saturday when somebody else opens it.
   const dateParam = (await searchParams).date;
   const onDate = typeof dateParam === "string" ? dateParam : undefined;
+  const { timeZone } = await getGroupTimeZone(groupId);
   const [session, chores, fairness, swapOffers] = await Promise.all([
     requireSession(),
     listChores(groupId, onDate),
@@ -40,6 +43,14 @@ export default async function ChoresPage({
       <PageHeader
         title={dict.chores.title}
         description={dict.chores.helpTip}
+      />
+      {/* Learns the household's clock, and moves the page onto the new day
+          when midnight passes with the tab left open. */}
+      <TimeZoneSync
+        groupId={groupId}
+        groupTimeZone={timeZone}
+        onDate={onDate ?? toIsoDate(new Date(), timeZone)}
+        pinned={onDate !== undefined}
       />
       <FieldGuide guide={dict.guides.chores} dict={dict} />
       <AddChoreForm groupId={groupId} dict={dict} />
@@ -66,7 +77,7 @@ export default async function ChoresPage({
       <FairnessBars bars={bars} title={dict.chores.fairnessTitle} dict={dict} />
       <ChoreList
         groupId={groupId}
-        onDate={onDate ?? toIsoDate(new Date())}
+        onDate={onDate ?? toIsoDate(new Date(), timeZone)}
         chores={chores}
         currentUserId={session.id}
         dict={dict}

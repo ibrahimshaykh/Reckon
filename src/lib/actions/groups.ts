@@ -267,3 +267,56 @@ export async function assertMember(groupId: string, userId: string) {
     throw new ApiError(403, "Not a member of this group.");
   }
 }
+
+/**
+ * Record the clock the household keeps, from the browser of whoever is
+ * looking.
+ *
+ * Only ever moves off UTC, the default. A member travelling or a phone with a
+ * misread zone must not drag the whole group's chore days across the map, and
+ * once a house has a clock it keeps it until somebody changes it deliberately.
+ *
+ * Returns whether anything actually changed, so the caller can avoid a
+ * pointless refresh on every page load.
+ */
+export async function adoptGroupTimeZone(
+  groupId: string,
+  timeZone: string,
+): Promise<boolean> {
+  const session = await requireSession();
+  const validId = validate(cuid, groupId);
+  await assertMember(validId, session.id);
+
+  // Checked against the platform's own tz database rather than a list here,
+  // since anything the browser reports has to be something Intl can also
+  // resolve when the server computes a day boundary with it.
+  try {
+    new Intl.DateTimeFormat("en-CA", { timeZone });
+  } catch {
+    return false;
+  }
+  if (timeZone === "UTC") return false;
+
+  // Conditional on it still being the default, so two people opening the group
+  // at once can't fight over it.
+  const claimed = await db.group.updateMany({
+    where: { id: validId, timeZone: "UTC" },
+    data: { timeZone },
+  });
+  if (claimed.count === 0) return false;
+
+  revalidatePath(`/groups/${validId}/chores`);
+  return true;
+}
+
+/** The clock a group keeps, for anything that has to name a day. */
+export async function getGroupTimeZone(groupId: string) {
+  const session = await requireSession();
+  const validId = validate(cuid, groupId);
+  await assertMember(validId, session.id);
+
+  return db.group.findUniqueOrThrow({
+    where: { id: validId },
+    select: { timeZone: true },
+  });
+}

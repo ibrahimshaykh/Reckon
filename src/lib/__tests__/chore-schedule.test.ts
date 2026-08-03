@@ -8,11 +8,12 @@ import {
   markDoneBlock,
   periodEndFor,
   lastCoveredDay,
-  startOfUtcDay,
+  startOfDay,
   toIsoDate,
 } from "@/lib/chore-schedule";
 
-const day = (iso: string) => dayWindow(iso)!;
+const UTC = "UTC";
+const day = (iso: string) => dayWindow(iso, UTC)!;
 const at = (iso: string) => new Date(`${iso}Z`);
 
 // The live group's shape: turns handed out on 2 Aug at 17:35.
@@ -29,12 +30,12 @@ describe("dayWindow", () => {
   it("refuses anything that isn't a plain date", () => {
     // It arrives from the URL, where anyone can type anything.
     for (const bad of ["", "today", "2026-8-6", "06/08/2026", "2026-13-45"]) {
-      expect(dayWindow(bad)).toBeNull();
+      expect(dayWindow(bad, UTC)).toBeNull();
     }
   });
 
   it("round-trips with toIsoDate", () => {
-    expect(toIsoDate(day("2026-08-06").start)).toBe("2026-08-06");
+    expect(toIsoDate(day("2026-08-06").start, UTC)).toBe("2026-08-06");
   });
 });
 
@@ -76,7 +77,7 @@ describe("the question this feature had to answer", () => {
   const sixth = day("2026-08-06");
 
   it("shows the weekly turn, because the 6th falls inside it", () => {
-    const found = occurrenceOn(chore("WEEKLY"), assignments("WEEKLY"), sixth);
+    const found = occurrenceOn(chore("WEEKLY"), assignments("WEEKLY"), sixth, UTC);
 
     expect(found?.assignment).not.toBeNull();
     // Due by the 9th, not on the 6th — which is why the row prints the window.
@@ -85,10 +86,10 @@ describe("the question this feature had to answer", () => {
 
   it("shows the biweekly and monthly turns for the same reason", () => {
     expect(
-      occurrenceOn(chore("BIWEEKLY"), assignments("BIWEEKLY"), sixth)?.period.end,
+      occurrenceOn(chore("BIWEEKLY"), assignments("BIWEEKLY"), sixth, UTC)?.period.end,
     ).toEqual(at("2026-08-16T17:35:00"));
     expect(
-      occurrenceOn(chore("MONTHLY"), assignments("MONTHLY"), sixth)?.period.end,
+      occurrenceOn(chore("MONTHLY"), assignments("MONTHLY"), sixth, UTC)?.period.end,
     ).toEqual(at("2026-09-01T17:35:00"));
   });
 
@@ -96,7 +97,7 @@ describe("the question this feature had to answer", () => {
     // Its 2 Aug turn ended long before the 6th. Rotation is manual, so no real
     // turn exists — but the chore has not stopped happening, and an empty page
     // would read as the app having lost it.
-    const found = occurrenceOn(chore("DAILY"), assignments("DAILY"), sixth);
+    const found = occurrenceOn(chore("DAILY"), assignments("DAILY"), sixth, UTC);
 
     expect(found).not.toBeNull();
     expect(found?.assignment).toBeNull();
@@ -109,7 +110,7 @@ describe("the question this feature had to answer", () => {
 
 describe("projectPeriod", () => {
   it("lands on the turn that covers the day, however far ahead", () => {
-    const period = projectPeriod(HANDED_OUT, "DAILY", day("2026-09-15"))!;
+    const period = projectPeriod(HANDED_OUT, "DAILY", day("2026-09-15"), UTC)!;
 
     expect(period.start.getTime()).toBeLessThan(day("2026-09-16").start.getTime());
     expect(period.end.getTime()).toBeGreaterThan(day("2026-09-15").start.getTime());
@@ -120,7 +121,7 @@ describe("projectPeriod", () => {
     // whenever the last turn happened to end left every projected turn
     // straddling two dates — the fault day-aligned ends exist to remove, and
     // it reappeared the moment the view looked past the current turn.
-    const period = projectPeriod(HANDED_OUT, "WEEKLY", day("2026-08-20"))!;
+    const period = projectPeriod(HANDED_OUT, "WEEKLY", day("2026-08-20"), UTC)!;
 
     expect(period.start.toISOString()).toBe("2026-08-16T00:00:00.000Z");
     expect(period.end.toISOString()).toBe("2026-08-23T00:00:00.000Z");
@@ -131,16 +132,16 @@ describe("projectPeriod", () => {
     // running to lunchtime tomorrow, so the row said "due by the end of
     // tomorrow" for a job that is plainly today's.
     const addedAtNoon = at("2026-08-03T12:00:00");
-    const period = projectPeriod(addedAtNoon, "DAILY", day("2026-08-03"))!;
+    const period = projectPeriod(addedAtNoon, "DAILY", day("2026-08-03"), UTC)!;
 
     expect(period.start.toISOString()).toBe("2026-08-03T00:00:00.000Z");
     expect(period.end.toISOString()).toBe("2026-08-04T00:00:00.000Z");
-    expect(toIsoDate(lastCoveredDay(period.end))).toBe("2026-08-03");
+    expect(toIsoDate(lastCoveredDay(period.end), UTC)).toBe("2026-08-03");
   });
 
   it("projects nothing into a day that ended before the rhythm resumed", () => {
     // The past belongs to real turns; inventing one would rewrite history.
-    expect(projectPeriod(HANDED_OUT, "DAILY", day("2026-07-30"))).toBeNull();
+    expect(projectPeriod(HANDED_OUT, "DAILY", day("2026-07-30"), UTC)).toBeNull();
   });
 });
 
@@ -153,17 +154,17 @@ describe("occurrenceOn", () => {
       periodEnd: at("2026-08-03T17:35:00"),
       id: "real",
     };
-    const found = occurrenceOn(chore, [real], day("2026-08-03"));
+    const found = occurrenceOn(chore, [real], day("2026-08-03"), UTC);
 
     expect(found?.assignment?.id).toBe("real");
   });
 
   it("shows nothing before the chore existed", () => {
-    expect(occurrenceOn(chore, [], day("2026-07-01"))).toBeNull();
+    expect(occurrenceOn(chore, [], day("2026-07-01"), UTC)).toBeNull();
   });
 
   it("projects from the chore's own start when it has never been handed out", () => {
-    const found = occurrenceOn(chore, [], day("2026-08-04"));
+    const found = occurrenceOn(chore, [], day("2026-08-04"), UTC);
 
     expect(found?.assignment).toBeNull();
     expect(overlapsDay(found!.period, day("2026-08-04"))).toBe(true);
@@ -174,9 +175,17 @@ describe("occurrenceOn", () => {
     // one hand-picked date: whatever comes back must be live on that day, or
     // the row is answering a different question than the one asked.
     for (let offset = 0; offset < 60; offset++) {
-      const iso = toIsoDate(new Date(at("2026-08-03T00:00:00").getTime() + offset * 86_400_000));
+      const iso = toIsoDate(
+        new Date(at("2026-08-03T00:00:00").getTime() + offset * 86_400_000),
+        UTC,
+      );
       for (const frequency of ["DAILY", "WEEKLY", "BIWEEKLY", "MONTHLY"] as const) {
-        const found = occurrenceOn({ frequency, createdAt: chore.createdAt }, [], day(iso));
+        const found = occurrenceOn(
+          { frequency, createdAt: chore.createdAt },
+          [],
+          day(iso),
+          UTC,
+        );
         expect(found, iso).not.toBeNull();
         expect(overlapsDay(found!.period, day(iso)), `${frequency} on ${iso}`).toBe(true);
       }
@@ -218,13 +227,13 @@ describe("turns cover whole days", () => {
   const pressedLate = at("2026-08-03T21:04:00");
 
   it("ends a daily turn at the end of the day it began", () => {
-    expect(periodEndFor(pressedLate, "DAILY").toISOString()).toBe(
+    expect(periodEndFor(pressedLate, "DAILY", UTC).toISOString()).toBe(
       "2026-08-04T00:00:00.000Z",
     );
   });
 
   it("puts a daily chore on exactly one date", () => {
-    const end = periodEndFor(pressedLate, "DAILY");
+    const end = periodEndFor(pressedLate, "DAILY", UTC);
     const covered = ["2026-08-02", "2026-08-03", "2026-08-04"].filter((iso) =>
       overlapsDay({ start: pressedLate, end }, day(iso)),
     );
@@ -241,9 +250,9 @@ describe("turns cover whole days", () => {
     } as const;
 
     for (const [frequency, days] of Object.entries(spans)) {
-      const end = periodEndFor(pressedLate, frequency as keyof typeof spans);
+      const end = periodEndFor(pressedLate, frequency as keyof typeof spans, UTC);
       const covered = Array.from({ length: 40 }, (_, i) =>
-        toIsoDate(new Date(startOfUtcDay(pressedLate).getTime() + i * 86_400_000)),
+        toIsoDate(new Date(startOfDay(toIsoDate(pressedLate, UTC), UTC).getTime() + i * 86_400_000), UTC),
       ).filter((iso) => overlapsDay({ start: pressedLate, end }, day(iso)));
 
       expect(covered.length, frequency).toBe(days);
@@ -252,16 +261,74 @@ describe("turns cover whole days", () => {
 
   it("names the last day of a turn, not the midnight after it", () => {
     // An exclusive end means the instant itself belongs to the next date.
-    expect(toIsoDate(lastCoveredDay("2026-08-04T00:00:00.000Z"))).toBe("2026-08-03");
+    expect(toIsoDate(lastCoveredDay("2026-08-04T00:00:00.000Z"), UTC)).toBe("2026-08-03");
   });
 
   it("keeps projected turns on the same day boundaries", () => {
     // Otherwise the straddle returns the moment the view looks past the
     // current turn.
-    const end = periodEndFor(pressedLate, "DAILY");
-    const next = projectPeriod(end, "DAILY", day("2026-08-09"))!;
+    const end = periodEndFor(pressedLate, "DAILY", UTC);
+    const next = projectPeriod(end, "DAILY", day("2026-08-09"), UTC)!;
 
     expect(next.start.toISOString()).toBe("2026-08-09T00:00:00.000Z");
     expect(next.end.toISOString()).toBe("2026-08-10T00:00:00.000Z");
+  });
+});
+
+describe("whose midnight a chore day ends at", () => {
+  const KARACHI = "Asia/Karachi";
+
+  it("calls it tomorrow once it is tomorrow where the group lives", () => {
+    // Half past midnight in Karachi is still half past seven the previous
+    // evening in UTC. The app showed yesterday's list until five in the
+    // morning because it asked the wrong clock.
+    const justAfterMidnightThere = at("2026-08-03T19:30:00");
+
+    expect(toIsoDate(justAfterMidnightThere, KARACHI)).toBe("2026-08-04");
+    expect(toIsoDate(justAfterMidnightThere, UTC)).toBe("2026-08-03");
+  });
+
+  it("starts the day at the household's midnight", () => {
+    expect(startOfDay("2026-08-04", KARACHI).toISOString()).toBe(
+      "2026-08-03T19:00:00.000Z",
+    );
+  });
+
+  it("ends a daily turn at the household's midnight too", () => {
+    // Otherwise chores roll over at breakfast.
+    const handedOut = at("2026-08-03T08:00:00");
+
+    expect(periodEndFor(handedOut, "DAILY", KARACHI).toISOString()).toBe(
+      "2026-08-03T19:00:00.000Z",
+    );
+  });
+
+  it("gives every local day its whole number of dates", () => {
+    const handedOut = at("2026-08-03T08:00:00");
+    for (const [frequency, days] of Object.entries({
+      DAILY: 1,
+      WEEKLY: 7,
+      BIWEEKLY: 14,
+      MONTHLY: 30,
+    }) as [keyof typeof periodLengthDays extends never ? never : "DAILY", number][]) {
+      const end = periodEndFor(handedOut, frequency, KARACHI);
+      const covered = Array.from({ length: 40 }, (_, i) =>
+        toIsoDate(new Date(startOfDay("2026-08-03", KARACHI).getTime() + i * 86_400_000), KARACHI),
+      ).filter((iso) =>
+        overlapsDay({ start: handedOut, end }, dayWindow(iso, KARACHI)!),
+      );
+      expect(covered.length, frequency).toBe(days);
+    }
+  });
+
+  it("keeps a day 24 hours long, and 25 when the clocks go back", () => {
+    // London puts its clocks back on 25 October 2026. A day defined by adding
+    // 24 hours would drift an hour and start ending mid-evening.
+    const LONDON = "Europe/London";
+    const hours = (a: string, b: string) =>
+      (startOfDay(b, LONDON).getTime() - startOfDay(a, LONDON).getTime()) / 3_600_000;
+
+    expect(hours("2026-10-24", "2026-10-25")).toBe(24);
+    expect(hours("2026-10-25", "2026-10-26")).toBe(25);
   });
 });
