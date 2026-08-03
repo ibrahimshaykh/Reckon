@@ -215,6 +215,8 @@ export function ChoreList({
               }))}
             isMine={chore.currentAssigneeId === currentUserId}
             onDate={onDate}
+            // Looking ahead is looking, not doing.
+            isFutureDay={onDate > todayIso()}
             dict={dict}
           />
         ))}
@@ -228,12 +230,14 @@ function ChoreRow({
   others,
   isMine,
   onDate,
+  isFutureDay,
   dict,
 }: {
   chore: Chore;
   others: Swappable[];
   isMine: boolean;
   onDate: string;
+  isFutureDay: boolean;
   dict: Dictionary;
 }) {
   const router = useRouter();
@@ -425,7 +429,15 @@ function ChoreRow({
               {/* Only the assignee marks it done, because the effort is
                   credited to them — pressing it on someone else's chore was
                   handing them credit for work they might not have done. */}
-              {isMine && chore.markDoneBlockedBy === null && (
+              {/* Not offered on a day that hasn't arrived. A long turn can be
+                  live now and still show on a future date, so the button was
+                  reachable there — and pressing it would record work as done
+                  for a day nobody has lived through yet.
+
+                  Swapping stays available: arranging who does a job later is a
+                  reasonable thing to do while looking ahead. Claiming to have
+                  finished it is not. */}
+              {isMine && !isFutureDay && chore.markDoneBlockedBy === null && (
                 <Button size="sm" variant="outline" disabled={pending} onClick={onComplete}>
                   {dict.chores.markDone}
                 </Button>
