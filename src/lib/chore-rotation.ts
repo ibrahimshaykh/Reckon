@@ -6,6 +6,15 @@ export type AssignmentTrace = {
   userId: string;
   /** The assignee's load at the moment this chore was handed out. */
   effortBefore: number;
+  /**
+   * Where everyone stood at that same moment, lightest first.
+   *
+   * "They had the least" can't be checked without seeing what everyone else
+   * had. On its own the assignee's figure is a bare number with nothing to
+   * measure it against — which is what made the reasoning read as an assertion
+   * rather than an argument.
+   */
+  loadsBefore: { userId: string; effort: number }[];
   /** Everyone's load once the whole round is dealt, so the split is visible. */
   roundTotals: { userId: string; effort: number }[];
   /** Nobody had any history — this was an opening split, not a catch-up. */
@@ -32,7 +41,12 @@ export function assignChoresWithTrace(
   // though somebody had been slacking.
   const firstRound = members.every((m) => m.cumulativeEffort === 0);
 
-  const picked: { choreId: string; userId: string; effortBefore: number }[] = [];
+  const picked: {
+    choreId: string;
+    userId: string;
+    effortBefore: number;
+    loadsBefore: { userId: string; effort: number }[];
+  }[] = [];
 
   for (const chore of sortedChores) {
     loads.sort(
@@ -47,6 +61,10 @@ export function assignChoresWithTrace(
       choreId: chore.id,
       userId: chosen.userId,
       effortBefore: chosen.cumulativeEffort,
+      // Copied, not referenced — `loads` keeps mutating as the round is dealt,
+      // and a live reference would leave every chore quoting the final totals
+      // as though they were the ones it saw.
+      loadsBefore: loads.map((l) => ({ userId: l.userId, effort: l.cumulativeEffort })),
     });
     chosen.cumulativeEffort += chore.effortWeight;
   }
@@ -58,7 +76,13 @@ export function assignChoresWithTrace(
   return Object.fromEntries(
     picked.map((p) => [
       p.choreId,
-      { userId: p.userId, effortBefore: p.effortBefore, roundTotals, firstRound },
+      {
+        userId: p.userId,
+        effortBefore: p.effortBefore,
+        loadsBefore: p.loadsBefore,
+        roundTotals,
+        firstRound,
+      },
     ]),
   );
 }

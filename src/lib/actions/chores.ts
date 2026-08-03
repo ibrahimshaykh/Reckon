@@ -131,6 +131,12 @@ export async function rotateChores(groupId: string) {
             ),
             assigneeName: nameOf(trace.userId),
             effortBefore: trace.effortBefore,
+            // Everyone's standing at that moment, so "they had the least" can
+            // be checked rather than taken on trust.
+            loadsBefore: trace.loadsBefore.map((l) => ({
+              name: nameOf(l.userId),
+              effort: l.effort,
+            })),
             firstRound: trace.firstRound,
             roundTotals: trace.roundTotals.map((t) => ({
               name: nameOf(t.userId),
@@ -150,16 +156,34 @@ export async function listChores(groupId: string) {
   const session = await requireSession();
   await assertMember(groupId, session.id);
 
-  const chores = await db.chore.findMany({
-    where: { groupId },
-    include: {
-      assignments: {
-        orderBy: { periodStart: "desc" },
-        take: 1,
-        include: { user: true },
+  const [chores, members, allAssignments] = await Promise.all([
+    db.chore.findMany({
+      where: { groupId },
+      include: {
+        assignments: {
+          orderBy: { periodStart: "desc" },
+          take: 1,
+          include: { user: true },
+        },
       },
-    },
-  });
+    }),
+    // So somebody who has never been given anything still appears, on zero,
+    // rather than vanishing from the fairness panel entirely.
+    db.groupMember.findMany({
+      where: { groupId, leftAt: null },
+      select: { user: { select: { displayName: true } } },
+    }),
+    // Every assignment ever, not just each chore's current one — the running
+    // totals below are cumulative, and `take: 1` above deliberately keeps only
+    // the latest.
+    db.choreAssignment.findMany({
+      where: { chore: { groupId } },
+      select: {
+        user: { select: { displayName: true } },
+        chore: { select: { effortWeight: true, frequency: true } },
+      },
+    }),
+  ]);
 
   // Who a chore came from, when it arrived by swap.
   //
@@ -201,30 +225,38 @@ export async function listChores(groupId: string) {
     }
   }
 
-  // What everyone is actually carrying right now.
+  // Everyone's running total: every chore they have ever been handed, added up
+  // and weighted by how often it comes round.
   //
-  // This used to be read from a snapshot taken when the rotation ran and
-  // stored on the assignment. Swaps move chores afterwards and the snapshot
-  // never moved with them, so the panel went on insisting a round was "even"
-  // while the real split had drifted to 35 against 3. A fairness figure that
-  // has stopped tracking reality is worse than showing no figure at all.
-  const now = new Date();
-  const liveLoad = new Map<string, number>();
-  for (const chore of chores) {
-    const assignment = chore.assignments[0];
-    if (!assignment || assignment.periodEnd < now) continue;
-    const name = assignment.user.displayName;
-    // Weighted, so the panel measures the same thing the rotation does — a
-    // daily chore counted as one weekly one made the totals disagree with
-    // the decisions they were supposed to explain.
-    liveLoad.set(
+  // It counts finished periods too, deliberately. Showing only what people are
+  // holding today looked fairer but measured the wrong thing — a daily chore
+  // drops off the list tomorrow while a weekly one lingers for another six
+  // days, so the figures swung on when you happened to look rather than on who
+  // had done more. On the live group that gap read as 357 against 273 while
+  // the real totals were 357 against 371, i.e. all but level: the person the
+  // panel showed as under-loaded was in fact the one slightly ahead.
+  //
+  // This is also the exact number the rotation compares when it picks somebody,
+  // which is the point. The app was deciding on one measure and displaying
+  // another, so the explanation on a chore could never be reconciled with the
+  // totals printed underneath it.
+  //
+  // Computed here rather than read from a snapshot stored at rotation time:
+  // swaps move chores between people afterwards, and a snapshot doesn't move
+  // with them. That is how the panel came to insist a round was "even" when the
+  // real split had drifted to 35 against 3.
+  const lifetimeLoad = new Map<string, number>();
+  for (const member of members) lifetimeLoad.set(member.user.displayName, 0);
+  for (const a of allAssignments) {
+    const name = a.user.displayName;
+    lifetimeLoad.set(
       name,
-      (liveLoad.get(name) ?? 0) +
-        weightedEffort(chore.effortWeight, chore.frequency as ChoreFrequency),
+      (lifetimeLoad.get(name) ?? 0) +
+        weightedEffort(a.chore.effortWeight, a.chore.frequency as ChoreFrequency),
     );
   }
 
-  const roundLoad = [...liveLoad]
+  const roundLoad = [...lifetimeLoad]
     // Shown per week, the same scale the explanation talks in: a weekly 10
     // reads as 10 and a daily 10 as 70. The raw 28-day units are exact but
     // mean nothing to anyone reading the page.

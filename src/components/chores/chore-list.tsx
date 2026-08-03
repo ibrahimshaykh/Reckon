@@ -8,7 +8,7 @@ import { interpolate } from "@/lib/i18n";
 import { effortLabel } from "@/lib/effort-text";
 import {
   explainAssignment,
-  isRoundEven,
+  loadGap,
   type ChoreExplanation,
 } from "@/lib/chore-explanation";
 import { Button } from "@/components/ui/button";
@@ -189,6 +189,7 @@ function ChoreRow({
   }
 
   const frequencyLabel = dict.chores[FREQ_KEY[chore.frequency as keyof typeof FREQ_KEY]];
+  const gap = loadGap(chore.roundLoad);
 
   return (
     <li className="rounded-lg border p-3 text-sm">
@@ -227,25 +228,44 @@ function ChoreRow({
             ))}
           </ul>
 
-          {/* Where everyone actually stands, computed now rather than read
-              from what the rotation recorded — swaps move chores afterwards,
-              and a stored split goes on claiming "even" long after it stopped
-              being true. Being shown the real numbers settles an argument in a
-              way that being told your own share was fair never does. */}
+          {/* Where everyone actually stands: every chore they have ever been
+              given, weighted and totalled.
+
+              This is the same figure the rotation compares when it picks
+              somebody, which is the whole point of showing it. It used to show
+              only what people were holding today — a different measure, so the
+              reason printed on a chore could never be reconciled with the
+              totals underneath it, and the panel could show the person who was
+              slightly ahead as the one furthest behind.
+
+              Computed now rather than read from what the rotation recorded:
+              swaps move chores afterwards and a stored split goes on claiming
+              "even" long after it stopped being true. */}
           {chore.roundLoad.length > 1 && (
-            <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1 rounded-md border border-rule bg-card px-3 py-2 text-xs">
-              <span className="font-medium">{dict.chores.roundSplit}</span>
-              {chore.roundLoad.map((t) => (
-                <span key={t.name} className="text-muted-foreground">
-                  {t.name}{" "}
-                  <span className="tabular font-medium text-foreground">{t.effort}</span>
-                </span>
-              ))}
-              {isRoundEven(chore.roundLoad) && (
-                <span className="ms-auto text-emerald-600 dark:text-emerald-400">
-                  {dict.chores.roundEven}
-                </span>
-              )}
+            <div className="flex flex-col gap-1 rounded-md border border-rule bg-card px-3 py-2 text-xs">
+              <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                <span className="font-medium">{dict.chores.roundSplit}</span>
+                {chore.roundLoad.map((t) => (
+                  <span key={t.name} className="text-muted-foreground">
+                    {t.name}{" "}
+                    <span className="tabular font-medium text-foreground">
+                      {t.effort}
+                    </span>
+                  </span>
+                ))}
+              </div>
+              {/* What the numbers are and what happens next. Without both, a
+                  gap looks like the app failing to be fair rather than the app
+                  part-way through evening it out. */}
+              <p className="text-muted-foreground">{dict.chores.roundNote}</p>
+              <p className="text-emerald-700 dark:text-emerald-400">
+                {gap
+                  ? interpolate(dict.chores.roundGap, {
+                      name: gap.behind,
+                      gap: gap.gap,
+                    })
+                  : dict.chores.roundLevel}
+              </p>
             </div>
           )}
         </div>

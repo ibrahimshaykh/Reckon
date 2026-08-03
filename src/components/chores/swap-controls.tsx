@@ -9,6 +9,7 @@ import {
   openSwapCall,
   claimSwapCall,
   passSwapCall,
+  dismissSwapNotice,
 } from "@/lib/actions/chore-swaps";
 import { isActionError, type ActionResult } from "@/lib/action-result";
 import { interpolate } from "@/lib/i18n";
@@ -190,6 +191,19 @@ export function SwapOffers({
                   )}
                 </>
               )}
+              {offer.kind === "accepted" &&
+                interpolate(dict.chores.swapAccepted, {
+                  name: offer.otherName ?? "",
+                  // Already swapped, so these read from the reader's new
+                  // position: they gave away `fromChore` and hold `toChore`.
+                  yours: offer.fromChore,
+                  theirs: offer.toChore ?? "",
+                })}
+              {offer.kind === "declined" &&
+                interpolate(dict.chores.swapDeclined, {
+                  name: offer.otherName ?? "",
+                  yours: offer.fromChore,
+                })}
               {offer.kind === "noTakers" &&
                 interpolate(dict.chores.swapNoTakers, { yours: offer.fromChore })}
               {offer.kind === "openCall" &&
@@ -265,14 +279,26 @@ export function SwapOffers({
               </>
             )}
 
-            {offer.kind === "noTakers" && (
+            {/* How it turned out. The answer stays put until it's read —
+                previously a decline just vanished, so the person who asked
+                couldn't tell a refusal from nobody having looked.
+
+                Dismissing goes through the notice rather than cancelSwap: an
+                accepted swap has to stay ACCEPTED for the chore row to keep
+                saying "swapped with X", and cancelSwap ignores anything that
+                isn't still pending, so the old button did nothing at all. */}
+            {(offer.kind === "accepted" ||
+              offer.kind === "declined" ||
+              offer.kind === "noTakers") && (
               <Button
                 size="sm"
                 variant="outline"
                 disabled={pendingId === offer.id}
-                onClick={() => act(offer.id, () => cancelSwap(offer.id))}
+                onClick={() => act(offer.id, () => dismissSwapNotice(offer.id))}
               >
-                {dict.chores.swapNoTakersDismiss}
+                {offer.kind === "noTakers"
+                  ? dict.chores.swapNoTakersDismiss
+                  : dict.chores.swapOutcomeDismiss}
               </Button>
             )}
           </div>

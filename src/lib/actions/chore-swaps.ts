@@ -432,10 +432,27 @@ export type SwapOffer = {
    * outgoing  — you asked someone, waiting on them
    * openCall  — someone asked the group; you can take it
    * myCall    — you asked the group, waiting for a taker
+   * accepted  — you asked, they said yes
+   * declined  — you asked, they said no
+   * noTakers  — you asked the group and nobody took it
    */
-  kind: "incoming" | "outgoing" | "openCall" | "myCall" | "noTakers";
+  kind:
+    | "incoming"
+    | "outgoing"
+    | "openCall"
+    | "myCall"
+    | "accepted"
+    | "declined"
+    | "noTakers";
   fromName: string;
   toName: string | null;
+  /**
+   * Whoever is on the other side of this from the reader. Worked out once here
+   * rather than in the copy, because which of from/to that is depends on the
+   * outcome — accepting swaps the assignees, so afterwards fromName is the
+   * person who accepted, while on a decline it's the reader themselves.
+   */
+  otherName: string | null;
   fromChore: string;
   /** Effort of the chore on offer, so nobody claims blind. */
   fromEffort: number;
@@ -460,27 +477,28 @@ export async function listSwapOffers(groupId: string): Promise<SwapOffer[]> {
       // A turn that's already over is about to be reassigned by the next
       // rotation, so a swap for it is noise rather than a decision.
       fromAssignment: { periodEnd: { gt: new Date() }, completedAt: null },
-      // Two independent conditions, so they go in AND rather than as two OR
-      // keys on the same object — the second would silently replace the first.
-      AND: [
+      OR: [
         {
-          OR: [
-            { status: "PENDING" as const },
-            // A closed call is shown only to the person who asked: they're
-            // the one who needs to hear the answer came back no.
-            {
-              status: "NO_TAKERS" as const,
-              fromAssignment: { userId: session.id },
-            },
-          ],
-        },
-        {
+          // Live offers this person can act on.
+          status: "PENDING" as const,
           OR: [
             { fromAssignment: { userId: session.id } },
             { toAssignment: { userId: session.id } },
             // Open calls are everyone's business — that's the point of them.
             { toAssignmentId: null },
           ],
+        },
+        {
+          // How it turned out, for whoever asked, until they acknowledge it.
+          // A declined offer used to just vanish, so the asker never learnt
+          // whether the answer was no or whether anyone had even looked.
+          //
+          // Matched on requesterId rather than on the assignments, because
+          // accepting swaps the assignees — afterwards the assignments name
+          // the other person, and the query would find the wrong side.
+          status: { in: ["ACCEPTED", "DECLINED", "NO_TAKERS"] as const },
+          requesterId: session.id,
+          notices: { none: { userId: session.id } },
         },
       ],
     },
@@ -493,23 +511,34 @@ export async function listSwapOffers(groupId: string): Promise<SwapOffer[]> {
   });
 
   return swaps.map((s) => {
-    const mineIsAsker = s.fromAssignment.userId === session.id;
+    const mineIsAsker = s.requesterId === session.id;
     const kind =
-      s.status === "NO_TAKERS"
-        ? ("noTakers" as const)
-        : s.toAssignment
-          ? s.toAssignment.userId === session.id
-            ? ("incoming" as const)
-            : ("outgoing" as const)
-          : mineIsAsker
-            ? ("myCall" as const)
-            : ("openCall" as const);
+      s.status === "ACCEPTED"
+        ? ("accepted" as const)
+        : s.status === "DECLINED"
+          ? ("declined" as const)
+          : s.status === "NO_TAKERS"
+            ? ("noTakers" as const)
+            : s.toAssignment
+              ? s.toAssignment.userId === session.id
+                ? ("incoming" as const)
+                : ("outgoing" as const)
+              : mineIsAsker
+                ? ("myCall" as const)
+                : ("openCall" as const);
 
     return {
       id: s.id,
       kind,
       fromName: s.fromAssignment.user.displayName,
       toName: s.toAssignment?.user.displayName ?? null,
+      // On an accepted swap the assignments have already changed hands, so the
+      // person who accepted is the one now holding what the reader gave away.
+      // On a decline nothing moved, and it's whoever was asked.
+      otherName:
+        kind === "accepted"
+          ? s.fromAssignment.user.displayName
+          : (s.toAssignment?.user.displayName ?? null),
       fromChore: s.fromAssignment.chore.name,
       fromEffort: s.fromAssignment.chore.effortWeight,
       toChore: s.toAssignment?.chore.name ?? null,
