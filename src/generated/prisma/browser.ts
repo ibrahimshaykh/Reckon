@@ -88,6 +88,11 @@ export type ChoreAssignment = Prisma.ChoreAssignmentModel
  */
 export type ChoreSwapRequest = Prisma.ChoreSwapRequestModel
 /**
+ * Model ChoreSwapNotice
+ * 
+ */
+export type ChoreSwapNotice = Prisma.ChoreSwapNoticeModel
+/**
  * Model ChoreSwapPass
  * 
  */

@@ -147,7 +147,9 @@
     "filterNone": "یہاں ابھی کچھ نہیں۔",
     "statusAll": "سب",
     "statusTodo": "باقی ہیں",
-    "statusDone": "مکمل"
+    "statusDone": "مکمل",
+    "whyFrequency": "یہ ہفتے میں {times} بار آتا ہے، اس لیے ہفتہ وار کام کے مقابلے میں {weekly} شمار ہوتا ہے۔",
+    "whyWeekly": "یہ ہفتہ وار ہے، اس لیے {effort} شمار ہوتا ہے۔"
   },
   "availability": {
     "title": "گروپ کی دستیابی",

@@ -147,7 +147,9 @@
     "filterNone": "Nothing here right now.",
     "statusAll": "All",
     "statusTodo": "Still to do",
-    "statusDone": "Completed"
+    "statusDone": "Completed",
+    "whyFrequency": "It comes round {times}× a week, so it counts as {weekly} against a weekly chore.",
+    "whyWeekly": "It's weekly, so it counts as {effort}."
   },
   "availability": {
     "title": "Group availability",

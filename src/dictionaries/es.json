@@ -147,7 +147,9 @@
     "filterNone": "Nada por aquí ahora mismo.",
     "statusAll": "Todas",
     "statusTodo": "Pendientes",
-    "statusDone": "Completadas"
+    "statusDone": "Completadas",
+    "whyFrequency": "Toca {times}× por semana, así que cuenta como {weekly} frente a una tarea semanal.",
+    "whyWeekly": "Es semanal, así que cuenta como {effort}."
   },
   "availability": {
     "title": "Disponibilidad del grupo",

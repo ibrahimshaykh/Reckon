@@ -106,6 +106,8 @@ model User {
   paymentsMade          Payment[]                @relation("PaymentFrom")
   paymentsReceived      Payment[]                @relation("PaymentTo")
   choreSwapPasses       ChoreSwapPass[]
+  choreSwapNotices      ChoreSwapNotice[]
+  choreSwapsRequested   ChoreSwapRequest[]       @relation("SwapRequester")
   iousOwed              IOU[]                    @relation("IOUFrom")
   iousLent              IOU[]                    @relation("IOUTo")
   choreAssignments      ChoreAssignment[]
@@ -385,8 +387,14 @@ model ChoreSwapRequest {
   status           SwapStatus @default(PENDING)
   createdAt        DateTime   @default(now())
   resolvedAt       DateTime?
+  // Who asked. Recorded here because accepting swaps the two assignees, so
+  // afterwards the assignments no longer say who started it — and the person
+  // who needs telling the answer is precisely the one who asked.
+  requesterId      String
+  requester        User       @relation("SwapRequester", fields: [requesterId], references: [id], onDelete: Cascade)
 
-  passes ChoreSwapPass[]
+  passes  ChoreSwapPass[]
+  notices ChoreSwapNotice[]
 
   @@index([groupId, status])
   @@index([toAssignmentId, status])
@@ -402,6 +410,24 @@ model ChoreSwapRequest {
 //
 // Its own table rather than an array column: several people can pass at once,
 // and appending to an array loses writes when two land together.
+// Marks that somebody has seen how their swap turned out.
+//
+// A declined offer used to just vanish — the banner disappeared and the asker
+// was never told whether the answer was no or whether anyone had even looked.
+// Outcomes now stay on screen until acknowledged, which is what makes them an
+// answer rather than an absence.
+model ChoreSwapNotice {
+  id        String   @id @default(cuid())
+  requestId String
+  request   ChoreSwapRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([requestId, userId])
+  @@index([requestId])
+}
+
 model ChoreSwapPass {
   id        String   @id @default(cuid())
   requestId String

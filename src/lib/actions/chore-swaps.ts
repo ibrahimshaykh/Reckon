@@ -97,6 +97,9 @@ export async function proposeSwap(input: {
         groupId: mine.chore.groupId,
         fromAssignmentId: mine.id,
         toAssignmentId: theirs.id,
+        // Accepting swaps the assignees, so afterwards the assignments no
+        // longer say who started this — and they're the one owed an answer.
+        requesterId: session.id,
       },
     });
 
@@ -140,6 +143,7 @@ export async function openSwapCall(assignmentId: string): Promise<ActionResult<v
         groupId: mine.chore.groupId,
         fromAssignmentId: mine.id,
         toAssignmentId: null,
+        requesterId: session.id,
       },
     });
 
@@ -391,6 +395,30 @@ export async function cancelSwap(swapId: string): Promise<ActionResult<void>> {
     await db.choreSwapRequest.update({
       where: { id: swap.id },
       data: { status: "CANCELLED", resolvedAt: new Date() },
+    });
+
+    revalidatePath(`/groups/${swap.groupId}/chores`);
+  });
+}
+
+// Acknowledging how a swap turned out, so the answer stops following you
+// around. Separate from the request's status because an accepted swap has to
+// stay ACCEPTED — the chore rows read it to say "swapped with X".
+export async function dismissSwapNotice(swapId: string): Promise<ActionResult<void>> {
+  return asActionResult(async () => {
+    const session = await requireSession();
+    const validId = validate(cuid, swapId);
+
+    const swap = await db.choreSwapRequest.findUniqueOrThrow({
+      where: { id: validId },
+      select: { id: true, groupId: true },
+    });
+    await assertMember(swap.groupId, session.id);
+
+    await db.choreSwapNotice.upsert({
+      where: { requestId_userId: { requestId: swap.id, userId: session.id } },
+      update: {},
+      create: { requestId: swap.id, userId: session.id },
     });
 
     revalidatePath(`/groups/${swap.groupId}/chores`);

@@ -8,6 +8,7 @@ import { ApiError } from "@/lib/api-error";
 import { requireSession } from "@/lib/dal";
 import { validate, cuid, shortText } from "@/lib/validation";
 import { assignChoresWithTrace } from "@/lib/chore-rotation";
+import { weightedEffort, asPerWeek, type ChoreFrequency } from "@/lib/chore-weight";
 import type { ChoreExplanation } from "@/lib/chore-explanation";
 
 type Frequency = "DAILY" | "WEEKLY" | "BIWEEKLY" | "MONTHLY";
@@ -76,15 +77,25 @@ export async function rotateChores(groupId: string) {
     return { created: 0 };
   }
 
+  // Weighted by how often each chore recurs. Comparing raw effort treated a
+  // daily job worth 10 as equal to a weekly job worth 10, when the daily one
+  // is seven times the work — so the rotation could pile more onto the person
+  // already buried and report the round as balanced.
   const cumulative: Record<string, number> = {};
   members.forEach((m) => (cumulative[m.userId] = 0));
   pastAssignments.forEach((a) => {
     const chore = chores.find((c) => c.id === a.choreId);
-    if (chore) cumulative[a.userId] = (cumulative[a.userId] ?? 0) + chore.effortWeight;
+    if (!chore) return;
+    cumulative[a.userId] =
+      (cumulative[a.userId] ?? 0) +
+      weightedEffort(chore.effortWeight, chore.frequency as ChoreFrequency);
   });
 
   const traces = assignChoresWithTrace(
-    needsAssignment.map((c) => ({ id: c.id, effortWeight: c.effortWeight })),
+    needsAssignment.map((c) => ({
+      id: c.id,
+      effortWeight: weightedEffort(c.effortWeight, c.frequency as ChoreFrequency),
+    })),
     members.map((m) => ({ userId: m.userId, cumulativeEffort: cumulative[m.userId] ?? 0 })),
   );
 
@@ -111,6 +122,13 @@ export async function rotateChores(groupId: string) {
           explanation: {
             choreName: chore.name,
             effortWeight: chore.effortWeight,
+            // Recorded so the reasoning can say why a daily chore outweighed
+            // a weekly one, rather than leaving the numbers unexplained.
+            frequency: chore.frequency,
+            weightedEffort: weightedEffort(
+              chore.effortWeight,
+              chore.frequency as ChoreFrequency,
+            ),
             assigneeName: nameOf(trace.userId),
             effortBefore: trace.effortBefore,
             firstRound: trace.firstRound,
@@ -196,11 +214,21 @@ export async function listChores(groupId: string) {
     const assignment = chore.assignments[0];
     if (!assignment || assignment.periodEnd < now) continue;
     const name = assignment.user.displayName;
-    liveLoad.set(name, (liveLoad.get(name) ?? 0) + chore.effortWeight);
+    // Weighted, so the panel measures the same thing the rotation does — a
+    // daily chore counted as one weekly one made the totals disagree with
+    // the decisions they were supposed to explain.
+    liveLoad.set(
+      name,
+      (liveLoad.get(name) ?? 0) +
+        weightedEffort(chore.effortWeight, chore.frequency as ChoreFrequency),
+    );
   }
 
   const roundLoad = [...liveLoad]
-    .map(([name, effort]) => ({ name, effort }))
+    // Shown per week, the same scale the explanation talks in: a weekly 10
+    // reads as 10 and a daily 10 as 70. The raw 28-day units are exact but
+    // mean nothing to anyone reading the page.
+    .map(([name, weighted]) => ({ name, effort: asPerWeek(weighted) }))
     .sort((a, b) => b.effort - a.effort || a.name.localeCompare(b.name));
 
   return chores.map((c) => {

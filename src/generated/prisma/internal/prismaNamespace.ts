@@ -411,6 +411,7 @@ export const ModelName = {
   Chore: 'Chore',
   ChoreAssignment: 'ChoreAssignment',
   ChoreSwapRequest: 'ChoreSwapRequest',
+  ChoreSwapNotice: 'ChoreSwapNotice',
   ChoreSwapPass: 'ChoreSwapPass',
   AvailabilityEntry: 'AvailabilityEntry',
   Proposal: 'Proposal',
@@ -434,7 +435,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "group" | "groupMember" | "expenseGuest" | "expenseGuestHost" | "expense" | "expenseItem" | "expenseItemParticipant" | "payment" | "settlement" | "iOU" | "chore" | "choreAssignment" | "choreSwapRequest" | "choreSwapPass" | "availabilityEntry" | "proposal" | "proposalFlag" | "proposalVote" | "nudge" | "recap" | "activityEvent"
+    modelProps: "user" | "group" | "groupMember" | "expenseGuest" | "expenseGuestHost" | "expense" | "expenseItem" | "expenseItemParticipant" | "payment" | "settlement" | "iOU" | "chore" | "choreAssignment" | "choreSwapRequest" | "choreSwapNotice" | "choreSwapPass" | "availabilityEntry" | "proposal" | "proposalFlag" | "proposalVote" | "nudge" | "recap" | "activityEvent"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1474,6 +1475,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    ChoreSwapNotice: {
+      payload: Prisma.$ChoreSwapNoticePayload<ExtArgs>
+      fields: Prisma.ChoreSwapNoticeFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ChoreSwapNoticeFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChoreSwapNoticePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ChoreSwapNoticeFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChoreSwapNoticePayload>
+        }
+        findFirst: {
+          args: Prisma.ChoreSwapNoticeFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChoreSwapNoticePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ChoreSwapNoticeFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChoreSwapNoticePayload>
+        }
+        findMany: {
+          args: Prisma.ChoreSwapNoticeFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChoreSwapNoticePayload>[]
+        }
+        create: {
+          args: Prisma.ChoreSwapNoticeCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChoreSwapNoticePayload>
+        }
+        createMany: {
+          args: Prisma.ChoreSwapNoticeCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ChoreSwapNoticeCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChoreSwapNoticePayload>[]
+        }
+        delete: {
+          args: Prisma.ChoreSwapNoticeDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChoreSwapNoticePayload>
+        }
+        update: {
+          args: Prisma.ChoreSwapNoticeUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChoreSwapNoticePayload>
+        }
+        deleteMany: {
+          args: Prisma.ChoreSwapNoticeDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ChoreSwapNoticeUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ChoreSwapNoticeUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChoreSwapNoticePayload>[]
+        }
+        upsert: {
+          args: Prisma.ChoreSwapNoticeUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChoreSwapNoticePayload>
+        }
+        aggregate: {
+          args: Prisma.ChoreSwapNoticeAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateChoreSwapNotice>
+        }
+        groupBy: {
+          args: Prisma.ChoreSwapNoticeGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ChoreSwapNoticeGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ChoreSwapNoticeCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ChoreSwapNoticeCountAggregateOutputType> | number
+        }
+      }
+    }
     ChoreSwapPass: {
       payload: Prisma.$ChoreSwapPassPayload<ExtArgs>
       fields: Prisma.ChoreSwapPassFieldRefs
@@ -2294,10 +2369,21 @@ export const ChoreSwapRequestScalarFieldEnum = {
   toAssignmentId: 'toAssignmentId',
   status: 'status',
   createdAt: 'createdAt',
-  resolvedAt: 'resolvedAt'
+  resolvedAt: 'resolvedAt',
+  requesterId: 'requesterId'
 } as const
 
 export type ChoreSwapRequestScalarFieldEnum = (typeof ChoreSwapRequestScalarFieldEnum)[keyof typeof ChoreSwapRequestScalarFieldEnum]
+
+
+export const ChoreSwapNoticeScalarFieldEnum = {
+  id: 'id',
+  requestId: 'requestId',
+  userId: 'userId',
+  createdAt: 'createdAt'
+} as const
+
+export type ChoreSwapNoticeScalarFieldEnum = (typeof ChoreSwapNoticeScalarFieldEnum)[keyof typeof ChoreSwapNoticeScalarFieldEnum]
 
 
 export const ChoreSwapPassScalarFieldEnum = {
@@ -2854,6 +2940,7 @@ export type GlobalOmitConfig = {
   chore?: Prisma.ChoreOmit
   choreAssignment?: Prisma.ChoreAssignmentOmit
   choreSwapRequest?: Prisma.ChoreSwapRequestOmit
+  choreSwapNotice?: Prisma.ChoreSwapNoticeOmit
   choreSwapPass?: Prisma.ChoreSwapPassOmit
   availabilityEntry?: Prisma.AvailabilityEntryOmit
   proposal?: Prisma.ProposalOmit
