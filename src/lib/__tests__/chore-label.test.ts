@@ -15,7 +15,7 @@ const dict = en as unknown as Dictionary;
 describe("choreLabel", () => {
   it("names a chore with what it costs and how often", () => {
     expect(
-      choreLabel({ name: "kill cat", effortWeight: 10, frequency: "WEEKLY" }, dict),
+      choreLabel({ name: "kill cat", effortWeight: 7, frequency: "WEEKLY" }, dict),
     ).toBe("kill cat (hard, weekly)");
   });
 

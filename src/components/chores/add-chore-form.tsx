@@ -58,6 +58,7 @@ export function AddChoreForm({ groupId, dict }: { groupId: string; dict: Diction
         <Input
           type="number"
           min="1"
+          max="10"
           step="1"
           value={effortWeight}
           onChange={(e) => setEffortWeight(e.target.value)}

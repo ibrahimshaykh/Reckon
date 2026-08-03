@@ -31,7 +31,14 @@ const createChoreSchema = z.object({
   // anyway: "deep  clean" and "deep   clean" are one chore on screen and two
   // in the table, which is exactly the pair nobody can tell apart.
   name: shortText("Chore name", 100).transform((n) => n.replace(/\s+/g, " ")),
-  effortWeight: z.number().int().min(1, "Effort must be at least 1.").max(100),
+  // One to ten, which is what the app has always told people it was asking
+  // for — "you rated it 7 out of 10" — while quietly accepting up to a
+  // hundred. Nobody has ever entered more than 10 in any group.
+  effortWeight: z
+    .number()
+    .int()
+    .min(1, "Effort must be at least 1.")
+    .max(10, "Effort goes from 1 to 10."),
   frequency: z.enum(["DAILY", "WEEKLY", "BIWEEKLY", "MONTHLY"]),
 });
 
