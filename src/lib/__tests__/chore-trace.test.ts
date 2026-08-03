@@ -86,3 +86,67 @@ describe("assignChoresWithTrace", () => {
     expect(assignChoresWithTrace(CHORES, [])).toEqual({});
   });
 });
+
+describe("passing over whoever dropped it last time", () => {
+  const two = [
+    { userId: "lola", cumulativeEffort: 0 },
+    { userId: "ibrahim", cumulativeEffort: 100 },
+  ];
+
+  it("does not hand a chore straight back to the person who let it lapse", () => {
+    // Missing costs credit, which drops you down the order and makes the
+    // rotation MORE likely to pick you. So the chore nobody was doing kept
+    // returning to the person not doing it — fair by the numbers, and the bins
+    // still never went out.
+    const trace = assignChoresWithTrace(
+      [{ id: "bins", effortWeight: 10, excludeUserIds: ["lola"] }],
+      two,
+    );
+
+    expect(trace.bins.userId).toBe("ibrahim");
+    expect(trace.bins.skippedUserIds).toEqual(["lola"]);
+  });
+
+  it("still gives it to them when there is nobody else", () => {
+    // A one-person household has to do their own bins.
+    const trace = assignChoresWithTrace(
+      [{ id: "bins", effortWeight: 10, excludeUserIds: ["lola"] }],
+      [{ userId: "lola", cumulativeEffort: 0 }],
+    );
+
+    expect(trace.bins.userId).toBe("lola");
+    // Nothing was actually passed over, so nothing is claimed to have been.
+    expect(trace.bins.skippedUserIds).toEqual([]);
+  });
+
+  it("leaves every other chore to the ordinary rule", () => {
+    // The exemption is for one job, not for the person. Whoever dropped the
+    // bins is still the lightest, so the rest of the round comes to them.
+    const trace = assignChoresWithTrace(
+      [
+        { id: "bins", effortWeight: 10, excludeUserIds: ["lola"] },
+        { id: "hoover", effortWeight: 10 },
+      ],
+      two,
+    );
+
+    expect(trace.bins.userId).toBe("ibrahim");
+    expect(trace.hoover.userId).toBe("lola");
+  });
+
+  it("records who was passed over, so the reasoning can say so", () => {
+    // Otherwise the explanation claims the assignee "had the least" while the
+    // standings beside it show somebody lighter — a number and a sentence
+    // disagreeing on the same row.
+    const trace = assignChoresWithTrace(
+      [{ id: "bins", effortWeight: 10, excludeUserIds: ["lola"] }],
+      two,
+    );
+
+    expect(trace.bins.loadsBefore.map((l) => l.userId).sort()).toEqual([
+      "ibrahim",
+      "lola",
+    ]);
+    expect(trace.bins.skippedUserIds).toContain("lola");
+  });
+});

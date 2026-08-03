@@ -229,3 +229,45 @@ describe("the standings a chore is explained with", () => {
     }
   });
 });
+
+describe("when somebody was passed over", () => {
+  const skipped = {
+    ...LOOOO,
+    assigneeName: "Ibrahim Ahmed",
+    loadsBefore: [
+      { name: "Lola Love", effort: 400 },
+      { name: "Ibrahim Ahmed", effort: 900 },
+    ],
+    skippedNames: ["Lola Love"],
+  };
+
+  it("says who was skipped and why", () => {
+    expect(explainAssignment(skipped, dict).join(" ")).toContain(
+      "Lola Love had this last time and didn't finish it",
+    );
+  });
+
+  it("does not claim the assignee had the least when they plainly didn't", () => {
+    // Lola is on 100 a week and Ibrahim on 225. Saying "Ibrahim was carrying
+    // the least" with both numbers printed right there would be the app
+    // contradicting itself on one row.
+    const lines = explainAssignment(skipped, dict).join(" ");
+
+    expect(lines).not.toContain("Ibrahim Ahmed was carrying the least");
+    // Still shows both, so the skip can be checked rather than taken on trust.
+    expect(lines).toContain("Lola Love on 100 a week");
+    expect(lines).toContain("Ibrahim Ahmed on 225 a week");
+  });
+
+  it("compares only the people actually in the running", () => {
+    // With Lola out, Ibrahim is both the lightest and the heaviest of what is
+    // left, so it reads as the tie it is rather than inventing a margin.
+    expect(explainAssignment(skipped, dict).join(" ")).toContain(
+      "carrying exactly the same",
+    );
+  });
+
+  it("says nothing about skipping when nobody was", () => {
+    expect(explainAssignment(LOOOO, dict).join(" ")).not.toContain("passed them over");
+  });
+});

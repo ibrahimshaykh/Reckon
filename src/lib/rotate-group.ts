@@ -67,10 +67,23 @@ export async function rotateGroup(groupId: string, onlyChoreIds?: string[]) {
     ),
   );
 
+  // Whoever let each chore's last turn lapse. Handing it straight back to them
+  // is how a chore nobody is doing stays with the person not doing it.
+  const droppedLast = new Map<string, string[]>();
+  for (const chore of needsAssignment) {
+    const last = pastAssignments
+      .filter((a) => a.choreId === chore.id)
+      .sort((a, b) => b.periodEnd.getTime() - a.periodEnd.getTime())[0];
+    if (last && !last.completedAt && last.periodEnd < now) {
+      droppedLast.set(chore.id, [last.userId]);
+    }
+  }
+
   const traces = assignChoresWithTrace(
     needsAssignment.map((c) => ({
       id: c.id,
       effortWeight: weightedEffort(c.effortWeight, c.frequency as ChoreFrequency),
+      excludeUserIds: droppedLast.get(c.id),
     })),
     members.map((m) => ({ userId: m.userId, cumulativeEffort: cumulative[m.userId] ?? 0 })),
   );
@@ -118,6 +131,10 @@ export async function rotateGroup(groupId: string, onlyChoreIds?: string[]) {
               effort: l.effort,
             })),
             firstRound: trace.firstRound,
+            // Named, because otherwise the reasoning claims somebody "had the
+            // least" when the person who actually had the least was passed
+            // over — a number and a sentence disagreeing on the same row.
+            skippedNames: trace.skippedUserIds.map(nameOf),
             roundTotals: trace.roundTotals.map((t) => ({
               name: nameOf(t.userId),
               effort: t.effort,

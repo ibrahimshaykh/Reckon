@@ -176,7 +176,8 @@
     "missedCount": "{n} sin hacer",
     "missedNote": "Sin hacer = un turno que se acabó sin completarse, en los últimos 30 días. Ya le cuesta: pierde ese crédito, así que el reparto le manda más.",
     "missedItem": "{chore} — vencía el {date}",
-    "missedFixHint": "Abre ese día para marcarla, si de verdad la hiciste."
+    "missedFixHint": "Abre ese día para marcarla, si de verdad la hiciste.",
+    "whySkipped": "{names} lo tuvo la última vez y no lo terminó, así que esta ronda le pasó de largo: va a alguien que quizá sí lo haga."
   },
   "availability": {
     "title": "Disponibilidad del grupo",

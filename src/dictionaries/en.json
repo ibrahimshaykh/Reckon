@@ -176,7 +176,8 @@
     "missedCount": "{n} missed",
     "missedNote": "Missed = a turn that ran out before it was done, in the last 30 days. It already costs them: the credit goes, so the rotation sends them more.",
     "missedItem": "{chore} — was due {date}",
-    "missedFixHint": "Open a day to tick it off, if you did do it."
+    "missedFixHint": "Open a day to tick it off, if you did do it.",
+    "whySkipped": "{names} had this last time and didn't finish it, so this round passed them over — it goes to somebody who might."
   },
   "availability": {
     "title": "Group availability",

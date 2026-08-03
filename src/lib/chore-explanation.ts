@@ -20,6 +20,8 @@ export type ChoreExplanation =
       effortBefore: number;
       /** Absent on assignments made before everyone's standing was recorded. */
       loadsBefore?: { name: string; effort: number }[];
+      /** Passed over for this chore after letting the last turn lapse. */
+      skippedNames?: string[];
       firstRound: boolean;
       roundTotals: { name: string; effort: number }[];
       steps?: never;
@@ -93,6 +95,13 @@ export function explainAssignment(
   // applied to it. Quoting only the winner's number asked people to take the
   // word "least" on trust — and it sat next to a different total on the same
   // card, so it read as a contradiction rather than a reason.
+  // Said before the comparison below, because it changes what that comparison
+  // is between: whoever was skipped may well have had the least of anybody.
+  const skipped = explanation.skippedNames ?? [];
+  if (skipped.length > 0) {
+    lines.push(interpolate(dict.chores.whySkipped, { names: skipped.join(", ") }));
+  }
+
   const standings = explanation.loadsBefore;
   if (standings && standings.length > 0) {
     lines.push(
@@ -108,8 +117,13 @@ export function explainAssignment(
       }),
     );
 
-    const behind = standings.reduce((a, b) => (a.effort <= b.effort ? a : b));
-    const ahead = standings.reduce((a, b) => (a.effort >= b.effort ? a : b));
+    // Compared among whoever was actually in the running. Including somebody
+    // who was passed over would have the sentence name them as the lightest
+    // while the chore went to somebody else.
+    const running = standings.filter((s) => !skipped.includes(s.name));
+    const pool = running.length > 0 ? running : standings;
+    const behind = pool.reduce((a, b) => (a.effort <= b.effort ? a : b));
+    const ahead = pool.reduce((a, b) => (a.effort >= b.effort ? a : b));
     lines.push(
       ahead.effort === behind.effort
         ? // A genuine tie. Claiming someone "had the least" here would be
