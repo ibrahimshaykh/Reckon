@@ -49,6 +49,8 @@ export default async function ChoresPage({
           .map((c) => ({
             assignmentId: c.assignmentId as string,
             choreName: c.name,
+            effortWeight: c.effortWeight,
+            frequency: c.frequency,
             assigneeName: c.currentAssignee as string,
           }))}
         dict={dict}

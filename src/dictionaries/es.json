@@ -107,7 +107,7 @@
     "assignedTo": "asignado a {name}",
     "doneAt": "✓ Hecho {datetime}",
     "markDone": "Marcar como hecho",
-    "fairnessTitle": "Quién ha hecho qué (esfuerzo completado)",
+    "fairnessTitle": "Terminado hasta ahora (por semana)",
     "effortEasy": "fácil",
     "effortModerate": "normal",
     "effortHard": "pesada",
@@ -117,7 +117,7 @@
     "whyEffort": "Puntuaste {chore} con {effort} sobre 10 en esfuerzo: {band}.",
     "whyPicked": "{name} era quien menos llevaba, {behind} a la semana menos que {other}, así que le tocó a esa persona.",
     "whyFirstRound": "Nadie había hecho nada todavía, así que este reparto salió tan igualado como permiten estas tareas, no porque nadie fuera por detrás.",
-    "roundSplit": "Total hasta ahora",
+    "roundSplit": "Terminado + pendiente",
     "swapButton": "Cambiar esta",
     "swapPick": "Ofrécela por una de las suyas:",
     "swapCancel": "Cancelar",
@@ -165,7 +165,8 @@
     "removeChore": "Quitar {name}",
     "removeChoreGone": "¿Borrar {name}? Nunca se le ha asignado a nadie, así que no hay nada que conservar: desaparece sin más.",
     "removeChoreKept": "¿Quitar {name}? Dejará de repartirse y nadie tendrá que terminar el turno en curso. El trabajo ya hecho sigue contando en los totales de cada persona.",
-    "removeChoreConfirm": "Quitar"
+    "removeChoreConfirm": "Quitar",
+    "choreWithDetail": "{name} ({band}, {freq})"
   },
   "availability": {
     "title": "Disponibilidad del grupo",

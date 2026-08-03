@@ -13,7 +13,7 @@ import {
 } from "@/lib/actions/chore-swaps";
 import { isActionError, type ActionResult } from "@/lib/action-result";
 import { interpolate } from "@/lib/i18n";
-import { effortWord } from "@/lib/effort-text";
+import { effortWord, choreLabel } from "@/lib/effort-text";
 import { Button } from "@/components/ui/button";
 import type { SwapOffer } from "@/lib/actions/chore-swaps";
 import type { Dictionary } from "@/lib/dictionary";
@@ -21,8 +21,37 @@ import type { Dictionary } from "@/lib/dictionary";
 export type Swappable = {
   assignmentId: string;
   choreName: string;
+  /** Carried so the chore can be named unambiguously, not just labelled. */
+  effortWeight: number;
+  frequency: string;
   assigneeName: string;
 };
+
+// The two chores in a swap, each named with its weight and how often it comes
+// round. Which of them is "yours" flips with who is reading, so they're keyed
+// to the data instead — the templates decide which slot each one fills.
+function fromLabel(offer: SwapOffer, dict: Dictionary) {
+  return choreLabel(
+    {
+      name: offer.fromChore,
+      effortWeight: offer.fromEffort,
+      frequency: offer.fromFrequency,
+    },
+    dict,
+  );
+}
+
+function toLabel(offer: SwapOffer, dict: Dictionary) {
+  if (offer.toChore === null) return "";
+  return choreLabel(
+    {
+      name: offer.toChore,
+      effortWeight: offer.toEffort ?? 0,
+      frequency: offer.toFrequency ?? "WEEKLY",
+    },
+    dict,
+  );
+}
 
 async function run(
   action: () => Promise<ActionResult<void>>,
@@ -105,7 +134,8 @@ export function SwapButton({
                 )
               }
             >
-              {other.choreName} — {other.assigneeName}
+              {choreLabel({ name: other.choreName, effortWeight: other.effortWeight, frequency: other.frequency }, dict)}{" "}
+              — {other.assigneeName}
             </Button>
           ))}
         </div>
@@ -165,19 +195,19 @@ export function SwapOffers({
               {offer.kind === "incoming" &&
                 interpolate(dict.chores.swapIncoming, {
                   name: offer.fromName,
-                  yours: offer.toChore ?? "",
-                  theirs: offer.fromChore,
+                  yours: toLabel(offer, dict),
+                  theirs: fromLabel(offer, dict),
                 })}
               {offer.kind === "outgoing" &&
                 interpolate(dict.chores.swapOutgoing, {
                   // Whoever you asked, not yourself.
                   name: offer.toName ?? "",
-                  yours: offer.fromChore,
-                  theirs: offer.toChore ?? "",
+                  yours: fromLabel(offer, dict),
+                  theirs: toLabel(offer, dict),
                 })}
               {offer.kind === "myCall" && (
                 <>
-                  {interpolate(dict.chores.swapMyCall, { yours: offer.fromChore })}
+                  {interpolate(dict.chores.swapMyCall, { yours: fromLabel(offer, dict) })}
                   {/* A running count, not just the final answer — most people
                       won't press anything, and "2 of 4 passed" is still worth
                       knowing while you wait. */}
@@ -196,21 +226,21 @@ export function SwapOffers({
                   name: offer.otherName ?? "",
                   // Already swapped, so these read from the reader's new
                   // position: they gave away `fromChore` and hold `toChore`.
-                  yours: offer.fromChore,
-                  theirs: offer.toChore ?? "",
+                  yours: fromLabel(offer, dict),
+                  theirs: toLabel(offer, dict),
                 })}
               {offer.kind === "declined" &&
                 interpolate(dict.chores.swapDeclined, {
                   name: offer.otherName ?? "",
-                  yours: offer.fromChore,
+                  yours: fromLabel(offer, dict),
                 })}
               {offer.kind === "noTakers" &&
-                interpolate(dict.chores.swapNoTakers, { yours: offer.fromChore })}
+                interpolate(dict.chores.swapNoTakers, { yours: fromLabel(offer, dict) })}
               {offer.kind === "openCall" &&
                 interpolate(dict.chores.swapOpenCall, {
                   name: offer.fromName,
-                  theirs: offer.fromChore,
                   // Shown so nobody takes on a job without seeing its weight.
+                  theirs: fromLabel(offer, dict),
                   band: effortWord(offer.fromEffort, dict),
                 })}
             </span>
@@ -326,7 +356,7 @@ export function SwapOffers({
                       )
                     }
                   >
-                    {m.choreName}
+                    {choreLabel({ name: m.choreName, effortWeight: m.effortWeight, frequency: m.frequency }, dict)}
                   </Button>
                 ))
               )}

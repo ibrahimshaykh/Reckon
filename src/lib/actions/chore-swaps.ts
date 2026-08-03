@@ -25,7 +25,9 @@ const REFUSAL_MESSAGE: Record<SwapRefusal, string> = {
 };
 
 const assignmentInclude = {
-  chore: { select: { groupId: true, name: true, effortWeight: true } },
+  chore: {
+    select: { groupId: true, name: true, effortWeight: true, frequency: true },
+  },
   user: { select: { displayName: true } },
 } as const;
 
@@ -453,10 +455,17 @@ export type SwapOffer = {
    * person who accepted, while on a decline it's the reader themselves.
    */
   otherName: string | null;
+  /**
+   * Both chores carry their weight and frequency, not just a name. A group can
+   * have two chores called the same thing that are seven times apart in work,
+   * and agreeing to a swap by name alone means agreeing to either one.
+   */
   fromChore: string;
-  /** Effort of the chore on offer, so nobody claims blind. */
   fromEffort: number;
+  fromFrequency: string;
   toChore: string | null;
+  toEffort: number | null;
+  toFrequency: string | null;
   /** How many have said "not me", out of how many could have taken it. */
   passCount: number;
   passTotal: number;
@@ -541,7 +550,10 @@ export async function listSwapOffers(groupId: string): Promise<SwapOffer[]> {
           : (s.toAssignment?.user.displayName ?? null),
       fromChore: s.fromAssignment.chore.name,
       fromEffort: s.fromAssignment.chore.effortWeight,
+      fromFrequency: s.fromAssignment.chore.frequency,
       toChore: s.toAssignment?.chore.name ?? null,
+      toEffort: s.toAssignment?.chore.effortWeight ?? null,
+      toFrequency: s.toAssignment?.chore.frequency ?? null,
       passCount: s.passes.length,
       // Everyone except whoever asked.
       passTotal: Math.max(memberCount - 1, 0),

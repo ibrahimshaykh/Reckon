@@ -107,7 +107,7 @@
     "assignedTo": "assigned to {name}",
     "doneAt": "✓ Done {datetime}",
     "markDone": "Mark done",
-    "fairnessTitle": "Who's done what (completed effort)",
+    "fairnessTitle": "Finished so far (per week)",
     "effortEasy": "easy",
     "effortModerate": "moderate",
     "effortHard": "hard",
@@ -117,7 +117,7 @@
     "whyEffort": "You rated {chore} {effort} out of 10 for effort — that's {band}.",
     "whyPicked": "{name} was carrying the least — {behind} a week less than {other} — so this one went to them.",
     "whyFirstRound": "Nobody had done anything yet, so this round was split as evenly as these jobs allow — not because anyone was behind.",
-    "roundSplit": "Total so far",
+    "roundSplit": "Finished + in hand",
     "swapButton": "Swap this",
     "swapPick": "Offer it for one of theirs:",
     "swapCancel": "Cancel",
@@ -165,7 +165,8 @@
     "removeChore": "Remove {name}",
     "removeChoreGone": "Delete {name}? Nobody has ever been given it, so there's nothing to keep — it just goes.",
     "removeChoreKept": "Remove {name}? It stops being handed out and nobody has to finish the turn in progress. Work already done on it still counts towards everyone's totals.",
-    "removeChoreConfirm": "Remove it"
+    "removeChoreConfirm": "Remove it",
+    "choreWithDetail": "{name} ({band}, {freq})"
   },
   "availability": {
     "title": "Group availability",

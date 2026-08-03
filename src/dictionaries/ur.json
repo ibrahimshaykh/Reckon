@@ -107,7 +107,7 @@
     "assignedTo": "{name} کو تفویض کیا گیا",
     "doneAt": "✓ {datetime} کو مکمل ہوا",
     "markDone": "مکمل نشان زد کریں",
-    "fairnessTitle": "کس نے کیا کیا (مکمل شدہ محنت)",
+    "fairnessTitle": "اب تک مکمل کیے گئے (ہفتے کے حساب سے)",
     "effortEasy": "آسان",
     "effortModerate": "درمیانہ",
     "effortHard": "مشکل",
@@ -117,7 +117,7 @@
     "whyEffort": "آپ نے {chore} کو محنت کے لحاظ سے 10 میں سے {effort} دیا — یعنی {band}۔",
     "whyPicked": "{name} پر سب سے کم بوجھ تھا — {other} سے ہفتے کا {behind} کم — اس لیے یہ کام اُنہیں ملا۔",
     "whyFirstRound": "اب تک کسی نے کچھ نہیں کیا تھا، اس لیے یہ باری جتنی برابر ہو سکتی تھی اتنی برابر بانٹی گئی — اس لیے نہیں کہ کوئی پیچھے تھا۔",
-    "roundSplit": "اب تک کا کل",
+    "roundSplit": "مکمل + ذمے",
     "swapButton": "یہ بدلیں",
     "swapPick": "اِن میں سے کسی کے بدلے پیش کریں:",
     "swapCancel": "منسوخ",
@@ -165,7 +165,8 @@
     "removeChore": "{name} ہٹا دیں",
     "removeChoreGone": "{name} حذف کریں؟ یہ کبھی کسی کو نہیں دیا گیا، اس لیے محفوظ رکھنے کو کچھ نہیں — بس ختم ہو جائے گا۔",
     "removeChoreKept": "{name} ہٹا دیں؟ یہ آگے سے کسی کو نہیں ملے گا اور جو باری چل رہی ہے وہ بھی کسی کو مکمل نہیں کرنی پڑے گی۔ اِس پر جو کام پہلے ہو چکا ہے وہ سب کے کل حساب میں شامل رہے گا۔",
-    "removeChoreConfirm": "ہٹا دیں"
+    "removeChoreConfirm": "ہٹا دیں",
+    "choreWithDetail": "{name} ({band}، {freq})"
   },
   "availability": {
     "title": "گروپ کی دستیابی",

@@ -13,7 +13,7 @@ import {
   type ChoreExplanation,
 } from "@/lib/chore-explanation";
 import { Button } from "@/components/ui/button";
-import { SwapButton } from "@/components/chores/swap-controls";
+import { SwapButton, type Swappable } from "@/components/chores/swap-controls";
 
 type Chore = {
   id: string;
@@ -157,6 +157,8 @@ export function ChoreList({
               .map((c) => ({
                 assignmentId: c.assignmentId as string,
                 choreName: c.name,
+                effortWeight: c.effortWeight,
+                frequency: c.frequency,
                 assigneeName: c.currentAssignee as string,
               }))}
             isMine={chore.currentAssigneeId === currentUserId}
@@ -175,7 +177,7 @@ function ChoreRow({
   dict,
 }: {
   chore: Chore;
-  others: { assignmentId: string; choreName: string; assigneeName: string }[];
+  others: Swappable[];
   isMine: boolean;
   dict: Dictionary;
 }) {

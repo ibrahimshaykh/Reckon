@@ -28,3 +28,36 @@ export function effortLabel(weight: number, dict: Dictionary): string {
     band: effortWord(weight, dict),
   });
 }
+
+const FREQUENCY_KEY = {
+  DAILY: "freqDaily",
+  WEEKLY: "freqWeekly",
+  BIWEEKLY: "freqBiweekly",
+  MONTHLY: "freqMonthly",
+} as const;
+
+export function frequencyWord(frequency: string, dict: Dictionary): string {
+  const key = FREQUENCY_KEY[frequency as keyof typeof FREQUENCY_KEY];
+  return key ? dict.chores[key].toLowerCase() : frequency.toLowerCase();
+}
+
+/**
+ * "kill cat (hard, weekly)" — a chore named in a way you can act on.
+ *
+ * Swap offers identified a chore by name alone, which is fine until a group
+ * has two called the same thing. A flat can easily end up with a daily
+ * "dishes" and a weekly one, and those are seven times apart in work:
+ * agreeing to take "their dishes" could mean either. The weight and how often
+ * it comes round are what separate them, so they travel with the name
+ * anywhere somebody is being asked to commit to it.
+ */
+export function choreLabel(
+  chore: { name: string; effortWeight: number; frequency: string },
+  dict: Dictionary,
+): string {
+  return interpolate(dict.chores.choreWithDetail, {
+    name: chore.name,
+    band: effortWord(chore.effortWeight, dict),
+    freq: frequencyWord(chore.frequency, dict),
+  });
+}
