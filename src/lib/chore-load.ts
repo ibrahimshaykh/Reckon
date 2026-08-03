@@ -1,4 +1,5 @@
 import { weightedEffort, type ChoreFrequency } from "@/lib/chore-weight";
+import { lastCoveredDay, toIsoDate } from "@/lib/chore-schedule";
 
 export type LoadableAssignment = {
   /** Whoever the load belongs to — a user id or a display name, as needed. */
@@ -83,6 +84,57 @@ export function isMissed(
   return !countsTowardLoad(assignment, now);
 }
 
+export type MissedTurn = {
+  choreName: string;
+  effortWeight: number;
+  frequency: ChoreFrequency;
+  /** The day it was due — and the day to open to put it right. */
+  dueOn: string;
+};
+
+/**
+ * Which turns each person let lapse, most recent first.
+ *
+ * The names, not just a tally. A count on its own says something went wrong
+ * and gives you no way to act on it: the fix for a job you did but forgot to
+ * tick is to open the day it was due and tick it, which you cannot do if
+ * nothing tells you which job or which day.
+ */
+export function listMissed(
+  assignments: (Pick<LoadableAssignment, "key" | "completedAt" | "periodEnd"> & {
+    choreName: string;
+    effortWeight: number;
+    frequency: ChoreFrequency;
+  })[],
+  now: Date,
+  keys: string[] = [],
+  windowDays: number = MISSED_WINDOW_DAYS,
+): Map<string, MissedTurn[]> {
+  const found = new Map<string, MissedTurn[]>();
+  for (const key of keys) found.set(key, []);
+
+  const oldest = new Date(now.getTime() - windowDays * 86_400_000);
+  const recent = assignments
+    .filter((a) => a.periodEnd >= oldest && isMissed(a, now))
+    // Most recent first: the one somebody is most likely to remember doing,
+    // and the one still worth going back for.
+    .sort((a, b) => b.periodEnd.getTime() - a.periodEnd.getTime());
+
+  for (const a of recent) {
+    found.set(a.key, [
+      ...(found.get(a.key) ?? []),
+      {
+        choreName: a.choreName,
+        effortWeight: a.effortWeight,
+        frequency: a.frequency,
+        dueOn: toIsoDate(lastCoveredDay(a.periodEnd)),
+      },
+    ]);
+  }
+
+  return found;
+}
+
 /**
  * Missed turns per person, over a recent window.
  *
@@ -102,15 +154,19 @@ export function countMissed(
   keys: string[] = [],
   windowDays: number = MISSED_WINDOW_DAYS,
 ): Map<string, number> {
-  const counts = new Map<string, number>();
-  for (const key of keys) counts.set(key, 0);
+  // Derived from the list rather than counted separately, so the number beside
+  // somebody's name and the jobs behind it can never disagree.
+  const listed = listMissed(
+    assignments.map((a) => ({
+      ...a,
+      choreName: "",
+      effortWeight: 0,
+      frequency: "WEEKLY" as ChoreFrequency,
+    })),
+    now,
+    keys,
+    windowDays,
+  );
 
-  const oldest = new Date(now.getTime() - windowDays * 86_400_000);
-  for (const a of assignments) {
-    if (a.periodEnd < oldest) continue;
-    if (!isMissed(a, now)) continue;
-    counts.set(a.key, (counts.get(a.key) ?? 0) + 1);
-  }
-
-  return counts;
+  return new Map([...listed].map(([key, turns]) => [key, turns.length]));
 }

@@ -1,9 +1,11 @@
+import type { MissedTurn } from "@/lib/chore-load";
+
 export type MemberCompletedEffort = {
   userId: string;
   displayName: string;
   completedEffort: number;
   /** Turns that ran out unfinished, recently. Shown, never acted on. */
-  missedCount: number;
+  missed: MissedTurn[];
 };
 export type FairnessBar = MemberCompletedEffort & { barPercent: number };
 

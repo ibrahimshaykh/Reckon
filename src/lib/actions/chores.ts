@@ -10,7 +10,7 @@ import { validate, cuid, shortText } from "@/lib/validation";
 import { asActionResult, type ActionResult } from "@/lib/action-result";
 import { assignChoresWithTrace } from "@/lib/chore-rotation";
 import { weightedEffort, asPerWeek, type ChoreFrequency } from "@/lib/chore-weight";
-import { totalLoad, countMissed } from "@/lib/chore-load";
+import { totalLoad, listMissed } from "@/lib/chore-load";
 import { planRemoval } from "@/lib/chore-removal";
 import { findDuplicate } from "@/lib/chore-duplicates";
 import {
@@ -520,7 +520,12 @@ export async function getChoreFairness(groupId: string) {
         completedAt: null,
         periodEnd: { lt: new Date() },
       },
-      select: { userId: true, completedAt: true, periodEnd: true },
+      select: {
+        userId: true,
+        completedAt: true,
+        periodEnd: true,
+        chore: { select: { name: true, effortWeight: true, frequency: true } },
+      },
     }),
   ]);
 
@@ -532,11 +537,14 @@ export async function getChoreFairness(groupId: string) {
       weightedEffort(a.chore.effortWeight, a.chore.frequency as ChoreFrequency);
   });
 
-  const missed = countMissed(
+  const missed = listMissed(
     recentAssignments.map((a) => ({
       key: a.userId,
       completedAt: a.completedAt,
       periodEnd: a.periodEnd,
+      choreName: a.chore.name,
+      effortWeight: a.chore.effortWeight,
+      frequency: a.chore.frequency as ChoreFrequency,
     })),
     new Date(),
     members.map((m) => m.userId),
@@ -546,6 +554,6 @@ export async function getChoreFairness(groupId: string) {
     userId: m.userId,
     displayName: m.user.displayName,
     completedEffort: asPerWeek(effortByUser[m.userId] ?? 0),
-    missedCount: missed.get(m.userId) ?? 0,
+    missed: missed.get(m.userId) ?? [],
   }));
 }

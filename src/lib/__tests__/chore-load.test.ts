@@ -3,6 +3,7 @@ import {
   countsTowardLoad,
   countMissed,
   isMissed,
+  listMissed,
   totalLoad,
   type LoadableAssignment,
 } from "@/lib/chore-load";
@@ -162,6 +163,83 @@ describe("countMissed", () => {
         const a = { periodEnd, completedAt };
         expect(isMissed(a, NOW)).toBe(!countsTowardLoad(a, NOW));
       }
+    }
+  });
+});
+
+describe("listMissed", () => {
+  const turn = (
+    key: string,
+    periodEnd: Date,
+    completedAt: Date | null,
+    choreName = "bins",
+  ) => ({
+    key,
+    periodEnd,
+    completedAt,
+    choreName,
+    effortWeight: 3,
+    frequency: "WEEKLY" as const,
+  });
+
+  it("names the job and the day to go back to", () => {
+    // Without both, the count is something you can read and not act on.
+    const found = listMissed(
+      [turn("lola", new Date("2026-07-31T00:00:00Z"), null, "clean the bathroom")],
+      NOW,
+      ["lola"],
+    );
+
+    expect(found.get("lola")).toEqual([
+      {
+        choreName: "clean the bathroom",
+        effortWeight: 3,
+        frequency: "WEEKLY",
+        // The end is exclusive, so the day to open is the one before it.
+        dueOn: "2026-07-30",
+      },
+    ]);
+  });
+
+  it("puts the most recent first", () => {
+    // The one somebody is likeliest to remember doing, and likeliest to fix.
+    const found = listMissed(
+      [
+        turn("lola", new Date("2026-07-20T00:00:00Z"), null, "older"),
+        turn("lola", new Date("2026-08-01T00:00:00Z"), null, "newer"),
+      ],
+      NOW,
+      ["lola"],
+    );
+
+    expect(found.get("lola")?.map((m) => m.choreName)).toEqual(["newer", "older"]);
+  });
+
+  it("leaves out anything finished or still in hand", () => {
+    const found = listMissed(
+      [turn("lola", OVER, OVER), turn("lola", RUNNING, null)],
+      NOW,
+      ["lola"],
+    );
+
+    expect(found.get("lola")).toEqual([]);
+  });
+
+  it("agrees with the count shown beside the name", () => {
+    // Two ways of asking the same question. If they could differ, somebody
+    // would be told they missed three things and shown two.
+    const turns = [
+      turn("lola", OVER, null),
+      turn("lola", RUNNING, null),
+      turn("lola", new Date("2026-07-28T00:00:00Z"), null),
+      turn("ibrahim", OVER, OVER),
+    ];
+
+    const counted = countMissed(turns, NOW, ["lola", "ibrahim"]);
+    const listed = listMissed(turns, NOW, ["lola", "ibrahim"]);
+
+    for (const key of ["lola", "ibrahim"]) {
+      expect(listed.get(key)?.length).toBe(counted.get(key));
     }
   });
 });
