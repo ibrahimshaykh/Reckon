@@ -9,6 +9,7 @@ import { requireSession } from "@/lib/dal";
 import { validate, cuid, shortText } from "@/lib/validation";
 import { assignChoresWithTrace } from "@/lib/chore-rotation";
 import { weightedEffort, asPerWeek, type ChoreFrequency } from "@/lib/chore-weight";
+import { totalLoad } from "@/lib/chore-load";
 import type { ChoreExplanation } from "@/lib/chore-explanation";
 
 type Frequency = "DAILY" | "WEEKLY" | "BIWEEKLY" | "MONTHLY";
@@ -77,19 +78,31 @@ export async function rotateChores(groupId: string) {
     return { created: 0 };
   }
 
-  // Weighted by how often each chore recurs. Comparing raw effort treated a
-  // daily job worth 10 as equal to a weekly job worth 10, when the daily one
-  // is seven times the work — so the rotation could pile more onto the person
-  // already buried and report the round as balanced.
-  const cumulative: Record<string, number> = {};
-  members.forEach((m) => (cumulative[m.userId] = 0));
-  pastAssignments.forEach((a) => {
-    const chore = chores.find((c) => c.id === a.choreId);
-    if (!chore) return;
-    cumulative[a.userId] =
-      (cumulative[a.userId] ?? 0) +
-      weightedEffort(chore.effortWeight, chore.frequency as ChoreFrequency);
-  });
+  // Weighted by how often each chore recurs, and counting work rather than
+  // paperwork. Comparing raw effort treated a daily job worth 10 as equal to a
+  // weekly job worth 10, when the daily one is seven times the work — so the
+  // rotation could pile more onto the person already buried and report the
+  // round as balanced. See chore-load for why a missed chore stops counting.
+  const cumulative = Object.fromEntries(
+    totalLoad(
+      pastAssignments.flatMap((a) => {
+        const chore = chores.find((c) => c.id === a.choreId);
+        return chore
+          ? [
+              {
+                key: a.userId,
+                completedAt: a.completedAt,
+                periodEnd: a.periodEnd,
+                effortWeight: chore.effortWeight,
+                frequency: chore.frequency as ChoreFrequency,
+              },
+            ]
+          : [];
+      }),
+      now,
+      members.map((m) => m.userId),
+    ),
+  );
 
   const traces = assignChoresWithTrace(
     needsAssignment.map((c) => ({
@@ -179,6 +192,8 @@ export async function listChores(groupId: string) {
     db.choreAssignment.findMany({
       where: { chore: { groupId } },
       select: {
+        completedAt: true,
+        periodEnd: true,
         user: { select: { displayName: true } },
         chore: { select: { effortWeight: true, frequency: true } },
       },
@@ -225,36 +240,32 @@ export async function listChores(groupId: string) {
     }
   }
 
-  // Everyone's running total: every chore they have ever been handed, added up
-  // and weighted by how often it comes round.
+  // Everyone's running total, by the same rule and the same function the
+  // rotation uses — that is the point of it being shared.
   //
-  // It counts finished periods too, deliberately. Showing only what people are
-  // holding today looked fairer but measured the wrong thing — a daily chore
-  // drops off the list tomorrow while a weekly one lingers for another six
-  // days, so the figures swung on when you happened to look rather than on who
-  // had done more. On the live group that gap read as 357 against 273 while
-  // the real totals were 357 against 371, i.e. all but level: the person the
-  // panel showed as under-loaded was in fact the one slightly ahead.
-  //
-  // This is also the exact number the rotation compares when it picks somebody,
-  // which is the point. The app was deciding on one measure and displaying
-  // another, so the explanation on a chore could never be reconciled with the
-  // totals printed underneath it.
+  // It counts finished periods, not just what people hold today. Showing only
+  // today's chores looked fairer but measured the wrong thing: a daily chore
+  // drops off the list tomorrow while a weekly one lingers another six days,
+  // so the figures swung on when you happened to look rather than on who had
+  // done more. On the live group that read as 357 against 273 when the real
+  // totals were 357 against 371 — all but level, with the person shown as
+  // under-loaded actually the one slightly ahead.
   //
   // Computed here rather than read from a snapshot stored at rotation time:
   // swaps move chores between people afterwards, and a snapshot doesn't move
   // with them. That is how the panel came to insist a round was "even" when the
   // real split had drifted to 35 against 3.
-  const lifetimeLoad = new Map<string, number>();
-  for (const member of members) lifetimeLoad.set(member.user.displayName, 0);
-  for (const a of allAssignments) {
-    const name = a.user.displayName;
-    lifetimeLoad.set(
-      name,
-      (lifetimeLoad.get(name) ?? 0) +
-        weightedEffort(a.chore.effortWeight, a.chore.frequency as ChoreFrequency),
-    );
-  }
+  const lifetimeLoad = totalLoad(
+    allAssignments.map((a) => ({
+      key: a.user.displayName,
+      completedAt: a.completedAt,
+      periodEnd: a.periodEnd,
+      effortWeight: a.chore.effortWeight,
+      frequency: a.chore.frequency as ChoreFrequency,
+    })),
+    new Date(),
+    members.map((m) => m.user.displayName),
+  );
 
   const roundLoad = [...lifetimeLoad]
     // Shown per week, the same scale the explanation talks in: a weekly 10

@@ -57,10 +57,12 @@ describe("explainAssignment", () => {
   it("says what those totals are counting", () => {
     const lines = explainAssignment(LOOOO, dict).join(" ");
 
-    // The panel underneath is on the same all-time scale now, but the totals
-    // are still far bigger than any single chore, so they need explaining or
-    // they look like a different unit.
-    expect(lines).toContain("every chore a person has ever been given");
+    // The panel underneath is on the same scale now, but the totals are still
+    // far bigger than any single chore, so they need explaining or they look
+    // like a different unit.
+    expect(lines).toContain("actually finished");
+    // And they can go down, which is startling if nobody warned you.
+    expect(lines).toContain("stops counting once its time is up");
   });
 
   it("explains a daily chore in weeks, not multipliers", () => {
