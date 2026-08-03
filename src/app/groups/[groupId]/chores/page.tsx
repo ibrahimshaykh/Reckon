@@ -51,6 +51,9 @@ export default async function ChoresPage({
         groupTimeZone={timeZone}
         onDate={onDate ?? toIsoDate(new Date(), timeZone)}
         pinned={onDate !== undefined}
+        // Only on today. A future day showing unassigned turns is the
+        // projection working, not a rotation waiting to happen.
+        needsRotation={onDate === undefined && chores.some((c) => !c.isAssigned)}
       />
       <FieldGuide guide={dict.guides.chores} dict={dict} />
       <AddChoreForm groupId={groupId} dict={dict} />

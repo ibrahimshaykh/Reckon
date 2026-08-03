@@ -20,6 +20,7 @@ const dayParts = {
   weekday: "short",
   day: "numeric",
   month: "short",
+  year: "numeric",
 } as const;
 
 const timeParts = {
@@ -82,12 +83,19 @@ export function describeDue(
   // The end is exclusive — a turn finishing at midnight on the 4th is the
   // 3rd's work — so the day quoted is the instant just before it.
   const lastDay = lastCoveredDay(due);
+  // Always the full date, even when it is the day already on screen. "By the
+  // end of this day" is only unambiguous while you remember which day you are
+  // looking at, and the whole point of the picker is that you might not be on
+  // today.
+  //
   // Named in the group's own clock, the same one the day filter uses. Reading
   // this in UTC while the filter read local put a turn on the 4th and labelled
   // it the 3rd.
-  if (toIsoDate(lastDay, timeZone) === onDate) return dict.chores.dueThisDay;
-
-  return interpolate(dict.chores.dueBy, {
-    date: formatDay(lastDay.toISOString(), timeZone),
-  });
+  const date = formatDay(lastDay.toISOString(), timeZone);
+  return interpolate(
+    toIsoDate(lastDay, timeZone) === onDate
+      ? dict.chores.dueThisDay
+      : dict.chores.dueBy,
+    { date },
+  );
 }

@@ -25,7 +25,7 @@ const KARACHI = "Asia/Karachi";
 
 describe("formatting an instant", () => {
   it("reads as a person would say it", () => {
-    expect(formatDayTime("2026-08-09T17:35:00.000Z", UTC)).toBe("Sun 9 Aug, 5:35 pm");
+    expect(formatDayTime("2026-08-09T17:35:00.000Z", UTC)).toBe("Sun, 9 Aug 2026, 5:35 pm");
   });
 
   it("gives the reader their own clock, not the server's", () => {
@@ -36,7 +36,7 @@ describe("formatting an instant", () => {
   });
 
   it("carries the date across when the zone pushes it over midnight", () => {
-    expect(formatDay("2026-08-09T20:30:00.000Z", KARACHI)).toBe("Mon 10 Aug");
+    expect(formatDay("2026-08-09T20:30:00.000Z", KARACHI)).toBe("Mon, 10 Aug 2026");
   });
 
   it("says nothing rather than 'Invalid Date'", () => {
@@ -54,7 +54,16 @@ describe("describeDue", () => {
   it("gives the deadline when it is not the day being viewed", () => {
     // A turn ending at midnight on the 10th is the 9th's work.
     expect(describeDue("2026-08-10T00:00:00.000Z", "2026-08-06", dict, UTC)).toBe(
-      "due by the end of Sun 9 Aug",
+      "due by the end of Sun, 9 Aug 2026",
+    );
+  });
+
+  it("always names the date, even for the day already on screen", () => {
+    // "By the end of this day" only reads unambiguously while you remember
+    // which day you are looking at — and the picker exists so that you might
+    // not be on today.
+    expect(describeDue("2026-08-05T00:00:00.000Z", "2026-08-04", dict, UTC)).toContain(
+      "Tue, 4 Aug 2026",
     );
   });
 
@@ -62,17 +71,17 @@ describe("describeDue", () => {
     // The bug this fixed: a daily turn running to midnight on the 4th showed
     // on the 4th as well as the 3rd, so a daily chore appeared twice.
     expect(describeDue("2026-08-04T00:00:00.000Z", "2026-08-03", dict, UTC)).toBe(
-      "due by the end of this day",
+      "due by the end of Mon, 3 Aug 2026 — today",
     );
     expect(describeDue("2026-08-04T00:00:00.000Z", "2026-08-04", dict, UTC)).toBe(
-      "due by the end of Mon 3 Aug",
+      "due by the end of Mon, 3 Aug 2026",
     );
   });
 
   it("still gives a deadline that has already passed", () => {
     // Being late is worth knowing; silence would read as nothing being owed.
     expect(describeDue("2026-08-02T00:00:00.000Z", "2026-08-06", dict, UTC)).toBe(
-      "due by the end of Sat 1 Aug",
+      "due by the end of Sat, 1 Aug 2026",
     );
   });
 
@@ -85,7 +94,7 @@ describe("describeDue", () => {
     // Deadlines are whole days now, so unlike a timestamp they must not shift
     // with the reader's zone — that would move a chore to the wrong date.
     expect(describeDue("2026-08-10T00:00:00.000Z", "2026-08-06", dict, UTC)).toContain(
-      "Sun 9 Aug",
+      "Sun, 9 Aug 2026",
     );
   });
 
@@ -106,10 +115,10 @@ describe("naming the day in the group's own clock", () => {
     const endsAtUtcMidnight = "2026-08-04T00:00:00.000Z";
 
     expect(describeDue(endsAtUtcMidnight, "2026-08-04", dict, KARACHI)).toBe(
-      "due by the end of this day",
+      "due by the end of Tue, 4 Aug 2026 — today",
     );
     expect(describeDue(endsAtUtcMidnight, "2026-08-04", dict, UTC)).toBe(
-      "due by the end of Mon 3 Aug",
+      "due by the end of Mon, 3 Aug 2026",
     );
   });
 });

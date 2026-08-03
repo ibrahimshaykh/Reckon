@@ -169,7 +169,7 @@
     "choreWithDetail": "{name} ({band}، {freq})",
     "onDate": "دن دیکھیں",
     "backToToday": "آج پر واپس",
-    "dueThisDay": "اِسی دن کے اختتام تک",
+    "dueThisDay": "{date} کے اختتام تک — آج",
     "dueBy": "{date} کے اختتام تک",
     "notHandedOutYet": "ابھی کسی کو نہیں دیا گیا",
     "everyFrequency": "ہر تکرار",
