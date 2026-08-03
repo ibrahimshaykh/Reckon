@@ -20,7 +20,10 @@ type Frequency = "DAILY" | "WEEKLY" | "BIWEEKLY" | "MONTHLY";
 
 const createChoreSchema = z.object({
   groupId: cuid,
-  name: shortText("Chore name", 100),
+  // Runs of whitespace collapse, because HTML collapses them when rendering
+  // anyway: "deep  clean" and "deep   clean" are one chore on screen and two
+  // in the table, which is exactly the pair nobody can tell apart.
+  name: shortText("Chore name", 100).transform((n) => n.replace(/\s+/g, " ")),
   effortWeight: z.number().int().min(1, "Effort must be at least 1.").max(100),
   frequency: z.enum(["DAILY", "WEEKLY", "BIWEEKLY", "MONTHLY"]),
 });
