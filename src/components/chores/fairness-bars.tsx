@@ -12,7 +12,12 @@ export function FairnessBars({ bars, title }: { bars: Bar[]; title: string }) {
           <div className="h-2 flex-1 overflow-hidden rounded-full bg-muted">
             <div className="h-full rounded-full bg-primary" style={{ width: `${b.barPercent}%` }} />
           </div>
-          <span className="w-6 shrink-0 text-right text-muted-foreground">{b.completedEffort}</span>
+          {/* Wide enough for a weighted per-week figure. These used to be raw
+              effort and rarely reached double digits; weighted, a few daily
+              chores run into the hundreds and can carry a decimal. */}
+          <span className="tabular w-12 shrink-0 text-right text-muted-foreground">
+            {b.completedEffort}
+          </span>
         </div>
       ))}
     </div>

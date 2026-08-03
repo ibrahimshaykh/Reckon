@@ -397,9 +397,15 @@ export async function removeChore(
   });
 }
 
-// Cumulative effort of chores each member has actually COMPLETED (not just
-// been assigned) — the real "who's pulling their weight" signal, distinct
-// from the rotation algorithm's assignment-fairness bookkeeping.
+// Effort each member has actually COMPLETED — a narrower question than the
+// running total on each chore row, which also counts what people are holding
+// right now. Both are worth showing; they just have to be measured the same
+// way.
+//
+// Weighted by frequency and shown per week, like everything else. It counted
+// raw effort until now, so the same page carried two different answers to
+// "how much have you done": a daily 10 you finished counted as 10 here and as
+// 70 in the panel below it.
 export async function getChoreFairness(groupId: string) {
   const session = await requireSession();
   await assertMember(groupId, session.id);
@@ -415,12 +421,14 @@ export async function getChoreFairness(groupId: string) {
   const effortByUser: Record<string, number> = {};
   members.forEach((m) => (effortByUser[m.userId] = 0));
   completedAssignments.forEach((a) => {
-    effortByUser[a.userId] = (effortByUser[a.userId] ?? 0) + a.chore.effortWeight;
+    effortByUser[a.userId] =
+      (effortByUser[a.userId] ?? 0) +
+      weightedEffort(a.chore.effortWeight, a.chore.frequency as ChoreFrequency);
   });
 
   return members.map((m) => ({
     userId: m.userId,
     displayName: m.user.displayName,
-    completedEffort: effortByUser[m.userId] ?? 0,
+    completedEffort: asPerWeek(effortByUser[m.userId] ?? 0),
   }));
 }
