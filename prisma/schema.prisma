@@ -338,6 +338,11 @@ model Chore {
   assignments ChoreAssignment[]
 
   @@index([groupId])
+  // Also carries a partial unique index that Prisma can't express here:
+  // Chore_no_identical_active on (groupId, lower(btrim(name)), effortWeight,
+  // frequency) where archivedAt is null. It stops a group holding two chores
+  // nothing in the app could tell apart, while leaving a retired chore's name
+  // free to be used again. See 20260803140000_no_identical_chores.
 }
 
 model ChoreAssignment {

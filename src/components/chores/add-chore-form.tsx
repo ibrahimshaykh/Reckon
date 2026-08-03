@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createChore } from "@/lib/actions/chores";
+import { isActionError } from "@/lib/action-result";
 import type { Dictionary } from "@/lib/dictionary";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -23,12 +24,18 @@ export function AddChoreForm({ groupId, dict }: { groupId: string; dict: Diction
     setPending(true);
     setError(null);
     try {
-      await createChore({
+      const result = await createChore({
         groupId,
         name,
         effortWeight: Number(effortWeight),
         frequency,
       });
+      // A refusal comes back as a value rather than an exception, so the
+      // reason survives Next's redaction and the form can say it.
+      if (isActionError(result)) {
+        setError(result.error);
+        return;
+      }
       setName("");
       setEffortWeight("1");
       router.refresh();

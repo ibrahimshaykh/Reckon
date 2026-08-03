@@ -12,6 +12,8 @@ import { assignChoresWithTrace } from "@/lib/chore-rotation";
 import { weightedEffort, asPerWeek, type ChoreFrequency } from "@/lib/chore-weight";
 import { totalLoad } from "@/lib/chore-load";
 import { planRemoval } from "@/lib/chore-removal";
+import { findDuplicate } from "@/lib/chore-duplicates";
+import { Prisma } from "@/generated/prisma/client";
 import type { ChoreExplanation } from "@/lib/chore-explanation";
 
 type Frequency = "DAILY" | "WEEKLY" | "BIWEEKLY" | "MONTHLY";
@@ -22,6 +24,9 @@ const createChoreSchema = z.object({
   effortWeight: z.number().int().min(1, "Effort must be at least 1.").max(100),
   frequency: z.enum(["DAILY", "WEEKLY", "BIWEEKLY", "MONTHLY"]),
 });
+
+const DUPLICATE_CHORE_MESSAGE =
+  "That chore is already on the list, with the same effort and how often it happens. Change one of those, or use the one that's there.";
 
 function periodLengthDays(frequency: Frequency): number {
   switch (frequency) {
@@ -36,26 +41,61 @@ function periodLengthDays(frequency: Frequency): number {
   }
 }
 
+// Wrapped, so the reasons it can refuse actually reach the person typing.
+// Next redacts thrown Server Action errors in production, so a message like
+// "that chore is already on the list" arrived as Next's generic wall of text
+// — as did every validation message this already had.
 export async function createChore(input: {
   groupId: string;
   name: string;
   effortWeight: number;
   frequency: Frequency;
-}) {
-  const session = await requireSession();
-  const valid = validate(createChoreSchema, input);
-  await assertMember(valid.groupId, session.id);
+}): Promise<ActionResult<void>> {
+  return asActionResult(async () => {
+    const session = await requireSession();
+    const valid = validate(createChoreSchema, input);
+    await assertMember(valid.groupId, session.id);
 
-  await db.chore.create({
-    data: {
-      groupId: valid.groupId,
-      name: valid.name,
-      effortWeight: valid.effortWeight,
-      frequency: valid.frequency,
-    },
+    // A chore identical to one already on the list can't be told apart from it
+    // afterwards: a swap offer naming it is ambiguous, and the rotation deals
+    // out twice the work that was meant. Almost always a double-tap on Add —
+    // which is exactly how the live group got two "kill cat" chores a minute
+    // apart.
+    //
+    // Only fully identical chores are refused. A daily "kitchen" alongside a
+    // weekly one is a fair thing to want, and those two read differently
+    // wherever the app names them.
+    const existing = await db.chore.findMany({
+      where: { groupId: valid.groupId, archivedAt: null },
+      select: { name: true, effortWeight: true, frequency: true },
+    });
+    if (findDuplicate(existing, valid)) {
+      throw new ApiError(409, DUPLICATE_CHORE_MESSAGE);
+    }
+
+    try {
+      await db.chore.create({
+        data: {
+          groupId: valid.groupId,
+          name: valid.name,
+          effortWeight: valid.effortWeight,
+          frequency: valid.frequency,
+        },
+      });
+    } catch (error) {
+      // The check above loses its own race when Add is pressed twice quickly,
+      // which is the very case it exists for. The unique index doesn't.
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === "P2002"
+      ) {
+        throw new ApiError(409, DUPLICATE_CHORE_MESSAGE);
+      }
+      throw error;
+    }
+
+    revalidatePath(`/groups/${input.groupId}/chores`);
   });
-
-  revalidatePath(`/groups/${input.groupId}/chores`);
 }
 
 export async function rotateChores(groupId: string) {
