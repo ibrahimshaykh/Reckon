@@ -409,8 +409,13 @@ export async function completeChore(assignmentId: string) {
   // suggestion, not a rule, and crediting work for a turn nobody has started
   // would put the person ahead in a rotation that hands the next job to
   // whoever is behind.
-  const blocked = markDoneBlock(assignment, new Date());
-  if (blocked === "notStarted") {
+  // Unreachable while rotation stamps periodStart with the current moment,
+  // and kept anyway: it costs one comparison, and if turns are ever scheduled
+  // ahead the alternative is silently crediting work for a turn nobody has
+  // started, which moves the person up a rotation that favours whoever is
+  // behind. The UI has no matching branch, because a case that cannot happen
+  // should not be explained to anyone.
+  if (markDoneBlock(assignment, new Date()) === "notStarted") {
     throw new ApiError(400, "That turn hasn't started yet.");
   }
 

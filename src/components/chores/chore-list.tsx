@@ -7,7 +7,7 @@ import { isActionError } from "@/lib/action-result";
 import type { Dictionary } from "@/lib/dictionary";
 import { interpolate } from "@/lib/i18n";
 import { effortLabel } from "@/lib/effort-text";
-import { describeDue, formatDay } from "@/lib/chore-due-text";
+import { describeDue, formatDayTime } from "@/lib/chore-due-text";
 import {
   explainAssignment,
   loadGap,
@@ -29,7 +29,6 @@ type Chore = {
   explanation: ChoreExplanation | null;
   assignmentId: string | null;
   completedAt: string | null;
-  periodStart: string | null;
   /** When this turn has to be finished by — the deadline, not the day shown. */
   dueBy: string | null;
   isAssigned: boolean;
@@ -73,6 +72,9 @@ export function ChoreList({
   // Independent of the person filter, so the two combine: "what has Lola
   // still got left?" is one question, not two screens.
   const [status, setStatus] = useState<"all" | "todo" | "done">("all");
+  // Independent of the other two, so "Lola's daily chores still to do" is one
+  // question rather than three screens.
+  const [howOften, setHowOften] = useState<"all" | keyof typeof FREQ_KEY>("all");
 
   // Everyone who currently holds a chore, so the picker only offers names
   // that would actually show something.
@@ -96,7 +98,8 @@ export function ChoreList({
         : status === "done"
           ? Boolean(c.completedAt)
           : !c.completedAt,
-    );
+    )
+    .filter((c) => howOften === "all" || c.frequency === howOften);
 
   async function onRotate() {
     setPending(true);
@@ -147,6 +150,18 @@ export function ChoreList({
           <option value="all">{dict.chores.statusAll}</option>
           <option value="todo">{dict.chores.statusTodo}</option>
           <option value="done">{dict.chores.statusDone}</option>
+        </select>
+        <select
+          className="rounded-md border bg-background px-2 py-1.5 text-sm"
+          value={howOften}
+          onChange={(e) => setHowOften(e.target.value as typeof howOften)}
+          aria-label={dict.chores.everyFrequency}
+        >
+          <option value="all">{dict.chores.everyFrequency}</option>
+          <option value="DAILY">{dict.chores.freqDaily}</option>
+          <option value="WEEKLY">{dict.chores.freqWeekly}</option>
+          <option value="BIWEEKLY">{dict.chores.freqBiweekly}</option>
+          <option value="MONTHLY">{dict.chores.freqMonthly}</option>
         </select>
         {/* Navigates rather than setting state, so the chosen day is in the
             URL and a link to it still means that day for whoever opens it. */}
@@ -273,7 +288,14 @@ function ChoreRow({
               Thursday job. It is due by Sunday, and the difference is the
               whole reason the day filter needs explaining. */}
           {dueLabel && (
-            <span className="text-muted-foreground"> — {dueLabel}</span>
+            // The server is not in the reader's time zone, so its first pass
+            // prints a different clock time. Suppressed rather than pinned to
+            // UTC: a deadline is an instant, and the hour that matters is the
+            // one on the reader's own clock.
+            <span suppressHydrationWarning className="text-muted-foreground">
+              {" "}
+              — {dueLabel}
+            </span>
           )}
           {/* Says the chore arrived by agreement. Without it the reasoning
               below names whoever the rotation originally picked, while the
@@ -387,18 +409,15 @@ function ChoreRow({
       {chore.assignmentId && (
         <div className="mt-2">
           {chore.completedAt ? (
-            <p className="text-xs text-emerald-600 dark:text-emerald-400">
+            // Same reasoning as the deadline above: the locale is pinned,
+            // the zone is the reader's, and the mismatch with the server's
+            // first pass is expected rather than a bug to chase.
+            <p
+              suppressHydrationWarning
+              className="text-xs text-emerald-600 dark:text-emerald-400"
+            >
               {interpolate(dict.chores.doneAt, {
-                // Pinned to en-US regardless of UI language, deliberately —
-                // this app already hit a real hydration mismatch once from
-                // Intl formatting disagreeing between Node and the browser
-                // (see formatMoney's history); a locale-dependent date here
-                // would risk the same class of bug across even more locales.
-                datetime: new Date(chore.completedAt).toLocaleString("en-US", {
-                  weekday: "short",
-                  hour: "numeric",
-                  minute: "2-digit",
-                }),
+                datetime: formatDayTime(chore.completedAt),
               })}
             </p>
           ) : (
@@ -410,15 +429,6 @@ function ChoreRow({
                 <Button size="sm" variant="outline" disabled={pending} onClick={onComplete}>
                   {dict.chores.markDone}
                 </Button>
-              )}
-              {/* A turn that hasn't begun can't be finished. Saying when it
-                  opens beats a dead button with no explanation. */}
-              {isMine && chore.markDoneBlockedBy === "notStarted" && (
-                <span className="text-xs text-muted-foreground">
-                  {interpolate(dict.chores.markDoneFrom, {
-                    date: formatDay(chore.periodStart),
-                  })}
-                </span>
               )}
               {/* Only your own chore is yours to offer. */}
               {isMine && (

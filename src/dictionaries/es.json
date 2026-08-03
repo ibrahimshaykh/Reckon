@@ -169,10 +169,10 @@
     "choreWithDetail": "{name} ({band}, {freq})",
     "onDate": "Ver el día",
     "backToToday": "Volver a hoy",
-    "dueThisDay": "para el final de este día",
+    "dueThisDay": "para las {time} de este día",
     "dueBy": "para el {date}",
     "notHandedOutYet": "aún sin repartir",
-    "markDoneFrom": "Podrás marcarla como hecha a partir del {date}."
+    "everyFrequency": "Cualquier frecuencia"
   },
   "availability": {
     "title": "Disponibilidad del grupo",
