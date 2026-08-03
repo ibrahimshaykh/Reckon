@@ -85,7 +85,11 @@ export function ChoreList({
   ].map(([id, name]) => ({ id, name }));
 
   const visible = chores
-    .filter((c) => showing === "all" || c.currentAssigneeId === showing)
+    // A turn nobody holds is shown whoever you are filtering by. Hiding it
+    // means filtering on a field that has no value yet, which left every
+    // future day blank under the default "my chores" — the feature looking
+    // broken precisely where it is most useful.
+    .filter((c) => showing === "all" || !c.isAssigned || c.currentAssigneeId === showing)
     .filter((c) =>
       status === "all"
         ? true
