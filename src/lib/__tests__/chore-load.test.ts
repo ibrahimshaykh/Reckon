@@ -243,3 +243,42 @@ describe("listMissed", () => {
     }
   });
 });
+
+describe("a chore the group removed", () => {
+  const retiredTurn = {
+    key: "ibrahim",
+    // Cut short at the moment the chore was taken off the list, not at the
+    // end of its day.
+    periodEnd: new Date("2026-08-03T09:38:00Z"),
+    completedAt: null,
+    choreName: "monk cats",
+    effortWeight: 8,
+    frequency: "DAILY" as const,
+    retired: true,
+  };
+  const now = new Date("2026-08-03T18:43:00Z");
+
+  it("is not held against whoever was holding it", () => {
+    // Removing a chore closes whatever turn is running — the whole point being
+    // that nobody has to finish a job the group has just abandoned. Counting
+    // that as missed blamed them for exactly the thing they were excused.
+    expect(listMissed([retiredTurn], now, ["ibrahim"]).get("ibrahim")).toEqual([]);
+  });
+
+  it("still counts an ordinary turn the same person let lapse", () => {
+    // The exemption is for the chore being withdrawn, not for the person.
+    const ordinary = { ...retiredTurn, retired: false, choreName: "bins" };
+
+    expect(
+      listMissed([ordinary], now, ["ibrahim"]).get("ibrahim")?.map((m) => m.choreName),
+    ).toEqual(["bins"]);
+  });
+
+  it("keeps the count and the list agreeing about it", () => {
+    // The count is derived from the list, so an exemption applied in one place
+    // must show in the other — otherwise somebody reads "1 missed" and opens
+    // an empty list.
+    const listed = listMissed([retiredTurn], now, ["ibrahim"]).get("ibrahim");
+    expect(listed).toEqual([]);
+  });
+});

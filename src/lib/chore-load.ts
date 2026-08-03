@@ -105,6 +105,8 @@ export function listMissed(
     choreName: string;
     effortWeight: number;
     frequency: ChoreFrequency;
+    /** The chore was removed from the list, so its turn was cut short. */
+    retired?: boolean;
   })[],
   now: Date,
   keys: string[] = [],
@@ -115,7 +117,12 @@ export function listMissed(
 
   const oldest = new Date(now.getTime() - windowDays * 86_400_000);
   const recent = assignments
-    .filter((a) => a.periodEnd >= oldest && isMissed(a, now))
+    // A retired chore's turn was ended by the group deciding to stop doing it,
+    // not by anybody dropping it. Removing a chore closes whatever turn was
+    // running, which left the person holding it blamed for not finishing a job
+    // that no longer exists — and the row linked to a day where the chore is
+    // no longer listed, so there was nothing they could do about it either.
+    .filter((a) => !a.retired && a.periodEnd >= oldest && isMissed(a, now))
     // Most recent first: the one somebody is most likely to remember doing,
     // and the one still worth going back for.
     .sort((a, b) => b.periodEnd.getTime() - a.periodEnd.getTime());

@@ -524,7 +524,14 @@ export async function getChoreFairness(groupId: string) {
         userId: true,
         completedAt: true,
         periodEnd: true,
-        chore: { select: { name: true, effortWeight: true, frequency: true } },
+        chore: {
+          select: {
+            name: true,
+            effortWeight: true,
+            frequency: true,
+            archivedAt: true,
+          },
+        },
       },
     }),
   ]);
@@ -545,6 +552,7 @@ export async function getChoreFairness(groupId: string) {
       choreName: a.chore.name,
       effortWeight: a.chore.effortWeight,
       frequency: a.chore.frequency as ChoreFrequency,
+      retired: a.chore.archivedAt !== null,
     })),
     new Date(),
     members.map((m) => m.userId),
