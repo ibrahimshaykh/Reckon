@@ -161,7 +161,11 @@
     "roundGap": "{name} is {gap} a week behind, so the next chore goes to them.",
     "swapAccepted": "{name} took your {yours}. You've got their {theirs} now.",
     "swapDeclined": "{name} said no to swapping your {yours}, so it's still yours.",
-    "swapOutcomeDismiss": "Got it"
+    "swapOutcomeDismiss": "Got it",
+    "removeChore": "Remove {name}",
+    "removeChoreGone": "Delete {name}? Nobody has ever been given it, so there's nothing to keep — it just goes.",
+    "removeChoreKept": "Remove {name}? It stops being handed out and nobody has to finish the turn in progress. Work already done on it still counts towards everyone's totals.",
+    "removeChoreConfirm": "Remove it"
   },
   "availability": {
     "title": "Group availability",

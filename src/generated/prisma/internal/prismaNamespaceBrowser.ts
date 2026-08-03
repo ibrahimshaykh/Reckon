@@ -255,7 +255,8 @@ export const ChoreScalarFieldEnum = {
   name: 'name',
   effortWeight: 'effortWeight',
   frequency: 'frequency',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  archivedAt: 'archivedAt'
 } as const
 
 export type ChoreScalarFieldEnum = (typeof ChoreScalarFieldEnum)[keyof typeof ChoreScalarFieldEnum]

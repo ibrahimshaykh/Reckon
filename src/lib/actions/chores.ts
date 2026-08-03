@@ -7,9 +7,11 @@ import { assertMember } from "@/lib/actions/groups";
 import { ApiError } from "@/lib/api-error";
 import { requireSession } from "@/lib/dal";
 import { validate, cuid, shortText } from "@/lib/validation";
+import { asActionResult, type ActionResult } from "@/lib/action-result";
 import { assignChoresWithTrace } from "@/lib/chore-rotation";
 import { weightedEffort, asPerWeek, type ChoreFrequency } from "@/lib/chore-weight";
 import { totalLoad } from "@/lib/chore-load";
+import { planRemoval } from "@/lib/chore-removal";
 import type { ChoreExplanation } from "@/lib/chore-explanation";
 
 type Frequency = "DAILY" | "WEEKLY" | "BIWEEKLY" | "MONTHLY";
@@ -67,7 +69,11 @@ export async function rotateChores(groupId: string) {
   ]);
 
   const now = new Date();
+  // Archived chores stay in `chores` so the running totals below can still
+  // look up their weight — dropping them here would lose the credit for work
+  // already done on them, which is the whole reason they were kept.
   const needsAssignment = chores.filter((chore) => {
+    if (chore.archivedAt) return false;
     const latest = pastAssignments
       .filter((a) => a.choreId === chore.id)
       .sort((a, b) => b.periodEnd.getTime() - a.periodEnd.getTime())[0];
@@ -171,8 +177,11 @@ export async function listChores(groupId: string) {
 
   const [chores, members, allAssignments] = await Promise.all([
     db.chore.findMany({
-      where: { groupId },
+      where: { groupId, archivedAt: null },
       include: {
+        // So the row can say whether removing it would throw away a record of
+        // work already done, before anyone presses the button.
+        _count: { select: { assignments: true } },
         assignments: {
           orderBy: { periodStart: "desc" },
           take: 1,
@@ -188,7 +197,8 @@ export async function listChores(groupId: string) {
     }),
     // Every assignment ever, not just each chore's current one — the running
     // totals below are cumulative, and `take: 1` above deliberately keeps only
-    // the latest.
+    // the latest. Deliberately unfiltered by archivedAt: retiring a chore must
+    // not rewrite the record of who did it while it existed.
     db.choreAssignment.findMany({
       where: { chore: { groupId } },
       select: {
@@ -296,6 +306,7 @@ export async function listChores(groupId: string) {
       explanation: (current?.explanation as ChoreExplanation | undefined) ?? null,
       assignmentId: current?.id ?? null,
       completedAt: current?.completedAt?.toISOString() ?? null,
+      hasHistory: c._count.assignments > 0,
     };
   });
 }
@@ -329,6 +340,61 @@ export async function completeChore(assignmentId: string) {
   });
 
   revalidatePath(`/groups/${assignment.chore.groupId}/chores`);
+}
+
+/**
+ * Take a chore off the list.
+ *
+ * Two outcomes, because a chore's history is somebody's record of work done.
+ * ChoreAssignment cascades from Chore, so deleting a chore that had ever been
+ * done would take its assignments with it and quietly erase the credit for
+ * doing them — the person who cleaned the bathroom every week would come out
+ * looking like they had done nothing, and the rotation would start handing
+ * them more. A chore that was never assigned has no such history, so there is
+ * nothing to protect and it goes for good.
+ *
+ * Either way the chore stops being handed out. Any turn still running is
+ * closed off at the moment of removal: nobody has to finish a chore the group
+ * has just retired, and an unfinished turn that is over stops counting toward
+ * their load by the ordinary rule. Ending the period rather than deleting the
+ * row keeps completed work counted and leaves any swap that referenced it
+ * intact.
+ */
+export async function removeChore(
+  choreId: string,
+): Promise<ActionResult<{ archived: boolean }>> {
+  return asActionResult(async () => {
+    const session = await requireSession();
+    const validId = validate(cuid, choreId);
+
+    const chore = await db.chore.findUniqueOrThrow({
+      where: { id: validId },
+      include: { _count: { select: { assignments: true } } },
+    });
+    await assertMember(chore.groupId, session.id);
+
+    if (chore.archivedAt) return { archived: true };
+
+    const now = new Date();
+    if (planRemoval(chore._count.assignments) === "delete") {
+      await db.chore.delete({ where: { id: chore.id } });
+      revalidatePath(`/groups/${chore.groupId}/chores`);
+      return { archived: false };
+    }
+
+    await db.$transaction([
+      db.chore.update({ where: { id: chore.id }, data: { archivedAt: now } }),
+      // Closes any turn that is still running. Completed ones are left alone,
+      // so finished work goes on counting exactly as it did before.
+      db.choreAssignment.updateMany({
+        where: { choreId: chore.id, periodEnd: { gt: now }, completedAt: null },
+        data: { periodEnd: now },
+      }),
+    ]);
+
+    revalidatePath(`/groups/${chore.groupId}/chores`);
+    return { archived: true };
+  });
 }
 
 // Cumulative effort of chores each member has actually COMPLETED (not just

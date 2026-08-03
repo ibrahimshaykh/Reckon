@@ -161,7 +161,11 @@
     "roundGap": "{name} va {gap} por detrás a la semana, así que la siguiente tarea es para esa persona.",
     "swapAccepted": "{name} se quedó tu {yours}. Ahora tienes su {theirs}.",
     "swapDeclined": "{name} no quiso cambiar tu {yours}, así que sigue siendo tuya.",
-    "swapOutcomeDismiss": "Entendido"
+    "swapOutcomeDismiss": "Entendido",
+    "removeChore": "Quitar {name}",
+    "removeChoreGone": "¿Borrar {name}? Nunca se le ha asignado a nadie, así que no hay nada que conservar: desaparece sin más.",
+    "removeChoreKept": "¿Quitar {name}? Dejará de repartirse y nadie tendrá que terminar el turno en curso. El trabajo ya hecho sigue contando en los totales de cada persona.",
+    "removeChoreConfirm": "Quitar"
   },
   "availability": {
     "title": "Disponibilidad del grupo",

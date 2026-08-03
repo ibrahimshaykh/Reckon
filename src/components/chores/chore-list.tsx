@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { rotateChores, completeChore } from "@/lib/actions/chores";
+import { rotateChores, completeChore, removeChore } from "@/lib/actions/chores";
+import { isActionError } from "@/lib/action-result";
 import type { Dictionary } from "@/lib/dictionary";
 import { interpolate } from "@/lib/i18n";
 import { effortLabel } from "@/lib/effort-text";
@@ -27,6 +28,8 @@ type Chore = {
   explanation: ChoreExplanation | null;
   assignmentId: string | null;
   completedAt: string | null;
+  /** Whether removing it would erase a record of work already done. */
+  hasHistory: boolean;
 };
 
 const FREQ_KEY = {
@@ -179,12 +182,27 @@ function ChoreRow({
   const router = useRouter();
   const [showMath, setShowMath] = useState(false);
   const [pending, setPending] = useState(false);
+  const [confirmRemove, setConfirmRemove] = useState(false);
+  const [removeError, setRemoveError] = useState<string | null>(null);
 
   async function onComplete() {
     if (!chore.assignmentId) return;
     setPending(true);
     await completeChore(chore.assignmentId);
     setPending(false);
+    router.refresh();
+  }
+
+  async function onRemove() {
+    setPending(true);
+    setRemoveError(null);
+    const result = await removeChore(chore.id);
+    setPending(false);
+    if (isActionError(result)) {
+      setRemoveError(result.error);
+      return;
+    }
+    setConfirmRemove(false);
     router.refresh();
   }
 
@@ -218,8 +236,49 @@ function ChoreRow({
               {showMath ? dict.common.hideMath : dict.common.showMath}
             </Button>
           )}
+          {/* Removal asks first and says which of the two things it will do.
+              A chore nobody has ever been given is simply deleted; one with
+              history is retired instead, and the difference matters enough to
+              the person pressing it that it's worth spelling out. */}
+          <Button
+            variant="ghost"
+            size="sm"
+            aria-label={interpolate(dict.chores.removeChore, { name: chore.name })}
+            title={interpolate(dict.chores.removeChore, { name: chore.name })}
+            disabled={pending}
+            onClick={() => setConfirmRemove(true)}
+          >
+            ×
+          </Button>
         </div>
       </div>
+
+      {confirmRemove && (
+        <div className="mt-2 flex flex-col gap-2 rounded-md border border-rule bg-card px-3 py-2 text-xs">
+          <p>
+            {interpolate(
+              chore.hasHistory
+                ? dict.chores.removeChoreKept
+                : dict.chores.removeChoreGone,
+              { name: chore.name },
+            )}
+          </p>
+          <div className="flex gap-2">
+            <Button size="sm" variant="destructive" disabled={pending} onClick={onRemove}>
+              {dict.chores.removeChoreConfirm}
+            </Button>
+            <Button
+              size="sm"
+              variant="outline"
+              disabled={pending}
+              onClick={() => setConfirmRemove(false)}
+            >
+              {dict.common.cancel}
+            </Button>
+          </div>
+          {removeError && <p className="text-destructive">{removeError}</p>}
+        </div>
+      )}
       {showMath && chore.explanation && (
         <div className="mt-2 flex flex-col gap-2">
           <ul className="list-disc pl-5 text-xs text-muted-foreground">

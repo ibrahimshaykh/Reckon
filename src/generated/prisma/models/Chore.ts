@@ -41,6 +41,7 @@ export type ChoreMinAggregateOutputType = {
   effortWeight: number | null
   frequency: $Enums.ChoreFrequency | null
   createdAt: Date | null
+  archivedAt: Date | null
 }
 
 export type ChoreMaxAggregateOutputType = {
@@ -50,6 +51,7 @@ export type ChoreMaxAggregateOutputType = {
   effortWeight: number | null
   frequency: $Enums.ChoreFrequency | null
   createdAt: Date | null
+  archivedAt: Date | null
 }
 
 export type ChoreCountAggregateOutputType = {
@@ -59,6 +61,7 @@ export type ChoreCountAggregateOutputType = {
   effortWeight: number
   frequency: number
   createdAt: number
+  archivedAt: number
   _all: number
 }
 
@@ -78,6 +81,7 @@ export type ChoreMinAggregateInputType = {
   effortWeight?: true
   frequency?: true
   createdAt?: true
+  archivedAt?: true
 }
 
 export type ChoreMaxAggregateInputType = {
@@ -87,6 +91,7 @@ export type ChoreMaxAggregateInputType = {
   effortWeight?: true
   frequency?: true
   createdAt?: true
+  archivedAt?: true
 }
 
 export type ChoreCountAggregateInputType = {
@@ -96,6 +101,7 @@ export type ChoreCountAggregateInputType = {
   effortWeight?: true
   frequency?: true
   createdAt?: true
+  archivedAt?: true
   _all?: true
 }
 
@@ -192,6 +198,7 @@ export type ChoreGroupByOutputType = {
   effortWeight: number
   frequency: $Enums.ChoreFrequency
   createdAt: Date
+  archivedAt: Date | null
   _count: ChoreCountAggregateOutputType | null
   _avg: ChoreAvgAggregateOutputType | null
   _sum: ChoreSumAggregateOutputType | null
@@ -224,6 +231,7 @@ export type ChoreWhereInput = {
   effortWeight?: Prisma.IntFilter<"Chore"> | number
   frequency?: Prisma.EnumChoreFrequencyFilter<"Chore"> | $Enums.ChoreFrequency
   createdAt?: Prisma.DateTimeFilter<"Chore"> | Date | string
+  archivedAt?: Prisma.DateTimeNullableFilter<"Chore"> | Date | string | null
   group?: Prisma.XOR<Prisma.GroupScalarRelationFilter, Prisma.GroupWhereInput>
   assignments?: Prisma.ChoreAssignmentListRelationFilter
 }
@@ -235,6 +243,7 @@ export type ChoreOrderByWithRelationInput = {
   effortWeight?: Prisma.SortOrder
   frequency?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  archivedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   group?: Prisma.GroupOrderByWithRelationInput
   assignments?: Prisma.ChoreAssignmentOrderByRelationAggregateInput
 }
@@ -249,6 +258,7 @@ export type ChoreWhereUniqueInput = Prisma.AtLeast<{
   effortWeight?: Prisma.IntFilter<"Chore"> | number
   frequency?: Prisma.EnumChoreFrequencyFilter<"Chore"> | $Enums.ChoreFrequency
   createdAt?: Prisma.DateTimeFilter<"Chore"> | Date | string
+  archivedAt?: Prisma.DateTimeNullableFilter<"Chore"> | Date | string | null
   group?: Prisma.XOR<Prisma.GroupScalarRelationFilter, Prisma.GroupWhereInput>
   assignments?: Prisma.ChoreAssignmentListRelationFilter
 }, "id">
@@ -260,6 +270,7 @@ export type ChoreOrderByWithAggregationInput = {
   effortWeight?: Prisma.SortOrder
   frequency?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  archivedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.ChoreCountOrderByAggregateInput
   _avg?: Prisma.ChoreAvgOrderByAggregateInput
   _max?: Prisma.ChoreMaxOrderByAggregateInput
@@ -277,6 +288,7 @@ export type ChoreScalarWhereWithAggregatesInput = {
   effortWeight?: Prisma.IntWithAggregatesFilter<"Chore"> | number
   frequency?: Prisma.EnumChoreFrequencyWithAggregatesFilter<"Chore"> | $Enums.ChoreFrequency
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Chore"> | Date | string
+  archivedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Chore"> | Date | string | null
 }
 
 export type ChoreCreateInput = {
@@ -285,6 +297,7 @@ export type ChoreCreateInput = {
   effortWeight?: number
   frequency?: $Enums.ChoreFrequency
   createdAt?: Date | string
+  archivedAt?: Date | string | null
   group: Prisma.GroupCreateNestedOneWithoutChoresInput
   assignments?: Prisma.ChoreAssignmentCreateNestedManyWithoutChoreInput
 }
@@ -296,6 +309,7 @@ export type ChoreUncheckedCreateInput = {
   effortWeight?: number
   frequency?: $Enums.ChoreFrequency
   createdAt?: Date | string
+  archivedAt?: Date | string | null
   assignments?: Prisma.ChoreAssignmentUncheckedCreateNestedManyWithoutChoreInput
 }
 
@@ -305,6 +319,7 @@ export type ChoreUpdateInput = {
   effortWeight?: Prisma.IntFieldUpdateOperationsInput | number
   frequency?: Prisma.EnumChoreFrequencyFieldUpdateOperationsInput | $Enums.ChoreFrequency
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   group?: Prisma.GroupUpdateOneRequiredWithoutChoresNestedInput
   assignments?: Prisma.ChoreAssignmentUpdateManyWithoutChoreNestedInput
 }
@@ -316,6 +331,7 @@ export type ChoreUncheckedUpdateInput = {
   effortWeight?: Prisma.IntFieldUpdateOperationsInput | number
   frequency?: Prisma.EnumChoreFrequencyFieldUpdateOperationsInput | $Enums.ChoreFrequency
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   assignments?: Prisma.ChoreAssignmentUncheckedUpdateManyWithoutChoreNestedInput
 }
 
@@ -326,6 +342,7 @@ export type ChoreCreateManyInput = {
   effortWeight?: number
   frequency?: $Enums.ChoreFrequency
   createdAt?: Date | string
+  archivedAt?: Date | string | null
 }
 
 export type ChoreUpdateManyMutationInput = {
@@ -334,6 +351,7 @@ export type ChoreUpdateManyMutationInput = {
   effortWeight?: Prisma.IntFieldUpdateOperationsInput | number
   frequency?: Prisma.EnumChoreFrequencyFieldUpdateOperationsInput | $Enums.ChoreFrequency
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type ChoreUncheckedUpdateManyInput = {
@@ -343,6 +361,7 @@ export type ChoreUncheckedUpdateManyInput = {
   effortWeight?: Prisma.IntFieldUpdateOperationsInput | number
   frequency?: Prisma.EnumChoreFrequencyFieldUpdateOperationsInput | $Enums.ChoreFrequency
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type ChoreListRelationFilter = {
@@ -362,6 +381,7 @@ export type ChoreCountOrderByAggregateInput = {
   effortWeight?: Prisma.SortOrder
   frequency?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  archivedAt?: Prisma.SortOrder
 }
 
 export type ChoreAvgOrderByAggregateInput = {
@@ -375,6 +395,7 @@ export type ChoreMaxOrderByAggregateInput = {
   effortWeight?: Prisma.SortOrder
   frequency?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  archivedAt?: Prisma.SortOrder
 }
 
 export type ChoreMinOrderByAggregateInput = {
@@ -384,6 +405,7 @@ export type ChoreMinOrderByAggregateInput = {
   effortWeight?: Prisma.SortOrder
   frequency?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  archivedAt?: Prisma.SortOrder
 }
 
 export type ChoreSumOrderByAggregateInput = {
@@ -461,6 +483,7 @@ export type ChoreCreateWithoutGroupInput = {
   effortWeight?: number
   frequency?: $Enums.ChoreFrequency
   createdAt?: Date | string
+  archivedAt?: Date | string | null
   assignments?: Prisma.ChoreAssignmentCreateNestedManyWithoutChoreInput
 }
 
@@ -470,6 +493,7 @@ export type ChoreUncheckedCreateWithoutGroupInput = {
   effortWeight?: number
   frequency?: $Enums.ChoreFrequency
   createdAt?: Date | string
+  archivedAt?: Date | string | null
   assignments?: Prisma.ChoreAssignmentUncheckedCreateNestedManyWithoutChoreInput
 }
 
@@ -509,6 +533,7 @@ export type ChoreScalarWhereInput = {
   effortWeight?: Prisma.IntFilter<"Chore"> | number
   frequency?: Prisma.EnumChoreFrequencyFilter<"Chore"> | $Enums.ChoreFrequency
   createdAt?: Prisma.DateTimeFilter<"Chore"> | Date | string
+  archivedAt?: Prisma.DateTimeNullableFilter<"Chore"> | Date | string | null
 }
 
 export type ChoreCreateWithoutAssignmentsInput = {
@@ -517,6 +542,7 @@ export type ChoreCreateWithoutAssignmentsInput = {
   effortWeight?: number
   frequency?: $Enums.ChoreFrequency
   createdAt?: Date | string
+  archivedAt?: Date | string | null
   group: Prisma.GroupCreateNestedOneWithoutChoresInput
 }
 
@@ -527,6 +553,7 @@ export type ChoreUncheckedCreateWithoutAssignmentsInput = {
   effortWeight?: number
   frequency?: $Enums.ChoreFrequency
   createdAt?: Date | string
+  archivedAt?: Date | string | null
 }
 
 export type ChoreCreateOrConnectWithoutAssignmentsInput = {
@@ -551,6 +578,7 @@ export type ChoreUpdateWithoutAssignmentsInput = {
   effortWeight?: Prisma.IntFieldUpdateOperationsInput | number
   frequency?: Prisma.EnumChoreFrequencyFieldUpdateOperationsInput | $Enums.ChoreFrequency
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   group?: Prisma.GroupUpdateOneRequiredWithoutChoresNestedInput
 }
 
@@ -561,6 +589,7 @@ export type ChoreUncheckedUpdateWithoutAssignmentsInput = {
   effortWeight?: Prisma.IntFieldUpdateOperationsInput | number
   frequency?: Prisma.EnumChoreFrequencyFieldUpdateOperationsInput | $Enums.ChoreFrequency
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type ChoreCreateManyGroupInput = {
@@ -569,6 +598,7 @@ export type ChoreCreateManyGroupInput = {
   effortWeight?: number
   frequency?: $Enums.ChoreFrequency
   createdAt?: Date | string
+  archivedAt?: Date | string | null
 }
 
 export type ChoreUpdateWithoutGroupInput = {
@@ -577,6 +607,7 @@ export type ChoreUpdateWithoutGroupInput = {
   effortWeight?: Prisma.IntFieldUpdateOperationsInput | number
   frequency?: Prisma.EnumChoreFrequencyFieldUpdateOperationsInput | $Enums.ChoreFrequency
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   assignments?: Prisma.ChoreAssignmentUpdateManyWithoutChoreNestedInput
 }
 
@@ -586,6 +617,7 @@ export type ChoreUncheckedUpdateWithoutGroupInput = {
   effortWeight?: Prisma.IntFieldUpdateOperationsInput | number
   frequency?: Prisma.EnumChoreFrequencyFieldUpdateOperationsInput | $Enums.ChoreFrequency
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   assignments?: Prisma.ChoreAssignmentUncheckedUpdateManyWithoutChoreNestedInput
 }
 
@@ -595,6 +627,7 @@ export type ChoreUncheckedUpdateManyWithoutGroupInput = {
   effortWeight?: Prisma.IntFieldUpdateOperationsInput | number
   frequency?: Prisma.EnumChoreFrequencyFieldUpdateOperationsInput | $Enums.ChoreFrequency
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 
@@ -635,6 +668,7 @@ export type ChoreSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   effortWeight?: boolean
   frequency?: boolean
   createdAt?: boolean
+  archivedAt?: boolean
   group?: boolean | Prisma.GroupDefaultArgs<ExtArgs>
   assignments?: boolean | Prisma.Chore$assignmentsArgs<ExtArgs>
   _count?: boolean | Prisma.ChoreCountOutputTypeDefaultArgs<ExtArgs>
@@ -647,6 +681,7 @@ export type ChoreSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   effortWeight?: boolean
   frequency?: boolean
   createdAt?: boolean
+  archivedAt?: boolean
   group?: boolean | Prisma.GroupDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["chore"]>
 
@@ -657,6 +692,7 @@ export type ChoreSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   effortWeight?: boolean
   frequency?: boolean
   createdAt?: boolean
+  archivedAt?: boolean
   group?: boolean | Prisma.GroupDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["chore"]>
 
@@ -667,9 +703,10 @@ export type ChoreSelectScalar = {
   effortWeight?: boolean
   frequency?: boolean
   createdAt?: boolean
+  archivedAt?: boolean
 }
 
-export type ChoreOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "groupId" | "name" | "effortWeight" | "frequency" | "createdAt", ExtArgs["result"]["chore"]>
+export type ChoreOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "groupId" | "name" | "effortWeight" | "frequency" | "createdAt" | "archivedAt", ExtArgs["result"]["chore"]>
 export type ChoreInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   group?: boolean | Prisma.GroupDefaultArgs<ExtArgs>
   assignments?: boolean | Prisma.Chore$assignmentsArgs<ExtArgs>
@@ -695,6 +732,7 @@ export type $ChorePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     effortWeight: number
     frequency: $Enums.ChoreFrequency
     createdAt: Date
+    archivedAt: Date | null
   }, ExtArgs["result"]["chore"]>
   composites: {}
 }
@@ -1126,6 +1164,7 @@ export interface ChoreFieldRefs {
   readonly effortWeight: Prisma.FieldRef<"Chore", 'Int'>
   readonly frequency: Prisma.FieldRef<"Chore", 'ChoreFrequency'>
   readonly createdAt: Prisma.FieldRef<"Chore", 'DateTime'>
+  readonly archivedAt: Prisma.FieldRef<"Chore", 'DateTime'>
 }
     
 

@@ -330,6 +330,10 @@ model Chore {
   effortWeight Int            @default(1)
   frequency    ChoreFrequency @default(WEEKLY)
   createdAt    DateTime       @default(now())
+  // Retired rather than removed, when the chore has already been done at least
+  // once. Deleting the row would cascade its assignments away and take the
+  // completed-work credit with them, quietly making whoever did it look idle.
+  archivedAt   DateTime?
 
   assignments ChoreAssignment[]
 
