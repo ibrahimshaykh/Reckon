@@ -15,6 +15,9 @@ import {
 } from "@/lib/chore-explanation";
 import { Button } from "@/components/ui/button";
 import { SwapButton, type Swappable } from "@/components/chores/swap-controls";
+import { choreState, STATE_TONE } from "@/lib/chore-state";
+import { SketchPanel } from "@/components/sketch/sketch-ui";
+import { cn } from "@/lib/utils";
 
 type Chore = {
   id: string;
@@ -284,48 +287,94 @@ function ChoreRow({
   // Against today, not the day on screen: looking back at yesterday, a
   // deadline that fell yesterday is not "today".
   const dueLabel = describeDue(chore.dueBy, todayIso(timeZone), dict, timeZone);
+  // One fact drives every colour on this row. Deriving it per element would
+  // let the stripe and the deadline chip drift apart and disagree about the
+  // same chore.
+  const state = choreState(chore, todayIso(timeZone), timeZone);
 
   return (
-    <li className="rounded-lg border p-3 text-sm">
+    <li
+      data-state={state}
+      style={{ borderInlineStartColor: STATE_TONE[state] }}
+      className="state-spine rounded-lg border p-3 text-sm"
+    >
       {/* Wraps, and the title is allowed to shrink. The controls are shrink-0
           so they stay legible, which on a narrow phone meant a long chore name
           shoved them off the right-hand edge and took the whole page into
           horizontal scroll with it. */}
       <div className="flex flex-wrap items-start justify-between gap-2">
-        <p className="min-w-0 flex-1">
-          {/* The number alone says nothing — "effort 10" only means something
-              if you already know what it's heavy relative to. */}
-          <strong>{chore.name}</strong> ({effortLabel(chore.effortWeight, dict)},{" "}
-          {frequencyLabel.toLowerCase()}) —{" "}
+        <div className="flex min-w-0 flex-1 flex-col gap-0.5">
+          {/* The name, alone and largest. It used to open a sentence that also
+              carried the effort, the frequency, the assignee and the deadline,
+              so nothing in the row was findable at a glance. */}
+          <p className="min-w-0">
+            <strong
+              className={cn(
+                "text-base",
+                // The only highlighter on the page, so it keeps meaning "this
+                // is the one for today".
+                state === "today" && "marker-swipe",
+                state === "done" && "text-muted-foreground line-through",
+              )}
+            >
+              {chore.name}
+            </strong>
+          </p>
+          {/* Everything that describes the job rather than demanding action,
+              demoted to one quiet line. The effort number alone says nothing —
+              "effort 10" only means something if you already know what it is
+              heavy relative to — so the band word travels with it. */}
+          <p className="flex flex-wrap items-center gap-x-1.5 text-xs text-muted-foreground">
+            <span>{effortLabel(chore.effortWeight, dict)}</span>
+            <span aria-hidden>·</span>
+            <span>{frequencyLabel.toLowerCase()}</span>
+            <span aria-hidden>·</span>
+            <span className={chore.isAssigned ? undefined : "italic"}>
           {chore.currentAssignee
             ? interpolate(dict.chores.assignedTo, { name: chore.currentAssignee })
             : chore.isAssigned
               ? dict.chores.unassigned
               : dict.chores.notHandedOutYet}
-          {/* Without this a weekly chore showing on Thursday reads as a
-              Thursday job. It is due by Sunday, and the difference is the
-              whole reason the day filter needs explaining. */}
+            </span>
+            {/* Says the chore arrived by agreement. Without it the reasoning
+                below names whoever the rotation originally picked, while the
+                chore sits with someone else — which reads as a bug. */}
+            {chore.swappedWith && (
+              <>
+                <span aria-hidden>·</span>
+                <span>
+                  {interpolate(dict.chores.swappedWith, { name: chore.swappedWith })}
+                </span>
+              </>
+            )}
+          </p>
+        </div>
+        <div className="flex shrink-0 items-center gap-1">
+          {/* The deadline carries the urgency, so it is set apart and tinted
+              rather than trailing the sentence in grey. Without it a weekly
+              chore showing on Thursday reads as a Thursday job. */}
           {dueLabel && (
             // The server is not in the reader's time zone, so its first pass
             // prints a different clock time. Suppressed rather than pinned to
             // UTC: a deadline is an instant, and the hour that matters is the
             // one on the reader's own clock.
-            <span suppressHydrationWarning className="text-muted-foreground">
-              {" "}
-              — {dueLabel}
+            <span
+              suppressHydrationWarning
+              style={
+                state === "later" || state === "unassigned"
+                  ? undefined
+                  : { color: STATE_TONE[state] }
+              }
+              className={cn(
+                "px-1 text-xs",
+                state === "later" || state === "unassigned"
+                  ? "text-muted-foreground"
+                  : "font-medium",
+              )}
+            >
+              {dueLabel}
             </span>
           )}
-          {/* Says the chore arrived by agreement. Without it the reasoning
-              below names whoever the rotation originally picked, while the
-              chore sits with someone else — which reads as a bug. */}
-          {chore.swappedWith && (
-            <span className="text-muted-foreground">
-              {" "}
-              ({interpolate(dict.chores.swappedWith, { name: chore.swappedWith })})
-            </span>
-          )}
-        </p>
-        <div className="flex shrink-0 items-center gap-1">
           {chore.explanation && (
             <Button variant="ghost" size="sm" onClick={() => setShowMath((v) => !v)}>
               {showMath ? dict.common.hideMath : dict.common.showMath}
@@ -349,7 +398,10 @@ function ChoreRow({
       </div>
 
       {confirmRemove && (
-        <div className="mt-2 flex flex-col gap-2 rounded-md border border-rule bg-card px-3 py-2 text-xs">
+        <SketchPanel
+          tone="var(--negative)"
+          className="mt-2 flex flex-col gap-2 p-3 text-xs"
+        >
           <p>
             {interpolate(
               chore.hasHistory
@@ -372,7 +424,7 @@ function ChoreRow({
             </Button>
           </div>
           {removeError && <p className="text-destructive">{removeError}</p>}
-        </div>
+        </SketchPanel>
       )}
       {showMath && chore.explanation && (
         <div className="mt-2 flex flex-col gap-2">

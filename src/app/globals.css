@@ -654,3 +654,53 @@
     display: none !important;
   }
 }
+
+/* A highlighter swipe, for the one row that needs doing today.
+ *
+ * The page is pretending to be paper, and marking the urgent line with a
+ * marker pen is what a person with paper actually does. Deliberately uneven:
+ * the sweep overshoots the text at one end and stops short at the other,
+ * because a stripe with tidy edges reads as a CSS background again.
+ *
+ * Only ever used for one state. An effect applied to several things stops
+ * meaning any of them.
+ */
+.marker-swipe {
+  background-image: linear-gradient(
+    100deg,
+    transparent 0.4%,
+    color-mix(in oklab, var(--feature-chores) 30%, transparent) 1.8%,
+    color-mix(in oklab, var(--feature-chores) 34%, transparent) 92%,
+    transparent 98.5%
+  );
+  background-repeat: no-repeat;
+  background-size: 100% 62%;
+  background-position: 0 78%;
+  padding-inline: 0.18em;
+}
+
+/* Ink over a dark page needs to glow rather than tint, or it reads as a smudge. */
+.dark .marker-swipe {
+  background-image: linear-gradient(
+    100deg,
+    transparent 0.4%,
+    color-mix(in oklab, var(--feature-chores) 26%, transparent) 1.8%,
+    color-mix(in oklab, var(--feature-chores) 30%, transparent) 92%,
+    transparent 98.5%
+  );
+}
+
+/* The stripe down the start edge of a chore. Logical, so Urdu flips it without
+ * a second rule. Thickness carries urgency as well as colour, so the ladder
+ * survives for anyone who cannot separate red from amber. */
+.state-spine {
+  border-inline-start-width: 3px;
+  border-inline-start-style: solid;
+}
+.state-spine[data-state="overdue"] { border-inline-start-width: 5px; }
+.state-spine[data-state="today"] { border-inline-start-width: 5px; }
+.state-spine[data-state="unassigned"] { border-inline-start-style: dashed; }
+
+@media (prefers-reduced-motion: reduce) {
+  .marker-swipe { transition: none; }
+}
