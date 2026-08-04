@@ -172,11 +172,14 @@ export function WeekGrid({
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="flex items-center justify-between gap-2">
+      {/* Wraps, because two buttons either side of a date range and a date
+          picker do not fit across a 360px phone, and with nothing able to give
+          they took the whole page into horizontal scroll. */}
+      <div className="flex flex-wrap items-center justify-between gap-2">
         <Button size="sm" variant="outline" onClick={() => goToStart(new Date(days[0].getTime() - 7 * 86_400_000))}>
           {dict.availability.prevWeek}
         </Button>
-        <div className="flex items-center gap-2">
+        <div className="flex min-w-0 flex-wrap items-center gap-2">
           <p className="text-sm text-muted-foreground">
             {/* Date range display is pinned to en-US regardless of UI
                 language, deliberately — see the note on formatMinuteOfDay's
