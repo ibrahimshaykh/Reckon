@@ -8,6 +8,7 @@ import { formatMoney } from "@/lib/money";
 import type { Dictionary } from "@/lib/dictionary";
 import { interpolate } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 type IOU = {
   id: string;
@@ -35,9 +36,19 @@ export function IOUList({
   }
 
   return (
-    <ul className="flex flex-col gap-1">
-      {ious.map((i) => (
-        <IOURow key={i.id} iou={i} currentUserId={currentUserId} currency={currency} dict={dict} />
+    // Slips, so they need room to sit apart from each other. Packed at gap-1
+    // they read as one table of rows, which is the wrong idea: each of these
+    // is a separate promise between two people.
+    <ul className="flex flex-col gap-2.5">
+      {ious.map((i, index) => (
+        <IOURow
+          key={i.id}
+          iou={i}
+          index={index}
+          currentUserId={currentUserId}
+          currency={currency}
+          dict={dict}
+        />
       ))}
     </ul>
   );
@@ -45,11 +56,13 @@ export function IOUList({
 
 function IOURow({
   iou: i,
+  index,
   currentUserId,
   currency,
   dict,
 }: {
   iou: IOU;
+  index: number;
   currentUserId: string;
   currency: string;
   dict: Dictionary;
@@ -72,22 +85,33 @@ function IOURow({
   }
 
   return (
+    // An IOU is a scrap of paper somebody wrote and handed over, so it is
+    // drawn as one. Alternating the two box shapes keeps a stack of them from
+    // looking die-cut; open ones are inked in the section's own green, and a
+    // forgiven one loses that ink because it is no longer a live promise.
     <li
-      className={`flex items-center justify-between gap-2 rounded-lg border p-3 text-sm ${
-        i.forgivenAt ? "opacity-50" : ""
-      }`}
+      style={i.forgivenAt ? undefined : { borderColor: "var(--feature-ious)" }}
+      className={cn(
+        index % 2 === 0 ? "sketch-box" : "sketch-box-alt",
+        "flex flex-wrap items-center justify-between gap-x-3 gap-y-2 bg-card p-3 text-sm",
+      )}
     >
-      <p className={i.forgivenAt ? "line-through" : ""}>
-        {interpolate(dict.ious.owesLine, {
-          fromName: i.fromName,
-          toName: i.toName,
-          amount: formatMoney(Math.round(i.amount * 100), currency),
-        })}
-        {i.note && ` — ${i.note}`}
-      </p>
+      <div className="flex min-w-0 flex-col gap-0.5">
+        <p className={cn("min-w-0", i.forgivenAt && "text-muted-foreground line-through")}>
+          {interpolate(dict.ious.owesLine, {
+            fromName: i.fromName,
+            toName: i.toName,
+            amount: formatMoney(Math.round(i.amount * 100), currency),
+          })}
+        </p>
+        {/* Given its own line rather than run into the sentence after a dash.
+            What the debt was for is the part people actually argue about, and
+            trailing it off the end of the amount buried it. */}
+        {i.note && <p className="text-xs text-muted-foreground">{i.note}</p>}
+      </div>
       {error && <span className="shrink-0 text-xs text-destructive">{error}</span>}
       {i.forgivenAt ? (
-        <span className="shrink-0 text-xs text-muted-foreground">{dict.ious.forgiven}</span>
+        <span className="stamp shrink-0 text-positive">{dict.ious.forgiven}</span>
       ) : (
         canForgive && (
           <Button

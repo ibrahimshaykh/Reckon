@@ -5,6 +5,7 @@ import { getMonthlyRecap } from "@/lib/actions/recap";
 import { isActionError } from "@/lib/action-result";
 import { formatMoney } from "@/lib/money";
 import { Button } from "@/components/ui/button";
+import { SketchPanel } from "@/components/sketch/sketch-ui";
 import type { Dictionary } from "@/lib/dictionary";
 import { interpolate } from "@/lib/i18n";
 
@@ -60,17 +61,25 @@ export function RecapView({
       )}
 
       {recap && (
-        <div className="flex flex-col gap-2">
-          <div className="rounded-lg border p-4">
-            <p className="text-xs text-muted-foreground">{dict.recap.totalSpent}</p>
-            <p className="text-2xl font-semibold">{formatMoney(recap.totalSpentCents, currency)}</p>
+        <div className="flex flex-col gap-3">
+          {/* The month totted up at the foot of the page. Everything else here
+              is context for this one number, and it was previously set at the
+              same size as a list item, so the page had no answer to the only
+              question it exists to answer. */}
+          <SketchPanel tone="var(--feature-recap)" className="text-center">
+            <p className="text-xs tracking-wide text-muted-foreground uppercase">
+              {dict.recap.totalSpent}
+            </p>
+            <p className="tabular mt-1 text-4xl leading-none sm:text-5xl">
+              {formatMoney(recap.totalSpentCents, currency)}
+            </p>
             {delta !== null && (
               <p
-                className={`text-xs ${
+                className={`tabular mt-2 text-xs ${
                   delta > 0
                     ? "text-destructive"
                     : delta < 0
-                      ? "text-emerald-600 dark:text-emerald-400"
+                      ? "text-positive"
                       : "text-muted-foreground"
                 }`}
               >
@@ -78,48 +87,56 @@ export function RecapView({
                 {formatMoney(Math.abs(delta), currency)} {dict.recap.vsLastMonth}
               </p>
             )}
-          </div>
+          </SketchPanel>
 
           {recap.topExpenses.length > 0 && (
-            <div className="rounded-lg border p-3">
-              <p className="mb-1 text-xs text-muted-foreground">{dict.recap.topExpenses}</p>
-              <ul className="flex flex-col gap-0.5 text-sm">
+            <SketchPanel variant={1}>
+              <p className="mb-1.5 text-xs tracking-wide text-muted-foreground uppercase">
+                {dict.recap.topExpenses}
+              </p>
+              <ul className="flex flex-col gap-1 text-sm">
                 {recap.topExpenses.map((e, i) => (
-                  <li key={i}>
-                    {e.title} — {formatMoney(Math.round(e.amount * 100), currency)}
+                  // Dot leaders instead of a dash, so the title and its figure
+                  // stay tied together however far apart the row pushes them.
+                  <li key={i} className="flex items-baseline gap-2">
+                    <span className="min-w-0">{e.title}</span>
+                    <span aria-hidden className="leader-fill" />
+                    <span className="tabular shrink-0">
+                      {formatMoney(Math.round(e.amount * 100), currency)}
+                    </span>
                   </li>
                 ))}
               </ul>
-            </div>
+            </SketchPanel>
           )}
 
-          <div className="grid grid-cols-2 gap-2">
-            <div className="rounded-lg border p-3 text-center">
-              <p className="text-xl font-semibold">{recap.choresCompleted}</p>
-              <p className="text-xs text-muted-foreground">{dict.recap.choresDone}</p>
-            </div>
-            <div className="rounded-lg border p-3 text-center">
-              <p className="text-xl font-semibold">{recap.proposalsDecided}</p>
-              <p className="text-xs text-muted-foreground">{dict.recap.plansDecided}</p>
-            </div>
+          <div className="grid grid-cols-2 gap-3">
+            <SketchPanel className="text-center">
+              <p className="tabular text-3xl leading-none">{recap.choresCompleted}</p>
+              <p className="mt-1 text-xs text-muted-foreground">{dict.recap.choresDone}</p>
+            </SketchPanel>
+            <SketchPanel variant={1} className="text-center">
+              <p className="tabular text-3xl leading-none">{recap.proposalsDecided}</p>
+              <p className="mt-1 text-xs text-muted-foreground">{dict.recap.plansDecided}</p>
+            </SketchPanel>
           </div>
 
           {(recap.choreMvpName || recap.bigSpenderName) && (
             <div className="flex flex-wrap gap-2">
               {recap.choreMvpName && (
-                <span className="rounded-full bg-primary/10 px-2 py-1 text-xs text-primary">
+                <span className="sketch-pill bg-card px-3 py-1 text-xs">
                   {interpolate(dict.recap.choreMvp, { name: recap.choreMvpName })}
                 </span>
               )}
               {recap.bigSpenderName && (
-                <span className="rounded-full bg-amber-500/10 px-2 py-1 text-xs text-amber-600 dark:text-amber-400">
+                <span className="sketch-pill bg-card px-3 py-1 text-xs">
                   {interpolate(dict.recap.bigSpender, { name: recap.bigSpenderName })}
                 </span>
               )}
             </div>
           )}
 
-          <p className="rounded-lg border p-3 text-sm text-muted-foreground">{recap.summaryText}</p>
+          <p className="text-sm text-muted-foreground">{recap.summaryText}</p>
         </div>
       )}
     </div>

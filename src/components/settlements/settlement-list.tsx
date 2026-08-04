@@ -303,8 +303,11 @@ function SettlementRow({
         )}
       </AnimatePresence>
       {settlement.status === "CONFIRMED" ? (
-        <p className="border-t border-rule px-4 py-3 font-mono text-[0.6875rem] uppercase tracking-[0.14em] text-positive">
-          {dict.settle.settledBadge}
+        // Same stamp as a forgiven IOU. Both are debts that are over but still
+        // on the record, and marking them alike means the reader learns what a
+        // stamp means once rather than per page.
+        <p className="border-t border-rule px-4 py-3">
+          <span className="stamp text-positive">{dict.settle.settledBadge}</span>
         </p>
       ) : (isPayer || canAct) && (
         <div className="flex flex-col gap-3 border-t border-rule px-4 py-3">

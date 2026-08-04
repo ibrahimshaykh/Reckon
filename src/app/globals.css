@@ -700,3 +700,70 @@
 .state-spine[data-state="overdue"] { border-inline-start-width: 5px; }
 .state-spine[data-state="today"] { border-inline-start-width: 5px; }
 .state-spine[data-state="unassigned"] { border-inline-start-style: dashed; }
+
+/* A rubber stamp, for a line that has been closed rather than removed.
+ *
+ * One device, one meaning, everywhere: an IOU that was forgiven and a debt
+ * that was settled are the same kind of fact — done with, but still on the
+ * record — so they are marked the same way and the reader only learns it
+ * once. It replaces fading the row to half opacity, which said "unimportant"
+ * when the truth was "settled", and which said it in opacity alone.
+ *
+ * Pressed on at an angle, because a stamp lined up square with the text is a
+ * badge again. */
+.stamp {
+  display: inline-flex;
+  align-items: center;
+  border: 2px solid currentColor;
+  border-radius: 6px 12px 8px 10px / 10px 8px 12px 6px;
+  padding: 0.1em 0.55em;
+  font-size: 0.6875rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  transform: rotate(-7deg);
+  opacity: 0.8;
+}
+
+/* Dot leaders, as on a menu or an order of service. A name on the left and a
+ * figure on the right leave a gap the eye has to jump unaided; the dots carry
+ * it across, and cost nothing but a border. */
+.leader-fill {
+  flex: 1 1 auto;
+  align-self: flex-end;
+  min-width: 1rem;
+  margin-bottom: 0.32em;
+  border-bottom: 1px dotted var(--rule);
+}
+
+/* Votes counted the way a person counts them on paper: four strokes and a
+ * fifth struck across the gate. A bar chart would be more precise about a
+ * number nobody needs to be precise about — what a reader wants from a tally
+ * is the shape of the result at a glance, and five-bar gates give that while
+ * staying countable when it matters. */
+.tally-gate {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 0.5rem;
+}
+.tally-group {
+  position: relative;
+  display: inline-flex;
+  gap: 0.14rem;
+}
+.tally-mark {
+  display: block;
+  width: 2px;
+  height: 0.95rem;
+  background: currentColor;
+  border-radius: 1px;
+}
+/* Every fifth mark is the one struck across the other four. */
+.tally-mark[data-fifth="true"] {
+  position: absolute;
+  inset-inline-start: -0.12rem;
+  top: 0.06rem;
+  width: 1.15rem;
+  height: 2px;
+  transform: rotate(-24deg);
+  transform-origin: center;
+}

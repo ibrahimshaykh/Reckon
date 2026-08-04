@@ -227,7 +227,12 @@ export function WeekGrid({
       </div>
 
       {best && (
-        <p className="text-sm text-amber-600 dark:text-amber-400">
+        // The one line on this page anybody came for. In its own blue rather
+        // than amber, which on every other page of this app means a chore.
+        <p
+          style={{ color: "var(--feature-availability)" }}
+          className="text-sm font-medium"
+        >
           {interpolate(dict.availability.bestTime, {
             weekday: days[best.dayIndex].toLocaleDateString("en-US", { weekday: "long" }),
             start: formatMinuteOfDay(best.startMinute),
@@ -331,11 +336,18 @@ export function WeekGrid({
                 )}
 
                 {best && best.dayIndex === dayIndex && (
+                  // Ringed the way somebody circles the one slot everybody can
+                  // make. Drawn round rather than square, and slightly outside
+                  // the block, so it reads as a mark made on the timetable
+                  // rather than as another booking on it.
                   <div
-                    className="pointer-events-none absolute left-0 right-0 rounded-sm ring-2 ring-amber-300"
+                    className="pointer-events-none absolute -inset-x-1"
                     style={{
-                      top: minuteToPx(best.startMinute),
-                      height: Math.max(4, (best.endMinute - best.startMinute) * (HOUR_PX / 60)),
+                      top: minuteToPx(best.startMinute) - 4,
+                      height:
+                        Math.max(4, (best.endMinute - best.startMinute) * (HOUR_PX / 60)) + 8,
+                      border: "2px solid var(--feature-availability)",
+                      borderRadius: "42% 58% 46% 54% / 55% 44% 56% 45%",
                     }}
                   />
                 )}
