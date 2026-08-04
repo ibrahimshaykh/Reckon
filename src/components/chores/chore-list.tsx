@@ -379,25 +379,32 @@ function ChoreRow({
               {dueLabel}
             </span>
           )}
-          {chore.explanation && (
-            <Button variant="ghost" size="sm" onClick={() => setShowMath((v) => !v)}>
-              {showMath ? dict.common.hideMath : dict.common.showMath}
+          {/* The buttons travel as one block so the wrap can only ever fall
+              between the deadline and them. Left to break anywhere, a
+              medium-length deadline pushed the × onto a line of its own, and a
+              lone × floating under the row reads as a control for whatever sits
+              below it. */}
+          <span className="flex shrink-0 items-center gap-1">
+            {chore.explanation && (
+              <Button variant="ghost" size="sm" onClick={() => setShowMath((v) => !v)}>
+                {showMath ? dict.common.hideMath : dict.common.showMath}
+              </Button>
+            )}
+            {/* Removal asks first and says which of the two things it will do.
+                A chore nobody has ever been given is simply deleted; one with
+                history is retired instead, and the difference matters enough to
+                the person pressing it that it's worth spelling out. */}
+            <Button
+              variant="ghost"
+              size="sm"
+              aria-label={interpolate(dict.chores.removeChore, { name: chore.name })}
+              title={interpolate(dict.chores.removeChore, { name: chore.name })}
+              disabled={pending}
+              onClick={() => setConfirmRemove(true)}
+            >
+              ×
             </Button>
-          )}
-          {/* Removal asks first and says which of the two things it will do.
-              A chore nobody has ever been given is simply deleted; one with
-              history is retired instead, and the difference matters enough to
-              the person pressing it that it's worth spelling out. */}
-          <Button
-            variant="ghost"
-            size="sm"
-            aria-label={interpolate(dict.chores.removeChore, { name: chore.name })}
-            title={interpolate(dict.chores.removeChore, { name: chore.name })}
-            disabled={pending}
-            onClick={() => setConfirmRemove(true)}
-          >
-            ×
-          </Button>
+          </span>
         </div>
       </div>
 

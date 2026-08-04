@@ -700,7 +700,3 @@
 .state-spine[data-state="overdue"] { border-inline-start-width: 5px; }
 .state-spine[data-state="today"] { border-inline-start-width: 5px; }
 .state-spine[data-state="unassigned"] { border-inline-start-style: dashed; }
-
-@media (prefers-reduced-motion: reduce) {
-  .marker-swipe { transition: none; }
-}
