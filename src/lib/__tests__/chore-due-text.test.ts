@@ -68,12 +68,25 @@ describe("describeDue", () => {
   });
 
   it("counts a turn ending at midnight as the day before", () => {
-    // The bug this fixed: a daily turn running to midnight on the 4th showed
-    // on the 4th as well as the 3rd, so a daily chore appeared twice.
+    // A daily turn running to midnight on the 4th is the 3rd's work.
     expect(describeDue("2026-08-04T00:00:00.000Z", "2026-08-03", dict, UTC)).toBe(
       "due by the end of Mon, 3 Aug 2026 — today",
     );
-    expect(describeDue("2026-08-04T00:00:00.000Z", "2026-08-04", dict, UTC)).toBe(
+  });
+
+  it("measures today against the real today, not the day on screen", () => {
+    // The bug: looking back at the 3rd, a deadline that fell on the 3rd was
+    // labelled "today" — the one reading it cannot possibly be. The word has
+    // to be about now, not about where the picker happens to be pointing.
+    const dueOn3rd = "2026-08-04T00:00:00.000Z";
+
+    expect(describeDue(dueOn3rd, "2026-08-04", dict, UTC)).toBe(
+      "due by the end of Mon, 3 Aug 2026 — yesterday",
+    );
+    expect(describeDue(dueOn3rd, "2026-08-02", dict, UTC)).toBe(
+      "due by the end of Mon, 3 Aug 2026 — tomorrow",
+    );
+    expect(describeDue(dueOn3rd, "2026-08-20", dict, UTC)).toBe(
       "due by the end of Mon, 3 Aug 2026",
     );
   });
@@ -118,7 +131,7 @@ describe("naming the day in the group's own clock", () => {
       "due by the end of Tue, 4 Aug 2026 — today",
     );
     expect(describeDue(endsAtUtcMidnight, "2026-08-04", dict, UTC)).toBe(
-      "due by the end of Mon, 3 Aug 2026",
+      "due by the end of Mon, 3 Aug 2026 — yesterday",
     );
   });
 });

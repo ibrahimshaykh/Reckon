@@ -29,6 +29,13 @@ const timeParts = {
   hour12: true,
 } as const;
 
+/** A plain calendar date shifted by whole days, for naming the ones either side. */
+function shiftDate(isoDate: string, days: number): string {
+  const at = new Date(`${isoDate}T00:00:00.000Z`).getTime();
+  if (Number.isNaN(at)) return "";
+  return new Date(at + days * 86_400_000).toISOString().slice(0, 10);
+}
+
 function valid(iso: string | null): Date | null {
   if (!iso) return null;
   const date = new Date(iso);
@@ -73,7 +80,8 @@ export function formatDayTime(iso: string | null, timeZone?: string): string {
  */
 export function describeDue(
   dueBy: string | null,
-  onDate: string,
+  /** Today's date where the group lives — NOT the day being viewed. */
+  today: string,
   dict: Dictionary,
   timeZone: string,
 ): string {
@@ -83,19 +91,26 @@ export function describeDue(
   // The end is exclusive — a turn finishing at midnight on the 4th is the
   // 3rd's work — so the day quoted is the instant just before it.
   const lastDay = lastCoveredDay(due);
-  // Always the full date, even when it is the day already on screen. "By the
-  // end of this day" is only unambiguous while you remember which day you are
-  // looking at, and the whole point of the picker is that you might not be on
-  // today.
+  // Always the full date, so the row means the same thing whichever day is on
+  // screen. The word after it is measured against the real today, not the day
+  // being viewed — comparing against the view called a deadline "today" while
+  // you were looking back at yesterday, which is the one reading it cannot
+  // have.
   //
   // Named in the group's own clock, the same one the day filter uses. Reading
   // this in UTC while the filter read local put a turn on the 4th and labelled
   // it the 3rd.
+  const dayIso = toIsoDate(lastDay, timeZone);
   const date = formatDay(lastDay.toISOString(), timeZone);
-  return interpolate(
-    toIsoDate(lastDay, timeZone) === onDate
-      ? dict.chores.dueThisDay
-      : dict.chores.dueBy,
-    { date },
-  );
+
+  const key =
+    dayIso === today
+      ? "dueThisDay"
+      : dayIso === shiftDate(today, -1)
+        ? "dueYesterday"
+        : dayIso === shiftDate(today, 1)
+          ? "dueTomorrow"
+          : "dueBy";
+
+  return interpolate(dict.chores[key], { date });
 }

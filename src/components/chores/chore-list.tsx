@@ -281,7 +281,9 @@ function ChoreRow({
 
   const frequencyLabel = dict.chores[FREQ_KEY[chore.frequency as keyof typeof FREQ_KEY]];
   const gap = loadGap(chore.roundLoad);
-  const dueLabel = describeDue(chore.dueBy, onDate, dict, timeZone);
+  // Against today, not the day on screen: looking back at yesterday, a
+  // deadline that fell yesterday is not "today".
+  const dueLabel = describeDue(chore.dueBy, todayIso(timeZone), dict, timeZone);
 
   return (
     <li className="rounded-lg border p-3 text-sm">

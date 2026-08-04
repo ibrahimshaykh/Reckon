@@ -183,7 +183,9 @@
     "progressBiweekly": "Esta quincena",
     "progressMonthly": "Este mes",
     "progressOf": "{done} de {total} hecho",
-    "progressNothing": "nada pendiente"
+    "progressNothing": "nada pendiente",
+    "dueYesterday": "para el final del {date} — ayer",
+    "dueTomorrow": "para el final del {date} — mañana"
   },
   "availability": {
     "title": "Disponibilidad del grupo",
@@ -408,27 +410,67 @@
     "closeLabel": "Cerrar",
     "exampleLabel": "Ejemplo",
     "chores": {
-      "intro": "Añade una tarea, di cuánto cuesta y cada cuánto toca.",
+      "intro": "Añade una tarea, di cuánto cuesta y cada cuánto toca. La app las reparte sola, mantiene la carga pareja y enseña sus cuentas.",
       "fields": [
         {
           "name": "Nombre de la tarea",
-          "what": "La tarea en sí. Escríbela como la dirías en voz alta.",
+          "what": "La tarea en sí, escrita como la dirías en voz alta. No puedes añadir dos idénticas - mismo nombre, mismo esfuerzo, misma frecuencia - porque después nadie sabría distinguirlas.",
           "example": "Sacar la basura"
         },
         {
           "name": "Esfuerzo",
-          "what": "Lo pesada que es la tarea. Más alto es más dura, y los turnos reparten la carga para que a nadie le toquen siempre las peores. La mayoría se queda entre 1 y 10.",
-          "example": "2 la basura, 10 el baño"
+          "what": "Cuánto cuesta la tarea, del 1 al 10. La palabra junto a la casilla te dice dónde has caído: 1-2 fácil, 3-4 normal, 5-7 duro, 8-9 muy duro, 10 lo peor.",
+          "example": "2 para la basura, 10 para el baño"
         },
         {
           "name": "Cada cuánto",
-          "what": "Cuánto dura cada turno antes de pasar a otra persona.",
-          "example": "Semanal"
+          "what": "Cuánto dura cada turno - y cuánto cuenta la tarea. Una tarea diaria se hace siete veces por semana, así que vale siete veces una semanal del mismo esfuerzo. Los turnos acaban a medianoche, la tuya.",
+          "example": "Diaria para los platos, semanal para el baño"
         },
         {
-          "name": "Rotar ahora",
-          "what": "Reparte las tareas cuyo turno ya terminó, y se las da a quien menos esfuerzo lleva. Las que siguen en curso no se tocan.",
-          "example": "Púlsalo un domingo por la noche"
+          "name": "La casilla de fecha",
+          "what": "Qué día estás mirando. Una tarea aparece todos los días de su turno, así que una semanal sale toda la semana - la fila te dice para cuándo vence de verdad. Elige un día futuro para ver lo que viene; allí no puedes marcar nada.",
+          "example": "Cámbiala a mañana"
+        },
+        {
+          "name": "Los tres desplegables",
+          "what": "Quién, en qué estado y cada cuánto - y se combinan. Déjalos como están para ver tus tareas de hoy, o júntalos para preguntar algo más concreto.",
+          "example": "Lola + Pendientes + Diaria"
+        },
+        {
+          "name": "Hoy / Esta semana",
+          "what": "Por dónde va cada persona en la ronda actual. '4 de 13 hecho' significa que de las tareas diarias que llevas hoy, has terminado 4 de esfuerzo sobre 13. Se llena y se pone verde al acabar, y vuelve a empezar en la siguiente ronda.",
+          "example": "4 de 13 hecho"
+        },
+        {
+          "name": "Marcar como hecha",
+          "what": "Da la tarea por hecha y te acredita su esfuerzo. Solo puede pulsarlo quien la tiene. ¿Se te olvidó? Vuelve con la casilla de fecha a ese día y márcala allí - sigue contando.",
+          "example": "Púlsalo cuando la basura esté fuera"
+        },
+        {
+          "name": "Cambiar esta",
+          "what": "Ofrece tu tarea a una persona o a todo el grupo. El crédito se lo lleva quien la haga de verdad, así que cambiar no cuesta nada a ninguno. Te dirán si aceptan o no.",
+          "example": "Preguntar a cualquiera"
+        },
+        {
+          "name": "Sin hacer",
+          "what": "Un turno que se acabó sin completarse. Pierdes ese crédito, lo que te baja en el orden, así que la app te manda más trabajo. Además esa tarea concreta te salta la próxima vez, para que alguien la haga. Pulsa el número para ver cuáles, y marca las que sí hiciste.",
+          "example": "2 sin hacer"
+        },
+        {
+          "name": "Terminado hasta ahora",
+          "what": "Todo lo que cada persona ha completado de verdad, como cifra semanal, desde que existe el grupo. Es la respuesta lenta a quién arrima el hombro - las casillas de arriba van del momento actual.",
+          "example": "99"
+        },
+        {
+          "name": "Ver las cuentas",
+          "what": "Por qué esa tarea le tocó a esa persona: cuánto vale, cada cuánto toca, cómo estaba cada uno en ese momento y por cuánto se decidió. Ábrelo cuando un reparto parezca injusto.",
+          "example": "Ábrelo en cualquier tarea"
+        },
+        {
+          "name": "Repartir ahora",
+          "what": "No deberías necesitarlo. Los turnos se reparten solos al abrir la app, y otra vez de madrugada. El botón está solo por si quieres forzarlo.",
+          "example": "Solo si algo parece atascado"
         }
       ]
     },

@@ -183,7 +183,9 @@
     "progressBiweekly": "This fortnight",
     "progressMonthly": "This month",
     "progressOf": "{done} of {total} done",
-    "progressNothing": "nothing due"
+    "progressNothing": "nothing due",
+    "dueYesterday": "due by the end of {date} — yesterday",
+    "dueTomorrow": "due by the end of {date} — tomorrow"
   },
   "availability": {
     "title": "Group availability",
@@ -408,27 +410,67 @@
     "closeLabel": "Close",
     "exampleLabel": "Example",
     "chores": {
-      "intro": "Add a job, say how heavy it is, and how often it comes round.",
+      "intro": "Add a job, say how heavy it is and how often it comes round. The app hands them out on its own, keeps the load even, and shows its working.",
       "fields": [
         {
           "name": "Chore name",
-          "what": "The job itself. Write it the way you'd say it out loud.",
+          "what": "The job itself, written the way you'd say it out loud. You can't add two that are identical - same name, same effort, same frequency - because afterwards nobody could tell them apart.",
           "example": "Take out trash"
         },
         {
           "name": "Effort",
-          "what": "How heavy the job is. Higher means harder, and rotation shares the load out evenly so nobody keeps landing the worst jobs. Most people stay between 1 and 10.",
+          "what": "How heavy the job is, from 1 to 10. The word next to the box tells you where you've landed: 1-2 easy, 3-4 moderate, 5-7 hard, 8-9 very hard, 10 the worst job.",
           "example": "2 for the bins, 10 for the bathroom"
         },
         {
           "name": "How often",
-          "what": "How long each turn lasts before it passes to someone else.",
-          "example": "Weekly"
+          "what": "How long each turn lasts - and how much the job counts. A daily chore gets done seven times a week, so it is worth seven times a weekly one of the same effort. Turns end at midnight, your midnight.",
+          "example": "Daily for the dishes, weekly for the bathroom"
+        },
+        {
+          "name": "The date box",
+          "what": "Which day you are looking at. A chore shows on every day of its turn, so a weekly job appears all week - the row tells you the day it is actually due by. Pick a future day to see what is coming; you cannot tick anything off there.",
+          "example": "Change it to tomorrow"
+        },
+        {
+          "name": "The three dropdowns",
+          "what": "Who, what state, and how often - and they stack. Leave them alone to see your own chores for today, or combine them to ask something narrower.",
+          "example": "Lola + Still to do + Daily"
+        },
+        {
+          "name": "Today / This week",
+          "what": "How far through the current round each person is. '4 of 13 done' means that of the daily chores you are holding today, you have finished 4 effort out of 13. It fills up and turns green when you are finished, then resets next round.",
+          "example": "4 of 13 done"
+        },
+        {
+          "name": "Mark done",
+          "what": "Ticks the job off and credits you its effort. Only the person holding it can press it. Forgot at the time? Change the date box back to that day and tick it there - it still counts.",
+          "example": "Press it when the bins are out"
+        },
+        {
+          "name": "Swap this",
+          "what": "Offers your chore to one person or to the whole group. Credit follows whoever actually does it, so trading costs neither of you anything. You will be told whether they said yes or no.",
+          "example": "Ask anyone"
+        },
+        {
+          "name": "Missed",
+          "what": "A turn whose time ran out before it was done. You lose that credit, which drops you down the order, so the app sends you more work. That particular chore also skips you next time, so it gets done by somebody. Click the number to see which jobs, and go tick any you actually did.",
+          "example": "2 missed"
+        },
+        {
+          "name": "Finished so far",
+          "what": "Everything each person has genuinely completed, as a per-week figure, since the group started. The slow answer to who is pulling their weight - as opposed to the boxes above, which are about right now.",
+          "example": "99"
+        },
+        {
+          "name": "Show the math",
+          "what": "Why that person got that chore: what it is worth, how often it comes round, where everyone stood at the time, and the margin that decided it. Open it when a split looks wrong.",
+          "example": "Open it on any chore"
         },
         {
           "name": "Rotate now",
-          "what": "Hands out every chore whose turn has ended, picking whoever has done the least effort so far. Nothing happens to chores still mid-turn.",
-          "example": "Press it on a Sunday night"
+          "what": "You should not need it. Turns are handed out automatically when you open the app, and again overnight. The button is only there to force it.",
+          "example": "Only if something looks stuck"
         }
       ]
     },
