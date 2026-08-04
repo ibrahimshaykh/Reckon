@@ -11,6 +11,7 @@ import { asActionResult, type ActionResult } from "@/lib/action-result";
 import { rotateGroup } from "@/lib/rotate-group";
 import { weightedEffort, asPerWeek, type ChoreFrequency } from "@/lib/chore-weight";
 import { totalLoad, listMissed } from "@/lib/chore-load";
+import { periodProgress } from "@/lib/chore-progress";
 import { planRemoval } from "@/lib/chore-removal";
 import { findDuplicate } from "@/lib/chore-duplicates";
 import {
@@ -416,7 +417,8 @@ export async function getChoreFairness(groupId: string) {
     select: { timeZone: true },
   });
 
-  const [members, completedAssignments, recentAssignments] = await Promise.all([
+  const [members, completedAssignments, recentAssignments, liveAssignments] =
+    await Promise.all([
     db.groupMember.findMany({ where: { groupId, leftAt: null }, include: { user: true } }),
     db.choreAssignment.findMany({
       where: { chore: { groupId }, completedAt: { not: null } },
@@ -442,6 +444,22 @@ export async function getChoreFairness(groupId: string) {
             archivedAt: true,
           },
         },
+      },
+    }),
+    // Turns in hand right now, for the round-by-round progress. Archived
+    // chores are left out: a job the group has stopped doing is not something
+    // anybody is still part-way through.
+    db.choreAssignment.findMany({
+      where: {
+        chore: { groupId, archivedAt: null },
+        periodEnd: { gt: new Date() },
+      },
+      select: {
+        completedAt: true,
+        periodStart: true,
+        periodEnd: true,
+        user: { select: { displayName: true } },
+        chore: { select: { effortWeight: true, frequency: true } },
       },
     }),
   ]);
@@ -470,10 +488,25 @@ export async function getChoreFairness(groupId: string) {
     timeZone,
   );
 
-  return members.map((m) => ({
+  const progress = periodProgress(
+    liveAssignments.map((a) => ({
+      key: a.user.displayName,
+      frequency: a.chore.frequency as ChoreFrequency,
+      effortWeight: a.chore.effortWeight,
+      completedAt: a.completedAt,
+      periodStart: a.periodStart,
+      periodEnd: a.periodEnd,
+    })),
+    new Date(),
+    members.map((m) => m.user.displayName),
+  );
+
+  const bars = members.map((m) => ({
     userId: m.userId,
     displayName: m.user.displayName,
     completedEffort: asPerWeek(effortByUser[m.userId] ?? 0),
     missed: missed.get(m.userId) ?? [],
   }));
+
+  return { bars, progress };
 }

@@ -7,6 +7,7 @@ import { getDictionary } from "@/lib/dictionary";
 import { AddChoreForm } from "@/components/chores/add-chore-form";
 import { ChoreList } from "@/components/chores/chore-list";
 import { FairnessBars } from "@/components/chores/fairness-bars";
+import { ProgressBars } from "@/components/chores/progress-bars";
 import { PageHeader } from "@/components/page-header";
 import { FieldGuide } from "@/components/field-guide";
 import { SwapOffers } from "@/components/chores/swap-controls";
@@ -36,7 +37,7 @@ export default async function ChoresPage({
     listSwapOffers(groupId),
   ]);
   const dict = await getDictionary(session.locale);
-  const bars = computeFairnessBars(fairness);
+  const bars = computeFairnessBars(fairness.bars);
 
   return (
     <div className="mx-auto flex w-full max-w-2xl flex-col gap-8 px-6 py-10 md:py-14">
@@ -77,6 +78,10 @@ export default async function ChoresPage({
           }))}
         dict={dict}
       />
+      {/* Where the round stands, split by how often each chore comes back —
+          the question somebody opens the app with. The all-time totals below
+          answer the different, slower question of who has pulled their weight. */}
+      <ProgressBars progress={fairness.progress} dict={dict} />
       <FairnessBars
         bars={bars}
         title={dict.chores.fairnessTitle}

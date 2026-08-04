@@ -177,7 +177,13 @@
     "missedNote": "Sin hacer = un turno que se acabó sin completarse, en los últimos 30 días. Ya le cuesta: pierde ese crédito, así que el reparto le manda más.",
     "missedItem": "{chore} — vencía el {date}",
     "missedFixHint": "Abre ese día para marcarla, si de verdad la hiciste.",
-    "whySkipped": "{names} lo tuvo la última vez y no lo terminó, así que esta ronda le pasó de largo: va a alguien que quizá sí lo haga."
+    "whySkipped": "{names} lo tuvo la última vez y no lo terminó, así que esta ronda le pasó de largo: va a alguien que quizá sí lo haga.",
+    "progressDaily": "Hoy",
+    "progressWeekly": "Esta semana",
+    "progressBiweekly": "Esta quincena",
+    "progressMonthly": "Este mes",
+    "progressOf": "{done} de {total} hecho",
+    "progressNothing": "nada pendiente"
   },
   "availability": {
     "title": "Disponibilidad del grupo",
