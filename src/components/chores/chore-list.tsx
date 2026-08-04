@@ -298,10 +298,9 @@ function ChoreRow({
       style={{ borderInlineStartColor: STATE_TONE[state] }}
       className="state-spine rounded-lg border p-3 text-sm"
     >
-      {/* Wraps, and the title is allowed to shrink. The controls are shrink-0
-          so they stay legible, which on a narrow phone meant a long chore name
-          shoved them off the right-hand edge and took the whole page into
-          horizontal scroll with it. */}
+      {/* Wraps, and the title is allowed to shrink, so a long chore name can
+          never shove the controls off the right-hand edge and take the whole
+          page into horizontal scroll with it. */}
       <div className="flex flex-wrap items-start justify-between gap-2">
         <div className="flex min-w-0 flex-1 flex-col gap-0.5">
           {/* The name, alone and largest. It used to open a sentence that also
@@ -349,7 +348,12 @@ function ChoreRow({
             )}
           </p>
         </div>
-        <div className="flex shrink-0 items-center gap-1">
+        {/* Each button already refuses to shrink, so this group must not: a
+            deadline as long as "due by the end of Tue, 4 Aug 2026 — today"
+            made an unshrinkable group wider than a 360px phone and put the
+            page back into horizontal scroll. Letting it wrap instead means
+            the deadline drops onto its own line and nothing leaves the sheet. */}
+        <div className="flex min-w-0 flex-wrap items-center justify-end gap-1">
           {/* The deadline carries the urgency, so it is set apart and tinted
               rather than trailing the sentence in grey. Without it a weekly
               chore showing on Thursday reads as a Thursday job. */}
