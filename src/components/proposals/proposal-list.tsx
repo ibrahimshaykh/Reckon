@@ -34,8 +34,10 @@ function TallyGate({ count, className }: { count: number; className?: string }) 
         </span>
       ))}
       {/* Nobody at all is a fact worth drawing, and an empty space reads as a
-          rendering fault rather than a zero. */}
-      {count === 0 && <span className="text-xs opacity-50">—</span>}
+          rendering fault rather than a zero. Deliberately not in the row's own
+          colour: a red dash against "No" looks like a warning, when what it
+          actually says is that nobody objected. */}
+      {count === 0 && <span className="text-xs text-muted-foreground">—</span>}
     </span>
   );
 }
