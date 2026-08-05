@@ -17,6 +17,7 @@ import {
 import type { Dictionary } from "@/lib/dictionary";
 import { interpolate } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
+import { DateField } from "@/components/ui/date-field";
 
 type Member = { id: string; displayName: string };
 type Entry = {
@@ -188,12 +189,13 @@ export function WeekGrid({
             {days[0].toLocaleDateString("en-US", { month: "short", day: "numeric" })} –{" "}
             {days[6].toLocaleDateString("en-US", { month: "short", day: "numeric" })}
           </p>
-          <input
-            type="date"
-            aria-label={dict.availability.jumpToDate}
-            className="rounded-md border bg-transparent px-1.5 py-0.5 text-xs text-muted-foreground"
+          <DateField
+            ariaLabel={dict.availability.jumpToDate}
+            tone="var(--feature-availability)"
+            className="text-xs text-muted-foreground"
+            inputClassName="py-0.5"
             value={formatDateParam(days[0])}
-            onChange={(e) => e.target.value && goToStart(parseDateParam(e.target.value, days[0]))}
+            onChange={(next) => next && goToStart(parseDateParam(next, days[0]))}
           />
         </div>
         <Button size="sm" variant="outline" onClick={() => goToStart(new Date(days[0].getTime() + 7 * 86_400_000))}>
@@ -344,13 +346,12 @@ export function WeekGrid({
                   // the block, so it reads as a mark made on the timetable
                   // rather than as another booking on it.
                   <div
-                    className="pointer-events-none absolute -inset-x-1"
+                    className="circled pointer-events-none absolute -inset-x-1"
                     style={{
                       top: minuteToPx(best.startMinute) - 4,
                       height:
                         Math.max(4, (best.endMinute - best.startMinute) * (HOUR_PX / 60)) + 8,
-                      border: "2px solid var(--feature-availability)",
-                      borderRadius: "42% 58% 46% 54% / 55% 44% 56% 45%",
+                      color: "var(--feature-availability)",
                     }}
                   />
                 )}

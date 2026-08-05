@@ -724,6 +724,22 @@
   opacity: 0.8;
 }
 
+/* A ring drawn round the one thing that matters: the slot everybody can make,
+ * the day you are on. Deliberately not a circle — a perfect one is a border
+ * radius, a wonky one is a pen. Takes its colour from the caller so each page
+ * rings in its own ink. */
+.circled {
+  border: 2px solid currentColor;
+  border-radius: 42% 58% 46% 54% / 55% 44% 56% 45%;
+}
+
+/* Our own calendar button opens a themed picker, so the browser's native one
+ * would be a second, differently-styled way to do the same thing. Typing a
+ * date into the field still works — only the icon goes. */
+.date-field input[type="date"]::-webkit-calendar-picker-indicator {
+  display: none;
+}
+
 /* Dot leaders, as on a menu or an order of service. A name on the left and a
  * figure on the right leave a gap the eye has to jump unaided; the dots carry
  * it across, and cost nothing but a border. */

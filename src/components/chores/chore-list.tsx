@@ -14,6 +14,7 @@ import {
   type ChoreExplanation,
 } from "@/lib/chore-explanation";
 import { Button } from "@/components/ui/button";
+import { DateField } from "@/components/ui/date-field";
 import { SwapButton, type Swappable } from "@/components/chores/swap-controls";
 import { choreState, STATE_TONE } from "@/lib/chore-state";
 import { SketchPanel } from "@/components/sketch/sketch-ui";
@@ -177,17 +178,12 @@ export function ChoreList({
         </select>
         {/* Navigates rather than setting state, so the chosen day is in the
             URL and a link to it still means that day for whoever opens it. */}
-        <input
-          type="date"
-          className="rounded-md border bg-background px-2 py-1.5 text-sm"
+        <DateField
           value={onDate}
-          aria-label={dict.chores.onDate}
-          onChange={(e) =>
-            router.push(
-              e.target.value
-                ? `?date=${e.target.value}`
-                : window.location.pathname,
-            )
+          ariaLabel={dict.chores.onDate}
+          tone="var(--feature-chores)"
+          onChange={(next) =>
+            router.push(next ? `?date=${next}` : window.location.pathname)
           }
         />
         {onDate !== todayIso(timeZone) && (
