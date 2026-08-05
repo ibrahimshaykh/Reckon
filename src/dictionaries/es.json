@@ -107,7 +107,7 @@
     "assignedTo": "asignado a {name}",
     "doneAt": "✓ Hecho {datetime}",
     "markDone": "Marcar como hecho",
-    "fairnessTitle": "Terminado hasta ahora (por semana)",
+    "fairnessTitle": "Total terminado desde que empezó el grupo (promedio por semana)",
     "effortEasy": "fácil",
     "effortModerate": "normal",
     "effortHard": "pesada",
@@ -178,10 +178,10 @@
     "missedItem": "{chore} — vencía el {date}",
     "missedFixHint": "Abre ese día para marcarla, si de verdad la hiciste.",
     "whySkipped": "{names} lo tuvo la última vez y no lo terminó, así que esta ronda le pasó de largo: va a alguien que quizá sí lo haga.",
-    "progressDaily": "Hoy",
-    "progressWeekly": "Esta semana",
-    "progressBiweekly": "Esta quincena",
-    "progressMonthly": "Este mes",
+    "progressDaily": "Tareas diarias",
+    "progressWeekly": "Tareas semanales",
+    "progressBiweekly": "Tareas quincenales",
+    "progressMonthly": "Tareas mensuales",
     "progressOf": "{done} de {total} hecho",
     "progressNothing": "nada pendiente",
     "dueYesterday": "para el final del {date} — ayer",
@@ -438,8 +438,8 @@
           "example": "Lola + Pendientes + Diaria"
         },
         {
-          "name": "Hoy / Esta semana",
-          "what": "Por dónde va cada persona en la ronda actual. '4 de 13 hecho' significa que de las tareas diarias que llevas hoy, has terminado 4 de esfuerzo sobre 13. Se llena y se pone verde al acabar, y vuelve a empezar en la siguiente ronda.",
+          "name": "Tareas diarias / Tareas semanales",
+          "what": "Por dónde vas en la ronda actual, con una casilla por cada tipo de tarea. '4 de 13 hecho' en la casilla diaria significa que de las tareas que vuelven cada día, has terminado 4 de esfuerzo sobre 13. Una tarea semanal solo cuenta en la casilla semanal, nunca en la diaria: que la casilla diaria esté vacía no significa que no te quede nada. Cada casilla se llena, se pone verde al acabar, y luego se vacía y vuelve a empezar en la siguiente ronda.",
           "example": "4 de 13 hecho"
         },
         {
@@ -458,8 +458,8 @@
           "example": "2 sin hacer"
         },
         {
-          "name": "Terminado hasta ahora",
-          "what": "Todo lo que cada persona ha completado de verdad, como cifra semanal, desde que existe el grupo. Es la respuesta lenta a quién arrima el hombro - las casillas de arriba van del momento actual.",
+          "name": "Total terminado desde que empezó el grupo",
+          "what": "Todas las tareas que cada persona ha completado alguna vez - diarias, semanales, quincenales y mensuales, todas juntas - desde el día en que empezó el grupo. Se muestra como una semana promedio para poder comparar con justicia una tarea diaria y una mensual: 99 significa que hace unos 99 de esfuerzo por semana de media, no que haya hecho 99 esta semana. Nunca se vacía, y es la cifra que la app usa para decidir a quién le toca la siguiente tarea. Las casillas de arriba van de la ronda en la que estás ahora; esta es el registro a largo plazo.",
           "example": "99"
         },
         {

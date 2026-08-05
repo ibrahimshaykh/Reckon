@@ -107,7 +107,7 @@
     "assignedTo": "assigned to {name}",
     "doneAt": "✓ Done {datetime}",
     "markDone": "Mark done",
-    "fairnessTitle": "Finished so far (per week)",
+    "fairnessTitle": "Total finished since the group started (average per week)",
     "effortEasy": "easy",
     "effortModerate": "moderate",
     "effortHard": "hard",
@@ -178,10 +178,10 @@
     "missedItem": "{chore} — was due {date}",
     "missedFixHint": "Open a day to tick it off, if you did do it.",
     "whySkipped": "{names} had this last time and didn't finish it, so this round passed them over — it goes to somebody who might.",
-    "progressDaily": "Today",
-    "progressWeekly": "This week",
-    "progressBiweekly": "This fortnight",
-    "progressMonthly": "This month",
+    "progressDaily": "Daily chores",
+    "progressWeekly": "Weekly chores",
+    "progressBiweekly": "Biweekly chores",
+    "progressMonthly": "Monthly chores",
     "progressOf": "{done} of {total} done",
     "progressNothing": "nothing due",
     "dueYesterday": "due by the end of {date} — yesterday",
@@ -438,8 +438,8 @@
           "example": "Lola + Still to do + Daily"
         },
         {
-          "name": "Today / This week",
-          "what": "How far through the current round each person is. '4 of 13 done' means that of the daily chores you are holding today, you have finished 4 effort out of 13. It fills up and turns green when you are finished, then resets next round.",
+          "name": "Daily chores / Weekly chores",
+          "what": "How far through the current round you are, with one box per kind of chore. '4 of 13 done' in the daily box means that of the jobs that come back every day, you have finished 4 effort out of 13. A weekly job is counted in the weekly box only, never in the daily one - so an empty daily box does not mean you have nothing on. Each box fills up, turns green when you are finished, then empties and starts again next round.",
           "example": "4 of 13 done"
         },
         {
@@ -458,8 +458,8 @@
           "example": "2 missed"
         },
         {
-          "name": "Finished so far",
-          "what": "Everything each person has genuinely completed, as a per-week figure, since the group started. The slow answer to who is pulling their weight - as opposed to the boxes above, which are about right now.",
+          "name": "Total finished since the group started",
+          "what": "Every chore each person has ever completed - daily, weekly, biweekly and monthly all added together - going right back to the day the group started. It is shown as an average week so that a daily job and a monthly one can be compared fairly: 99 means they average about 99 effort a week, not that they did 99 this week. It never empties, and it is the number the app uses to decide who gets the next chore. The boxes above are about the round you are in right now; this one is the long-run record.",
           "example": "99"
         },
         {
