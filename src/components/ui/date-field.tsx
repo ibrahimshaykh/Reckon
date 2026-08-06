@@ -83,11 +83,27 @@ export function DateField({
         className,
       )}
     >
+      {/* Left to manage its own segments while it is being typed into.
+          A date input reports "" until all three parts are filled, so a
+          controlled value pushed that empty string away on the first
+          keystroke, the answer came back as a different date, and whatever
+          had been typed was wiped — typing a date in by hand could not be
+          done at all. The key resyncs it when the date changes from outside,
+          which is what the controlled value was there for. */}
       <input
+        key={value}
         type="date"
-        value={value}
+        defaultValue={value}
         aria-label={ariaLabel}
-        onChange={(e) => onChange(e.target.value)}
+        onChange={(e) => {
+          // Only a date the field considers finished is worth acting on.
+          if (parseIso(e.target.value)) onChange(e.target.value);
+        }}
+        onBlur={(e) => {
+          // Clearing the field is a real thing to want, and it is only
+          // distinguishable from a half-typed date once focus has left.
+          if (e.target.value === "" && value !== "") onChange("");
+        }}
         className={cn(
           "min-w-0 border-0 bg-transparent py-1.5 outline-none",
           inputClassName,
