@@ -125,26 +125,28 @@ export function DateField({
         </Popover.Trigger>
 
         <Popover.Portal>
-          <Popover.Positioner sideOffset={8}>
+          {/* Keeps clear of the sticky header when there is no room below the
+              field and the calendar has to flip above it. */}
+          <Popover.Positioner sideOffset={6} collisionPadding={72}>
             {/* date-popup drops the boil animation. Base UI waits for a
                 popup's animations to finish before unmounting it, and boil
                 never finishes, so the wobble would have pinned the calendar
                 open. The fade below is what it waits for instead. */}
             <Popover.Popup
               className={cn(
-                "date-popup sketch-box z-50 bg-card p-3 outline-none",
+                "date-popup sketch-box z-50 bg-card p-2.5 outline-none",
                 "transition-[opacity,scale] duration-100 ease-out",
                 "data-starting-style:scale-[0.98] data-starting-style:opacity-0",
                 "data-ending-style:scale-[0.98] data-ending-style:opacity-0",
               )}
               style={{ borderColor: accent }}
             >
-              <div className="mb-2 flex items-center justify-between gap-3">
+              <div className="mb-1.5 flex items-center justify-between gap-2">
                 <button
                   type="button"
                   aria-label={dict.common.previousMonth}
                   onClick={() => setBrowsing(shiftMonth(view, -1))}
-                  className="rounded p-1 text-muted-foreground transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+                  className="rounded p-0.5 text-muted-foreground transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
                 >
                   {/* Logical, so the arrows swap round in Urdu rather than
                       pointing backwards. */}
@@ -152,7 +154,7 @@ export function DateField({
                   <ChevronRight className="hidden size-4 rtl:block" />
                 </button>
 
-                <span className="text-sm font-medium">
+                <span className="text-xs font-medium">
                   {MONTH_LABEL.format(new Date(Date.UTC(view.y, view.m, 1)))}
                 </span>
 
@@ -160,7 +162,7 @@ export function DateField({
                   type="button"
                   aria-label={dict.common.nextMonth}
                   onClick={() => setBrowsing(shiftMonth(view, 1))}
-                  className="rounded p-1 text-muted-foreground transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+                  className="rounded p-0.5 text-muted-foreground transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
                 >
                   <ChevronRight className="size-4 rtl:hidden" />
                   <ChevronLeft className="hidden size-4 rtl:block" />
@@ -171,7 +173,7 @@ export function DateField({
                 {WEEKDAYS.map((d) => (
                   <span
                     key={d}
-                    className="grid size-8 place-items-center text-[0.65rem] tracking-wide text-muted-foreground uppercase"
+                    className="grid size-7 place-items-center text-[0.6rem] tracking-wide text-muted-foreground uppercase"
                   >
                     {d}
                   </span>
@@ -196,7 +198,7 @@ export function DateField({
                             : undefined
                       }
                       className={cn(
-                        "tabular grid size-8 place-items-center rounded text-sm transition-colors",
+                        "tabular grid size-7 place-items-center rounded text-xs transition-colors",
                         "focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none",
                         !isSelected && "hover:bg-accent",
                         // The neighbouring month is shown so the weeks stay
