@@ -724,6 +724,20 @@
   opacity: 0.8;
 }
 
+/* The one sketch box that has to be able to leave.
+ *
+ * Base UI keeps a popup mounted until its animations finish, and `boil` is
+ * declared `infinite` — so a popup wearing .sketch-box never finishes leaving,
+ * and closing the calendar left it on screen for good. It gets a short fade
+ * instead, which does finish. Written after the boil rule and at the same
+ * specificity so it wins on order.
+ *
+ * Only bites without reduced motion: that block already caps every animation
+ * at one iteration, which is why the bug hid from a reduced-motion check. */
+:root[data-skin="sketch"] .date-popup {
+  animation: none;
+}
+
 /* A ring drawn round the one thing that matters: the slot everybody can make,
  * the day you are on. Deliberately not a circle — a perfect one is a border
  * radius, a wonky one is a pen. Takes its colour from the caller so each page

@@ -110,8 +110,17 @@ export function DateField({
 
         <Popover.Portal>
           <Popover.Positioner sideOffset={8}>
+            {/* date-popup drops the boil animation. Base UI waits for a
+                popup's animations to finish before unmounting it, and boil
+                never finishes, so the wobble would have pinned the calendar
+                open. The fade below is what it waits for instead. */}
             <Popover.Popup
-              className="sketch-box z-50 bg-card p-3 outline-none"
+              className={cn(
+                "date-popup sketch-box z-50 bg-card p-3 outline-none",
+                "transition-[opacity,scale] duration-100 ease-out",
+                "data-starting-style:scale-[0.98] data-starting-style:opacity-0",
+                "data-ending-style:scale-[0.98] data-ending-style:opacity-0",
+              )}
               style={{ borderColor: accent }}
             >
               <div className="mb-2 flex items-center justify-between gap-3">
