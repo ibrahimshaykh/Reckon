@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Popover } from "@base-ui/react/popover";
 import { CalendarDays, ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
+import type { Dictionary } from "@/lib/dictionary";
 import {
   monthGrid,
   parseIso,
@@ -40,6 +41,7 @@ export function DateField({
   value,
   onChange,
   ariaLabel,
+  dict,
   tone,
   className,
   inputClassName,
@@ -48,6 +50,9 @@ export function DateField({
   value: string;
   onChange: (next: string) => void;
   ariaLabel: string;
+  /** For the month arrows, which are controls and so get translated. The month
+      name itself does not — see the note on MONTH_LABEL. */
+  dict: Dictionary;
   /** The page's own ink, e.g. var(--feature-chores). */
   tone?: string;
   className?: string;
@@ -112,7 +117,7 @@ export function DateField({
               <div className="mb-2 flex items-center justify-between gap-3">
                 <button
                   type="button"
-                  aria-label="Previous month"
+                  aria-label={dict.common.previousMonth}
                   onClick={() => setBrowsing(shiftMonth(view, -1))}
                   className="rounded p-1 text-muted-foreground transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
                 >
@@ -128,7 +133,7 @@ export function DateField({
 
                 <button
                   type="button"
-                  aria-label="Next month"
+                  aria-label={dict.common.nextMonth}
                   onClick={() => setBrowsing(shiftMonth(view, 1))}
                   className="rounded p-1 text-muted-foreground transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
                 >

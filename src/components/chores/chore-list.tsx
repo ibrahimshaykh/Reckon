@@ -181,6 +181,7 @@ export function ChoreList({
         <DateField
           value={onDate}
           ariaLabel={dict.chores.onDate}
+          dict={dict}
           tone="var(--feature-chores)"
           onChange={(next) =>
             router.push(next ? `?date=${next}` : window.location.pathname)

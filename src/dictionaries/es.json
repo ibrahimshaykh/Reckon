@@ -45,6 +45,8 @@
     "copy": "Copiar",
     "copied": "Copiado",
     "cancel": "Cancelar",
+    "previousMonth": "Mes anterior",
+    "nextMonth": "Mes siguiente",
     "and": "y"
   },
   "groupHub": {

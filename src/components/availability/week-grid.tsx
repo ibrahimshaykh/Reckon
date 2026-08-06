@@ -191,6 +191,7 @@ export function WeekGrid({
           </p>
           <DateField
             ariaLabel={dict.availability.jumpToDate}
+            dict={dict}
             tone="var(--feature-availability)"
             className="text-xs text-muted-foreground"
             inputClassName="py-0.5"
