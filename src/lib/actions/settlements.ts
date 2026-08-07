@@ -278,6 +278,53 @@ export async function getGroupSettlements(groupId: string) {
   });
 }
 
+/**
+ * Moving a settlement to "they say they've paid", and telling the other side.
+ *
+ * Shared by the in-app button and the pay link, because they are the same
+ * assertion made from two places. Two copies of this would eventually disagree
+ * about something that matters — whether a confirm token is minted, whether
+ * the payee is told at all — and the failure would be silent.
+ *
+ * Authorisation is the caller's job: the button checks the session, the link
+ * checks the token. By the time this runs, the right to say it is established.
+ */
+async function applyPayMarked(settlement: {
+  id: string;
+  groupId: string;
+  amount: Prisma.Decimal;
+  fromUser: { displayName: string };
+  toUser: { email: string | null };
+}) {
+  const confirmToken = generateGuestToken();
+  const confirmTokenExpiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+
+  await db.settlement.update({
+    where: { id: settlement.id },
+    data: { status: "PAY_MARKED", confirmToken, confirmTokenExpiresAt },
+  });
+  revalidatePath(`/groups/${settlement.groupId}/settle`);
+
+  if (!process.env.RESEND_API_KEY || !settlement.toUser.email) {
+    logger.warn(
+      "RESEND_API_KEY not set or receiver has no email — skipping confirm-link send (degrade-open).",
+      { settlementId: settlement.id },
+    );
+    return;
+  }
+
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
+  const resend = new Resend(process.env.RESEND_API_KEY);
+  const amount = Number(settlement.amount).toFixed(2);
+
+  await resend.emails.send({
+    from: "Reckon <onboarding@resend.dev>",
+    to: settlement.toUser.email,
+    subject: `${settlement.fromUser.displayName} says they paid you $${amount}`,
+    html: `<p>${settlement.fromUser.displayName} marked their $${amount} as paid. If you received it, confirm here:</p><p><a href="${baseUrl}/confirm/${confirmToken}">Yes, I received this</a></p>`,
+  });
+}
+
 export async function markPaid(settlementId: string): Promise<ActionResult<void>> {
   return asActionResult(async () => {
     const session = await requireSession();
@@ -289,33 +336,73 @@ export async function markPaid(settlementId: string): Promise<ActionResult<void>
       throw new ApiError(403, "Only the person who owes can mark this paid.");
     }
 
-    const confirmToken = generateGuestToken();
-    const confirmTokenExpiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+    await applyPayMarked(settlement);
+  });
+}
 
-    await db.settlement.update({
-      where: { id: settlementId },
-      data: { status: "PAY_MARKED", confirmToken, confirmTokenExpiresAt },
+/**
+ * The same thing, said through a link instead of a login.
+ *
+ * The token stands in for the debtor, the way a guest token stands in for a
+ * guest — same trust model as the confirm link that already exists on the
+ * other side of this transaction. It cannot confirm receipt, only claim to
+ * have sent; the two halves stay in different hands.
+ */
+export async function markPaidByToken(token: string): Promise<ActionResult<void>> {
+  return asActionResult(async () => {
+    const settlement = await db.settlement.findUnique({
+      where: { payToken: token },
+      include: { toUser: true, fromUser: true },
     });
-    revalidatePath(`/groups/${settlement.groupId}/settle`);
 
-    if (!process.env.RESEND_API_KEY || !settlement.toUser.email) {
-      logger.warn(
-        "RESEND_API_KEY not set or receiver has no email — skipping confirm-link send (degrade-open).",
-        { settlementId },
-      );
-      return;
+    if (
+      !settlement ||
+      !settlement.payTokenExpiresAt ||
+      settlement.payTokenExpiresAt < new Date()
+    ) {
+      throw new ApiError(404, "This link is invalid or has expired.");
     }
+    // Already said, or already settled. Saying it twice would mint a second
+    // confirm token and send the payee a second email about one payment.
+    if (settlement.status !== "PENDING") return;
 
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
-    const resend = new Resend(process.env.RESEND_API_KEY);
-    const amount = Number(settlement.amount).toFixed(2);
+    await applyPayMarked(settlement);
+  });
+}
 
-    await resend.emails.send({
-      from: "Reckon <onboarding@resend.dev>",
-      to: settlement.toUser.email,
-      subject: `${settlement.fromUser.displayName} says they paid you $${amount}`,
-      html: `<p>${settlement.fromUser.displayName} marked their $${amount} as paid. If you received it, confirm here:</p><p><a href="${baseUrl}/confirm/${confirmToken}">Yes, I received this</a></p>`,
+/**
+ * A link the debtor can be sent. Minted on demand rather than up front, since
+ * settlements are recalculated constantly and most are cleared in the app.
+ */
+export async function createPayLink(
+  settlementId: string,
+): Promise<ActionResult<{ url: string }>> {
+  return asActionResult(async () => {
+    const session = await requireSession();
+    const settlement = await db.settlement.findUniqueOrThrow({
+      where: { id: settlementId },
     });
+    await assertMember(settlement.groupId, session.id);
+
+    // Reused while it is still valid, so a link already sitting in somebody's
+    // chat keeps working rather than being quietly replaced by a new one.
+    const live =
+      settlement.payToken &&
+      settlement.payTokenExpiresAt &&
+      settlement.payTokenExpiresAt > new Date();
+
+    if (live) return { url: `/pay/${settlement.payToken}` };
+
+    const payToken = generateGuestToken();
+    await db.settlement.update({
+      where: { id: settlement.id },
+      data: {
+        payToken,
+        payTokenExpiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+      },
+    });
+
+    return { url: `/pay/${payToken}` };
   });
 }
 

@@ -369,6 +369,20 @@
     "guestDeclined": "No paga: lo cubren sus anfitriones",
     "guestNoAnswer": "Todavía no ha respondido"
   },
+  "pay": {
+    "greeting": "Hola {name}: esto es lo que le debes a {toName} en este grupo.",
+    "youOwe": "Debes",
+    "explainer": "Es el neto de todo entre vosotros dos, no una sola cuenta: gastos compartidos, menos lo que te deban a ti.",
+    "sendHeading": "Envía {amount} a {toName}",
+    "iveSentIt": "Ya envié el dinero",
+    "iveSentNote": "Se le pedirá que confirme que llegó.",
+    "sentStamp": "Dinero enviado",
+    "sentNote": "Enviaste {amount} a {toName}. Se cierra cuando confirme que llegó.",
+    "settledStamp": "Saldado",
+    "settledNote": "{toName} confirmó tus {amount}. No queda nada pendiente entre vosotros.",
+    "shareLink": "Enviar un enlace de pago",
+    "shareLinkCopied": "Enlace copiado"
+  },
   "friends": {
     "youAnd": "Tú y {name}",
     "mixedCurrencies": "Los grupos compartidos usan monedas distintas — mira el desglose abajo.",

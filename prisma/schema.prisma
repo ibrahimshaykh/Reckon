@@ -313,6 +313,12 @@ model Settlement {
   lastNudgedAt   DateTime?
   confirmToken   String?          @unique
   confirmTokenExpiresAt DateTime?
+  // The other direction: a link for the person who owes, so they can see the
+  // debt and the payee's payment methods without opening the app. Kept apart
+  // from confirmToken because marking money sent and marking it received must
+  // stay in different hands.
+  payToken       String?          @unique
+  payTokenExpiresAt DateTime?
   recalculatedAt DateTime         @updatedAt
 
   nudges Nudge[]

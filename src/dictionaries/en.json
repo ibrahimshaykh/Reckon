@@ -369,6 +369,20 @@
     "guestDeclined": "Not paying — their hosts are covering it",
     "guestNoAnswer": "Has not answered yet"
   },
+  "pay": {
+    "greeting": "Hi {name} — this is what you owe {toName} in this group.",
+    "youOwe": "You owe",
+    "explainer": "The net of everything between you two, not one bill — expenses you shared, minus anything they owe you.",
+    "sendHeading": "Send {amount} to {toName}",
+    "iveSentIt": "I've sent the money",
+    "iveSentNote": "They will be asked to confirm it arrived.",
+    "sentStamp": "Money sent",
+    "sentNote": "You sent {amount} to {toName}. It clears once they confirm it arrived.",
+    "settledStamp": "Settled",
+    "settledNote": "{toName} confirmed your {amount}. Nothing outstanding between you.",
+    "shareLink": "Send a pay link",
+    "shareLinkCopied": "Link copied"
+  },
   "friends": {
     "youAnd": "You and {name}",
     "mixedCurrencies": "Shared groups use different currencies — see the breakdown below.",

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { markPaid, confirmReceived } from "@/lib/actions/settlements";
+import { markPaid, confirmReceived, createPayLink } from "@/lib/actions/settlements";
 import { createSafepayCheckout } from "@/lib/actions/safepay-checkout";
 import { isActionError } from "@/lib/action-result";
 import { formatMoney } from "@/lib/money";
@@ -140,6 +140,29 @@ function SettlementRow({
   const [pending, setPending] = useState(false);
   const [safepayUnavailable, setSafepayUnavailable] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [linkCopied, setLinkCopied] = useState(false);
+
+  // Reaches somebody who doesn't open the app. Copied straight to the
+  // clipboard rather than revealed in a box, the same as the guest link —
+  // a URL on screen is something else to select, and the next thing anybody
+  // does with it is paste it into a chat anyway.
+  async function copyPayLink() {
+    setPending(true);
+    setError(null);
+
+    const result = await createPayLink(settlement.id);
+
+    if (isActionError(result)) {
+      setError(result.error);
+      setPending(false);
+      return;
+    }
+
+    await navigator.clipboard.writeText(`${window.location.origin}${result.url}`);
+    setLinkCopied(true);
+    setPending(false);
+    setTimeout(() => setLinkCopied(false), 2500);
+  }
 
   const amount = formatMoney(settlement.amountCents, currency);
   const isPayer = settlement.fromUserId === currentUserId;
@@ -227,13 +250,29 @@ function SettlementRow({
               toName: settlement.toName,
             })}
           </p>
-          <button
-            type="button"
-            onClick={() => setShowMath((v) => !v)}
-            className="w-fit font-mono text-[0.6875rem] uppercase tracking-[0.14em] text-muted-foreground underline-offset-4 transition-colors hover:text-primary hover:underline"
-          >
-            {showMath ? dict.common.hideMath : dict.common.showMath}
-          </button>
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+            <button
+              type="button"
+              onClick={() => setShowMath((v) => !v)}
+              className="w-fit font-mono text-[0.6875rem] uppercase tracking-[0.14em] text-muted-foreground underline-offset-4 transition-colors hover:text-primary hover:underline"
+            >
+              {showMath ? dict.common.hideMath : dict.common.showMath}
+            </button>
+            {/* Offered to anyone in the group, not just the two named here:
+                the usual reason a debt sits unpaid is that the person owing it
+                hasn't opened the app, and whoever notices should be able to
+                send it to them. */}
+            {settlement.status !== "CONFIRMED" && (
+              <button
+                type="button"
+                disabled={pending}
+                onClick={copyPayLink}
+                className="w-fit font-mono text-[0.6875rem] uppercase tracking-[0.14em] text-muted-foreground underline-offset-4 transition-colors hover:text-primary hover:underline disabled:opacity-50"
+              >
+                {linkCopied ? dict.pay.shareLinkCopied : dict.pay.shareLink}
+              </button>
+            )}
+          </div>
         </div>
         <p className="tabular shrink-0 text-2xl font-semibold leading-none text-foreground sm:text-right">
           {amount}
