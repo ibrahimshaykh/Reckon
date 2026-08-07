@@ -21,6 +21,7 @@ const SEGMENT_LABELS: Record<string, string> = {
   friends: "Friend",
   guest: "Guest link",
   confirm: "Confirm",
+  pay: "Pay",
 };
 
 const CUID = /^c[a-z0-9]{20,}$/i;
@@ -29,9 +30,16 @@ function describe(pathname: string): { label: string; section: string } {
   const parts = pathname.split("/").filter(Boolean);
   if (parts.length === 0) return { label: "Home", section: "home" };
 
-  // Ids carry no meaning to a reader, so the last *named* segment wins.
+  // A segment we have a name for wins outright.
+  //
+  // Filtering ids out by shape was the old rule, and it only knew about cuids
+  // and numbers — so a guest or pay link, whose id is a base64url token, had
+  // its own token written across the margin as the name of the page. Matching
+  // what we recognise rather than guessing what we don't means the next id
+  // format to arrive is ignored by default instead of being put on display.
+  const labelled = parts.filter((p) => p in SEGMENT_LABELS).at(-1);
   const named = parts.filter((p) => !CUID.test(p) && !/^\d+$/.test(p));
-  const last = named.at(-1) ?? parts.at(-1)!;
+  const last = labelled ?? named.at(-1) ?? parts.at(-1)!;
 
   return {
     label: SEGMENT_LABELS[last] ?? last.replace(/-/g, " "),
