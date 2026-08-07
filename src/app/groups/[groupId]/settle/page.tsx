@@ -1,8 +1,10 @@
 import { getGroupSettlements } from "@/lib/actions/settlements";
+import { listOutstandingGuests } from "@/lib/actions/guest";
 import { getGroup , requireGroupAccess } from "@/lib/actions/groups";
 import { requireSession } from "@/lib/dal";
 import { getDictionary } from "@/lib/dictionary";
 import { SettlementList } from "@/components/settlements/settlement-list";
+import { GuestDebts } from "@/components/settlements/guest-debts";
 import { PageHeader } from "@/components/page-header";
 import { interpolate } from "@/lib/i18n";
 
@@ -13,10 +15,11 @@ export default async function SettlePage({
 }) {
   const { groupId } = await params;
   await requireGroupAccess(groupId);
-  const [settlements, session, group] = await Promise.all([
+  const [settlements, session, group, guests] = await Promise.all([
     getGroupSettlements(groupId),
     requireSession(),
     getGroup(groupId),
+    listOutstandingGuests(groupId),
   ]);
   const dict = await getDictionary(session.locale);
 
@@ -44,6 +47,9 @@ export default async function SettlePage({
         currency={group.currency}
         dict={dict}
       />
+      {/* Below the ledger, not inside it — a guest has no account, so they can
+          never be a row in a list of payments between accounts. */}
+      <GuestDebts guests={guests} currency={group.currency} dict={dict} />
     </div>
   );
 }

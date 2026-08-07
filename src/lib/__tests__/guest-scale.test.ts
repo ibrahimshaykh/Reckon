@@ -9,7 +9,13 @@ import { computeBalances, computeSettlements } from "@/lib/settlement";
 import { buildLedgerLines, sumLines } from "@/lib/settlement-explain";
 
 const GUEST_COUNTS = [4, 5, 10, 20, 30];
-const STATUSES: GuestStatus[] = ["UNDECIDED", "PAYING", "PAID", "DECLINED"];
+const STATUSES: GuestStatus[] = [
+  "UNDECIDED",
+  "PAYING",
+  "SENT",
+  "PAID",
+  "DECLINED",
+];
 
 const MEMBERS = ["ibrahim", "lola", "sam"];
 

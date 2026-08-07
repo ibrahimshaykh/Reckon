@@ -18,7 +18,7 @@ import type { Dictionary } from "@/lib/dictionary";
 type Guest = {
   id: string;
   name: string;
-  status: "UNDECIDED" | "PAYING" | "PAID" | "DECLINED";
+  status: "UNDECIDED" | "PAYING" | "SENT" | "PAID" | "DECLINED";
   hostIds: string[];
   hostNames: string[];
   hostsAssumed: boolean;
@@ -50,6 +50,8 @@ export function GuestList({
   const statusLabel: Record<Guest["status"], string> = {
     UNDECIDED: dict.expenses.guestStatusUndecided,
     PAYING: dict.expenses.guestStatusPaying,
+    // The one status that asks something of the reader: go and check.
+    SENT: dict.expenses.guestStatusSent,
     PAID: dict.expenses.guestStatusPaid,
     DECLINED: dict.expenses.guestStatusDeclined,
   };
@@ -139,10 +141,16 @@ export function GuestList({
                 )}
               </span>
 
-              {isPayer && g.status === "PAYING" && (
+              {/* Offered from "says they'll pay" onwards, not only once they
+                  claim to have sent it: money often arrives before anybody
+                  presses anything, and the payer should not have to wait for
+                  the guest to catch up before recording what they can see in
+                  their own account. Emphasised once the guest says it has
+                  gone, because then it is the one thing left to do. */}
+              {isPayer && (g.status === "PAYING" || g.status === "SENT") && (
                 <Button
                   size="sm"
-                  variant="outline"
+                  variant={g.status === "SENT" ? "default" : "outline"}
                   disabled={pendingId === g.id}
                   onClick={() =>
                     run(g.id, () => confirmGuestPaid(g.id), () =>
@@ -182,7 +190,12 @@ export function GuestList({
                 </button>
               )}
 
-              {g.status !== "PAYING" && g.status !== "PAID" && (
+              {/* Nobody with money in flight can be removed — SENT included,
+                  or their transfer arrives against a row that no longer
+                  exists. */}
+              {g.status !== "PAYING" &&
+                g.status !== "SENT" &&
+                g.status !== "PAID" && (
                 <button
                   type="button"
                   disabled={pendingId === g.id}

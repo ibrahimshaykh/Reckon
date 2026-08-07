@@ -111,8 +111,14 @@ export async function removeGuest(guestId: string): Promise<ActionResult<void>> 
     await assertMember(guest.expense.groupId, session.id);
 
     // Removing a guest who already paid would leave their money unaccounted
-    // for — it reached the payer but no longer maps to anything.
-    if (guest.status === "PAID" || guest.status === "PAYING") {
+    // for — it reached the payer but no longer maps to anything. SENT counts
+    // too: the money is in flight, and deleting the row it belongs to means it
+    // arrives against nothing.
+    if (
+      guest.status === "PAID" ||
+      guest.status === "SENT" ||
+      guest.status === "PAYING"
+    ) {
       throw new ApiError(
         400,
         `${guest.name} is already paying their share, so they can't be removed. Delete the whole expense if it's wrong.`,
@@ -257,6 +263,13 @@ export type GuestView = {
    * the payer has been made whole, and the hosts are the ones out of pocket.
    */
   hosts: GuestHost[];
+  /**
+   * The receipt, once the payer has confirmed the money arrived. Read from the
+   * frozen column rather than recomputed, so it still says what was actually
+   * handed over even if the bill is edited afterwards.
+   */
+  paidAmountCents: number | null;
+  paidAt: string | null;
 };
 
 function toPayTo(payer: GuestPayTo): GuestPayTo {
@@ -307,7 +320,10 @@ export async function getGuestView(token: string): Promise<GuestView | null> {
   });
 
   const payer = expense.paidBy;
-  const committed = guest.status === "PAYING" || guest.status === "PAID";
+  const committed =
+    guest.status === "PAYING" ||
+    guest.status === "SENT" ||
+    guest.status === "PAID";
 
   // "The hosts have squared up" means two things at once: nothing involving
   // them is still outstanding, AND money of theirs actually moved. Requiring
@@ -349,7 +365,101 @@ export async function getGuestView(token: string): Promise<GuestView | null> {
       amountCents: carried[h.userId] ?? 0,
       ...toPayTo(h.user),
     })),
+    // Falls back to the live share for guests confirmed before the frozen
+    // column existed, so their receipt still shows a figure rather than a gap.
+    paidAmountCents:
+      guest.status === "PAID"
+        ? guest.paidAmount !== null
+          ? toCents(guest.paidAmount)
+          : (guestShareCents[guest.id] ?? 0)
+        : null,
+    paidAt:
+      guest.status === "PAID" && guest.resolvedAt
+        ? guest.resolvedAt.toISOString()
+        : null,
   };
+}
+
+export type OutstandingGuest = {
+  id: string;
+  name: string;
+  status: GuestStatus;
+  expenseTitle: string;
+  shareCents: number;
+  /** Members carrying this share until the guest actually pays. */
+  hostNames: string[];
+};
+
+/**
+ * Guests who still owe money, for the settle page.
+ *
+ * They cannot appear in the ledger above it: that computes the fewest
+ * payments between *accounts*, and a guest has no account to pay from. Their
+ * share is instead carried by their hosts, which is correct but invisible —
+ * the group could see Lola owing more without anything on the page explaining
+ * that a guest of hers is the reason. This is that explanation.
+ *
+ * PAID guests are left out. Their money has arrived and their share is off the
+ * books; what remains belongs in the expense's own history, not on a page
+ * about who still owes what.
+ */
+export async function listOutstandingGuests(
+  groupId: string,
+): Promise<OutstandingGuest[]> {
+  const session = await requireSession();
+  await assertMember(groupId, session.id);
+
+  const expenses = await db.expense.findMany({
+    where: { groupId, guests: { some: { status: { not: "PAID" } } } },
+    include: {
+      items: { include: { participants: true } },
+      guests: { include: { hosts: { include: { user: true } } } },
+    },
+  });
+
+  const out: OutstandingGuest[] = [];
+
+  for (const expense of expenses) {
+    const item = expense.items[0];
+    if (!item) continue;
+
+    const { guestShareCents } = deriveItemShares({
+      totalCents: toCents(item.amount),
+      memberIds: item.participants.map((p) => p.userId),
+      guests: expense.guests.map((g) => ({
+        id: g.id,
+        status: g.status,
+        hostIds: g.hosts.map((h) => h.userId),
+      })),
+    });
+
+    for (const guest of expense.guests) {
+      if (guest.status === "PAID") continue;
+      out.push({
+        id: guest.id,
+        name: guest.name,
+        status: guest.status,
+        expenseTitle: expense.title,
+        shareCents: guestShareCents[guest.id] ?? 0,
+        hostNames: guest.hosts.map((h) => h.user.displayName),
+      });
+    }
+  }
+
+  // Whoever has said the most comes first: someone claiming to have sent money
+  // needs looking at today, someone who hasn't answered needs chasing whenever.
+  const rank: Record<string, number> = {
+    SENT: 0,
+    PAYING: 1,
+    UNDECIDED: 2,
+    DECLINED: 3,
+  };
+  return out.sort(
+    (a, b) =>
+      (rank[a.status] ?? 9) - (rank[b.status] ?? 9) ||
+      b.shareCents - a.shareCents ||
+      a.name.localeCompare(b.name),
+  );
 }
 
 const respondSchema = z.object({
@@ -402,6 +512,42 @@ export async function respondAsGuest(input: {
   });
 }
 
+// The guest saying the money has left their account.
+//
+// Not the same as being paid, and deliberately so: this is the guest's claim,
+// and the ledger only moves on the payer's confirmation. What it buys is that
+// the payer can now tell "said they would" apart from "says they have", which
+// is the difference between chasing someone and going to check your bank.
+export async function markGuestSent(
+  token: string,
+): Promise<ActionResult<{ status: GuestStatus }>> {
+  return asActionResult(async () => {
+    const validToken = validate(z.string().min(1), token);
+
+    const guest = await db.expenseGuest.findUnique({
+      where: { token: validToken },
+      include: { expense: { select: { groupId: true } } },
+    });
+    if (!guest || guest.expiresAt < new Date()) {
+      throw new ApiError(404, "This link is invalid or has expired.");
+    }
+    if (guest.status === "PAID") {
+      throw new ApiError(400, "This share has already been paid.");
+    }
+
+    await db.expenseGuest.update({
+      where: { id: guest.id },
+      data: { status: "SENT", resolvedAt: new Date() },
+    });
+
+    // Nothing has moved on the books — see guest-shares.ts — but the payer's
+    // view of this expense has changed, so it has to be redrawn.
+    revalidatePath(`/groups/${guest.expense.groupId}`);
+
+    return { status: "SENT" as GuestStatus };
+  });
+}
+
 // The payer confirming the money reached them — the only transition that
 // takes a guest's share off the group's books.
 export async function confirmGuestPaid(guestId: string): Promise<ActionResult<void>> {
@@ -411,7 +557,16 @@ export async function confirmGuestPaid(guestId: string): Promise<ActionResult<vo
 
     const guest = await db.expenseGuest.findUniqueOrThrow({
       where: { id: validId },
-      include: { expense: { select: { groupId: true, paidById: true } } },
+      include: {
+        expense: {
+          select: {
+            groupId: true,
+            paidById: true,
+            items: { include: { participants: true } },
+            guests: { include: { hosts: true } },
+          },
+        },
+      },
     });
 
     if (guest.expense.paidById !== session.id) {
@@ -422,9 +577,31 @@ export async function confirmGuestPaid(guestId: string): Promise<ActionResult<vo
     }
     if (guest.status === "PAID") return;
 
+    // Frozen now, while the split still describes what they were asked for.
+    // After this the share stops being owed and becomes a record of something
+    // that happened, and editing the bill next month must not rewrite it.
+    const item = guest.expense.items[0];
+    const paidAmount = item
+      ? deriveItemShares({
+          totalCents: toCents(item.amount),
+          memberIds: item.participants.map((p) => p.userId),
+          guests: guest.expense.guests.map((g) => ({
+            id: g.id,
+            status: g.status,
+            hostIds: g.hosts.map((h) => h.userId),
+          })),
+        }).guestShareCents[guest.id]
+      : undefined;
+
     await db.expenseGuest.update({
       where: { id: guest.id },
-      data: { status: "PAID", resolvedAt: new Date() },
+      data: {
+        status: "PAID",
+        resolvedAt: new Date(),
+        ...(paidAmount === undefined
+          ? {}
+          : { paidAmount: (paidAmount / 100).toFixed(2) }),
+      },
     });
 
     await recalculateSettlements(guest.expense.groupId);

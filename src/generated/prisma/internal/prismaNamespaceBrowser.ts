@@ -150,6 +150,7 @@ export const ExpenseGuestScalarFieldEnum = {
   status: 'status',
   hostsAssumed: 'hostsAssumed',
   resolvedAt: 'resolvedAt',
+  paidAmount: 'paidAmount',
   expiresAt: 'expiresAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

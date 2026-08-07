@@ -20,8 +20,18 @@ export type ExpenseGuestModel = runtime.Types.Result.DefaultSelection<Prisma.$Ex
 
 export type AggregateExpenseGuest = {
   _count: ExpenseGuestCountAggregateOutputType | null
+  _avg: ExpenseGuestAvgAggregateOutputType | null
+  _sum: ExpenseGuestSumAggregateOutputType | null
   _min: ExpenseGuestMinAggregateOutputType | null
   _max: ExpenseGuestMaxAggregateOutputType | null
+}
+
+export type ExpenseGuestAvgAggregateOutputType = {
+  paidAmount: runtime.Decimal | null
+}
+
+export type ExpenseGuestSumAggregateOutputType = {
+  paidAmount: runtime.Decimal | null
 }
 
 export type ExpenseGuestMinAggregateOutputType = {
@@ -33,6 +43,7 @@ export type ExpenseGuestMinAggregateOutputType = {
   status: $Enums.GuestStatus | null
   hostsAssumed: boolean | null
   resolvedAt: Date | null
+  paidAmount: runtime.Decimal | null
   expiresAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -47,6 +58,7 @@ export type ExpenseGuestMaxAggregateOutputType = {
   status: $Enums.GuestStatus | null
   hostsAssumed: boolean | null
   resolvedAt: Date | null
+  paidAmount: runtime.Decimal | null
   expiresAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -61,12 +73,21 @@ export type ExpenseGuestCountAggregateOutputType = {
   status: number
   hostsAssumed: number
   resolvedAt: number
+  paidAmount: number
   expiresAt: number
   createdAt: number
   updatedAt: number
   _all: number
 }
 
+
+export type ExpenseGuestAvgAggregateInputType = {
+  paidAmount?: true
+}
+
+export type ExpenseGuestSumAggregateInputType = {
+  paidAmount?: true
+}
 
 export type ExpenseGuestMinAggregateInputType = {
   id?: true
@@ -77,6 +98,7 @@ export type ExpenseGuestMinAggregateInputType = {
   status?: true
   hostsAssumed?: true
   resolvedAt?: true
+  paidAmount?: true
   expiresAt?: true
   createdAt?: true
   updatedAt?: true
@@ -91,6 +113,7 @@ export type ExpenseGuestMaxAggregateInputType = {
   status?: true
   hostsAssumed?: true
   resolvedAt?: true
+  paidAmount?: true
   expiresAt?: true
   createdAt?: true
   updatedAt?: true
@@ -105,6 +128,7 @@ export type ExpenseGuestCountAggregateInputType = {
   status?: true
   hostsAssumed?: true
   resolvedAt?: true
+  paidAmount?: true
   expiresAt?: true
   createdAt?: true
   updatedAt?: true
@@ -149,6 +173,18 @@ export type ExpenseGuestAggregateArgs<ExtArgs extends runtime.Types.Extensions.I
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: ExpenseGuestAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: ExpenseGuestSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: ExpenseGuestMinAggregateInputType
@@ -179,6 +215,8 @@ export type ExpenseGuestGroupByArgs<ExtArgs extends runtime.Types.Extensions.Int
   take?: number
   skip?: number
   _count?: ExpenseGuestCountAggregateInputType | true
+  _avg?: ExpenseGuestAvgAggregateInputType
+  _sum?: ExpenseGuestSumAggregateInputType
   _min?: ExpenseGuestMinAggregateInputType
   _max?: ExpenseGuestMaxAggregateInputType
 }
@@ -192,10 +230,13 @@ export type ExpenseGuestGroupByOutputType = {
   status: $Enums.GuestStatus
   hostsAssumed: boolean
   resolvedAt: Date | null
+  paidAmount: runtime.Decimal | null
   expiresAt: Date
   createdAt: Date
   updatedAt: Date
   _count: ExpenseGuestCountAggregateOutputType | null
+  _avg: ExpenseGuestAvgAggregateOutputType | null
+  _sum: ExpenseGuestSumAggregateOutputType | null
   _min: ExpenseGuestMinAggregateOutputType | null
   _max: ExpenseGuestMaxAggregateOutputType | null
 }
@@ -227,6 +268,7 @@ export type ExpenseGuestWhereInput = {
   status?: Prisma.EnumGuestStatusFilter<"ExpenseGuest"> | $Enums.GuestStatus
   hostsAssumed?: Prisma.BoolFilter<"ExpenseGuest"> | boolean
   resolvedAt?: Prisma.DateTimeNullableFilter<"ExpenseGuest"> | Date | string | null
+  paidAmount?: Prisma.DecimalNullableFilter<"ExpenseGuest"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   expiresAt?: Prisma.DateTimeFilter<"ExpenseGuest"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"ExpenseGuest"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ExpenseGuest"> | Date | string
@@ -243,6 +285,7 @@ export type ExpenseGuestOrderByWithRelationInput = {
   status?: Prisma.SortOrder
   hostsAssumed?: Prisma.SortOrder
   resolvedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  paidAmount?: Prisma.SortOrderInput | Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -262,6 +305,7 @@ export type ExpenseGuestWhereUniqueInput = Prisma.AtLeast<{
   status?: Prisma.EnumGuestStatusFilter<"ExpenseGuest"> | $Enums.GuestStatus
   hostsAssumed?: Prisma.BoolFilter<"ExpenseGuest"> | boolean
   resolvedAt?: Prisma.DateTimeNullableFilter<"ExpenseGuest"> | Date | string | null
+  paidAmount?: Prisma.DecimalNullableFilter<"ExpenseGuest"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   expiresAt?: Prisma.DateTimeFilter<"ExpenseGuest"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"ExpenseGuest"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ExpenseGuest"> | Date | string
@@ -278,12 +322,15 @@ export type ExpenseGuestOrderByWithAggregationInput = {
   status?: Prisma.SortOrder
   hostsAssumed?: Prisma.SortOrder
   resolvedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  paidAmount?: Prisma.SortOrderInput | Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.ExpenseGuestCountOrderByAggregateInput
+  _avg?: Prisma.ExpenseGuestAvgOrderByAggregateInput
   _max?: Prisma.ExpenseGuestMaxOrderByAggregateInput
   _min?: Prisma.ExpenseGuestMinOrderByAggregateInput
+  _sum?: Prisma.ExpenseGuestSumOrderByAggregateInput
 }
 
 export type ExpenseGuestScalarWhereWithAggregatesInput = {
@@ -298,6 +345,7 @@ export type ExpenseGuestScalarWhereWithAggregatesInput = {
   status?: Prisma.EnumGuestStatusWithAggregatesFilter<"ExpenseGuest"> | $Enums.GuestStatus
   hostsAssumed?: Prisma.BoolWithAggregatesFilter<"ExpenseGuest"> | boolean
   resolvedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"ExpenseGuest"> | Date | string | null
+  paidAmount?: Prisma.DecimalNullableWithAggregatesFilter<"ExpenseGuest"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   expiresAt?: Prisma.DateTimeWithAggregatesFilter<"ExpenseGuest"> | Date | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"ExpenseGuest"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"ExpenseGuest"> | Date | string
@@ -311,6 +359,7 @@ export type ExpenseGuestCreateInput = {
   status?: $Enums.GuestStatus
   hostsAssumed?: boolean
   resolvedAt?: Date | string | null
+  paidAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   expiresAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -327,6 +376,7 @@ export type ExpenseGuestUncheckedCreateInput = {
   status?: $Enums.GuestStatus
   hostsAssumed?: boolean
   resolvedAt?: Date | string | null
+  paidAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   expiresAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -341,6 +391,7 @@ export type ExpenseGuestUpdateInput = {
   status?: Prisma.EnumGuestStatusFieldUpdateOperationsInput | $Enums.GuestStatus
   hostsAssumed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  paidAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -357,6 +408,7 @@ export type ExpenseGuestUncheckedUpdateInput = {
   status?: Prisma.EnumGuestStatusFieldUpdateOperationsInput | $Enums.GuestStatus
   hostsAssumed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  paidAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -372,6 +424,7 @@ export type ExpenseGuestCreateManyInput = {
   status?: $Enums.GuestStatus
   hostsAssumed?: boolean
   resolvedAt?: Date | string | null
+  paidAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   expiresAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -385,6 +438,7 @@ export type ExpenseGuestUpdateManyMutationInput = {
   status?: Prisma.EnumGuestStatusFieldUpdateOperationsInput | $Enums.GuestStatus
   hostsAssumed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  paidAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -399,6 +453,7 @@ export type ExpenseGuestUncheckedUpdateManyInput = {
   status?: Prisma.EnumGuestStatusFieldUpdateOperationsInput | $Enums.GuestStatus
   hostsAssumed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  paidAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -413,9 +468,14 @@ export type ExpenseGuestCountOrderByAggregateInput = {
   status?: Prisma.SortOrder
   hostsAssumed?: Prisma.SortOrder
   resolvedAt?: Prisma.SortOrder
+  paidAmount?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type ExpenseGuestAvgOrderByAggregateInput = {
+  paidAmount?: Prisma.SortOrder
 }
 
 export type ExpenseGuestMaxOrderByAggregateInput = {
@@ -427,6 +487,7 @@ export type ExpenseGuestMaxOrderByAggregateInput = {
   status?: Prisma.SortOrder
   hostsAssumed?: Prisma.SortOrder
   resolvedAt?: Prisma.SortOrder
+  paidAmount?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -441,9 +502,14 @@ export type ExpenseGuestMinOrderByAggregateInput = {
   status?: Prisma.SortOrder
   hostsAssumed?: Prisma.SortOrder
   resolvedAt?: Prisma.SortOrder
+  paidAmount?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type ExpenseGuestSumOrderByAggregateInput = {
+  paidAmount?: Prisma.SortOrder
 }
 
 export type ExpenseGuestScalarRelationFilter = {
@@ -533,6 +599,7 @@ export type ExpenseGuestCreateWithoutHostsInput = {
   status?: $Enums.GuestStatus
   hostsAssumed?: boolean
   resolvedAt?: Date | string | null
+  paidAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   expiresAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -548,6 +615,7 @@ export type ExpenseGuestUncheckedCreateWithoutHostsInput = {
   status?: $Enums.GuestStatus
   hostsAssumed?: boolean
   resolvedAt?: Date | string | null
+  paidAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   expiresAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -577,6 +645,7 @@ export type ExpenseGuestUpdateWithoutHostsInput = {
   status?: Prisma.EnumGuestStatusFieldUpdateOperationsInput | $Enums.GuestStatus
   hostsAssumed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  paidAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -592,6 +661,7 @@ export type ExpenseGuestUncheckedUpdateWithoutHostsInput = {
   status?: Prisma.EnumGuestStatusFieldUpdateOperationsInput | $Enums.GuestStatus
   hostsAssumed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  paidAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -605,6 +675,7 @@ export type ExpenseGuestCreateWithoutExpenseInput = {
   status?: $Enums.GuestStatus
   hostsAssumed?: boolean
   resolvedAt?: Date | string | null
+  paidAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   expiresAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -619,6 +690,7 @@ export type ExpenseGuestUncheckedCreateWithoutExpenseInput = {
   status?: $Enums.GuestStatus
   hostsAssumed?: boolean
   resolvedAt?: Date | string | null
+  paidAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   expiresAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -663,6 +735,7 @@ export type ExpenseGuestScalarWhereInput = {
   status?: Prisma.EnumGuestStatusFilter<"ExpenseGuest"> | $Enums.GuestStatus
   hostsAssumed?: Prisma.BoolFilter<"ExpenseGuest"> | boolean
   resolvedAt?: Prisma.DateTimeNullableFilter<"ExpenseGuest"> | Date | string | null
+  paidAmount?: Prisma.DecimalNullableFilter<"ExpenseGuest"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   expiresAt?: Prisma.DateTimeFilter<"ExpenseGuest"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"ExpenseGuest"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ExpenseGuest"> | Date | string
@@ -676,6 +749,7 @@ export type ExpenseGuestCreateManyExpenseInput = {
   status?: $Enums.GuestStatus
   hostsAssumed?: boolean
   resolvedAt?: Date | string | null
+  paidAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   expiresAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -689,6 +763,7 @@ export type ExpenseGuestUpdateWithoutExpenseInput = {
   status?: Prisma.EnumGuestStatusFieldUpdateOperationsInput | $Enums.GuestStatus
   hostsAssumed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  paidAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -703,6 +778,7 @@ export type ExpenseGuestUncheckedUpdateWithoutExpenseInput = {
   status?: Prisma.EnumGuestStatusFieldUpdateOperationsInput | $Enums.GuestStatus
   hostsAssumed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  paidAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -717,6 +793,7 @@ export type ExpenseGuestUncheckedUpdateManyWithoutExpenseInput = {
   status?: Prisma.EnumGuestStatusFieldUpdateOperationsInput | $Enums.GuestStatus
   hostsAssumed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  paidAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -762,6 +839,7 @@ export type ExpenseGuestSelect<ExtArgs extends runtime.Types.Extensions.Internal
   status?: boolean
   hostsAssumed?: boolean
   resolvedAt?: boolean
+  paidAmount?: boolean
   expiresAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -779,6 +857,7 @@ export type ExpenseGuestSelectCreateManyAndReturn<ExtArgs extends runtime.Types.
   status?: boolean
   hostsAssumed?: boolean
   resolvedAt?: boolean
+  paidAmount?: boolean
   expiresAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -794,6 +873,7 @@ export type ExpenseGuestSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.
   status?: boolean
   hostsAssumed?: boolean
   resolvedAt?: boolean
+  paidAmount?: boolean
   expiresAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -809,12 +889,13 @@ export type ExpenseGuestSelectScalar = {
   status?: boolean
   hostsAssumed?: boolean
   resolvedAt?: boolean
+  paidAmount?: boolean
   expiresAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type ExpenseGuestOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "token" | "expenseId" | "name" | "email" | "status" | "hostsAssumed" | "resolvedAt" | "expiresAt" | "createdAt" | "updatedAt", ExtArgs["result"]["expenseGuest"]>
+export type ExpenseGuestOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "token" | "expenseId" | "name" | "email" | "status" | "hostsAssumed" | "resolvedAt" | "paidAmount" | "expiresAt" | "createdAt" | "updatedAt", ExtArgs["result"]["expenseGuest"]>
 export type ExpenseGuestInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   expense?: boolean | Prisma.ExpenseDefaultArgs<ExtArgs>
   hosts?: boolean | Prisma.ExpenseGuest$hostsArgs<ExtArgs>
@@ -842,6 +923,7 @@ export type $ExpenseGuestPayload<ExtArgs extends runtime.Types.Extensions.Intern
     status: $Enums.GuestStatus
     hostsAssumed: boolean
     resolvedAt: Date | null
+    paidAmount: runtime.Decimal | null
     expiresAt: Date
     createdAt: Date
     updatedAt: Date
@@ -1278,6 +1360,7 @@ export interface ExpenseGuestFieldRefs {
   readonly status: Prisma.FieldRef<"ExpenseGuest", 'GuestStatus'>
   readonly hostsAssumed: Prisma.FieldRef<"ExpenseGuest", 'Boolean'>
   readonly resolvedAt: Prisma.FieldRef<"ExpenseGuest", 'DateTime'>
+  readonly paidAmount: Prisma.FieldRef<"ExpenseGuest", 'Decimal'>
   readonly expiresAt: Prisma.FieldRef<"ExpenseGuest", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"ExpenseGuest", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"ExpenseGuest", 'DateTime'>

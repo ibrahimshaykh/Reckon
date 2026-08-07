@@ -27,7 +27,7 @@ export function EditExpenseForm({
     paidById: string;
     participantIds: string[];
     itemised: boolean;
-    guestLock: "PAYING" | "PAID" | null;
+    guestLock: "PAYING" | "SENT" | "PAID" | null;
   };
   members: Member[];
   currency: string;

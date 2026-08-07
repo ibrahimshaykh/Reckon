@@ -37,6 +37,7 @@ export type SettlementStatus = (typeof SettlementStatus)[keyof typeof Settlement
 export const GuestStatus = {
   UNDECIDED: 'UNDECIDED',
   PAYING: 'PAYING',
+  SENT: 'SENT',
   PAID: 'PAID',
   DECLINED: 'DECLINED'
 } as const

@@ -69,6 +69,8 @@ export default async function GuestExpensePage({
         covered={view.covered}
         hosts={view.hosts}
         currency={view.currency}
+        paidAmountCents={view.paidAmountCents}
+        paidAt={view.paidAt}
         dict={dict}
       />
     </div>

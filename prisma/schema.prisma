@@ -34,6 +34,10 @@ enum SettlementStatus {
 enum GuestStatus {
   UNDECIDED
   PAYING
+  // The guest says the money has left their account. Still not PAID: only the
+  // payer confirming receipt moves the group's books, because until then this
+  // is a claim rather than an arrival.
+  SENT
   PAID
   DECLINED
 }
@@ -191,6 +195,11 @@ model ExpenseGuest {
   // When the guest last answered. Kept for the activity trail — status alone
   // can't say whether "undecided" means fresh or ignored for a fortnight.
   resolvedAt DateTime?
+  // What they actually paid, frozen when the payer confirmed it. The live
+  // share is derived from the bill and the head count, which is right while
+  // it is still owed and wrong once it is history — editing the expense a
+  // month later must not rewrite what somebody already handed over.
+  paidAmount Decimal?  @db.Decimal(10, 2)
   expiresAt  DateTime
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt

@@ -13,12 +13,18 @@
 //   else      by their hosts — the members who brought them — because those
 //             are the people who'd be out of pocket in real life.
 //
-// PAID is the trigger rather than PAYING on purpose: PAYING is an intention,
-// and if the guest then flakes, the group's balances would have to be
-// reversed after people had already seen them. Only money that has actually
-// moved is allowed to move the ledger.
+// PAID is the trigger rather than PAYING or SENT on purpose. PAYING is an
+// intention and SENT is a claim; if the guest then flakes, or mistypes an
+// account number, the group's balances would have to be reversed after people
+// had already seen them. Only money the payer says arrived is allowed to move
+// the ledger.
 
-export type GuestStatus = "UNDECIDED" | "PAYING" | "PAID" | "DECLINED";
+export type GuestStatus =
+  | "UNDECIDED"
+  | "PAYING"
+  | "SENT"
+  | "PAID"
+  | "DECLINED";
 
 export type GuestShareInput = {
   id: string;
@@ -138,15 +144,21 @@ export function deriveItemShares({
 }
 
 // Once a guest has committed money against a quoted amount, that amount can't
-// change underneath them. PAYING counts as well as PAID: the guest has been
-// shown a figure and is off to send it, and re-splitting the bill mid-transfer
-// means they pay the wrong amount with no way to know.
+// change underneath them. PAYING and SENT count as well as PAID: the guest has
+// been shown a figure and is off to send it — or has already sent it — and
+// re-splitting the bill mid-transfer means they pay the wrong amount with no
+// way to know.
 //
 // This is the lock, and it's derived rather than stored — a boolean column
 // would be one more thing that can drift out of step with the guests it
 // describes.
-export function guestLockReason(statuses: GuestStatus[]): "PAYING" | "PAID" | null {
+export function guestLockReason(
+  statuses: GuestStatus[],
+): "PAYING" | "SENT" | "PAID" | null {
+  // Most committed first: the strongest claim on the split is the one worth
+  // naming when explaining why it can't be changed.
   if (statuses.includes("PAID")) return "PAID";
+  if (statuses.includes("SENT")) return "SENT";
   if (statuses.includes("PAYING")) return "PAYING";
   return null;
 }

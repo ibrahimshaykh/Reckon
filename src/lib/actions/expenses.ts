@@ -192,7 +192,7 @@ export async function getExpenseForEdit(expenseId: string): Promise<
     paidById: string;
     participantIds: string[];
     itemised: boolean;
-    guestLock: "PAYING" | "PAID" | null;
+    guestLock: "PAYING" | "SENT" | "PAID" | null;
   }>
 > {
   return asActionResult(async () => {

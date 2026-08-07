@@ -68,6 +68,19 @@ describe("two guests with different hosts", () => {
     expect(burgers("PAYING", "PAYING")).toEqual(burgers("UNDECIDED", "UNDECIDED"));
   });
 
+  // The rule the whole "I've sent it" step depends on. A guest saying the
+  // money has gone is a claim about their own bank, not an arrival in
+  // somebody else's — and if the ledger moved on the claim, a wrong account
+  // number or a change of heart would rewrite balances everyone had already
+  // seen and acted on. Only the payer confirming counts.
+  it("saying they've SENT it still changes nothing — only receipt does", () => {
+    expect(burgers("SENT", "SENT")).toEqual(burgers("UNDECIDED", "UNDECIDED"));
+    expect(burgers("SENT", "SENT")).toEqual(burgers("PAYING", "PAYING"));
+
+    // And the moment it is confirmed, it does move.
+    expect(burgers("PAID", "PAID")).not.toEqual(burgers("SENT", "SENT"));
+  });
+
   // The one people get wrong: sara pays, but Lola's number doesn't move.
   it("sara paying leaves Lola exactly where she was", () => {
     const unpaid = burgers("UNDECIDED", "UNDECIDED");

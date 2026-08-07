@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { respondAsGuest } from "@/lib/actions/guest";
+import { respondAsGuest, markGuestSent } from "@/lib/actions/guest";
 import { isActionError } from "@/lib/action-result";
 import { buildPayLink } from "@/lib/pay-links";
 import { interpolate } from "@/lib/i18n";
@@ -103,6 +103,8 @@ export function GuestResponse({
   covered,
   hosts,
   currency,
+  paidAmountCents,
+  paidAt,
   dict,
 }: {
   token: string;
@@ -117,12 +119,17 @@ export function GuestResponse({
   covered: boolean;
   hosts: GuestView["hosts"];
   currency: string;
+  /** The frozen receipt, present only once the payer has confirmed. */
+  paidAmountCents: number | null;
+  paidAt: string | null;
   dict: Dictionary;
 }) {
   const [current, setCurrent] = useState(status);
   const [currentPayTo, setCurrentPayTo] = useState(payTo);
   const [insisting, setInsisting] = useState(false);
-  const [pending, setPending] = useState<"PAYING" | "DECLINED" | null>(null);
+  const [pending, setPending] = useState<"PAYING" | "DECLINED" | "SENT" | null>(
+    null,
+  );
   const [error, setError] = useState<string | null>(null);
 
   async function respond(choice: "PAYING" | "DECLINED") {
@@ -142,13 +149,45 @@ export function GuestResponse({
     setPending(null);
   }
 
+  async function sent() {
+    setPending("SENT");
+    setError(null);
+
+    const result = await markGuestSent(token);
+
+    if (isActionError(result)) {
+      setError(result.error);
+      setPending(null);
+      return;
+    }
+
+    setCurrent(result.status);
+    setPending(null);
+  }
+
+  // Settled. The link is finished as a way to pay — no methods, no buttons —
+  // but it is kept readable as a receipt rather than turned into a dead page,
+  // because the one person who most wants proof this happened is the person
+  // holding this link.
   if (current === "PAID") {
     return (
-      <section className="flex flex-col gap-1 rounded-lg border border-rule bg-card p-4">
-        <p className="text-sm font-medium">{dict.guest.paidHeading}</p>
-        <p className="text-sm text-muted-foreground">
-          {interpolate(dict.guest.paidNote, { payerName, amount })}
+      <section className="flex flex-col gap-2 rounded-lg border border-rule bg-card p-4">
+        <p>
+          <span className="stamp text-positive">{dict.guest.paidHeading}</span>
         </p>
+        <p className="text-sm text-muted-foreground">
+          {interpolate(dict.guest.paidNote, {
+            payerName,
+            amount: paidAmountCents !== null
+              ? formatMoney(paidAmountCents, currency)
+              : amount,
+          })}
+        </p>
+        {paidAt && (
+          <p className="tabular text-xs text-muted-foreground" suppressHydrationWarning>
+            {new Date(paidAt).toLocaleString()}
+          </p>
+        )}
       </section>
     );
   }
@@ -246,6 +285,22 @@ export function GuestResponse({
     );
   }
 
+  // They say the money has gone. The books haven't moved — only the payer
+  // confirming does that — so this says what is actually true: it is with
+  // them now, and somebody else has to look.
+  if (current === "SENT") {
+    return (
+      <section className="flex flex-col gap-1 rounded-lg border border-rule bg-card p-4">
+        <p className="text-sm font-medium">
+          <span className="stamp text-positive">{dict.guest.sentStamp}</span>
+        </p>
+        <p className="mt-2 text-sm text-muted-foreground">
+          {interpolate(dict.guest.sentNote, { payerName, amount })}
+        </p>
+      </section>
+    );
+  }
+
   if (current === "PAYING" && currentPayTo) {
     return (
       <section className="flex flex-col gap-3 rounded-lg border border-rule bg-card p-4">
@@ -262,6 +317,16 @@ export function GuestResponse({
           note={expenseTitle}
           dict={dict}
         />
+        {/* The step that was missing. Without it the payer could not tell
+            somebody who meant to pay from somebody who already had, and the
+            guest had no way to say "it's done, go and look". */}
+        <div className="flex flex-col gap-1.5 border-t border-rule pt-3">
+          <Button size="sm" disabled={pending !== null} onClick={sent}>
+            {dict.guest.iveSentIt}
+          </Button>
+          <p className="text-xs text-muted-foreground">{dict.guest.iveSentNote}</p>
+        </div>
+        {error && <p className="text-sm text-destructive">{error}</p>}
       </section>
     );
   }
