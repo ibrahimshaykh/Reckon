@@ -29,26 +29,44 @@ function PayMethods({
 }) {
   const hasAny =
     details.venmoHandle ||
+    details.paypalHandle ||
+    details.cashappHandle ||
     details.easypaisaNumber ||
     details.jazzcashNumber ||
     details.nayapayHandle ||
     details.bankDetails;
 
+  // Every tap-through method the payer has saved. Listing only some of them
+  // told a guest "no payment method" while the payer was looking at one they
+  // had filled in.
+  const links = [
+    { provider: "venmo" as const, handle: details.venmoHandle, label: dict.guest.payOnVenmo },
+    { provider: "paypal" as const, handle: details.paypalHandle, label: dict.guest.payOnPaypal },
+    { provider: "cashapp" as const, handle: details.cashappHandle, label: dict.guest.payOnCashapp },
+  ];
+
   return (
     <div className="flex flex-col gap-2">
-      {details.venmoHandle && (
-        <a
-          href={buildPayLink("venmo", {
-            handle: details.venmoHandle,
-            // Their own share — the old page pre-filled Venmo with the entire
-            // expense total, so a guest who tapped through paid for everyone.
-            amountCents,
-            note,
-          })}
-          className="text-sm text-primary underline"
-        >
-          {interpolate(dict.guest.payOnVenmo, { name })}
-        </a>
+      {links.map(
+        ({ provider, handle, label }) =>
+          handle && (
+            <a
+              key={provider}
+              href={buildPayLink(provider, {
+                handle,
+                // Their own share — the old page pre-filled Venmo with the
+                // entire expense total, so a guest who tapped through paid for
+                // everyone.
+                amountCents,
+                note,
+              })}
+              target="_blank"
+              rel="noreferrer"
+              className="text-sm text-primary underline"
+            >
+              {interpolate(label, { name })}
+            </a>
+          ),
       )}
       {details.easypaisaNumber && (
         <CopyRow label={dict.common.easypaisa} value={details.easypaisaNumber} dict={dict} />

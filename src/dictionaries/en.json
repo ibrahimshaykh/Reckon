@@ -372,6 +372,8 @@
   "guest": {
     "greeting": "Hi {guestName} — {hosts} shared {title} with you.",
     "payOnVenmo": "Pay {name} on Venmo",
+    "payOnPaypal": "Pay {name} on PayPal",
+    "payOnCashapp": "Pay {name} on Cash App",
     "yourShare": "Your share",
     "shareExplainer": "Split evenly between everyone who was there, including you.",
     "illPay": "I'll pay my share",

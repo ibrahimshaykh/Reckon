@@ -211,8 +211,14 @@ export async function refreshGuestLink(
   });
 }
 
+// Every method a person can save, not a subset of them. PayPal and Cash App
+// were missing here while the settings page happily collected both, so a payer
+// could fill them in, see them stored, and guests would still be told there
+// was no way to pay them.
 export type GuestPayTo = {
   venmoHandle: string | null;
+  paypalHandle: string | null;
+  cashappHandle: string | null;
   easypaisaNumber: string | null;
   jazzcashNumber: string | null;
   nayapayHandle: string | null;
@@ -253,15 +259,11 @@ export type GuestView = {
   hosts: GuestHost[];
 };
 
-function toPayTo(payer: {
-  venmoHandle: string | null;
-  easypaisaNumber: string | null;
-  jazzcashNumber: string | null;
-  nayapayHandle: string | null;
-  bankDetails: string | null;
-}): GuestPayTo {
+function toPayTo(payer: GuestPayTo): GuestPayTo {
   return {
     venmoHandle: payer.venmoHandle,
+    paypalHandle: payer.paypalHandle,
+    cashappHandle: payer.cashappHandle,
     easypaisaNumber: payer.easypaisaNumber,
     jazzcashNumber: payer.jazzcashNumber,
     nayapayHandle: payer.nayapayHandle,

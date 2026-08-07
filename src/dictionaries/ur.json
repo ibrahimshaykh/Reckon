@@ -372,6 +372,8 @@
   "guest": {
     "greeting": "سلام {guestName} — {hosts} نے {title} آپ کے ساتھ شیئر کیا۔",
     "payOnVenmo": "{name} کو وینمو پر ادا کریں",
+    "payOnPaypal": "{name} کو پے پال پر ادا کریں",
+    "payOnCashapp": "{name} کو کیش ایپ پر ادا کریں",
     "yourShare": "آپ کا حصہ",
     "shareExplainer": "وہاں موجود سب کے درمیان برابر تقسیم، آپ سمیت۔",
     "illPay": "میں اپنا حصہ ادا کروں گا",
