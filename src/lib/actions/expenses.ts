@@ -10,6 +10,7 @@ import { fromCents } from "@/lib/money";
 import { validate, cuid, positiveCents, shortText } from "@/lib/validation";
 import { recalculateSettlements } from "@/lib/actions/settlements";
 import { guestLockReason } from "@/lib/guest-shares";
+import { hostsHaveSettled } from "@/lib/actions/guest";
 import { asActionResult, type ActionResult } from "@/lib/action-result";
 
 type AddManualExpenseInput = {
@@ -383,6 +384,19 @@ export async function listGroupExpenses(groupId: string) {
     orderBy: { createdAt: "desc" },
   });
 
+  // Worked out once for the whole page rather than per guest. Every guest in a
+  // group shares the same settlement and payment history, so asking the
+  // database again for each of them would be the same two queries repeated.
+  const guestIds = expenses.flatMap((e) =>
+    e.guests.map((g) => ({ id: g.id, hostIds: g.hosts.map((h) => h.userId) })),
+  );
+  const settledHosts = new Set<string>();
+  await Promise.all(
+    guestIds.map(async ({ id, hostIds }) => {
+      if (await hostsHaveSettled(groupId, hostIds)) settledHosts.add(id);
+    }),
+  );
+
   return expenses.map((e) => {
     // An expense can have several items, and a person can appear in more than
     // one of them — dedupe so "shared by" names each person once.
@@ -408,6 +422,11 @@ export async function listGroupExpenses(groupId: string) {
         hostNames: g.hosts.map((h) => h.user.displayName),
         // Lets the row admit the hosts were inferred rather than chosen.
         hostsAssumed: g.hostsAssumed,
+        // Their hosts have squared up, so this share is already paid for and
+        // nobody is waiting on the guest. The row stops asking to be chased —
+        // it was still offering "copy link" and a prominent "mark received" on
+        // a page where the group had already closed the book.
+        covered: g.status !== "PAID" && settledHosts.has(g.id),
       })),
       // Guests can only ever be added to a single equally split item, so the
       // share control has to know whether this expense qualifies before

@@ -23,6 +23,8 @@ type Guest = {
   hostIds: string[];
   hostNames: string[];
   hostsAssumed: boolean;
+  /** Their hosts have squared up, so nobody is waiting on this guest. */
+  covered: boolean;
 };
 
 // Guests attached to one expense, and where each of them stands. The status
@@ -142,25 +144,53 @@ export function GuestList({
                 )}
               </span>
 
+              {/* Says the book is closed on this one. Without it the row kept
+                  offering to chase somebody whose share the group had already
+                  covered and squared up between themselves. */}
+              {g.covered && (
+                <span className="text-muted-foreground">
+                  {dict.expenses.guestCovered}
+                </span>
+              )}
+
               {/* Offered from "says they'll pay" onwards, not only once they
                   claim to have sent it: money often arrives before anybody
                   presses anything, and the payer should not have to wait for
                   the guest to catch up before recording what they can see in
-                  their own account. Emphasised once the guest says it has
-                  gone, because then it is the one thing left to do. */}
+                  their own account.
+
+                  Demoted to a plain link once covered. Money can still turn up
+                  from a guest who said they would pay, so there has to be
+                  somewhere to record it — but it is no longer the thing this
+                  row is asking anybody to do. */}
               {isPayer && (g.status === "PAYING" || g.status === "SENT") && (
-                <Button
-                  size="sm"
-                  variant={g.status === "SENT" ? "default" : "outline"}
-                  disabled={pendingId === g.id}
-                  onClick={() =>
-                    run(g.id, () => confirmGuestPaid(g.id), () =>
-                      jot(`${g.name} paid up`),
-                    )
-                  }
-                >
-                  {dict.expenses.guestConfirmPaid}
-                </Button>
+                g.covered ? (
+                  <button
+                    type="button"
+                    disabled={pendingId === g.id}
+                    onClick={() =>
+                      run(g.id, () => confirmGuestPaid(g.id), () =>
+                        jot(`${g.name} paid up`),
+                      )
+                    }
+                    className="text-muted-foreground underline underline-offset-2 transition-colors hover:text-foreground disabled:opacity-50"
+                  >
+                    {dict.expenses.guestConfirmPaid}
+                  </button>
+                ) : (
+                  <Button
+                    size="sm"
+                    variant={g.status === "SENT" ? "default" : "outline"}
+                    disabled={pendingId === g.id}
+                    onClick={() =>
+                      run(g.id, () => confirmGuestPaid(g.id), () =>
+                        jot(`${g.name} paid up`),
+                      )
+                    }
+                  >
+                    {dict.expenses.guestConfirmPaid}
+                  </Button>
+                )
               )}
 
               {/* The answer to a claim that turns out to be wrong. Offered only
@@ -195,8 +225,11 @@ export function GuestList({
               )}
 
               {/* Links expire after 30 days, and a guest who takes longer than
-                  that used to hit a dead page with no way back. */}
-              {g.status !== "PAID" && (
+                  that used to hit a dead page with no way back.
+
+                  Not offered once they are covered: the link is for chasing
+                  somebody, and there is nobody left to chase. */}
+              {g.status !== "PAID" && !g.covered && (
                 <button
                   type="button"
                   disabled={pendingId === g.id}
