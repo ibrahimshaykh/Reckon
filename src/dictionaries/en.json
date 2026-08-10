@@ -417,12 +417,8 @@
     "coveredHeading": "You were our guest.",
     "coveredNote": "{hosts} have already covered your share, so there's nothing to pay.",
     "insistLink": "I'd still like to pay my share",
-    "insistHeading": "Send your share to whoever covered you",
-    "insistNote": "This goes straight to whoever covered your share, so nobody is left out of pocket.",
     "stillPayingHeading": "You said you would pay",
-    "stillPayingNote": "{hosts} covered your share in the meantime, so send it to them instead of whoever paid the bill — they are the ones out of pocket now.",
-    "hostOwed": "{name} — {amount}",
-    "nevermind": "Never mind",
+    "stillPayingNote": "{hosts} covered your share in the meantime. Send it to {payerName} as before — the group squares up between themselves from there.",
     "greetingNoHosts": "Hi {guestName} — {payerName} paid for {title}."
   },
   "confirm": {

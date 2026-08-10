@@ -417,12 +417,8 @@
     "coveredHeading": "Fuiste nuestro invitado.",
     "coveredNote": "{hosts} ya cubrieron tu parte, así que no hay nada que pagar.",
     "insistLink": "Aun así quiero pagar mi parte",
-    "insistHeading": "Envía tu parte a quien te cubrió",
-    "insistNote": "Esto va directo a quienes cubrieron tu parte, para que nadie salga perdiendo.",
     "stillPayingHeading": "Dijiste que ibas a pagar",
-    "stillPayingNote": "Mientras tanto {hosts} cubrió tu parte, así que envíasela a ellos en vez de a quien pagó la cuenta: son los que están descubiertos ahora.",
-    "hostOwed": "{name} — {amount}",
-    "nevermind": "Déjalo",
+    "stillPayingNote": "Mientras tanto {hosts} cubrió tu parte. Envíaselo a {payerName} como antes: el grupo se lo reparte entre ellos a partir de ahí.",
     "greetingNoHosts": "Hola {guestName} — {payerName} pagó {title}."
   },
   "confirm": {

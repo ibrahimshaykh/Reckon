@@ -231,7 +231,16 @@ export type GuestPayTo = {
   bankDetails: string | null;
 };
 
-export type GuestHost = GuestPayTo & {
+/**
+ * A host, for naming only.
+ *
+ * Their payment details used to travel with the link, because the guest was
+ * asked to pay each host directly. They pay whoever fronted the bill now, so
+ * the details are not needed — and a link handed to somebody outside the group
+ * should carry the smallest amount of other people's banking information it
+ * can, which is none.
+ */
+export type GuestHost = {
   name: string;
   /** How much of this guest's share this host is carrying. */
   amountCents: number;
@@ -325,29 +334,11 @@ export async function getGuestView(token: string): Promise<GuestView | null> {
     guest.status === "SENT" ||
     guest.status === "PAID";
 
-  // "The hosts have squared up" means two things at once: nothing involving
-  // them is still outstanding, AND money of theirs actually moved. Requiring
-  // the second half matters — a host who is also the payer can owe nobody and
-  // have no rows at all, and treating that emptiness as "already covered"
-  // would wave a guest away while their host is still out of pocket.
-  //
-  // The second half reads the Payment table, not settlement statuses. Once a
-  // payment is recorded the balance clears, and a cleared settlement row is
-  // deleted — so counting CONFIRMED rows would have started reporting zero
-  // exactly when the money had definitely arrived.
-  const hostIds = guest.hosts.map((h) => h.userId);
-  const hostSides = [{ fromUserId: { in: hostIds } }, { toUserId: { in: hostIds } }];
-  const [outstanding, paid] = await Promise.all([
-    db.settlement.count({
-      where: {
-        groupId: expense.groupId,
-        status: { not: "CONFIRMED" },
-        OR: hostSides,
-      },
-    }),
-    db.payment.count({ where: { groupId: expense.groupId, OR: hostSides } }),
-  ]);
-  const covered = guest.status !== "PAID" && outstanding === 0 && paid > 0;
+  const settled = await hostsHaveSettled(
+    expense.groupId,
+    guest.hosts.map((h) => h.userId),
+  );
+  const covered = guest.status !== "PAID" && settled;
 
   const carried = guestHostSplit[guest.id] ?? {};
 
@@ -363,7 +354,6 @@ export async function getGuestView(token: string): Promise<GuestView | null> {
     hosts: guest.hosts.map((h) => ({
       name: h.user.displayName,
       amountCents: carried[h.userId] ?? 0,
-      ...toPayTo(h.user),
     })),
     // Falls back to the live share for guests confirmed before the frozen
     // column existed, so their receipt still shows a figure rather than a gap.
@@ -378,6 +368,45 @@ export async function getGuestView(token: string): Promise<GuestView | null> {
         ? guest.resolvedAt.toISOString()
         : null,
   };
+}
+
+/**
+ * Have this guest's hosts squared up between themselves?
+ *
+ * If they have, the guest's share has already been paid for — by the hosts,
+ * out of their own pockets — and nobody is waiting on the guest for it any
+ * more. That is what makes a guest "covered".
+ *
+ * Two conditions, and both are needed. Nothing involving the hosts is still
+ * outstanding, AND money of theirs actually moved. Without the second half, a
+ * host who is also the payer can owe nobody and have no rows at all, and that
+ * emptiness would read as "already covered" while they are still out of
+ * pocket.
+ *
+ * The second half reads the Payment table rather than settlement statuses,
+ * because a cleared settlement row is deleted — counting CONFIRMED rows would
+ * report zero at exactly the moment the money had definitely arrived.
+ *
+ * Shared rather than written twice. The guest's own link and the settle page
+ * were answering this question separately, and disagreeing: the link told a
+ * guest their share was covered while the settle page was still listing them
+ * as owing it.
+ */
+export async function hostsHaveSettled(
+  groupId: string,
+  hostIds: string[],
+): Promise<boolean> {
+  if (hostIds.length === 0) return false;
+
+  const hostSides = [{ fromUserId: { in: hostIds } }, { toUserId: { in: hostIds } }];
+  const [outstanding, paid] = await Promise.all([
+    db.settlement.count({
+      where: { groupId, status: { not: "CONFIRMED" }, OR: hostSides },
+    }),
+    db.payment.count({ where: { groupId, OR: hostSides } }),
+  ]);
+
+  return outstanding === 0 && paid > 0;
 }
 
 export type OutstandingGuest = {
@@ -444,6 +473,16 @@ export async function listOutstandingGuests(
 
     for (const guest of expense.guests) {
       if (!OPEN.includes(guest.status)) continue;
+
+      // Their hosts have squared up, so this share has already been paid for
+      // out of their pockets and nobody is waiting on the guest for it. Listing
+      // it here said the opposite of what the group could see for itself —
+      // "Everyone's settled up" at the top of the page, and a guest still
+      // apparently owing four thousand rupees underneath it.
+      if (await hostsHaveSettled(groupId, guest.hosts.map((h) => h.userId))) {
+        continue;
+      }
+
       out.push({
         id: guest.id,
         name: guest.name,

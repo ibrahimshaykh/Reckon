@@ -126,7 +126,6 @@ export function GuestResponse({
 }) {
   const [current, setCurrent] = useState(status);
   const [currentPayTo, setCurrentPayTo] = useState(payTo);
-  const [insisting, setInsisting] = useState(false);
   const [pending, setPending] = useState<"PAYING" | "DECLINED" | "SENT" | null>(
     null,
   );
@@ -216,101 +215,34 @@ export function GuestResponse({
   // The hosts have already squared up, so this guest owes nobody. Being
   // someone's guest means you aren't chased for the bill — but it stays
   // their choice, so there's a quiet way to insist rather than a locked door.
-  if (covered) {
-    const hostNames = hosts.map((h) => h.name);
-    const owing = hosts.filter((h) => h.amountCents > 0);
-
-    // Somebody who already said they would pay does not get asked again.
-    // Being told "your share is covered, there's nothing to pay" after
-    // volunteering reads as the app forgetting — and it loses the one thing
-    // they had decided. Their hosts settling up changes who to send it to,
-    // not whether they meant to.
-    const committed = current === "PAYING";
-
-    if (!insisting && !committed) {
-      return (
-        <section className="flex flex-col gap-3 rounded-lg border border-rule bg-card p-4">
-          <div className="flex flex-col gap-1">
-            <p className="text-sm font-medium">{dict.guest.coveredHeading}</p>
-            <p className="text-sm text-muted-foreground">
-              {interpolate(dict.guest.coveredNote, {
-                hosts: hostNames.join(` ${dict.common.and} `),
-              })}
-            </p>
-          </div>
-          <button
-            type="button"
-            onClick={() => setInsisting(true)}
-            className="self-start text-xs text-muted-foreground underline underline-offset-4 transition-colors hover:text-foreground"
-          >
-            {dict.guest.insistLink}
-          </button>
-        </section>
-      );
-    }
-
+  //
+  // Only shown to somebody who has not already volunteered. Telling a person
+  // who said "I'll pay" that there is nothing to pay reads as the app
+  // forgetting, and throws away the one thing they had decided.
+  if (covered && current !== "PAYING") {
     return (
       <section className="flex flex-col gap-3 rounded-lg border border-rule bg-card p-4">
         <div className="flex flex-col gap-1">
-          <p className="text-sm font-medium">
-            {committed ? dict.guest.stillPayingHeading : dict.guest.insistHeading}
-          </p>
-          {/* Deliberately doesn't name the payer. Paying them would hand money
-              to someone already made whole — but they're often a host too, and
-              "X has been paid back, so pay the hosts" reads as nonsense when X
-              is one of the hosts. */}
+          <p className="text-sm font-medium">{dict.guest.coveredHeading}</p>
           <p className="text-sm text-muted-foreground">
-            {committed
-              ? interpolate(dict.guest.stillPayingNote, {
-                  hosts: hostNames.join(` ${dict.common.and} `),
-                })
-              : dict.guest.insistNote}
+            {interpolate(dict.guest.coveredNote, {
+              hosts: hosts.map((h) => h.name).join(` ${dict.common.and} `),
+            })}
           </p>
         </div>
-
-        {owing.map((host) => (
-          <div key={host.name} className="flex flex-col gap-1.5">
-            <p className="text-sm font-medium">
-              {interpolate(dict.guest.hostOwed, {
-                name: host.name,
-                amount: formatMoney(host.amountCents, currency),
-              })}
-            </p>
-            <PayMethods
-              details={host}
-              name={host.name}
-              amountCents={host.amountCents}
-              note={expenseTitle}
-              dict={dict}
-            />
-          </div>
-        ))}
-
-        {/* The step this screen was missing. Somebody could be shown exactly
-            where to send the money and then had no way to say they had sent
-            it — the only way out was the "never mind" link, which says the
-            opposite of what they just did. */}
-        <div className="flex flex-col gap-1.5 border-t border-rule pt-3">
-          <Button size="sm" disabled={pending !== null} onClick={sent}>
-            {dict.guest.iveSentIt}
-          </Button>
-          <p className="text-xs text-muted-foreground">{dict.guest.iveSentNote}</p>
-        </div>
-
+        {/* Insisting is just saying they'll pay, so it goes through the same
+            door as everybody else and lands on the same screen. It used to
+            open a parallel one that asked them to pay each host separately —
+            which nobody could confirm and the books could not record. */}
+        <Button
+          variant="outline"
+          size="sm"
+          disabled={pending !== null}
+          onClick={() => respond("PAYING")}
+        >
+          {dict.guest.insistLink}
+        </Button>
         {error && <p className="text-sm text-destructive">{error}</p>}
-
-        {/* Only offered to somebody who chose to insist. Backing out is not a
-            step for a person who had already committed to paying — for them
-            this screen is the follow-through, not an invitation. */}
-        {!committed && (
-          <button
-            type="button"
-            onClick={() => setInsisting(false)}
-            className="self-start text-xs text-muted-foreground underline underline-offset-4 transition-colors hover:text-foreground"
-          >
-            {dict.guest.nevermind}
-          </button>
-        )}
       </section>
     );
   }
@@ -344,9 +276,24 @@ export function GuestResponse({
       <section className="flex flex-col gap-3 rounded-lg border border-rule bg-card p-4">
         <div className="flex flex-col gap-1">
           <p className="text-sm font-medium">
-            {interpolate(dict.guest.payingHeading, { amount, payerName })}
+            {covered
+              ? dict.guest.stillPayingHeading
+              : interpolate(dict.guest.payingHeading, { amount, payerName })}
           </p>
-          <p className="text-sm text-muted-foreground">{dict.guest.payingNote}</p>
+          {/* One recipient, always: whoever fronted the bill. Splitting the
+              payment across the hosts looked fairer and was unworkable —
+              nobody but the bill payer could confirm it arrived, and the
+              books record a guest's payment as having reached the person who
+              paid. The group redistributing it afterwards is what Who owes
+              who already does. */}
+          <p className="text-sm text-muted-foreground">
+            {covered
+              ? interpolate(dict.guest.stillPayingNote, {
+                  hosts: hosts.map((h) => h.name).join(` ${dict.common.and} `),
+                  payerName,
+                })
+              : dict.guest.payingNote}
+          </p>
         </div>
         <PayMethods
           details={currentPayTo}
