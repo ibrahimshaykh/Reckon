@@ -371,6 +371,54 @@ export async function markPaidByToken(token: string): Promise<ActionResult<void>
 }
 
 /**
+ * The person owed saying the money never turned up.
+ *
+ * Puts the debt back to PENDING so the other side can try again, and clears
+ * the confirm token — that token was minted to confirm a specific claim, and
+ * the claim has just been rejected. A fresh one is issued if they say they
+ * have paid again.
+ *
+ * No payment is unwound because none was ever recorded: PAY_MARKED is only a
+ * claim, and money is written down at confirmation. So this is a status
+ * moving backwards, not an accounting reversal.
+ */
+export async function rejectPayment(
+  settlementId: string,
+): Promise<ActionResult<void>> {
+  return asActionResult(async () => {
+    const session = await requireSession();
+    const settlement = await db.settlement.findUniqueOrThrow({
+      where: { id: settlementId },
+    });
+
+    if (settlement.toUserId !== session.id) {
+      throw new ApiError(
+        403,
+        "Only the person owed can say this money didn't arrive.",
+      );
+    }
+    if (settlement.status === "CONFIRMED") {
+      throw new ApiError(
+        400,
+        "You already confirmed this one. Recording it again isn't something this can undo.",
+      );
+    }
+    if (settlement.status !== "PAY_MARKED") return;
+
+    await db.settlement.update({
+      where: { id: settlement.id },
+      data: {
+        status: "PENDING",
+        confirmToken: null,
+        confirmTokenExpiresAt: null,
+      },
+    });
+
+    revalidatePath(`/groups/${settlement.groupId}/settle`);
+  });
+}
+
+/**
  * A link the debtor can be sent. Minted on demand rather than up front, since
  * settlements are recalculated constantly and most are cleared in the app.
  */
@@ -383,6 +431,22 @@ export async function createPayLink(
       where: { id: settlementId },
     });
     await assertMember(settlement.groupId, session.id);
+
+    // Only the person owed. Group membership was the wrong test: this link's
+    // whole power is to assert "I have paid you", so minting one for a debt
+    // between two other people hands the holder the ability to claim, in
+    // somebody else's name, that money changed hands — and to have the app
+    // email the payee saying so. That claim belongs to the two parties.
+    //
+    // The debtor is excluded as well, for a plainer reason: they are already
+    // looking at the debt, with the payment details and a Mark as paid button
+    // right there. A link to themselves does nothing.
+    if (settlement.toUserId !== session.id) {
+      throw new ApiError(
+        403,
+        "Only the person owed can send a pay link for this debt.",
+      );
+    }
 
     // Reused while it is still valid, so a link already sitting in somebody's
     // chat keeps working rather than being quietly replaced by a new one.

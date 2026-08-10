@@ -2,7 +2,12 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { markPaid, confirmReceived, createPayLink } from "@/lib/actions/settlements";
+import {
+  markPaid,
+  confirmReceived,
+  createPayLink,
+  rejectPayment,
+} from "@/lib/actions/settlements";
 import { createSafepayCheckout } from "@/lib/actions/safepay-checkout";
 import { isActionError } from "@/lib/action-result";
 import { formatMoney } from "@/lib/money";
@@ -197,6 +202,18 @@ function SettlementRow({
     }
   }
 
+  async function onRejectPayment() {
+    setPending(true);
+    setError(null);
+    const result = await rejectPayment(settlement.id);
+    if (isActionError(result)) {
+      setError(result.error);
+      setPending(false);
+    } else {
+      router.refresh();
+    }
+  }
+
   async function onConfirmReceived() {
     setPending(true);
     setError(null);
@@ -258,11 +275,14 @@ function SettlementRow({
             >
               {showMath ? dict.common.hideMath : dict.common.showMath}
             </button>
-            {/* Offered to anyone in the group, not just the two named here:
-                the usual reason a debt sits unpaid is that the person owing it
-                hasn't opened the app, and whoever notices should be able to
-                send it to them. */}
-            {settlement.status !== "CONFIRMED" && (
+            {/* Only the person owed. Everyone in the group could reach this at
+                first, on the reasoning that whoever notices an unpaid debt
+                should be able to chase it. That was wrong twice over: the link
+                lets its holder claim the money was sent, which is not a
+                bystander's claim to make, and the one person it was useless to
+                was the debtor — who is already here, reading this row, with
+                the payment details and Mark as paid in front of them. */}
+            {isPayee && settlement.status !== "CONFIRMED" && (
               <button
                 type="button"
                 disabled={pending}
@@ -402,6 +422,15 @@ function SettlementRow({
             {isPayee && settlement.status === "PAY_MARKED" && (
               <Button size="sm" variant="outline" disabled={pending} onClick={onConfirmReceived}>
                 {dict.settle.confirmReceived}
+              </Button>
+            )}
+            {/* The other answer. Without it, being told money had arrived when
+                it hadn't left the person owed with a choice between confirming
+                a payment they never got and leaving the claim standing for
+                ever. This puts the debt back so the payer can try again. */}
+            {isPayee && settlement.status === "PAY_MARKED" && (
+              <Button size="sm" variant="ghost" disabled={pending} onClick={onRejectPayment}>
+                {dict.settle.notReceived}
               </Button>
             )}
             {settlement.status === "PAY_MARKED" && !isPayee && (

@@ -6,6 +6,7 @@ import { X } from "lucide-react";
 import {
   confirmGuestPaid,
   refreshGuestLink,
+  rejectGuestPayment,
   removeGuest,
   setGuestHosts,
 } from "@/lib/actions/guest";
@@ -160,6 +161,24 @@ export function GuestList({
                 >
                   {dict.expenses.guestConfirmPaid}
                 </Button>
+              )}
+
+              {/* The answer to a claim that turns out to be wrong. Offered only
+                  against an actual claim: there is nothing to reject from
+                  somebody who has merely said they intend to pay. */}
+              {isPayer && g.status === "SENT" && (
+                <button
+                  type="button"
+                  disabled={pendingId === g.id}
+                  onClick={() =>
+                    run(g.id, () => rejectGuestPayment(g.id), () =>
+                      jot(`${g.name}'s payment didn't arrive`),
+                    )
+                  }
+                  className="text-muted-foreground underline underline-offset-2 transition-colors hover:text-destructive disabled:opacity-50"
+                >
+                  {dict.expenses.guestNotReceived}
+                </button>
               )}
 
               {g.status !== "PAID" && (

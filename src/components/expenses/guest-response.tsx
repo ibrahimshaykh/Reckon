@@ -192,6 +192,27 @@ export function GuestResponse({
     );
   }
 
+  // They say the money has gone. The books haven't moved — only the payer
+  // confirming does that — so this says what is actually true: it is with
+  // them now, and somebody else has to look.
+  //
+  // Checked before `covered` on purpose. Somebody who has already sent money
+  // must never be told there is nothing to pay; that reads as "you sent that
+  // for no reason", which is alarming and, since the payer still has to
+  // confirm it, not even true.
+  if (current === "SENT") {
+    return (
+      <section className="flex flex-col gap-1 rounded-lg border border-rule bg-card p-4">
+        <p className="text-sm font-medium">
+          <span className="stamp text-positive">{dict.guest.sentStamp}</span>
+        </p>
+        <p className="mt-2 text-sm text-muted-foreground">
+          {interpolate(dict.guest.sentNote, { payerName, amount })}
+        </p>
+      </section>
+    );
+  }
+
   // The hosts have already squared up, so this guest owes nobody. Being
   // someone's guest means you aren't chased for the bill — but it stays
   // their choice, so there's a quiet way to insist rather than a locked door.
@@ -199,7 +220,14 @@ export function GuestResponse({
     const hostNames = hosts.map((h) => h.name);
     const owing = hosts.filter((h) => h.amountCents > 0);
 
-    if (!insisting) {
+    // Somebody who already said they would pay does not get asked again.
+    // Being told "your share is covered, there's nothing to pay" after
+    // volunteering reads as the app forgetting — and it loses the one thing
+    // they had decided. Their hosts settling up changes who to send it to,
+    // not whether they meant to.
+    const committed = current === "PAYING";
+
+    if (!insisting && !committed) {
       return (
         <section className="flex flex-col gap-3 rounded-lg border border-rule bg-card p-4">
           <div className="flex flex-col gap-1">
@@ -224,12 +252,20 @@ export function GuestResponse({
     return (
       <section className="flex flex-col gap-3 rounded-lg border border-rule bg-card p-4">
         <div className="flex flex-col gap-1">
-          <p className="text-sm font-medium">{dict.guest.insistHeading}</p>
+          <p className="text-sm font-medium">
+            {committed ? dict.guest.stillPayingHeading : dict.guest.insistHeading}
+          </p>
           {/* Deliberately doesn't name the payer. Paying them would hand money
               to someone already made whole — but they're often a host too, and
               "X has been paid back, so pay the hosts" reads as nonsense when X
               is one of the hosts. */}
-          <p className="text-sm text-muted-foreground">{dict.guest.insistNote}</p>
+          <p className="text-sm text-muted-foreground">
+            {committed
+              ? interpolate(dict.guest.stillPayingNote, {
+                  hosts: hostNames.join(` ${dict.common.and} `),
+                })
+              : dict.guest.insistNote}
+          </p>
         </div>
 
         {owing.map((host) => (
@@ -250,13 +286,31 @@ export function GuestResponse({
           </div>
         ))}
 
-        <button
-          type="button"
-          onClick={() => setInsisting(false)}
-          className="self-start text-xs text-muted-foreground underline underline-offset-4 transition-colors hover:text-foreground"
-        >
-          {dict.guest.nevermind}
-        </button>
+        {/* The step this screen was missing. Somebody could be shown exactly
+            where to send the money and then had no way to say they had sent
+            it — the only way out was the "never mind" link, which says the
+            opposite of what they just did. */}
+        <div className="flex flex-col gap-1.5 border-t border-rule pt-3">
+          <Button size="sm" disabled={pending !== null} onClick={sent}>
+            {dict.guest.iveSentIt}
+          </Button>
+          <p className="text-xs text-muted-foreground">{dict.guest.iveSentNote}</p>
+        </div>
+
+        {error && <p className="text-sm text-destructive">{error}</p>}
+
+        {/* Only offered to somebody who chose to insist. Backing out is not a
+            step for a person who had already committed to paying — for them
+            this screen is the follow-through, not an invitation. */}
+        {!committed && (
+          <button
+            type="button"
+            onClick={() => setInsisting(false)}
+            className="self-start text-xs text-muted-foreground underline underline-offset-4 transition-colors hover:text-foreground"
+          >
+            {dict.guest.nevermind}
+          </button>
+        )}
       </section>
     );
   }
@@ -281,22 +335,6 @@ export function GuestResponse({
           {dict.guest.changeMind}
         </Button>
         {error && <p className="text-sm text-destructive">{error}</p>}
-      </section>
-    );
-  }
-
-  // They say the money has gone. The books haven't moved — only the payer
-  // confirming does that — so this says what is actually true: it is with
-  // them now, and somebody else has to look.
-  if (current === "SENT") {
-    return (
-      <section className="flex flex-col gap-1 rounded-lg border border-rule bg-card p-4">
-        <p className="text-sm font-medium">
-          <span className="stamp text-positive">{dict.guest.sentStamp}</span>
-        </p>
-        <p className="mt-2 text-sm text-muted-foreground">
-          {interpolate(dict.guest.sentNote, { payerName, amount })}
-        </p>
       </section>
     );
   }

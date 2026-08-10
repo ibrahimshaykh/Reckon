@@ -17,6 +17,39 @@ export function periodLengthDays(frequency: ChoreFrequency): number {
 }
 
 /**
+ * Formatters, kept rather than rebuilt on every call.
+ *
+ * Constructing an Intl.DateTimeFormat costs far more than using one, and these
+ * two sit in the hottest loop the app has: projecting a chore's rhythm forward
+ * walks period by period, asking the zone's offset at every step, for every
+ * chore on the page.
+ *
+ * This was measured, not guessed. The schedule test — 60 days across four
+ * frequencies — ran at roughly 5.8s against a 5s limit, so it passed on an
+ * idle machine and failed whenever the machine was busy. An intermittently
+ * red test was the symptom; a formatter rebuilt thousands of times was the
+ * cause. A group's time zone almost never changes, so these maps stay tiny.
+ */
+const OFFSET_FORMATTERS = new Map<string, Intl.DateTimeFormat>();
+const DATE_FORMATTERS = new Map<string, Intl.DateTimeFormat>();
+
+function formatter(
+  cache: Map<string, Intl.DateTimeFormat>,
+  key: string,
+  build: () => Intl.DateTimeFormatOptions,
+): Intl.DateTimeFormat {
+  let cached = cache.get(key);
+  if (!cached) {
+    cached = new Intl.DateTimeFormat(
+      cache === DATE_FORMATTERS ? "en-CA" : "en-US",
+      build(),
+    );
+    cache.set(key, cached);
+  }
+  return cached;
+}
+
+/**
  * How far ahead of UTC a zone is at a given instant, in milliseconds.
  *
  * Read from Intl rather than stored, so daylight saving is handled by the
@@ -25,16 +58,16 @@ export function periodLengthDays(frequency: ChoreFrequency): number {
  */
 function zoneOffset(at: Date, timeZone: string): number {
   const parts = Object.fromEntries(
-    new Intl.DateTimeFormat("en-US", {
+    formatter(OFFSET_FORMATTERS, timeZone, () => ({
       timeZone,
       hour12: false,
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-    })
+      year: "numeric" as const,
+      month: "2-digit" as const,
+      day: "2-digit" as const,
+      hour: "2-digit" as const,
+      minute: "2-digit" as const,
+      second: "2-digit" as const,
+    }))
       .formatToParts(at)
       .map((p) => [p.type, p.value]),
   );
@@ -56,12 +89,12 @@ function zoneOffset(at: Date, timeZone: string): number {
 export function toIsoDate(at: Date, timeZone: string): string {
   // en-CA formats as YYYY-MM-DD, which is the shape the URL and the date input
   // both use.
-  return new Intl.DateTimeFormat("en-CA", {
+  return formatter(DATE_FORMATTERS, timeZone, () => ({
     timeZone,
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  }).format(at);
+    year: "numeric" as const,
+    month: "2-digit" as const,
+    day: "2-digit" as const,
+  })).format(at);
 }
 
 /**

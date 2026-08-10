@@ -399,9 +399,16 @@ export type OutstandingGuest = {
  * the group could see Lola owing more without anything on the page explaining
  * that a guest of hers is the reason. This is that explanation.
  *
- * PAID guests are left out. Their money has arrived and their share is off the
- * books; what remains belongs in the expense's own history, not on a page
- * about who still owes what.
+ * Only guests whose share is still an open question appear: undecided, paying,
+ * or claiming to have sent it. Those are the ones where money might yet move.
+ *
+ * PAID and DECLINED are both settled questions, so both are left out. A paid
+ * guest's money has arrived and their share is off the books. A guest who
+ * declined is never going to pay — their share has become part of what the
+ * members owe each other, and it is already counted in the figures above.
+ * Listing either one implies there is something left to chase, on a page whose
+ * whole job is to say what is left to chase. The detail lives on the expense,
+ * which is where "why was this bill split like this" belongs.
  */
 export async function listOutstandingGuests(
   groupId: string,
@@ -409,8 +416,10 @@ export async function listOutstandingGuests(
   const session = await requireSession();
   await assertMember(groupId, session.id);
 
+  const OPEN: GuestStatus[] = ["UNDECIDED", "PAYING", "SENT"];
+
   const expenses = await db.expense.findMany({
-    where: { groupId, guests: { some: { status: { not: "PAID" } } } },
+    where: { groupId, guests: { some: { status: { in: OPEN } } } },
     include: {
       items: { include: { participants: true } },
       guests: { include: { hosts: { include: { user: true } } } },
@@ -434,7 +443,7 @@ export async function listOutstandingGuests(
     });
 
     for (const guest of expense.guests) {
-      if (guest.status === "PAID") continue;
+      if (!OPEN.includes(guest.status)) continue;
       out.push({
         id: guest.id,
         name: guest.name,
@@ -452,7 +461,6 @@ export async function listOutstandingGuests(
     SENT: 0,
     PAYING: 1,
     UNDECIDED: 2,
-    DECLINED: 3,
   };
   return out.sort(
     (a, b) =>
@@ -545,6 +553,60 @@ export async function markGuestSent(
     revalidatePath(`/groups/${guest.expense.groupId}`);
 
     return { status: "SENT" as GuestStatus };
+  });
+}
+
+/**
+ * The payer saying it did not arrive.
+ *
+ * The other half of confirming, and the half that was missing. A guest could
+ * say they had sent money — by mistake, or optimistically, or having typed an
+ * account number wrong — and the payer's only choices were to confirm money
+ * they never got, or to leave the claim standing for ever. Neither is a way
+ * to run a shared account.
+ *
+ * Puts them back to PAYING rather than UNDECIDED: they still intend to pay,
+ * their link still works, and the payment details are still in front of them.
+ * The point is to let them try again, not to make them start over.
+ *
+ * Nothing needs unwinding on the group's books, because SENT never moved
+ * them — which is exactly why SENT was built not to.
+ */
+export async function rejectGuestPayment(
+  guestId: string,
+): Promise<ActionResult<void>> {
+  return asActionResult(async () => {
+    const session = await requireSession();
+    const validId = validate(cuid, guestId);
+
+    const guest = await db.expenseGuest.findUniqueOrThrow({
+      where: { id: validId },
+      include: { expense: { select: { groupId: true, paidById: true } } },
+    });
+
+    if (guest.expense.paidById !== session.id) {
+      throw new ApiError(
+        403,
+        "Only the person who paid can say this money didn't arrive.",
+      );
+    }
+    // Confirmed money is not up for reversal here. Undoing a receipt is a
+    // different, heavier thing than disputing a claim about one.
+    if (guest.status === "PAID") {
+      throw new ApiError(
+        400,
+        "This share is already marked as received. Edit the expense if that's wrong.",
+      );
+    }
+    if (guest.status !== "SENT") return;
+
+    await db.expenseGuest.update({
+      where: { id: guest.id },
+      data: { status: "PAYING", resolvedAt: new Date() },
+    });
+
+    revalidatePath(`/groups/${guest.expense.groupId}`);
+    revalidatePath(`/groups/${guest.expense.groupId}/settle`);
   });
 }
 

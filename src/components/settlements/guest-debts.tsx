@@ -59,16 +59,14 @@ export function GuestDebts({
               )}
             </p>
 
+            {/* Only three states can reach here: a guest who declined or has
+                paid is a closed question and never appears on this page. */}
             <p className="text-xs">
               {guest.status === "SENT" ? (
                 <span className="text-positive">{dict.settle.guestSaysSent}</span>
               ) : guest.status === "PAYING" ? (
                 <span className="text-muted-foreground">
                   {dict.settle.guestSaysPaying}
-                </span>
-              ) : guest.status === "DECLINED" ? (
-                <span className="text-muted-foreground">
-                  {dict.settle.guestDeclined}
                 </span>
               ) : (
                 <span className="text-muted-foreground">
