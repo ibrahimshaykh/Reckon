@@ -319,6 +319,7 @@
     "guestStatusSent": "says they've sent it — check and confirm",
     "guestStatusPaid": "paid",
     "guestCovered": "covered — nothing outstanding",
+    "expenseSettled": "settled",
     "guestStatusDeclined": "isn't paying",
     "guestConfirmPaid": "Mark received",
     "guestNotReceived": "It didn't arrive",

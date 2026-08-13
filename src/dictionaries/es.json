@@ -319,6 +319,7 @@
     "guestStatusSent": "dice que ya lo envió — revisa y confirma",
     "guestStatusPaid": "pagó",
     "guestCovered": "cubierto: no queda nada pendiente",
+    "expenseSettled": "saldado",
     "guestStatusDeclined": "no va a pagar",
     "guestConfirmPaid": "Marcar recibido",
     "guestNotReceived": "No llegó",

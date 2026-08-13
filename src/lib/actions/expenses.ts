@@ -397,6 +397,37 @@ export async function listGroupExpenses(groupId: string) {
     }),
   );
 
+  /**
+   * Which expenses are finished with.
+   *
+   * Two conditions, and both are needed:
+   *
+   *   1. Nobody is still expected to pay. Every guest has either paid or said
+   *      they will not — a guest who said "I'll pay" is an open promise, and
+   *      the expense is not over while somebody still intends to send money.
+   *   2. The members have squared up between themselves.
+   *
+   * Only then has the bill actually finished moving. An expense where the
+   * members settled but a guest still owes looks finished from the members'
+   * side and is not, which is the case this distinction exists for.
+   */
+  const settledExpenses = new Set<string>();
+  await Promise.all(
+    expenses.map(async (e) => {
+      const guestStillOwes = e.guests.some(
+        (g) => g.status !== "PAID" && g.status !== "DECLINED",
+      );
+      if (guestStillOwes) return;
+
+      const participantIds = [
+        ...new Set(e.items.flatMap((i) => i.participants.map((p) => p.userId))),
+      ];
+      if (await hostsHaveSettled(groupId, participantIds)) {
+        settledExpenses.add(e.id);
+      }
+    }),
+  );
+
   return expenses.map((e) => {
     // An expense can have several items, and a person can appear in more than
     // one of them — dedupe so "shared by" names each person once.
@@ -428,6 +459,10 @@ export async function listGroupExpenses(groupId: string) {
         // a page where the group had already closed the book.
         covered: g.status !== "PAID" && settledHosts.has(g.id),
       })),
+      // Nobody owes anything on this one any more — every guest resolved and
+      // the members squared up. The row says so rather than looking identical
+      // to a bill that is still being chased.
+      settled: settledExpenses.has(e.id),
       // Guests can only ever be added to a single equally split item, so the
       // share control has to know whether this expense qualifies before
       // offering it.

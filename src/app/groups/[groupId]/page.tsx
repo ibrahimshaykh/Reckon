@@ -203,7 +203,21 @@ export default async function GroupPage({
                 <li className="flex flex-col gap-2 border-b border-rule/60 py-3 last:border-0">
                   <div className="flex items-baseline gap-4">
                   <div className="flex min-w-0 flex-col gap-0.5">
-                    <span className="truncate text-sm font-medium">{e.title}</span>
+                    <span className="flex min-w-0 items-center gap-2">
+                      <span className="truncate text-sm font-medium">{e.title}</span>
+                      {/* Stamped, not struck through. A line through the title
+                          of an expense reads as "cancelled" or "deleted",
+                          which is the opposite of what this means and a
+                          dangerous thing to imply about money. The stamp
+                          already means "over with, still on the record"
+                          everywhere else in this app — a settled debt, a
+                          forgiven IOU, a decided plan. */}
+                      {e.settled && (
+                        <span className="stamp shrink-0 text-positive">
+                          {dict.expenses.expenseSettled}
+                        </span>
+                      )}
+                    </span>
                     <span className="text-xs text-muted-foreground">
                       {describeExpense(e, dict)}
                     </span>

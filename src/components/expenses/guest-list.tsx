@@ -227,9 +227,13 @@ export function GuestList({
               {/* Links expire after 30 days, and a guest who takes longer than
                   that used to hit a dead page with no way back.
 
-                  Not offered once they are covered: the link is for chasing
-                  somebody, and there is nobody left to chase. */}
-              {g.status !== "PAID" && !g.covered && (
+                  Dropped only for a covered guest who has NOT committed: there
+                  the link is for chasing somebody, and there is nobody left to
+                  chase. Somebody who said they would pay is a different case —
+                  their link is live, it is how they are going to pay, and they
+                  may well ask for it again. Removing it from them was wrong. */}
+              {g.status !== "PAID" &&
+                (!g.covered || g.status === "PAYING" || g.status === "SENT") && (
                 <button
                   type="button"
                   disabled={pendingId === g.id}
