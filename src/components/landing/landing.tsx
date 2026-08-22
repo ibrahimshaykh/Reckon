@@ -42,7 +42,7 @@ export function Landing() {
           not an illustration of the headline — it performs it, collapsing
           five tangled debts into two payments as the reader scrolls. */}
       <section className="relative isolate">
-        <div className="relative mx-auto grid w-full max-w-6xl gap-12 px-6 py-20 md:py-28 lg:grid-cols-[1.05fr_1fr] lg:items-center lg:gap-16">
+        <div className="relative mx-auto grid w-full max-w-5xl gap-12 px-6 py-20 md:py-28 lg:grid-cols-[1.05fr_1fr] lg:items-center lg:gap-16">
           <div className="relative flex flex-col gap-6">
             <p className="sketch-pill w-fit bg-card px-3 py-1 font-mono text-[0.6875rem] tracking-[0.18em] uppercase">
               For people who share a roof
@@ -87,7 +87,7 @@ export function Landing() {
 
       {/* ── The claim, in figures ────────────────────────────────────────── */}
       <section className="border-y border-rule">
-        <dl className="mx-auto grid w-full max-w-6xl sm:grid-cols-3">
+        <dl className="mx-auto grid w-full max-w-5xl sm:grid-cols-3">
           {[
             {
               value: 60,
@@ -123,7 +123,7 @@ export function Landing() {
 
       {/* ── Shows its working ────────────────────────────────────────────── */}
       <section className="border-b border-rule">
-        <div className="relative mx-auto flex w-full max-w-6xl flex-col gap-10 px-6 py-20 md:py-24 lg:flex-row lg:gap-16">
+        <div className="relative mx-auto flex w-full max-w-5xl flex-col gap-10 px-6 py-20 md:py-24 lg:flex-row lg:gap-16">
           <Reveal className="relative lg:w-[38%]">
             <h2 className="text-4xl md:text-5xl">Every number shows its working</h2>
             <p className="mt-4 text-[0.9375rem] leading-relaxed text-muted-foreground">
@@ -145,7 +145,7 @@ export function Landing() {
       </section>
 
       {/* ── The three places ─────────────────────────────────────────────── */}
-      <section className="mx-auto w-full max-w-6xl px-6 py-20 md:py-24">
+      <section className="mx-auto w-full max-w-5xl px-6 py-20 md:py-24">
         <div className="flex flex-col gap-6">
           {PILLARS.map((pillar, i) => (
             <Reveal key={pillar.title} delay={i * 0.08}>
@@ -183,7 +183,7 @@ export function Landing() {
 
       {/* ── Proof of continuity ──────────────────────────────────────────── */}
       <section className="border-y border-rule">
-        <div className="relative mx-auto flex w-full max-w-6xl flex-col gap-8 px-6 py-20 md:py-24">
+        <div className="relative mx-auto flex w-full max-w-5xl flex-col gap-8 px-6 py-20 md:py-24">
           <Reveal className="relative max-w-2xl">
             <h2 className="text-4xl md:text-5xl">This is what it looks like inside</h2>
             <p className="mt-4 text-[0.9375rem] leading-relaxed text-muted-foreground">
@@ -201,7 +201,7 @@ export function Landing() {
       </section>
 
       {/* ── Last word ────────────────────────────────────────────────────── */}
-      <section className="mx-auto flex w-full max-w-6xl flex-col items-start gap-6 px-6 py-20 md:py-28">
+      <section className="mx-auto flex w-full max-w-5xl flex-col items-start gap-6 px-6 py-20 md:py-28">
         <h2 className="max-w-2xl text-4xl md:text-5xl">
           Stop keeping score in your head
         </h2>

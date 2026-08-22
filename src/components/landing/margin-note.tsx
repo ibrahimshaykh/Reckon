@@ -41,9 +41,15 @@ export function MarginNote({
       viewport={{ once: true, margin: "-15% 0px" }}
       transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
       className={cn(
-        "pointer-events-none absolute hidden max-w-[13rem] text-sm leading-snug lg:block",
-        // Sits outside the reading column, in the margin proper.
-        side === "start" ? "end-full me-8 text-end" : "start-full ms-8",
+        // Only shown where a margin genuinely exists. The reading column is
+        // centred, so the gutter is (viewport - column) / 2 — below about
+        // 1400px that is narrower than the note itself, and hanging it there
+        // clipped it against the edge of the window. Folded away rather than
+        // squeezed in: a margin note crammed into the column is not a margin
+        // note any more.
+        "pointer-events-none absolute hidden max-w-[10rem] text-sm leading-snug",
+        "[@media(min-width:1400px)]:block",
+        side === "start" ? "end-full me-5 text-end" : "start-full ms-5",
         className,
       )}
       style={{ color: "var(--feature-availability)" }}
