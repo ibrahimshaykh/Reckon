@@ -40,10 +40,19 @@ const REASONS = [
   "leaves Rs 150 outstanding",
 ];
 
-// How far down the page the reckoning is spread. Short enough that it happens
-// while the hero is still the thing being read, long enough that five strikes
-// do not all land at once.
-const SCRUB_END = 0.085;
+// How far the reader scrolls, in pixels, to work through the whole reckoning.
+//
+// Deliberately a distance and not a fraction of the page. It was a fraction
+// once — 0.085 of total scroll progress — which quietly meant something
+// different every time the page got longer. By the time the landing page had
+// grown to three thousand pixels, the whole five-step reckoning was crammed
+// into the first two hundred pixels of scroll and flashed past before anybody
+// could read a single line of it.
+//
+// Roughly one screen of scrolling to cross off five debts: slow enough to
+// read each reason, short enough that the hero has finished its argument
+// before it leaves.
+const SCRUB_PX = 820;
 
 export function SettleDemo() {
   const [struck, setStruck] = useState(0);
@@ -51,14 +60,14 @@ export function SettleDemo() {
   const [still, setStill] = useState(false);
   const [manual, setManual] = useState(false);
 
-  const { scrollYProgress } = useScroll();
+  const { scrollY } = useScroll();
 
-  useMotionValueEvent(scrollYProgress, "change", (v) => {
+  useMotionValueEvent(scrollY, "change", (v) => {
     if (manual || still) return;
 
     // 0 → 1 across the scrub window, then one step per row plus a final step
     // for the resolved state.
-    const p = Math.min(1, Math.max(0, v / SCRUB_END));
+    const p = Math.min(1, Math.max(0, v / SCRUB_PX));
     const steps = Math.floor(p * (TANGLED.length + 1));
 
     setStruck(Math.min(TANGLED.length, steps));
