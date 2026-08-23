@@ -10,6 +10,10 @@ type Pt = { x: number; y: number };
 const TIP_X = 2.5;
 const TIP_Y = 2.5;
 
+// Further than this between two samples means the pointer jumped rather than
+// travelled, so there is no stroke to draw.
+const MAX_SEGMENT = 90;
+
 // A pencil that follows the pointer, trailing graphite that fades. The trail
 // is drawn to a canvas rather than as DOM nodes — one element and one paint
 // per frame, instead of dozens of divs being created and garbage collected
@@ -34,6 +38,27 @@ export function PencilCursor() {
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
+
+    // Graphite on paper, chalk on a blackboard. This used to be a hardcoded
+    // dark grey, which meant the trail was drawing near-black onto a near-black
+    // board — the effect was simply absent in dark mode and nobody could see
+    // that it was missing.
+    let ink = "60, 60, 70";
+    const readInk = () => {
+      const raw = getComputedStyle(document.documentElement)
+        .getPropertyValue("--pencil-trail-rgb")
+        .trim();
+      if (raw) ink = raw;
+    };
+    readInk();
+    const trailColour = (t: number) => `rgba(${ink}, ${t * 0.34})`;
+
+    // The theme can change while the cursor is alive.
+    const themeWatch = new MutationObserver(readInk);
+    themeWatch.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class", "data-skin"],
+    });
 
     let raf = 0;
     // The trail is a short tail of recent positions, not the whole path —
@@ -87,8 +112,17 @@ export function PencilCursor() {
 
       for (let i = 1; i < tail.length; i++) {
         const t = i / tail.length;
+
+        // A jump — the pointer teleporting, or coming back into the window —
+        // is not a stroke. Drawing it laid one long ruler-straight line across
+        // the page between wherever the pointer was and wherever it landed,
+        // which on the dark board showed up as a bright scratch through the
+        // middle of the design.
+        const span = Math.hypot(tail[i].x - tail[i - 1].x, tail[i].y - tail[i - 1].y);
+        if (span > MAX_SEGMENT) continue;
+
         ctx.beginPath();
-        ctx.strokeStyle = `rgba(60, 60, 70, ${t * 0.34})`;
+        ctx.strokeStyle = trailColour(t);
         ctx.lineWidth = 0.6 + t * 2.1;
         // Nudging each segment slightly off the true path keeps the line
         // from looking machine-straight.
@@ -111,6 +145,7 @@ export function PencilCursor() {
     window.addEventListener("resize", resize);
 
     return () => {
+      themeWatch.disconnect();
       cancelAnimationFrame(raf);
       window.removeEventListener("pointermove", onMove);
       window.removeEventListener("pointerdown", onDown);
