@@ -140,37 +140,37 @@ export function PencilCursor() {
           {/* Graphite point — the tip of this triangle is the hotspot. */}
           <path
             d="M2.5 2.5 L10 5.5 L5.5 10 Z"
-            className="fill-foreground stroke-foreground"
+            style={{ fill: "var(--pencil-graphite)", stroke: "var(--pencil-outline)" }}
             strokeWidth="1.2"
             strokeLinejoin="round"
           />
           {/* Sharpened wood collar, just behind the graphite. */}
           <path
             d="M10 5.5 L13 8.5 L8.5 13 L5.5 10 Z"
-            className="fill-warm-surface stroke-foreground"
+            style={{ stroke: "var(--pencil-outline)" }}
+            className="fill-warm-surface"
             strokeWidth="1.4"
             strokeLinejoin="round"
           />
           {/* Barrel, running away from the hand's point of contact. */}
           <path
             d="M13 8.5 L24 19.5 L19.5 24 L8.5 13 Z"
-            style={{ fill: "var(--pencil-sunshine)" }}
-            className="stroke-foreground"
+            style={{ fill: "var(--pencil-sunshine)", stroke: "var(--pencil-outline)" }}
             strokeWidth="1.5"
             strokeLinejoin="round"
           />
           {/* Ferrule. */}
           <path
             d="M24 19.5 L26.5 22 L22 26.5 L19.5 24 Z"
-            className="fill-muted stroke-foreground"
+            style={{ stroke: "var(--pencil-outline)" }}
+            className="fill-muted"
             strokeWidth="1.4"
             strokeLinejoin="round"
           />
           {/* Eraser at the far end. */}
           <path
             d="M26.5 22 L29.5 25 L25 29.5 L22 26.5 Z"
-            style={{ fill: "var(--pencil-cherry)" }}
-            className="stroke-foreground"
+            style={{ fill: "var(--pencil-cherry)", stroke: "var(--pencil-outline)" }}
             strokeWidth="1.4"
             strokeLinejoin="round"
           />

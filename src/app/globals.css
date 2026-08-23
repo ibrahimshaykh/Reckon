@@ -305,30 +305,43 @@
 }
 
 :root[data-skin="sketch"].dark {
-  /* Chalk on a blackboard rather than a lit page. */
-  --background: oklch(0.21 0.014 265);
-  --foreground: oklch(0.94 0.012 90);
-  --card: oklch(0.25 0.016 265);
+  /* Chalk on a blackboard rather than a lit page.
+   *
+   * Warmed and deepened from the flat blue slate it used to be. A real board
+   * is not neutral — it holds a faint green-black from the slate itself and a
+   * haze of chalk dust that never fully comes off — and a screen-flat
+   * dark blue reads as "dark mode was switched on" rather than as a surface
+   * anybody would write on. The card sits a touch further from the
+   * background than before so panels lift off the board instead of floating
+   * in the same murk. */
+  --background: oklch(0.185 0.018 200);
+  --foreground: oklch(0.95 0.014 85);
+  --card: oklch(0.235 0.02 205);
   --card-foreground: oklch(0.94 0.012 90);
   --popover: oklch(0.25 0.016 265);
   --popover-foreground: oklch(0.94 0.012 90);
 
-  --primary: oklch(0.68 0.19 30);
-  --primary-foreground: oklch(0.17 0.02 30);
-  --secondary: oklch(0.3 0.016 265);
-  --secondary-foreground: oklch(0.94 0.012 90);
-  --muted: oklch(0.3 0.016 265);
-  --muted-foreground: oklch(0.75 0.014 265);
-  --accent: oklch(0.34 0.06 235);
-  --accent-foreground: oklch(0.88 0.09 235);
+  /* Warmed off pure coral and pulled back from neon. It is still the loudest
+     thing on the board — it marks what needs a person — but it no longer
+     vibrates against the slate. */
+  --primary: oklch(0.72 0.155 45);
+  --primary-foreground: oklch(0.18 0.03 45);
+  --secondary: oklch(0.29 0.022 205);
+  --secondary-foreground: oklch(0.95 0.014 85);
+  --muted: oklch(0.29 0.022 205);
+  --muted-foreground: oklch(0.79 0.016 200);
+  --accent: oklch(0.33 0.05 210);
+  --accent-foreground: oklch(0.9 0.08 210);
 
-  --border: oklch(0.93 0.012 90);
-  --input: oklch(0.93 0.012 90);
-  --ring: oklch(0.68 0.19 30);
+  /* Chalk is dusty, never pure white — a hairline of #fff on a dark board
+     glares and flattens everything it outlines. */
+  --border: oklch(0.88 0.016 85 / 82%);
+  --input: oklch(0.88 0.016 85 / 82%);
+  --ring: oklch(0.72 0.16 45);
 
-  --ledger: oklch(0.27 0.018 265);
-  --ledger-foreground: oklch(0.8 0.014 265);
-  --rule: oklch(0.95 0.01 90 / 40%);
+  --ledger: oklch(0.25 0.024 205);
+  --ledger-foreground: oklch(0.82 0.016 200);
+  --rule: oklch(0.92 0.012 85 / 32%);
   --positive: oklch(0.72 0.15 155);
   --negative: oklch(0.68 0.19 30);
   --warm: oklch(0.75 0.15 60);
@@ -621,13 +634,28 @@
 }
 
 :root[data-skin="sketch"].dark {
-  /* Lifted and desaturated a touch so coloured pencil still reads on slate
-     without glowing like neon. */
-  --pencil-indigo: oklch(0.72 0.14 265);
-  --pencil-cherry: oklch(0.72 0.16 25);
-  --pencil-sunshine: oklch(0.82 0.14 85);
-  --pencil-forest: oklch(0.72 0.12 150);
-  --pencil-graphite: oklch(0.75 0.012 265);
+  /* Chalk, not coloured pencil.
+   *
+   * The dark theme is a blackboard — that is the whole conceit — and a yellow
+   * wooden pencil sitting on a blackboard reads as a sticker somebody put
+   * there, not as the thing you write with. On dark these become chalk: warm
+   * off-whites and dusty pastels, low chroma, so the cursor looks picked up
+   * from the ledge rather than pasted on.
+   *
+   * The outline drops from near-white to a soft grey as well. A white shape
+   * outlined in white is a glowing blob; the shading is what makes it read as
+   * an object. */
+  --pencil-indigo: oklch(0.78 0.07 265);
+  --pencil-cherry: oklch(0.7 0.09 20);
+  --pencil-sunshine: oklch(0.9 0.045 85);
+  --pencil-forest: oklch(0.78 0.07 150);
+  --pencil-graphite: oklch(0.8 0.01 265);
+  --pencil-outline: oklch(0.55 0.02 265);
+}
+
+:root[data-skin="sketch"] {
+  /* Light mode keeps the drawn-in-ink outline it always had. */
+  --pencil-outline: var(--foreground);
 }
 
 /* The page-turn: a sheet sweeps across and lifts away, revealing the next
