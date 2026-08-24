@@ -644,36 +644,41 @@
 }
 
 :root[data-skin="sketch"].dark {
-  /* Chalk, not coloured pencil.
+  /* A pencil on a blackboard, not a piece of chalk.
    *
-   * The dark theme is a blackboard — that is the whole conceit — and a yellow
-   * wooden pencil sitting on a blackboard reads as a sticker somebody put
-   * there, not as the thing you write with. On dark these become chalk: warm
-   * off-whites and dusty pastels, low chroma, so the cursor looks picked up
-   * from the ledge rather than pasted on.
+   * "Chalk" was the wrong metaphor and it produced a wrong palette. The first
+   * pass pushed every segment toward the same pale, low-chroma cream —
+   * lightness 0.8 to 0.9, chroma 0.01 to 0.045 across the board — on the
+   * theory that low saturation reads as soft and hand-drawn. What it actually
+   * produced was five segments close enough in both lightness and hue that
+   * they read as one washed-out beige lozenge: technically all visible
+   * against the board, but with no colour identity left to tell them apart.
+   * A yellow pencil has to still read as yellow, even at night.
    *
-   * The outline drops from near-white to a soft grey as well. A white shape
-   * outlined in white is a glowing blob; the shading is what makes it read as
-   * an object. */
+   * The fix is the one light mode already uses, recoloured rather than
+   * reinvented: real hue and chroma spread between the parts that are
+   * supposed to look different (the honeyed wood collar, the gold barrel, the
+   * coral eraser), a plainly neutral grey for the parts that are actually
+   * neutral in real life (graphite lead, steel ferrule), and a properly dark
+   * outline doing the job --foreground does in light mode — separating
+   * segments from each other, not just from the board. */
   --pencil-indigo: oklch(0.78 0.07 265);
-  --pencil-cherry: oklch(0.7 0.09 20);
-  --pencil-sunshine: oklch(0.9 0.045 85);
+  --pencil-cherry: oklch(0.66 0.15 22);
+  --pencil-sunshine: oklch(0.82 0.14 88);
   --pencil-forest: oklch(0.78 0.07 150);
-  --pencil-graphite: oklch(0.8 0.01 265);
-  --pencil-outline: oklch(0.55 0.02 265);
-  /* The collar and ferrule were inheriting --warm-surface and --muted, which
-     on the light theme happen to read as pale wood and silver but on dark are
-     near-black panel colours — almost the same lightness as the board itself.
-     The pencil was assembled from three light chalk segments and two nearly
-     invisible dark ones, which is what read as "blurred": a solid shape with
-     two chunks missing rather than a soft edge.
-     Pale warm tan for the collar, pale cool silver for the ferrule — distinct
-     enough from the neighbouring graphite/barrel/eraser to still read as
-     separate parts, but close enough in lightness to stay chalk rather than
-     become five different coloured pencils. */
-  --pencil-collar: oklch(0.84 0.028 75);
-  --pencil-ferrule: oklch(0.82 0.018 230);
-  /* Chalk dust, for the trail the cursor leaves. */
+  --pencil-graphite: oklch(0.6 0.015 265);
+  --pencil-outline: oklch(0.26 0.02 265);
+  /* The collar and ferrule used to inherit --warm-surface and --muted, which
+     on light mode happen to read as wood and silver but on dark are near-black
+     panel colours barely lighter than the board — two of the pencil's five
+     segments were nearly invisible. Now on their own tokens: a warm honeyed
+     tan for the wood collar, matching the graphite's neutral read for the
+     metal ferrule but lighter, so the band still separates from the barrel
+     either side of it. */
+  --pencil-collar: oklch(0.68 0.085 55);
+  --pencil-ferrule: oklch(0.75 0.02 235);
+  /* Chalk dust, for the trail the cursor leaves — this part genuinely is
+     chalk-on-slate and keeps the pale low-chroma treatment. */
   --pencil-trail-rgb: 228, 226, 214;
 }
 
