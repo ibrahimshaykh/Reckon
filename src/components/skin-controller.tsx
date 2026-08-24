@@ -15,6 +15,14 @@ import { PageWrapper } from "@/components/sketch/page-wrapper";
 // nothing in common with what they had just been shown. The promise and the
 // thing now match.
 //
+// data-skin="sketch" is set server-side on <html> in the root layout, not
+// here — it used to be assigned in an effect after mount, which left a real
+// gap between the server's plain HTML and React hydrating in the attribute,
+// and every visitor saw the old palette flash before the notebook did. This
+// component now only gates the pieces that genuinely cannot run on the
+// server: the pointer trail and the paper texture both touch window and
+// canvas.
+//
 // The HUD stays behind the login. The margin scribble and the living
 // background are about where you have been in the app, which means nothing to
 // somebody who has not been anywhere yet.
@@ -24,7 +32,6 @@ export function SkinController() {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    document.documentElement.dataset.skin = "sketch";
     setMounted(true);
   }, []);
 

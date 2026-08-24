@@ -77,6 +77,14 @@ export default async function RootLayout({
       <html
         lang={locale}
         dir={isRtl(locale) ? "rtl" : "ltr"}
+        // Rendered server-side rather than set by a client effect after
+        // mount. The skin is the same on every route now, so there was
+        // nothing left to decide on the client — only a gap between the
+        // server sending plain HTML and React hydrating to add it, and for
+        // that gap every visitor saw the old plain palette flash before the
+        // notebook did. Printing it in the markup from the start closes the
+        // gap instead of racing it.
+        data-skin="sketch"
         className={`${geistSans.variable} ${geistMono.variable} ${spaceGrotesk.variable} ${patrickHand.variable} ${architectsDaughter.variable} h-full antialiased`}
         suppressHydrationWarning
       >

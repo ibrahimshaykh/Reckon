@@ -254,9 +254,12 @@
 /* ============================================================
    SKETCH SKIN — "fancy pencil" / stickman-flash-game theme.
 
-   Scoped to [data-skin="sketch"], which SkinController puts on <html>
-   for every route except the landing page, so the marketing page keeps
-   its own identity while the app becomes a notebook doodle.
+   Scoped to [data-skin="sketch"], set server-side on <html> in the root
+   layout for every route, landing page included — the marketing page and
+   the app behind the login are meant to read as the same notebook, not two
+   different products. Rendered in the initial HTML rather than added by a
+   client effect, so there is no flash of the old plain palette before the
+   attribute lands.
    ============================================================ */
 
 :root[data-skin="sketch"] {
@@ -631,6 +634,13 @@
   --pencil-sunshine: oklch(0.72 0.16 85);
   --pencil-forest: oklch(0.48 0.14 150);
   --pencil-graphite: oklch(0.42 0.012 265);
+  /* The collar and ferrule used to be drawn straight from the app's
+     warm-surface/muted panel colours rather than a pencil token of their own,
+     because in light mode those happened to already be the right light warm
+     tan and pale silver. Named properly now so dark mode can give them a
+     colour instead of silently inheriting whatever a dark UI panel is. */
+  --pencil-collar: var(--warm-surface);
+  --pencil-ferrule: var(--muted);
 }
 
 :root[data-skin="sketch"].dark {
@@ -651,6 +661,18 @@
   --pencil-forest: oklch(0.78 0.07 150);
   --pencil-graphite: oklch(0.8 0.01 265);
   --pencil-outline: oklch(0.55 0.02 265);
+  /* The collar and ferrule were inheriting --warm-surface and --muted, which
+     on the light theme happen to read as pale wood and silver but on dark are
+     near-black panel colours — almost the same lightness as the board itself.
+     The pencil was assembled from three light chalk segments and two nearly
+     invisible dark ones, which is what read as "blurred": a solid shape with
+     two chunks missing rather than a soft edge.
+     Pale warm tan for the collar, pale cool silver for the ferrule — distinct
+     enough from the neighbouring graphite/barrel/eraser to still read as
+     separate parts, but close enough in lightness to stay chalk rather than
+     become five different coloured pencils. */
+  --pencil-collar: oklch(0.84 0.028 75);
+  --pencil-ferrule: oklch(0.82 0.018 230);
   /* Chalk dust, for the trail the cursor leaves. */
   --pencil-trail-rgb: 228, 226, 214;
 }

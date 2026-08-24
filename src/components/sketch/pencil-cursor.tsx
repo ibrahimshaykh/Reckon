@@ -182,8 +182,7 @@ export function PencilCursor() {
           {/* Sharpened wood collar, just behind the graphite. */}
           <path
             d="M10 5.5 L13 8.5 L8.5 13 L5.5 10 Z"
-            style={{ stroke: "var(--pencil-outline)" }}
-            className="fill-warm-surface"
+            style={{ fill: "var(--pencil-collar)", stroke: "var(--pencil-outline)" }}
             strokeWidth="1.4"
             strokeLinejoin="round"
           />
@@ -197,8 +196,7 @@ export function PencilCursor() {
           {/* Ferrule. */}
           <path
             d="M24 19.5 L26.5 22 L22 26.5 L19.5 24 Z"
-            style={{ stroke: "var(--pencil-outline)" }}
-            className="fill-muted"
+            style={{ fill: "var(--pencil-ferrule)", stroke: "var(--pencil-outline)" }}
             strokeWidth="1.4"
             strokeLinejoin="round"
           />
