@@ -8,7 +8,7 @@ import { assertMember } from "@/lib/actions/groups";
 import { ApiError } from "@/lib/api-error";
 import { toCents } from "@/lib/money";
 import { validate, cuid, shortText } from "@/lib/validation";
-import { deriveItemShares, guestLockReason } from "@/lib/guest-shares";
+import { deriveItemShares, guestLockHolder, lockedMessage } from "@/lib/guest-shares";
 import { recalculateSettlements } from "@/lib/actions/settlements";
 import { asActionResult, type ActionResult } from "@/lib/action-result";
 import type { GuestStatus } from "@/generated/prisma/client";
@@ -59,11 +59,16 @@ export async function addGuest(input: {
       );
     }
 
-    const lock = guestLockReason(expense.guests.map((g) => g.status));
+    // Another head changes everyone's share, including the share the locked
+    // guest was quoted and has already acted on.
+    const lock = guestLockHolder(expense.guests);
     if (lock) {
       throw new ApiError(
         400,
-        "Someone's already paying their share of this expense, so adding another guest would change what they were asked for.",
+        lockedMessage(
+          lock,
+          "adding another guest would change what they were asked for",
+        ),
       );
     }
 

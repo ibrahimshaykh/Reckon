@@ -16,9 +16,18 @@ export function CopyRow({
   const [copied, setCopied] = useState(false);
 
   async function onCopy() {
-    await navigator.clipboard.writeText(value);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1500);
+    try {
+      await navigator.clipboard.writeText(value);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    } catch {
+      // Clipboard is blocked in some browsers unless the page is focused —
+      // falling back to a prompt beats silently doing nothing. Without this,
+      // a refused write threw here and the row just never said "Copied",
+      // which reads as a dead button on the one screen that hands over
+      // somebody's account details.
+      window.prompt(label, value);
+    }
   }
 
   return (

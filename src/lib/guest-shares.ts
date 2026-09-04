@@ -163,6 +163,45 @@ export function guestLockReason(
   return null;
 }
 
+// The same lock, plus who is holding it.
+//
+// "A guest is paying" is true but useless — in a bill with three guests it
+// doesn't say which one, and once somebody has actually paid, the present
+// tense is simply wrong. Naming them lets the screen say "taha has already
+// paid" instead, which is both accurate and actionable.
+//
+// Built on guestLockReason rather than beside it so the two can't disagree
+// about which status wins.
+export function guestLockHolder<T extends { status: GuestStatus; name: string }>(
+  guests: T[],
+): { reason: "PAYING" | "SENT" | "PAID"; name: string } | null {
+  const reason = guestLockReason(guests.map((g) => g.status));
+  if (!reason) return null;
+
+  // Non-null by construction: the reason came from one of these statuses.
+  const holder = guests.find((g) => g.status === reason)!;
+  return { reason, name: holder.name };
+}
+
+// What the guest has done, in the tense it actually happened in. Shared by the
+// actions that refuse a change because of the lock, so two different refusals
+// can't describe the same guest differently.
+//
+// Deliberately plain English rather than dictionary keys: these are thrown
+// ApiError strings, and nothing else in the actions layer is translated.
+const LOCK_VERB: Record<"PAYING" | "SENT" | "PAID", string> = {
+  PAYING: "is paying their share right now",
+  SENT: "has sent their share and it hasn't been confirmed yet",
+  PAID: "has already paid their share",
+};
+
+export function lockedMessage(
+  lock: { reason: "PAYING" | "SENT" | "PAID"; name: string },
+  consequence: string,
+): string {
+  return `${lock.name} ${LOCK_VERB[lock.reason]}, so ${consequence}.`;
+}
+
 // The settlement engine works in ratios, not cents (see
 // ExpenseItemParticipant.shareRatio), so hand it back ratios of the amount
 // the group is actually accountable for.

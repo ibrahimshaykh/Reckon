@@ -45,6 +45,7 @@
     "copy": "Copy",
     "copied": "Copied",
     "cancel": "Cancel",
+    "close": "Close",
     "previousMonth": "Previous month",
     "nextMonth": "Next month",
     "and": "and"
@@ -324,7 +325,11 @@
     "guestConfirmPaid": "Mark received",
     "guestNotReceived": "It didn't arrive",
     "guestRemove": "Remove",
-    "guestLockedNote": "A guest is paying their share of this expense, so the amount and split are locked.",
+    "guestRemoving": "Removing…",
+    "guestConfirmRemove": "Remove {name}? Their share goes back to the people covering them.",
+    "guestLockedPaying": "{name} is paying their share right now, so the amount and split are locked until that's settled.",
+    "guestLockedSent": "{name} has sent their share, so the amount and split are locked until it's confirmed.",
+    "guestLockedPaid": "{name} has already paid their share, so the amount and split are locked. Delete the expense if it's wrong.",
     "guestGetLink": "Copy link",
     "guestLinkCopied": "Copy this link",
     "guestHostsAssumed": "assumed",
@@ -385,7 +390,9 @@
     "settledStamp": "Settled",
     "settledNote": "{toName} confirmed your {amount}. Nothing outstanding between you.",
     "shareLink": "Send a pay link",
-    "shareLinkCopied": "Link copied"
+    "shareLinkCopied": "Link copied",
+    "linkReady": "Send this link to {name}. They can see the debt and pay you without opening Reckon.",
+    "linkExpiry": "The link works for 30 days."
   },
   "friends": {
     "youAnd": "You and {name}",

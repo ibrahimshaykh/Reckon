@@ -2,6 +2,8 @@ import { describe, it, expect } from "vitest";
 import {
   deriveItemShares,
   guestLockReason,
+  guestLockHolder,
+  lockedMessage,
   toShareRatios,
   type GuestStatus,
   type GuestShareInput,
@@ -227,6 +229,57 @@ describe("guestLockReason", () => {
 
   it("leaves a guest-free expense editable", () => {
     expect(guestLockReason([])).toBeNull();
+  });
+});
+
+describe("guestLockHolder", () => {
+  it("names the guest holding the lock", () => {
+    expect(
+      guestLockHolder([
+        { status: "UNDECIDED", name: "abdullah" },
+        { status: "PAID", name: "taha" },
+      ]),
+    ).toEqual({ reason: "PAID", name: "taha" });
+  });
+
+  it("names the firmest guest, not the first", () => {
+    expect(
+      guestLockHolder([
+        { status: "PAYING", name: "sara" },
+        { status: "PAID", name: "taha" },
+      ]),
+    ).toEqual({ reason: "PAID", name: "taha" });
+  });
+
+  it("is null when nobody has committed anything", () => {
+    expect(
+      guestLockHolder([
+        { status: "UNDECIDED", name: "abdullah" },
+        { status: "DECLINED", name: "jordan" },
+      ]),
+    ).toBeNull();
+  });
+});
+
+describe("lockedMessage", () => {
+  // The bug this replaced: one present-tense sentence for all three states,
+  // so a guest who had already paid was described as "is paying".
+  it("uses the past tense once the guest has paid", () => {
+    expect(
+      lockedMessage({ reason: "PAID", name: "taha" }, "the split can't change"),
+    ).toBe("taha has already paid their share, so the split can't change.");
+  });
+
+  it("uses the present tense while they're still paying", () => {
+    expect(
+      lockedMessage({ reason: "PAYING", name: "taha" }, "the split can't change"),
+    ).toBe("taha is paying their share right now, so the split can't change.");
+  });
+
+  it("says a sent share is still waiting on confirmation", () => {
+    expect(lockedMessage({ reason: "SENT", name: "sara" }, "it's locked")).toBe(
+      "sara has sent their share and it hasn't been confirmed yet, so it's locked.",
+    );
   });
 });
 

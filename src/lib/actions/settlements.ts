@@ -425,6 +425,11 @@ export async function rejectPayment(
   });
 }
 
+// Named so the screen that promises "the link works for 30 days" and the code
+// that decides when it stops working cannot drift apart. Mirrors
+// GUEST_LINK_TTL_MS on the guest side.
+const PAY_LINK_TTL_MS = 30 * 24 * 60 * 60 * 1000;
+
 /**
  * A link the debtor can be sent. Minted on demand rather than up front, since
  * settlements are recalculated constantly and most are cleared in the app.
@@ -469,7 +474,7 @@ export async function createPayLink(
       where: { id: settlement.id },
       data: {
         payToken,
-        payTokenExpiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+        payTokenExpiresAt: new Date(Date.now() + PAY_LINK_TTL_MS),
       },
     });
 

@@ -45,6 +45,7 @@
     "copy": "کاپی کریں",
     "copied": "کاپی ہو گیا",
     "cancel": "منسوخ کریں",
+    "close": "بند کریں",
     "previousMonth": "پچھلا مہینہ",
     "nextMonth": "اگلا مہینہ",
     "and": "اور"
@@ -324,7 +325,11 @@
     "guestConfirmPaid": "وصولی درج کریں",
     "guestNotReceived": "رقم نہیں پہنچی",
     "guestRemove": "ہٹائیں",
-    "guestLockedNote": "ایک مہمان اس خرچ کا اپنا حصہ ادا کر رہا ہے، اس لیے رقم اور تقسیم مقفل ہے۔",
+    "guestRemoving": "ہٹایا جا رہا ہے…",
+    "guestConfirmRemove": "{name} کو ہٹائیں؟ ان کا حصہ واپس ان لوگوں پر آ جائے گا جو انہیں کور کر رہے ہیں۔",
+    "guestLockedPaying": "{name} ابھی اپنا حصہ ادا کر رہے ہیں، اس لیے معاملہ طے ہونے تک رقم اور تقسیم مقفل ہے۔",
+    "guestLockedSent": "{name} نے اپنا حصہ بھیج دیا ہے، اس لیے تصدیق ہونے تک رقم اور تقسیم مقفل ہے۔",
+    "guestLockedPaid": "{name} پہلے ہی اپنا حصہ ادا کر چکے ہیں، اس لیے رقم اور تقسیم مقفل ہے۔ اگر یہ غلط ہے تو خرچ حذف کر دیں۔",
     "guestGetLink": "لنک کاپی کریں",
     "guestLinkCopied": "یہ لنک کاپی کریں",
     "guestHostsAssumed": "اندازہ",
@@ -385,7 +390,9 @@
     "settledStamp": "مکمل",
     "settledNote": "{toName} نے آپ کے {amount} کی تصدیق کر دی۔ اب کچھ باقی نہیں۔",
     "shareLink": "ادائیگی کا لنک بھیجیں",
-    "shareLinkCopied": "لنک کاپی ہو گیا"
+    "shareLinkCopied": "لنک کاپی ہو گیا",
+    "linkReady": "یہ لنک {name} کو بھیجیں۔ وہ Reckon کھولے بغیر قرض دیکھ کر آپ کو ادائیگی کر سکتے ہیں۔",
+    "linkExpiry": "یہ لنک 30 دن تک کام کرتا ہے۔"
   },
   "friends": {
     "youAnd": "آپ اور {name}",

@@ -45,6 +45,7 @@
     "copy": "Copiar",
     "copied": "Copiado",
     "cancel": "Cancelar",
+    "close": "Cerrar",
     "previousMonth": "Mes anterior",
     "nextMonth": "Mes siguiente",
     "and": "y"
@@ -324,7 +325,11 @@
     "guestConfirmPaid": "Marcar recibido",
     "guestNotReceived": "No llegó",
     "guestRemove": "Quitar",
-    "guestLockedNote": "Un invitado está pagando su parte de este gasto, así que el importe y el reparto están bloqueados.",
+    "guestRemoving": "Quitando…",
+    "guestConfirmRemove": "¿Quitar a {name}? Su parte vuelve a las personas que lo cubren.",
+    "guestLockedPaying": "{name} está pagando su parte ahora mismo, así que el importe y el reparto están bloqueados hasta que se resuelva.",
+    "guestLockedSent": "{name} ha enviado su parte, así que el importe y el reparto están bloqueados hasta que se confirme.",
+    "guestLockedPaid": "{name} ya ha pagado su parte, así que el importe y el reparto están bloqueados. Elimina el gasto si está mal.",
     "guestGetLink": "Copiar enlace",
     "guestLinkCopied": "Copia este enlace",
     "guestHostsAssumed": "supuesto",
@@ -385,7 +390,9 @@
     "settledStamp": "Saldado",
     "settledNote": "{toName} confirmó tus {amount}. No queda nada pendiente entre vosotros.",
     "shareLink": "Enviar un enlace de pago",
-    "shareLinkCopied": "Enlace copiado"
+    "shareLinkCopied": "Enlace copiado",
+    "linkReady": "Envía este enlace a {name}. Podrá ver la deuda y pagarte sin abrir Reckon.",
+    "linkExpiry": "El enlace funciona durante 30 días."
   },
   "friends": {
     "youAnd": "Tú y {name}",

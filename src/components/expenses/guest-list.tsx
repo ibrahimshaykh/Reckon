@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { X } from "lucide-react";
+import { Trash2, X } from "lucide-react";
 import {
   confirmGuestPaid,
   refreshGuestLink,
@@ -14,6 +14,7 @@ import { isActionError, type ActionResult } from "@/lib/action-result";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useSketchpad } from "@/lib/stores/sketchpad";
+import { interpolate } from "@/lib/i18n";
 import type { Dictionary } from "@/lib/dictionary";
 
 type Guest = {
@@ -49,6 +50,10 @@ export function GuestList({
   const [error, setError] = useState<string | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [editing, setEditing] = useState<{ id: string; hostIds: string[] } | null>(null);
+  // Which guest's bin is armed, if any. Removing one changes what everyone
+  // owes, so it gets the same two-stage confirm as deleting an expense rather
+  // than going on the first click.
+  const [arming, setArming] = useState<string | null>(null);
 
   const statusLabel: Record<Guest["status"], string> = {
     UNDECIDED: dict.expenses.guestStatusUndecided,
@@ -251,26 +256,61 @@ export function GuestList({
                   exists. */}
               {g.status !== "PAYING" &&
                 g.status !== "SENT" &&
-                g.status !== "PAID" && (
-                <button
-                  type="button"
-                  disabled={pendingId === g.id}
-                  aria-label={`${dict.expenses.guestRemove} ${g.name}`}
-                  title={dict.expenses.guestRemove}
-                  onClick={() =>
-                    run(g.id, () => removeGuest(g.id), () =>
-                      jot(`Removed guest ${g.name}`),
-                    )
-                  }
-                  className="rounded-md p-1 text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive disabled:opacity-50"
-                >
-                  <X className="size-3" />
-                </button>
-              )}
+                g.status !== "PAID" &&
+                (arming === g.id ? (
+                  <span className="flex shrink-0 items-center gap-1.5">
+                    <button
+                      type="button"
+                      disabled={pendingId === g.id}
+                      onClick={() =>
+                        run(g.id, () => removeGuest(g.id), () => {
+                          jot(`Removed guest ${g.name}`);
+                          setArming(null);
+                        })
+                      }
+                      className="rounded-md bg-destructive px-2 py-1 text-xs font-medium text-white transition-opacity hover:opacity-90 disabled:opacity-60"
+                    >
+                      {pendingId === g.id
+                        ? dict.expenses.guestRemoving
+                        : dict.expenses.guestRemove}
+                    </button>
+                    <button
+                      type="button"
+                      disabled={pendingId === g.id}
+                      onClick={() => setArming(null)}
+                      className="rounded-md px-1.5 py-1 text-xs text-muted-foreground hover:text-foreground"
+                    >
+                      {dict.common.cancel}
+                    </button>
+                  </span>
+                ) : (
+                  <button
+                    type="button"
+                    disabled={pendingId === g.id}
+                    aria-label={interpolate(dict.expenses.guestConfirmRemove, {
+                      name: g.name,
+                    })}
+                    title={dict.expenses.guestRemove}
+                    onClick={() => setArming(g.id)}
+                    className="rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive disabled:opacity-50"
+                  >
+                    <Trash2 className="size-3.5" />
+                  </button>
+                ))}
             </div>
 
             {isEditing && (
-              <div className="flex flex-col gap-1 rounded-md border border-rule bg-card p-2">
+              <div className="relative flex flex-col gap-1 rounded-md border border-rule bg-card p-2 pe-8">
+                {/* A way out that isn't Cancel. The cross means close here and
+                    nowhere else — removing a guest is the bin's job. */}
+                <button
+                  type="button"
+                  onClick={() => setEditing(null)}
+                  aria-label={dict.common.close}
+                  className="absolute end-1 top-1 rounded-md p-1 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+                >
+                  <X className="size-3" />
+                </button>
                 <p className="text-[0.7rem] text-muted-foreground">
                   {g.hostsAssumed
                     ? dict.expenses.guestAssumedHint

@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useSketchpad } from "@/lib/stores/sketchpad";
+import { interpolate } from "@/lib/i18n";
 import type { Dictionary } from "@/lib/dictionary";
 
 type Member = { id: string; displayName: string };
@@ -27,7 +28,7 @@ export function EditExpenseForm({
     paidById: string;
     participantIds: string[];
     itemised: boolean;
-    guestLock: "PAYING" | "SENT" | "PAID" | null;
+    guestLock: { reason: "PAYING" | "SENT" | "PAID"; name: string } | null;
   };
   members: Member[];
   currency: string;
@@ -94,7 +95,15 @@ export function EditExpenseForm({
         <p className="rounded-lg border border-warm/40 bg-warm-surface/40 p-2 text-xs">
           {expense.itemised
             ? dict.expenses.itemisedNote
-            : dict.expenses.guestLockedNote}
+            : expense.guestLock &&
+              interpolate(
+                {
+                  PAYING: dict.expenses.guestLockedPaying,
+                  SENT: dict.expenses.guestLockedSent,
+                  PAID: dict.expenses.guestLockedPaid,
+                }[expense.guestLock.reason],
+                { name: expense.guestLock.name },
+              )}
         </p>
       ) : (
         <Input

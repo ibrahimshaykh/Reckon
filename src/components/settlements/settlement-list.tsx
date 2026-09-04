@@ -12,7 +12,9 @@ import { createSafepayCheckout } from "@/lib/actions/safepay-checkout";
 import { isActionError } from "@/lib/action-result";
 import { formatMoney } from "@/lib/money";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { CopyRow } from "@/components/copy-row";
+import { X } from "lucide-react";
 import { buildPayLink, type PayProvider } from "@/lib/pay-links";
 import type { Dictionary } from "@/lib/dictionary";
 import type { LedgerLine } from "@/lib/settlement-explain";
@@ -146,12 +148,19 @@ function SettlementRow({
   const [safepayUnavailable, setSafepayUnavailable] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [linkCopied, setLinkCopied] = useState(false);
+  const [payLink, setPayLink] = useState<string | null>(null);
 
-  // Reaches somebody who doesn't open the app. Copied straight to the
-  // clipboard rather than revealed in a box, the same as the guest link —
-  // a URL on screen is something else to select, and the next thing anybody
-  // does with it is paste it into a chat anyway.
-  async function copyPayLink() {
+  // Reaches somebody who doesn't open the app.
+  //
+  // This used to go straight to the clipboard and show nothing, on the
+  // reasoning that the next thing anybody does with a link is paste it into a
+  // chat. Two things were wrong with that. Silence is indistinguishable from
+  // failure — the only signal was the button's own label flickering for two
+  // seconds — and the unguarded clipboard call meant a browser that refused
+  // the write threw before re-enabling the button, leaving it greyed out and
+  // dead with no explanation. Showing the link is the honest version: it is
+  // visibly there whether or not the clipboard cooperated.
+  async function revealPayLink() {
     setPending(true);
     setError(null);
 
@@ -163,10 +172,21 @@ function SettlementRow({
       return;
     }
 
-    await navigator.clipboard.writeText(`${window.location.origin}${result.url}`);
-    setLinkCopied(true);
+    setPayLink(`${window.location.origin}${result.url}`);
     setPending(false);
-    setTimeout(() => setLinkCopied(false), 2500);
+  }
+
+  async function copyPayLink() {
+    if (!payLink) return;
+    try {
+      await navigator.clipboard.writeText(payLink);
+      setLinkCopied(true);
+      setTimeout(() => setLinkCopied(false), 2500);
+    } catch {
+      // Clipboard is blocked in some browsers unless the page is focused —
+      // falling back to a prompt beats silently doing nothing.
+      window.prompt(dict.pay.shareLink, payLink);
+    }
   }
 
   const amount = formatMoney(settlement.amountCents, currency);
@@ -282,17 +302,50 @@ function SettlementRow({
                 bystander's claim to make, and the one person it was useless to
                 was the debtor — who is already here, reading this row, with
                 the payment details and Mark as paid in front of them. */}
-            {isPayee && settlement.status !== "CONFIRMED" && (
+            {isPayee && settlement.status !== "CONFIRMED" && !payLink && (
               <button
                 type="button"
                 disabled={pending}
-                onClick={copyPayLink}
+                onClick={revealPayLink}
                 className="w-fit font-mono text-[0.6875rem] uppercase tracking-[0.14em] text-muted-foreground underline-offset-4 transition-colors hover:text-primary hover:underline disabled:opacity-50"
               >
-                {linkCopied ? dict.pay.shareLinkCopied : dict.pay.shareLink}
+                {dict.pay.shareLink}
               </button>
             )}
           </div>
+          {payLink && (
+            <div className="relative flex flex-col gap-1.5 rounded-md border border-rule bg-card p-2 pe-8">
+              <button
+                type="button"
+                onClick={() => setPayLink(null)}
+                aria-label={dict.common.close}
+                className="absolute end-1 top-1 rounded-md p-1 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+              >
+                <X className="size-3" />
+              </button>
+              <p className="text-[0.7rem] text-muted-foreground">
+                {interpolate(dict.pay.linkReady, { name: settlement.fromName })}
+              </p>
+              <Input
+                readOnly
+                value={payLink}
+                onFocus={(e) => e.currentTarget.select()}
+                className="text-xs"
+              />
+              <div className="flex items-center gap-2">
+                <Button size="sm" variant="outline" onClick={copyPayLink}>
+                  {linkCopied ? dict.common.copied : dict.common.copy}
+                </Button>
+                <span className="text-[0.7rem] text-muted-foreground">
+                  {dict.pay.linkExpiry}
+                </span>
+              </div>
+            </div>
+          )}
+          {/* Outside the footer below, which is not mounted for the person owed
+              on a pending debt — the one case where this button is the only
+              thing on screen. An error rendered there would never be seen. */}
+          {error && <p className="text-xs text-destructive">{error}</p>}
         </div>
         <p className="tabular shrink-0 text-2xl font-semibold leading-none text-foreground sm:text-right">
           {amount}
@@ -440,7 +493,6 @@ function SettlementRow({
             )}
           </div>
           )}
-          {error && <p className="text-xs text-destructive">{error}</p>}
         </div>
       )}
     </li>

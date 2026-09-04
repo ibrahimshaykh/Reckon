@@ -9,7 +9,7 @@ import { ApiError } from "@/lib/api-error";
 import { fromCents } from "@/lib/money";
 import { validate, cuid, positiveCents, shortText } from "@/lib/validation";
 import { recalculateSettlements } from "@/lib/actions/settlements";
-import { guestLockReason } from "@/lib/guest-shares";
+import { guestLockHolder, lockedMessage } from "@/lib/guest-shares";
 import { hostsHaveSettled } from "@/lib/actions/guest";
 import { asActionResult, type ActionResult } from "@/lib/action-result";
 
@@ -193,7 +193,7 @@ export async function getExpenseForEdit(expenseId: string): Promise<
     paidById: string;
     participantIds: string[];
     itemised: boolean;
-    guestLock: "PAYING" | "SENT" | "PAID" | null;
+    guestLock: { reason: "PAYING" | "SENT" | "PAID"; name: string } | null;
   }>
 > {
   return asActionResult(async () => {
@@ -204,7 +204,7 @@ export async function getExpenseForEdit(expenseId: string): Promise<
       where: { id: validId },
       include: {
         items: { include: { participants: true } },
-        guests: { select: { status: true } },
+        guests: { select: { status: true, name: true } },
       },
     });
 
@@ -226,8 +226,9 @@ export async function getExpenseForEdit(expenseId: string): Promise<
       participantIds,
       itemised: expense.items.length > 1,
       // Lets the form grey out the amount fields up front, rather than
-      // letting someone retype a split and only then be told no.
-      guestLock: guestLockReason(expense.guests.map((g) => g.status)),
+      // letting someone retype a split and only then be told no. Carries the
+      // guest's name so the form can say who, and in which tense.
+      guestLock: guestLockHolder(expense.guests),
     };
   });
 }
@@ -253,7 +254,7 @@ export async function updateExpense(input: {
 
     const expense = await db.expense.findUniqueOrThrow({
       where: { id: valid.expenseId },
-      include: { items: true, guests: { select: { status: true } } },
+      include: { items: true, guests: { select: { status: true, name: true } } },
     });
 
     await assertMember(expense.groupId, session.id);
@@ -267,13 +268,11 @@ export async function updateExpense(input: {
     // A guest has been quoted a figure and is acting on it. Re-splitting the
     // bill now would change what they owe after they'd been told — so the
     // title and payer stay editable, but the money doesn't.
-    const lock = guestLockReason(expense.guests.map((g) => g.status));
+    const lock = guestLockHolder(expense.guests);
     if (lock && changingAmounts) {
       throw new ApiError(
         400,
-        lock === "PAID"
-          ? "A guest has already paid their share of this expense, so the amount and split are fixed."
-          : "A guest is paying their share right now, so the amount and split are locked until that's settled.",
+        lockedMessage(lock, "the amount and split can't change now"),
       );
     }
 
