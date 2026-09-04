@@ -14,6 +14,7 @@ import {
   computeSettlements,
   applyIOUs,
   applyPayments,
+  paymentsStillOwed,
   splitEvenlyByRatio,
 } from "@/lib/settlement";
 import { deriveItemShares, toShareRatios } from "@/lib/guest-shares";
@@ -139,7 +140,13 @@ async function loadGroupLedger(groupId: string) {
       toUserId: i.toUserId,
       amountCents: toCents(i.amount),
     })),
-    payments: paymentRows.map((p) => ({
+    // Only the payments that still have a debt to settle. A payment whose
+    // expenses have since been deleted is not neutral — it keeps pushing the
+    // balance and invents a debt the other way round. See paymentsStillOwed.
+    payments: paymentsStillOwed(paymentRows, [
+      ...expenses.map((e) => e.createdAt),
+      ...iouRows.map((i) => i.createdAt),
+    ]).map((p) => ({
       fromUserId: p.fromUserId,
       toUserId: p.toUserId,
       amountCents: toCents(p.amount),

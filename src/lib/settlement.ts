@@ -48,6 +48,42 @@ export function applyPayments(
   return result;
 }
 
+/**
+ * The payments that still have something to settle.
+ *
+ * A payment records money that genuinely moved, and it has to keep counting
+ * for as long as the debt it cleared exists — otherwise the same expense gets
+ * charged twice, which is the bug `applyPayments` was written to prevent.
+ *
+ * But it must stop counting when that debt does not exist any more. Deleting
+ * an expense removes it from the maths; the payment that settled it does not
+ * disappear with it, and a payment with nothing left to settle does not sit
+ * quietly at zero — it pushes the balance the other way and invents a debt in
+ * the opposite direction. In a real group this showed up as two bills that
+ * plainly totalled 2,500 being reported as 2,300, dragged by three payments
+ * that had settled bills deleted weeks earlier.
+ *
+ * A payment settles whatever was owed at the moment it was made, so the test
+ * is whether anything from before that moment survives. If every expense and
+ * every IOU that predates the payment has since been deleted, it is settling
+ * nothing and is left out.
+ *
+ * Imperfect in one direction, deliberately: a payment that cleared both a
+ * surviving bill and a deleted one still counts in full, because there is no
+ * record of how it was divided between them. It errs toward honouring money
+ * that really moved rather than asking for it again.
+ */
+export function paymentsStillOwed<T extends { confirmedAt: Date }>(
+  payments: T[],
+  debtCreatedAt: Date[],
+): T[] {
+  // Nothing is owed at all, so nothing is being settled.
+  if (debtCreatedAt.length === 0) return [];
+
+  const oldest = debtCreatedAt.reduce((a, b) => (a < b ? a : b));
+  return payments.filter((p) => p.confirmedAt > oldest);
+}
+
 // Greedy debt minimization: repeatedly match the largest creditor against
 // the largest debtor until every balance is zero. This is the standard
 // minimum-transaction heuristic — not always the mathematically fewest
