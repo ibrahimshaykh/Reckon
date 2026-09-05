@@ -21,11 +21,12 @@ export function AppNav({ dict }: { dict: Dictionary }) {
   const links = groupId
     ? [
         { href: `/groups/${groupId}`, label: dict.groupHub.expenses, exact: true },
-        { href: `/groups/${groupId}/settle`, label: dict.groupHub.whoOwesWho },
-        // Money first: expenses, who owes who, then IOUs, since an IOU is
-        // the same question as "who owes who" by another route. The household
-        // sections follow.
+        // Money first, in the order the debts are built: expenses and IOUs are
+        // both things you enter, and "who owes who" is what they add up to —
+        // so it comes after the two that feed it. The household sections
+        // follow.
         { href: `/groups/${groupId}/ious`, label: dict.groupHub.ious },
+        { href: `/groups/${groupId}/settle`, label: dict.groupHub.whoOwesWho },
         { href: `/groups/${groupId}/chores`, label: dict.groupHub.chores },
         { href: `/groups/${groupId}/availability`, label: dict.groupHub.availability },
         { href: `/groups/${groupId}/proposals`, label: dict.groupHub.proposals },
