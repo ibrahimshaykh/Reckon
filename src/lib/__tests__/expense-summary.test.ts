@@ -9,13 +9,29 @@ describe("summariseExpense", () => {
   it("says 'shared' when the payer is one of the people splitting it", () => {
     expect(summariseExpense("u1", "Ibrahim", [IBRAHIM, LOLA])).toEqual({
       kind: "sharedBy",
-      names: ["Ibrahim", "Lola"],
+      payer: "Ibrahim",
+      names: ["Lola"],
     });
   });
 
-  it("puts the payer first, whatever order the participants arrive in", () => {
+  // The sentence names the payer, so listing them again would read
+  // "Lola paid, split with Lola and Ibrahim".
+  it("leaves the payer out of the list they're being split with", () => {
     const summary = summariseExpense("u2", "Lola", [IBRAHIM, LOLA, SARA]);
-    expect(summary).toEqual({ kind: "sharedBy", names: ["Lola", "Ibrahim", "Sara"] });
+    expect(summary).toEqual({
+      kind: "sharedBy",
+      payer: "Lola",
+      names: ["Ibrahim", "Sara"],
+    });
+  });
+
+  it("keeps the others in the order they arrived", () => {
+    const summary = summariseExpense("u3", "Sara", [LOLA, SARA, IBRAHIM]);
+    expect(summary).toEqual({
+      kind: "sharedBy",
+      payer: "Sara",
+      names: ["Lola", "Ibrahim"],
+    });
   });
 
   it("says 'bought for' when the payer took no share themselves", () => {

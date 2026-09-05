@@ -41,7 +41,10 @@ function describeExpense(
 
   switch (summary.kind) {
     case "sharedBy":
-      return interpolate(dict.groupHub.sharedBy, { names: joinNames(summary.names, and) });
+      return interpolate(dict.groupHub.sharedBy, {
+        payer: summary.payer,
+        names: joinNames(summary.names, and),
+      });
     case "boughtFor":
       return interpolate(dict.groupHub.boughtFor, {
         payer: summary.payer,
@@ -50,7 +53,9 @@ function describeExpense(
     case "paidForSelf":
       return interpolate(dict.groupHub.paidForSelf, { payer: summary.payer });
     default:
-      return `${dict.common.paidBy} ${expense.paidByName}`;
+      // One sentence rather than a label glued to a name: Urdu puts the verb
+      // after the name, so concatenation produces nonsense there.
+      return interpolate(dict.groupHub.paidByName, { name: expense.paidByName });
   }
 }
 
@@ -218,8 +223,23 @@ export default async function GroupPage({
                         </span>
                       )}
                     </span>
-                    <span className="text-xs text-muted-foreground">
-                      {describeExpense(e, dict)}
+                    {/* A label, not a stamp. The stamp above means a status —
+                        settled, forgiven, decided — and a second stamp-looking
+                        thing that only names somebody would blur what a stamp
+                        is for. Normal case, because uppercasing a person's name
+                        is wrong in Latin script and meaningless in Urdu.
+
+                        Kept off the title line and allowed to wrap: a name is
+                        arbitrarily long, and pinned up there it squeezed the
+                        truncating title to nothing and collided with the amount
+                        on a narrow screen. */}
+                    <span className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                      <span className="sketch-pill px-2 py-0.5 text-[0.6875rem] text-muted-foreground">
+                        {interpolate(dict.groupHub.paidByName, { name: e.paidByName })}
+                      </span>
+                      <span className="text-xs text-muted-foreground">
+                        {describeExpense(e, dict)}
+                      </span>
                     </span>
                   </div>
                   <span className="tabular ml-auto shrink-0 text-sm font-semibold">

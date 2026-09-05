@@ -1,7 +1,7 @@
 export type SummaryParticipant = { id: string; name: string };
 
 export type ExpenseSummary =
-  | { kind: "sharedBy"; names: string[] }
+  | { kind: "sharedBy"; payer: string; names: string[] }
   | { kind: "boughtFor"; payer: string; names: string[] }
   | { kind: "paidForSelf"; payer: string }
   | { kind: "none" };
@@ -11,8 +11,13 @@ export type ExpenseSummary =
  * a person would say rather than a bare amount.
  *
  * The distinction that matters is whether the payer is in the split:
- *   - payer is in it  -> they shared the cost      ("Ibrahim and Lola shared this")
+ *   - payer is in it  -> they shared the cost      ("Ibrahim paid, split with Lola")
  *   - payer is not    -> they bought it for others ("Ibrahim bought this for Lola")
+ *
+ * Every shape names the payer. The shared one used to leave them unnamed and
+ * signal them by putting them first in the list instead — a convention that is
+ * invisible to anybody reading the row, on the one fact that matters most
+ * about a shared bill.
  *
  * Returns a shape rather than a string because the three sentences are separate
  * dictionary entries — the word order differs per language, so they can't be
@@ -35,9 +40,11 @@ export function summariseExpense(
     return { kind: "paidForSelf", payer: payerName };
   }
 
-  // Payer first — they fronted the money, so they lead the sentence.
+  // The payer is named by the sentence itself, so the list is everyone else.
+  // Including them here as well would read "Lola paid, split with Lola and
+  // Ibrahim".
   const others = participants.filter((p) => p.id !== payerId).map((p) => p.name);
-  return { kind: "sharedBy", names: [payerName, ...others] };
+  return { kind: "sharedBy", payer: payerName, names: others };
 }
 
 /**
