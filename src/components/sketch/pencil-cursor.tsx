@@ -158,15 +158,23 @@ export function PencilCursor() {
 
   return (
     <>
+      {/* z-index near the ceiling of what browsers support (2^31-1), not just
+          "high". Clerk's sign-in modal backdrop sits at z-index: 10000 — a
+          number picked with no knowledge this cursor exists — and 9998/9999
+          used to lose to it outright, so the pencil silently vanished the
+          moment that modal opened. A number is always beatable by the next
+          third-party overlay; the cursor stands in for the OS pointer, which
+          is never behind anything, so it should claim the actual max instead
+          of guessing at a number comfortably above today's known overlays. */}
       <canvas
         ref={canvasRef}
         aria-hidden
-        className="pointer-events-none fixed inset-0 z-[9998]"
+        className="pointer-events-none fixed inset-0 z-[2147483646]"
       />
       <div
         ref={nib}
         aria-hidden
-        className="pointer-events-none fixed left-0 top-0 z-[9999] will-change-transform"
+        className="pointer-events-none fixed left-0 top-0 z-[2147483647] will-change-transform"
         // Tilting on press must rotate about the nib, not the middle of the
         // drawing, or the point would swing off whatever it's pointing at.
         style={{ transformOrigin: `${TIP_X}px ${TIP_Y}px` }}
