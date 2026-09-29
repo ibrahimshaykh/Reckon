@@ -10,7 +10,7 @@ import { fromCents } from "@/lib/money";
 import { validate, cuid, positiveCents, shortText } from "@/lib/validation";
 import { recalculateSettlements } from "@/lib/actions/settlements";
 import { guestLockHolder, lockedMessage } from "@/lib/guest-shares";
-import { hostsHaveSettled } from "@/lib/actions/guest";
+import { loadGroupSettledCheck } from "@/lib/actions/guest";
 import { asActionResult, type ActionResult } from "@/lib/action-result";
 
 type AddManualExpenseInput = {
@@ -386,15 +386,14 @@ export async function listGroupExpenses(groupId: string) {
   // Worked out once for the whole page rather than per guest. Every guest in a
   // group shares the same settlement and payment history, so asking the
   // database again for each of them would be the same two queries repeated.
+  const hostsHaveSettledLocally = await loadGroupSettledCheck(groupId);
   const guestIds = expenses.flatMap((e) =>
     e.guests.map((g) => ({ id: g.id, hostIds: g.hosts.map((h) => h.userId) })),
   );
   const settledHosts = new Set<string>();
-  await Promise.all(
-    guestIds.map(async ({ id, hostIds }) => {
-      if (await hostsHaveSettled(groupId, hostIds)) settledHosts.add(id);
-    }),
-  );
+  for (const { id, hostIds } of guestIds) {
+    if (hostsHaveSettledLocally(hostIds)) settledHosts.add(id);
+  }
 
   /**
    * Which expenses are finished with.
@@ -411,21 +410,19 @@ export async function listGroupExpenses(groupId: string) {
    * side and is not, which is the case this distinction exists for.
    */
   const settledExpenses = new Set<string>();
-  await Promise.all(
-    expenses.map(async (e) => {
-      const guestStillOwes = e.guests.some(
-        (g) => g.status !== "PAID" && g.status !== "DECLINED",
-      );
-      if (guestStillOwes) return;
+  for (const e of expenses) {
+    const guestStillOwes = e.guests.some(
+      (g) => g.status !== "PAID" && g.status !== "DECLINED",
+    );
+    if (guestStillOwes) continue;
 
-      const participantIds = [
-        ...new Set(e.items.flatMap((i) => i.participants.map((p) => p.userId))),
-      ];
-      if (await hostsHaveSettled(groupId, participantIds)) {
-        settledExpenses.add(e.id);
-      }
-    }),
-  );
+    const participantIds = [
+      ...new Set(e.items.flatMap((i) => i.participants.map((p) => p.userId))),
+    ];
+    if (hostsHaveSettledLocally(participantIds)) {
+      settledExpenses.add(e.id);
+    }
+  }
 
   return expenses.map((e) => {
     // An expense can have several items, and a person can appear in more than

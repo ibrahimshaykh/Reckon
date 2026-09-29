@@ -3,6 +3,7 @@ import {
   deriveItemShares,
   guestLockReason,
   guestLockHolder,
+  hostSetHasSettled,
   lockedMessage,
   toShareRatios,
   type GuestStatus,
@@ -258,6 +259,63 @@ describe("guestLockHolder", () => {
         { status: "DECLINED", name: "jordan" },
       ]),
     ).toBeNull();
+  });
+});
+
+describe("hostSetHasSettled", () => {
+  // Mirrors the two queries loadGroupSettledCheck batches for a whole group:
+  // any unconfirmed settlement that touches a host, and any payment that does.
+  it("is false with no payment history at all, even with no open debt", () => {
+    expect(hostSetHasSettled(["u1"], [], [])).toBe(false);
+  });
+
+  it("is true once a payment touches a host and nothing is outstanding", () => {
+    expect(
+      hostSetHasSettled(
+        ["u1"],
+        [],
+        [{ fromUserId: "u1", toUserId: "u2" }],
+      ),
+    ).toBe(true);
+  });
+
+  it("is false while an unconfirmed settlement still touches a host", () => {
+    expect(
+      hostSetHasSettled(
+        ["u1"],
+        [{ fromUserId: "u1", toUserId: "u2" }],
+        [{ fromUserId: "u1", toUserId: "u2" }],
+      ),
+    ).toBe(false);
+  });
+
+  // A settlement or payment between two OTHER people must not count for a
+  // host who isn't party to it — the exact bug a naive "any row" check would
+  // introduce.
+  it("ignores settlements and payments that don't involve any host", () => {
+    expect(
+      hostSetHasSettled(
+        ["u1"],
+        [{ fromUserId: "u2", toUserId: "u3" }],
+        [{ fromUserId: "u2", toUserId: "u3" }],
+      ),
+    ).toBe(false);
+  });
+
+  it("checks every host in the set, not just the first", () => {
+    expect(
+      hostSetHasSettled(
+        ["u1", "u2"],
+        [{ fromUserId: "u2", toUserId: "u3" }],
+        [{ fromUserId: "u1", toUserId: "u3" }],
+      ),
+    ).toBe(false);
+  });
+
+  it("is false for an empty host list", () => {
+    expect(hostSetHasSettled([], [], [{ fromUserId: "u1", toUserId: "u2" }])).toBe(
+      false,
+    );
   });
 });
 

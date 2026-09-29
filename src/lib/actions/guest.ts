@@ -8,7 +8,12 @@ import { assertMember } from "@/lib/actions/groups";
 import { ApiError } from "@/lib/api-error";
 import { toCents } from "@/lib/money";
 import { validate, cuid, shortText } from "@/lib/validation";
-import { deriveItemShares, guestLockHolder, lockedMessage } from "@/lib/guest-shares";
+import {
+  deriveItemShares,
+  guestLockHolder,
+  hostSetHasSettled,
+  lockedMessage,
+} from "@/lib/guest-shares";
 import { recalculateSettlements } from "@/lib/actions/settlements";
 import { asActionResult, type ActionResult } from "@/lib/action-result";
 import type { GuestStatus } from "@/generated/prisma/client";
@@ -412,6 +417,33 @@ export async function hostsHaveSettled(
   ]);
 
   return outstanding === 0 && paid > 0;
+}
+
+/**
+ * The same check as hostsHaveSettled, batched for a whole page of guests.
+ *
+ * Every guest and expense in a group draws on the same two settlement and
+ * payment tables, so calling hostsHaveSettled once per guest asked the
+ * database the same two questions over and over — a group with fifteen
+ * expenses and five guests fired thirty-plus queries to render one page. This
+ * reads both tables once for the whole group and hands back a plain function
+ * that answers the same question from memory.
+ */
+export async function loadGroupSettledCheck(
+  groupId: string,
+): Promise<(hostIds: string[]) => boolean> {
+  const [outstanding, payments] = await Promise.all([
+    db.settlement.findMany({
+      where: { groupId, status: { not: "CONFIRMED" } },
+      select: { fromUserId: true, toUserId: true },
+    }),
+    db.payment.findMany({
+      where: { groupId },
+      select: { fromUserId: true, toUserId: true },
+    }),
+  ]);
+
+  return (hostIds: string[]) => hostSetHasSettled(hostIds, outstanding, payments);
 }
 
 export type OutstandingGuest = {

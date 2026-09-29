@@ -1,12 +1,20 @@
 import "server-only";
 import { randomBytes } from "crypto";
+import { cache } from "react";
 import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
 import { Prisma } from "@/generated/prisma/client";
 import { decideAdoption } from "@/lib/account-linking";
 
-export async function getSession() {
+// Every layout, page and action that needs the current user calls this
+// independently, and it's a real write (upsert), not a read — without
+// per-request memoization, one page view fired off four or five identical
+// upserts of the same row before anything else could even start. React's
+// cache() dedupes it to one per request; the write still happens on the
+// next request, same as before, which is what keeps the local profile in
+// sync with Clerk.
+export const getSession = cache(async () => {
   const clerkUser = await currentUser();
   if (!clerkUser) return null;
 
@@ -68,7 +76,7 @@ export async function getSession() {
 
     return await db.user.findUniqueOrThrow({ where: { id: byEmail.id } });
   }
-}
+});
 
 // Signed-out visitors get sent to sign-in, not an error page. Throwing here
 // surfaced as a 500 "Something went wrong on our end" — so an expired session,

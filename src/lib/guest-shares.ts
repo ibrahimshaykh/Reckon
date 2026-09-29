@@ -163,6 +163,24 @@ export function guestLockReason(
   return null;
 }
 
+// The comparison hostsHaveSettled/loadGroupSettledCheck run, pulled out so
+// it can be tested without a database. A host set has settled once nobody
+// among them is owed or owing on an unconfirmed settlement, and at least one
+// payment actually involves them — settling is something that happens, not
+// just the absence of an open debt, so a host set with no payment history at
+// all does not count as settled.
+export function hostSetHasSettled<T extends { fromUserId: string; toUserId: string }>(
+  hostIds: string[],
+  outstandingSettlements: T[],
+  payments: T[],
+): boolean {
+  if (hostIds.length === 0) return false;
+  const hosts = new Set(hostIds);
+  const involves = (row: T) => hosts.has(row.fromUserId) || hosts.has(row.toUserId);
+
+  return !outstandingSettlements.some(involves) && payments.some(involves);
+}
+
 // The same lock, plus who is holding it.
 //
 // "A guest is paying" is true but useless — in a bill with three guests it
