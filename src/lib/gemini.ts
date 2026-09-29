@@ -117,23 +117,24 @@ export async function parseReceiptImage(
   return JSON.parse(response.text ?? "{}") as ParsedReceipt;
 }
 
-export async function answerGroupQuestion(
-  question: string,
-  context: {
-    today: string;
-    expenses: { title: string; totalAmount: number; paidByName: string; createdAt: string }[];
-    chores: { name: string; currentAssignee: string | null; periodEnd: string | null }[];
-    proposals: {
-      title: string;
-      status: string;
-      estimatedCostPerPerson: number | null;
-      dietaryTags: string[];
-      flags: { userName: string; reason: string; detail: string }[];
-    }[];
-    ious: { fromName: string; toName: string; amount: number; note: string | null }[];
-    history: { question: string; answer: string }[];
-  },
-): Promise<string> {
+export type GroupQuestionContext = {
+  today: string;
+  expenses: { title: string; totalAmount: number; paidByName: string; createdAt: string }[];
+  chores: { name: string; currentAssignee: string | null; periodEnd: string | null }[];
+  proposals: {
+    title: string;
+    status: string;
+    estimatedCostPerPerson: number | null;
+    dietaryTags: string[];
+    flags: { userName: string; reason: string; detail: string }[];
+  }[];
+  ious: { fromName: string; toName: string; amount: number; note: string | null }[];
+  history: { question: string; answer: string }[];
+};
+
+// Shared by the streaming and (test-facing) non-streaming paths, so the two
+// can never drift into answering from different prompts.
+function buildGroupQuestionContents(question: string, context: GroupQuestionContext) {
   // A short sliding window of prior turns, not the full conversation — lets
   // "what about last week" resolve against the previous answer without an
   // unbounded prompt.
@@ -141,53 +142,76 @@ export async function answerGroupQuestion(
     .map((h) => `Q: ${h.question}\nA: ${h.answer}`)
     .join("\n\n");
 
-  const response = await withAiRetry(() => ai.models.generateContent({
-    model: "gemini-3.5-flash",
-    contents: createUserContent([
-      `Today's date is ${context.today}.`,
-      `Group expenses: ${JSON.stringify(context.expenses)}.`,
-      `Group chores: ${JSON.stringify(context.chores)}.`,
-      `Group proposals: ${JSON.stringify(context.proposals)}.`,
-      `Group IOUs: ${JSON.stringify(context.ious)}.`,
-      ...(historyText ? [`Earlier in this conversation:\n${historyText}`] : []),
-      `You are the assistant inside Reckon, an app for friend groups and ` +
-        `flatmates who share a home. Reckon pools shared costs and works out ` +
-        `the fewest payments that settle everyone up, rotates chores weighted ` +
-        `by effort so nobody keeps the worst jobs, finds the times everyone ` +
-        `is genuinely free, checks proposed plans against each person's own ` +
-        `budget and dietary limits, tracks quick one-to-one IOUs, and writes ` +
-        `a monthly recap. It shows the working behind every number it gives.`,
-      `Questions come in two kinds and you answer both:\n` +
-        `1. About THIS group — use only the data above. If the data doesn't ` +
-        `cover it, say so plainly rather than guessing, and never invent an ` +
-        `expense, chore, plan, person or amount.\n` +
-        `2. About Reckon itself, or general questions — answer helpfully from ` +
-        `what you know, as any assistant would. Don't refuse these for not ` +
-        `appearing in the group data; they were never meant to be there.\n` +
-        `When a question names an expense, chore, plan, person or amount that ` +
-        `isn't in the data above, say plainly that the group has no record of ` +
-        `it. Don't answer with a greeting or a list of what you can do — that ` +
-        `reads as dodging the question.`,
-      // Instructions alone left the model summarising the data it *did* have
-      // when asked about something absent. Showing the shape of a good
-      // "not in this group" answer is what actually pins the behaviour down.
-      `Worked examples of the tone and shape wanted:\n\n` +
-        `Q: How much did Priya spend on the ski trip?\n` +
-        `A: There's no ski trip in this group's expenses, and nobody called ` +
-        `Priya is a member here.\n\n` +
-        `Q: Did we sort out the car insurance?\n` +
-        `A: Nothing about car insurance has been recorded in this group.\n\n` +
-        `Q: What does Reckon actually do?\n` +
-        `A: It splits what you share with the people you live with, works out ` +
-        `the fewest payments to settle everyone, keeps the chore rota fair, ` +
-        `and finds times you're all free.`,
-      `Answer in 1-3 short sentences of plain language. Use the earlier ` +
-        `conversation only to resolve follow-ups (like "what about" or "and ` +
-        `them") — don't repeat it back: "${question}"`,
-    ]),
-  }));
+  return createUserContent([
+    `Today's date is ${context.today}.`,
+    `Group expenses: ${JSON.stringify(context.expenses)}.`,
+    `Group chores: ${JSON.stringify(context.chores)}.`,
+    `Group proposals: ${JSON.stringify(context.proposals)}.`,
+    `Group IOUs: ${JSON.stringify(context.ious)}.`,
+    ...(historyText ? [`Earlier in this conversation:\n${historyText}`] : []),
+    `You are the assistant inside Reckon, an app for friend groups and ` +
+      `flatmates who share a home. Reckon pools shared costs and works out ` +
+      `the fewest payments that settle everyone up, rotates chores weighted ` +
+      `by effort so nobody keeps the worst jobs, finds the times everyone ` +
+      `is genuinely free, checks proposed plans against each person's own ` +
+      `budget and dietary limits, tracks quick one-to-one IOUs, and writes ` +
+      `a monthly recap. It shows the working behind every number it gives.`,
+    `Questions come in two kinds and you answer both:\n` +
+      `1. About THIS group — use only the data above. If the data doesn't ` +
+      `cover it, say so plainly rather than guessing, and never invent an ` +
+      `expense, chore, plan, person or amount.\n` +
+      `2. About Reckon itself, or general questions — answer helpfully from ` +
+      `what you know, as any assistant would. Don't refuse these for not ` +
+      `appearing in the group data; they were never meant to be there.\n` +
+      `When a question names an expense, chore, plan, person or amount that ` +
+      `isn't in the data above, say plainly that the group has no record of ` +
+      `it. Don't answer with a greeting or a list of what you can do — that ` +
+      `reads as dodging the question.`,
+    // Instructions alone left the model summarising the data it *did* have
+    // when asked about something absent. Showing the shape of a good
+    // "not in this group" answer is what actually pins the behaviour down.
+    `Worked examples of the tone and shape wanted:\n\n` +
+      `Q: How much did Priya spend on the ski trip?\n` +
+      `A: There's no ski trip in this group's expenses, and nobody called ` +
+      `Priya is a member here.\n\n` +
+      `Q: Did we sort out the car insurance?\n` +
+      `A: Nothing about car insurance has been recorded in this group.\n\n` +
+      `Q: What does Reckon actually do?\n` +
+      `A: It splits what you share with the people you live with, works out ` +
+      `the fewest payments to settle everyone, keeps the chore rota fair, ` +
+      `and finds times you're all free.`,
+    `Answer in 1-3 short sentences of plain language. Use the earlier ` +
+      `conversation only to resolve follow-ups (like "what about" or "and ` +
+      `them") — don't repeat it back: "${question}"`,
+  ]);
+}
 
-  return response.text ?? "I couldn't come up with an answer for that.";
+// Streams the answer as it's generated instead of waiting for the whole
+// thing. The old version called generateContent and returned one string only
+// once Gemini had finished the entire answer — on a free-tier model that's
+// already prone to 503s and retried up to three times, the question screen
+// could sit on "Asking…" for several seconds with nothing to show for it.
+// This yields text as each chunk arrives, so the answer appears the way any
+// chat interface's does: typed out, not dropped in all at once at the end.
+export async function* answerGroupQuestionStream(
+  question: string,
+  context: GroupQuestionContext,
+): AsyncGenerator<string> {
+  const stream = await withAiRetry(() =>
+    ai.models.generateContentStream({
+      model: "gemini-3.5-flash",
+      contents: buildGroupQuestionContents(question, context),
+    }),
+  );
+
+  let sawAnyText = false;
+  for await (const chunk of stream) {
+    if (chunk.text) {
+      sawAnyText = true;
+      yield chunk.text;
+    }
+  }
+  if (!sawAnyText) yield "I couldn't come up with an answer for that.";
 }
 
 export async function generateMonthlyRecap(context: {
