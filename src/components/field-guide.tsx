@@ -54,7 +54,15 @@ export function FieldGuide({ guide, dict }: { guide: Guide; dict: Dictionary }) 
 
               <p className="mb-3 text-xs text-muted-foreground">{guide.intro}</p>
 
-              <dl className="flex flex-col gap-3">
+              {/* Capped and internally scrollable rather than left to grow with
+                  the field list. A page with a dozen fields to explain — Chores
+                  runs well past 1000px of them — used to push everything below
+                  the guide that same distance down the page every time someone
+                  opened it, so reaching your own content again meant scrolling
+                  through an explanation you'd already read. The guide now stays
+                  a fixed size and scrolls on its own; the rest of the page
+                  doesn't move because you asked what a field means. */}
+              <dl className="flex max-h-80 flex-col gap-3 overflow-y-auto pe-1">
                 {guide.fields.map((field) => (
                   <div key={field.name} className="flex flex-col gap-0.5">
                     <dt className="text-xs font-semibold">{field.name}</dt>
